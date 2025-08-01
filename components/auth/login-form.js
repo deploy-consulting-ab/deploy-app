@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { CardWrapper } from '@/components/auth/card-wrapper';
 import { LoginSchema } from '@/schemas';
@@ -18,6 +18,9 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 
+import { login } from '@/actions/login';
+import { useState, useTransition } from 'react';
+
 export const LoginForm = () => {
     const form = useForm({
         resolver: zodResolver(LoginSchema),
@@ -27,9 +30,20 @@ export const LoginForm = () => {
         },
     });
 
+    const [isPending, startTransition] = useTransition();
+    const [success, setSuccess] = useState('');
+    const [error, setError] = useState('');
+
     const onSubmit = (values) => {
-        console.log('Form submitted with values:', values);
-    }
+        setSuccess('');
+        setError('');
+
+        startTransition(async () => {
+            const response = await login(values);
+            setSuccess(response.success);
+            setError(response.error);
+        });
+    };
 
     return (
         <CardWrapper
@@ -39,47 +53,51 @@ export const LoginForm = () => {
             showSocial={true}
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
-                        <FormField control={form.control}
-                        name="email"
-                        render={( {field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="email"
-                                        placeholder="john.doe@deployconsulting.se"
-                                        {...field}
-                                        className="input"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}/>
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            disabled={isPending}
+                                            placeholder="john.doe@deployconsulting.se"
+                                            {...field}
+                                            className="input"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                        <FormField control={form.control}
-                        name="password"
-                        render={( {field }) => (
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="password"
-                                        placeholder="******"
-                                        {...field}
-                                        className="input"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}/>
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isPending}
+                                            type="password"
+                                            placeholder="******"
+                                            {...field}
+                                            className="input"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
-                    <FormError message="Some error occurred while logging in." />
-                    <FormSuccess message="Login successful!" />
-                    <Button type="submit"
-                    className="w-full">
+                    <FormError message={error} />
+                    <FormSuccess message={success} />
+                    <Button type="submit" className="w-full">
                         Login
                     </Button>
                 </form>
