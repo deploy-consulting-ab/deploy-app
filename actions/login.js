@@ -1,6 +1,9 @@
 'use server';
 
-import { RegisterSchema } from '@/schemas';
+import { LoginSchema } from '@/schemas';
+import { signIn } from '@/auth';
+import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
+import { AuthError } from 'next-auth';
 
 export const login = async (values) => {
     /**
@@ -9,12 +12,34 @@ export const login = async (values) => {
      */
 
     // Validate the input values against the schema.
-    const validatedFields = RegisterSchema.safeParse(values);
+    console.log(values);
+
+    const validatedFields = LoginSchema.safeParse(values);
 
     if (!validatedFields.success) {
-        console.log('Fields are not correct');
-        return { error: 'Invalid fields' };
+        return { error: 'Credentials are not correct' };
     }
 
-    return { success: 'Logged in!' };
+    const { email, password } = validatedFields.data;
+
+    try {
+        await signIn('credentials', {
+            email,
+            password,
+            redirectTo: DEFAULT_REDIRECT_ROUTE,
+        });
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return { error: 'Invalid credentials.' };
+                default:
+                    return { error: 'Something went wrong.' };
+            }
+        }
+        // This needs to be added for getting proper redirection when succesful login
+        throw error;
+    }
+
+    return { success: 'Login succesful' };
 };
