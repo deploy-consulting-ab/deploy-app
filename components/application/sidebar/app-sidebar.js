@@ -47,7 +47,7 @@ const items = [
 
 export function AppSidebar({ user }) {
     return (
-        <Sidebar>
+        <Sidebar variant="sidebar">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
