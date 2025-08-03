@@ -12,7 +12,6 @@ export const login = async (values) => {
      */
 
     // Validate the input values against the schema.
-    console.log(values);
 
     const validatedFields = LoginSchema.safeParse(values);
 
