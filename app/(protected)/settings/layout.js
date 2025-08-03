@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/application/sidebar/app-sidebar';
 import { auth } from '@/auth';
+import { DynamicBreadcrumb } from '@/components/application/breadcrumb/dynamic-breadcrumb';
 import {
     Breadcrumb,
     BreadcrumbList,
@@ -27,19 +28,9 @@ export default async function Layout({ children }) {
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" /> {/* Displays icon to close the sidebar*/}
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem className="hidden md:block">
-                                <BreadcrumbLink asChild>
-                                    <Link href="/settings/home">Home</Link>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="hidden md:block" />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                    <div className="hidden md:block">
+                        <DynamicBreadcrumb />
+                    </div>
                 </header>
                 <main>{children}</main>
             </SidebarInset>

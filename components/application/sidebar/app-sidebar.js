@@ -1,6 +1,7 @@
-import { Calendar, Home, Inbox, Search, Settings, GalleryVerticalEnd } from 'lucide-react';
+import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
 import DeployLogo from '@/images/deploy-logo.png';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
     Sidebar,
@@ -20,12 +21,12 @@ import { AppSidebarUser } from '@/components/application/sidebar/app-sidebar-use
 const items = [
     {
         title: 'Home',
-        url: '#',
+        url: '/settings/home',
         icon: Home,
     },
     {
         title: 'Inbox',
-        url: '#',
+        url: '/settings/inbox',
         icon: Inbox,
     },
     {
@@ -55,7 +56,8 @@ export function AppSidebar({ user }) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
                         >
-                            <a href="#">
+
+                            <Link href="/settings">
                                 <div className="flex aspect-square size-32 items-center justify-center">
                                     <Image
                                         src={DeployLogo}
@@ -64,7 +66,7 @@ export function AppSidebar({ user }) {
                                         alt="deploy-logo"
                                     />
                                 </div>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
@@ -77,10 +79,10 @@ export function AppSidebar({ user }) {
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
+                                        <Link href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
