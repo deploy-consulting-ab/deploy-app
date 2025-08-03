@@ -10,7 +10,10 @@ export default async function Layout({ children }) {
     
 
     return (
-        <SidebarProvider>
+        <SidebarProvider style={{
+    "--sidebar-width": "14rem",
+    "--sidebar-width-mobile": "14rem",
+  }}>
             <AppSidebar user={user}/>
             <main>
                 <SidebarTrigger />

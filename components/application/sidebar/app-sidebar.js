@@ -1,7 +1,10 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import { Calendar, Home, Inbox, Search, Settings, GalleryVerticalEnd } from 'lucide-react';
+import DeployLogo from '@/images/deploy-logo.png';
+import Image from 'next/image';
 
 import {
     Sidebar,
+    SidebarHeader,
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
@@ -9,7 +12,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarFooter
+    SidebarFooter,
 } from '@/components/ui/sidebar';
 import { AppSidebarUser } from '@/components/application/sidebar/app-sidebar-user';
 
@@ -45,6 +48,27 @@ const items = [
 export function AppSidebar({ user }) {
     return (
         <Sidebar>
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            asChild
+                            className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
+                        >
+                            <a href="#">
+                                <div className="flex aspect-square size-32 items-center justify-center">
+                                    <Image
+                                        src={DeployLogo}
+                                        width={200}
+                                        height={200}
+                                        alt="deploy-logo"
+                                    />
+                                </div>
+                            </a>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
