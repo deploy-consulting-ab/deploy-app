@@ -2,15 +2,6 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/s
 import { AppSidebar } from '@/components/application/sidebar/app-sidebar';
 import { auth } from '@/auth';
 import { DynamicBreadcrumb } from '@/components/application/breadcrumb/dynamic-breadcrumb';
-import {
-    Breadcrumb,
-    BreadcrumbList,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbSeparator,
-    BreadcrumbPage,
-} from '@/components/ui/breadcrumb';
-import Link from 'next/link';
 
 export default async function Layout({ children }) {
     const session = await auth();
