@@ -9,6 +9,7 @@ import {
     BreadcrumbSeparator,
     BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
+import Link from 'next/link';
 
 export default async function Layout({ children }) {
     const session = await auth();
@@ -29,7 +30,9 @@ export default async function Layout({ children }) {
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem className="hidden md:block">
-                                <BreadcrumbLink href="#">Home</BreadcrumbLink>
+                                <BreadcrumbLink asChild>
+                                    <Link href="/settings/home">Home</Link>
+                                </BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="hidden md:block" />
                             <BreadcrumbItem>
