@@ -21,11 +21,6 @@ import {
 
 export function AppSidebarUser({ user }) {
     const { isMobile } = useSidebar();
-
-    const doLogout = () => {
-        console.log('doLogout...');
-    };
-
     return (
         <SidebarMenu>
             <SidebarMenuItem>

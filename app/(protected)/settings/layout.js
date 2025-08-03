@@ -6,8 +6,6 @@ import { DynamicBreadcrumb } from '@/components/application/breadcrumb/dynamic-b
 export default async function Layout({ children }) {
     const session = await auth();
     const { user } = session;
-    console.log('Layout', user);
-
     return (
         <SidebarProvider
             style={{
