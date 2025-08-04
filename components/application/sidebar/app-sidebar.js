@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import { Calendar, Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
 import DeployLogo from '@/images/deploy-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,29 +21,24 @@ import { AppSidebarUser } from '@/components/application/sidebar/app-sidebar-use
 const items = [
     {
         title: 'Home',
-        url: '/settings/home',
+        url: '/home',
         icon: Home,
     },
     {
         title: 'Inbox',
-        url: '/settings/inbox',
+        url: '/home/inbox',
         icon: Inbox,
     },
     {
-        title: 'Calendar',
-        url: '#',
-        icon: Calendar,
+        title: 'Assignments',
+        url: '/home/assignments',
+        icon: ClipboardList,
     },
     {
-        title: 'Search',
-        url: '#',
-        icon: Search,
-    },
-    {
-        title: 'Settings',
-        url: '#',
-        icon: Settings,
-    },
+        title: 'Opportunities',
+        url: '/home/opportunities',
+        icon: TrendingUp,
+    }
 ];
 
 export function AppSidebar({ user }) {
@@ -56,7 +51,6 @@ export function AppSidebar({ user }) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
                         >
-
                             <Link href="/settings">
                                 <div className="flex aspect-square size-32 items-center justify-center">
                                     <Image
