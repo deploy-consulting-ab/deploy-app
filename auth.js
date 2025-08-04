@@ -18,8 +18,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return true;
         },
         async session({ session, token }) {
-            console.log('to', token);
-
             if (!session.user) {
                 return session;
             }

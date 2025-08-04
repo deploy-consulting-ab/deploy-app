@@ -1,7 +1,12 @@
-const OpportunitiesPage = () => {
+import { OpportunitiesList } from '@/components/application/opportunities-list';
+import { fetchOpportunities } from '@/actions/salesforce/fetch-opportunities';
+
+const OpportunitiesPage = async () => {
+    const data = await fetchOpportunities();
+
     return (
-        <div>
-            <p>Opportunities will be here...</p>
+        <div className="p-8">
+            <OpportunitiesList data={data}/>
         </div>
     );
 };
