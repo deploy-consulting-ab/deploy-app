@@ -6,7 +6,6 @@ import { getUserById } from '@/data/user';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
-    session: { strategy: 'jwt' },
     adapter: PrismaAdapter(db),
     callbacks: {
         async signIn({ user }) {

@@ -3,7 +3,7 @@ import { LoginSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user';
 import bcryptjs from 'bcryptjs';
 
-const obj = {
+const authObject = {
     providers: [
         Credentials({
             async authorize(credentials) {
@@ -30,6 +30,14 @@ const obj = {
             },
         }),
     ],
+    jwt: {
+        maxAge: 6 * 60 * 60, // 12 hours in seconds
+    },
+    session: {
+        strategy: 'jwt',
+        maxAge: 6 * 60 * 60, // 12 hours in seconds
+        updateAge: 60 * 60,   // Optional: refresh session every hour
+    },
 };
 
-export default obj;
+export default authObject;
