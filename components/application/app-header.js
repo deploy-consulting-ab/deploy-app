@@ -1,5 +1,3 @@
-
-
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { DynamicBreadcrumb } from '@/components/application/breadcrumb/dynamic-breadcrumb';
 import { Button } from '@/components/ui/button';
