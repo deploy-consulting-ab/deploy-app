@@ -1,11 +1,11 @@
 'use client';
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Header } from '@/components/auth/header';
-import { Social } from '@/components/auth/social';
-import { BackButton } from '@/components/auth/back-button';
+import { HeaderComponent } from '@/components/auth/header';
+import { SocialComponent } from '@/components/auth/social';
+import { BackButtonComponent } from '@/components/auth/back-button';
 
-export const CardWrapper = ({
+export const CardWrapperComponent = ({
     children,
     headerLabel,
     backButtonLabel,
@@ -15,16 +15,16 @@ export const CardWrapper = ({
     return (
         <Card className="w-[400px] shadow-md">
             <CardHeader>
-                <Header label={headerLabel} />
+                <HeaderComponent label={headerLabel} />
             </CardHeader>
             <CardContent>{children}</CardContent>
             {showSocial && (
                 <CardFooter>
-                    <Social />
+                    <SocialComponent />
                 </CardFooter>
             )}
             <CardFooter>
-                <BackButton label={backButtonLabel} href={backButtonHref} />
+                <BackButtonComponent label={backButtonLabel} href={backButtonHref} />
             </CardFooter>
         </Card>
     );

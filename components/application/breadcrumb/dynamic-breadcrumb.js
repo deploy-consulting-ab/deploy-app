@@ -12,7 +12,7 @@ import {
     BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 
-export function DynamicBreadcrumb() {
+export function DynamicBreadcrumbComponent() {
     const pathname = usePathname();
     
     // Remove the leading slash and split the path

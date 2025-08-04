@@ -1,6 +1,5 @@
 'use client';
 
-import { CardWrapper } from '@/components/auth/card-wrapper';
 import { LoginSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -17,11 +16,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import { CardWrapperComponent } from '@/components/auth/card-wrapper';
 
 import { login } from '@/actions/login';
 import { useState, useTransition } from 'react';
 
-export const LoginForm = () => {
+export const LoginFormComponent = () => {
     const form = useForm({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -46,7 +46,7 @@ export const LoginForm = () => {
     };
 
     return (
-        <CardWrapper
+        <CardWrapperComponent
             headerLabel="Welcome Back!"
             backButtonLabel="Don't have an account?"
             backButtonHref="/auth/register"
@@ -102,6 +102,6 @@ export const LoginForm = () => {
                     </Button>
                 </form>
             </Form>
-        </CardWrapper>
+        </CardWrapperComponent>
     );
 };

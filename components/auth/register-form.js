@@ -1,6 +1,6 @@
 'use client';
 
-import { CardWrapper } from '@/components/auth/card-wrapper';
+import { CardWrapperComponent } from '@/components/auth/card-wrapper';
 import { RegisterSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -21,7 +21,7 @@ import { FormSuccess } from '@/components/form-success';
 import { register } from '@/actions/register';
 import { useState, useTransition } from 'react';
 
-export const RegisterForm = () => {
+export const RegisterFormComponent = () => {
     const form = useForm({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
@@ -47,7 +47,7 @@ export const RegisterForm = () => {
     };
 
     return (
-        <CardWrapper
+        <CardWrapperComponent
             headerLabel="Create an Account"
             backButtonLabel="I already have an account!"
             backButtonHref="/auth/login"
@@ -123,6 +123,6 @@ export const RegisterForm = () => {
                     </Button>
                 </form>
             </Form>
-        </CardWrapper>
+        </CardWrapperComponent>
     );
 };

@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
+import { Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
 import DeployLogo from '@/images/deploy-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,33 +15,35 @@ import {
     SidebarMenuItem,
     SidebarFooter,
 } from '@/components/ui/sidebar';
-import { AppSidebarUser } from '@/components/application/sidebar/app-sidebar-user';
+import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
+
+import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
 
 // Menu items.
 const items = [
     {
         title: 'Home',
-        url: '/home',
+        url: DEFAULT_REDIRECT_ROUTE,
         icon: Home,
     },
     {
         title: 'Inbox',
-        url: '/home/inbox',
+        url: `${DEFAULT_REDIRECT_ROUTE}/inbox`,
         icon: Inbox,
     },
     {
         title: 'Assignments',
-        url: '/home/assignments',
+        url: `${DEFAULT_REDIRECT_ROUTE}/assignments`,
         icon: ClipboardList,
     },
     {
         title: 'Opportunities',
-        url: '/home/opportunities',
+        url: `${DEFAULT_REDIRECT_ROUTE}/opportunities`,
         icon: TrendingUp,
-    }
+    },
 ];
 
-export function AppSidebar({ user }) {
+export function AppSidebarComponent({ user }) {
     return (
         <Sidebar variant="sidebar">
             <SidebarHeader>
@@ -51,7 +53,7 @@ export function AppSidebar({ user }) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
                         >
-                            <Link href="/settings">
+                            <Link href={DEFAULT_REDIRECT_ROUTE}>
                                 <div className="flex aspect-square size-32 items-center justify-center">
                                     <Image
                                         src={DeployLogo}
@@ -85,7 +87,7 @@ export function AppSidebar({ user }) {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <AppSidebarUser user={user} />
+                <AppSidebarUserComponent user={user} />
             </SidebarFooter>
         </Sidebar>
     );

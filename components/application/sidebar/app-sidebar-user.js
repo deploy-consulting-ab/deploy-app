@@ -19,7 +19,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 
-export function AppSidebarUser({ user }) {
+export function AppSidebarUserComponent({ user }) {
     const { isMobile } = useSidebar();
     return (
         <SidebarMenu>

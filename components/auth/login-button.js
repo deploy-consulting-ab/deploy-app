@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-export const LoginButton = ({ children, mode = 'redirect', asChild }) => {
+export const LoginButtonComponent = ({ children, mode = 'redirect', asChild }) => {
     const router = useRouter();
     const onClick = () => {
         router.push('/auth/login');

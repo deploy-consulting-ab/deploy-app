@@ -54,7 +54,7 @@ const invoices = [
     },
 ];
 
-export function OpportunitiesList({data}) {
+export function OpportunitiesListComponent({data}) {
 
     const { opportunities, totalAmount } = data;
     return (

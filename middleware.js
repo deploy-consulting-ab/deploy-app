@@ -21,7 +21,7 @@ export default auth((req) => {
 
     if (isAuthRoute) {
         if (isLoggedIn) {
-            // Redirect to /settings
+            // Redirect to /home
             return Response.redirect(new URL(DEFAULT_REDIRECT_ROUTE, nextUrl));
         }
         // Allow access

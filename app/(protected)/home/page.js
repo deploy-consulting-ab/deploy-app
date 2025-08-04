@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { logout } from '@/actions/logout';
-import { HomeComponent } from '@/components/application/home-page';
+import { HomeComponent } from '@/components/application/home';
 
 const HomePage = async () => {
 

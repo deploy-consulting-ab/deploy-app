@@ -1,4 +1,4 @@
-import { OpportunitiesList } from '@/components/application/opportunities-list';
+import { OpportunitiesListComponent } from '@/components/application/opportunities-list';
 import { fetchOpportunities } from '@/actions/salesforce/fetch-opportunities';
 
 const OpportunitiesPage = async () => {
@@ -6,7 +6,7 @@ const OpportunitiesPage = async () => {
 
     return (
         <div className="p-8">
-            <OpportunitiesList data={data}/>
+            <OpportunitiesListComponent data={data}/>
         </div>
     );
 };
