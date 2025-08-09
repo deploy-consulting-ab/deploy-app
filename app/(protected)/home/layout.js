@@ -3,7 +3,7 @@ import { AppSidebarComponent } from '@/components/application/sidebar/app-sideba
 import { auth } from '@/auth';
 import { AppHeaderComponent } from '@/components/application/app-header';
 
-export default async function Layout({ children }) {
+export default async function HomeLayout({ children }) {
     const session = await auth();
     const { user } = session;
     return (
