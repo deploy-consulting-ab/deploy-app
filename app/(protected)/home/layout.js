@@ -16,7 +16,9 @@ export default async function Layout({ children }) {
             <AppSidebarComponent user={user} />
             <SidebarInset>
                 <AppHeaderComponent />
-                <main>{children}</main>
+                <main className="flex-1 pl-16 md:pl-64">
+                    <div className="px-4 md:px-8 py-6 max-w-full">{children}</div>
+                </main>
             </SidebarInset>
         </SidebarProvider>
     );
