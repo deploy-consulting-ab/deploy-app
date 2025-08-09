@@ -17,7 +17,7 @@ export default async function HomeLayout({ children }) {
             <SidebarInset>
                 <AppHeaderComponent />
                 <main>
-                    <div className="px-4 md:px-8 py-6 max-w-full">{children}</div>
+                    <div className="px-4 md:px-8 py-2 max-w-full">{children}</div>
                 </main>
             </SidebarInset>
         </SidebarProvider>
