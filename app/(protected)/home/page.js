@@ -1,7 +1,6 @@
 'use server';
 import { auth } from '@/auth';
 
-import { DashboardHeader } from '@/components/application/header';
 import { HolidayCard } from '@/components/application/holidays-card';
 import { OccupancyCard } from '@/components/application/occupancy-card';
 import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
@@ -47,8 +46,6 @@ export default async function HomePage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <DashboardHeader />
-
             <div className="flex-1 space-y-8 pt-6">
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <HolidayCard
