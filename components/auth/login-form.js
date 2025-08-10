@@ -20,6 +20,7 @@ import { CardWrapperComponent } from '@/components/auth/card-wrapper';
 
 import { login } from '@/actions/login';
 import { useState, useTransition } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export const LoginFormComponent = () => {
     const form = useForm({
@@ -33,6 +34,7 @@ export const LoginFormComponent = () => {
     const [isPending, startTransition] = useTransition();
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = (values) => {
         setSuccess('');
@@ -75,7 +77,7 @@ export const LoginFormComponent = () => {
                                 </FormItem>
                             )}
                         />
-
+                        
                         <FormField
                             control={form.control}
                             name="password"
@@ -83,14 +85,27 @@ export const LoginFormComponent = () => {
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <Input
-                                            disabled={isPending}
-                                            type="password"
-                                            placeholder="******"
-                                            {...field}
-                                            className="input"
-                                            suppressHydrationWarning
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                disabled={isPending}
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="******"
+                                                {...field}
+                                                className="input pr-10"
+                                                suppressHydrationWarning
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-4 w-4 text-gray-500" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4 text-gray-500" />
+                                                )}
+                                            </button>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
