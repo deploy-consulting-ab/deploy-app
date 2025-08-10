@@ -14,7 +14,9 @@ import { ErrorDisplay } from "@/components/errors/error-display";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { formatDateToEnUSWithOptions, isMobile } from "@/lib/utils";
+import { formatDateToEnUSWithOptions } from "@/lib/utils";
+import { CALENDAR_ROUTE, DEFAULT_REDIRECT_ROUTE } from "@/routes";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function HolidayCard({
   holidays: initialHolidays,
@@ -25,6 +27,7 @@ export function HolidayCard({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [holidays, setHolidays] = useState(initialHolidays);
   const [error, setError] = useState(initialError);
+  const isMobile = useIsMobile();
 
   const handleRefresh = async () => {
     if (isRefreshing) return;
@@ -42,8 +45,8 @@ export function HolidayCard({
 
   const handleCardClick = (e) => {
     // Only navigate if we're on mobile and the click wasn't on the refresh button
-    if (isMobile() && !isNavigationDisabled && !e.target.closest("button")) {
-      window.location.href = "/dashboard/calendar";
+    if (isMobile && !isNavigationDisabled && !e.target.closest("button")) {
+      window.location.href = CALENDAR_ROUTE;
     }
   };
 
@@ -62,7 +65,7 @@ export function HolidayCard({
     <Card
       variant="gradient"
       className={`relative overflow-hidden ${
-        !isNavigationDisabled && isMobile() && "md:hover:cursor-pointer"
+        !isNavigationDisabled && isMobile && "md:hover:cursor-pointer"
       }`}
       onClick={handleCardClick}
     >
@@ -88,7 +91,7 @@ export function HolidayCard({
             </Button>
 
             {!isNavigationDisabled && (
-              <Link href="/dashboard/calendar" className="md:block">
+              <Link href={CALENDAR_ROUTE} className="md:block">
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             )}

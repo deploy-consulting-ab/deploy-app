@@ -1,6 +1,9 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Wallet, Shield, Leaf, Clock, FileText } from "lucide-react";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const iconMap = {
   Wallet,
@@ -10,12 +13,15 @@ const iconMap = {
   FileText,
 };
 
-export function UsefulLinksGrid({ links }) {
+export function UsefulLinksGrid({ links, title }) {
   // Convert single item to array if needed
   const linksArray = Array.isArray(links) ? links : [links];
-
+  const isMobile = useIsMobile();
   return (
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <>
+      {!isMobile && <h3 className="text-lg font-medium mb-4">{title}</h3>}
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+
       {linksArray.map((link) => {
         const Icon = iconMap[link.icon];
 
@@ -42,5 +48,6 @@ export function UsefulLinksGrid({ links }) {
         );
       })}
     </div>
+    </>
   );
 }
