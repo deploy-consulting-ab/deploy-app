@@ -21,9 +21,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="h-full">
       <body
-        className={`${inter.className} antialiased`}
+        className={`${inter.className} antialiased h-full`}
       >
         <ThemeProvider
             attribute="class"
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
         >
-          <div className="min-h-screen bg-background">
+          <div className="h-full bg-background">
             {children}
           </div>
         </ThemeProvider>
