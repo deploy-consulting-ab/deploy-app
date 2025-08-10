@@ -20,7 +20,6 @@ export default async function HomePage() {
     let loading = true;
     let data = null;
     let error = null;
-
     const session = await auth();
 
     try {
@@ -59,8 +58,7 @@ export default async function HomePage() {
                     <OccupancyCard occupancy={employeeData.occupancy} />
                 </div>
                 <div>
-                    <h3 className="text-lg font-medium mb-4">Quick Access</h3>
-                    <UsefulLinksGrid links={homePageLinks} />
+                    <UsefulLinksGrid links={homePageLinks} title="Quick Access" />
                 </div>
             </div>
         </div>
