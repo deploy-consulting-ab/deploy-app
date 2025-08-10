@@ -1,5 +1,5 @@
 import { Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
-import DeployLogo from '@/images/deploy-logo.png';
+import DeployLogo from '@/public/deploy-logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 
