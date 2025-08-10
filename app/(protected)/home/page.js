@@ -46,7 +46,7 @@ export default async function HomePage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="flex-1 space-y-8 pt-6">
+            <div className="flex-1 space-y-8 pt-4">
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <HolidayCard
                         // holidays={data}

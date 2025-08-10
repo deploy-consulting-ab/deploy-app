@@ -41,7 +41,7 @@ export default async function CalendarPage() {
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="flex-1 space-y-8 pt-6">
+            <div className="flex-1 space-y-8 pt-4">
                 <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
                     <HolidayCard
                         // holidays={data}
