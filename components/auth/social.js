@@ -16,10 +16,10 @@ export const SocialComponent = () => {
 
     return (
         <div className="flex items-center w-full gap-x-2">
-            <Button size="lg" className="flex-1" variant="outline" onClick={handleGoogleLogin}>
+            <Button size="lg" className="bg-white/60 dark:bg-white/60 flex-1" variant="outline" onClick={handleGoogleLogin}>
                 <FcGoogle className="h-5 w-5"/>
             </Button>
-            <Button size="lg" className="flex-1" variant="outline" onClick={handleGithubLogin}>
+            <Button size="lg" className="bg-white/60 dark:bg-white/60 flex-1" variant="outline" onClick={handleGithubLogin}>
                 <FaGithub className="h-5 w-5"/>
             </Button>
         </div>

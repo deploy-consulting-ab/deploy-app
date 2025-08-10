@@ -13,7 +13,7 @@ export const CardWrapperComponent = ({
     showSocial,
 }) => {
     return (
-        <Card className="w-[400px] shadow-md bg-white dark:bg-white text-black dark:text-black">
+        <Card className="w-[400px] shadow-sm bg-white/40 dark:bg-white/40 text-black dark:text-black backdrop-blur-md transition-all duration-300">
             <CardHeader>
                 <HeaderComponent label={headerLabel} />
             </CardHeader>

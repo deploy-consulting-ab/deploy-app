@@ -50,7 +50,6 @@ export const LoginFormComponent = () => {
 
     return (
         <CardWrapperComponent
-            headerLabel="Welcome Back!"
             backButtonLabel="Don't have an account?"
             backButtonHref="/auth/register"
             showSocial={true}
@@ -70,7 +69,7 @@ export const LoginFormComponent = () => {
                                             disabled={isPending}
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
-                                            className="input bg-white dark:bg-white text-black dark:text-black dark:placeholder:text-gray-500"
+                                            className="input bg-transparent border-black text-black dark:text-black placeholder:text-black hover:border-gray-300 focus:border-gray-400 transition-all duration-300"
                                             suppressHydrationWarning
                                         />
                                     </FormControl>
@@ -92,7 +91,7 @@ export const LoginFormComponent = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="******"
                                                 {...field}
-                                                className="input pr-10 bg-white dark:bg-white text-black dark:text-black dark:placeholder:text-gray-500"
+                                                className="input pr-10 bg-transparent border-black text-black dark:text-black placeholder:text-black hover:border-gray-300 focus:border-gray-400 transition-all duration-300"
                                                 suppressHydrationWarning
                                             />
                                             <button
@@ -117,7 +116,7 @@ export const LoginFormComponent = () => {
                     <FormSuccess message={success} />
                     <Button 
                         type="submit" 
-                        className="w-full bg-black text-white" 
+                        className="w-full bg-black hover:bg-white/20 text-white font-medium transition-all duration-300 border border-white/20 hover:border-white/30" 
                         disabled={isPending}
                         suppressHydrationWarning
                     >
