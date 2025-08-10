@@ -68,6 +68,7 @@ export const LoginFormComponent = () => {
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
                                             className="input"
+                                            suppressHydrationWarning
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -88,6 +89,7 @@ export const LoginFormComponent = () => {
                                             placeholder="******"
                                             {...field}
                                             className="input"
+                                            suppressHydrationWarning
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -97,7 +99,7 @@ export const LoginFormComponent = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full" suppressHydrationWarning>
                         Login
                     </Button>
                 </form>
