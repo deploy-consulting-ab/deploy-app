@@ -47,6 +47,7 @@ export default async function HomePage() {
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-1 space-y-8 pt-6">
+                {JSON.stringify(session)}
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <HolidayCard
                         holidays={employeeData.holidays}
