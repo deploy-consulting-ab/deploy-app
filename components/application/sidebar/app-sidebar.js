@@ -1,6 +1,5 @@
 import { Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
-import DeployLogo from '@/public/deploy-logo.png';
-import Image from 'next/image';
+import DeployLogo from '@/components/deploy-logo';
 import Link from 'next/link';
 
 import {
@@ -55,12 +54,7 @@ export function AppSidebarComponent({ user }) {
                         >
                             <Link href={DEFAULT_REDIRECT_ROUTE}>
                                 <div className="flex aspect-square size-32 items-center justify-center">
-                                    <Image
-                                        src={DeployLogo}
-                                        width={200}
-                                        height={200}
-                                        alt="deploy-logo"
-                                    />
+                                    <DeployLogo className="h-10 w-auto z-[99] relative" />
                                 </div>
                             </Link>
                         </SidebarMenuButton>
