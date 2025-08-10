@@ -1,7 +1,7 @@
 'use client';
 
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
-import { logout } from '@/actions/logout';
+import { LogoutButtonComponent } from '@/components/application/logout-button';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -56,9 +56,11 @@ export function AppSidebarUserComponent({ user }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout}>
-                            <LogOut />
-                            Log out
+                        <DropdownMenuItem asChild>
+                            <div className="flex items-center gap-2">
+                                <LogOut className="h-4 w-4" />
+                                <LogoutButtonComponent className="p-0 h-auto hover:bg-transparent" />
+                            </div>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

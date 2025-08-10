@@ -1,9 +1,7 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { DynamicBreadcrumbComponent } from '@/components/application/breadcrumb/dynamic-breadcrumb';
-import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
-import { logout } from '@/actions/logout';
 import { ModeToggleComponent } from '@/components/application/mode-toggle';
+import { LogoutButtonComponent } from '@/components/application/logout-button';
 
 export function AppHeaderComponent() {
     return (
@@ -14,9 +12,7 @@ export function AppHeaderComponent() {
             </div>
             <div className="ml-auto flex items-center gap-2">
                 <ModeToggleComponent />
-                <Button variant="ghost" size="sm" className="hidden sm:flex" onClick={logout}>
-                    <LogOut />
-                </Button>
+                <LogoutButtonComponent className="hidden sm:flex" />
             </div>
         </header>
     );

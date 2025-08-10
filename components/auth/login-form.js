@@ -62,14 +62,14 @@ export const LoginFormComponent = () => {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel className="text-black dark:text-black">Email</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
                                             disabled={isPending}
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
-                                            className="input"
+                                            className="input bg-white dark:bg-white text-black dark:text-black dark:placeholder:text-gray-500"
                                             suppressHydrationWarning
                                         />
                                     </FormControl>
@@ -83,7 +83,7 @@ export const LoginFormComponent = () => {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Password</FormLabel>
+                                    <FormLabel className="text-black dark:text-black">Password</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input
@@ -91,7 +91,7 @@ export const LoginFormComponent = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="******"
                                                 {...field}
-                                                className="input pr-10"
+                                                className="input pr-10 bg-white dark:bg-white text-black dark:text-black dark:placeholder:text-gray-500"
                                                 suppressHydrationWarning
                                             />
                                             <button
@@ -114,7 +114,7 @@ export const LoginFormComponent = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button type="submit" className="w-full" suppressHydrationWarning>
+                    <Button type="submit" className="w-full bg-black text-white" suppressHydrationWarning>
                         Login
                     </Button>
                 </form>
