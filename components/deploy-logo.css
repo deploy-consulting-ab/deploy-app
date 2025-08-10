@@ -1,0 +1,11 @@
+/* Dark variant */
+.dark-logo .depl-1,
+.dark-logo .depl-2 {
+  fill: #000000;
+}
+
+/* Light variant */
+.light-logo .depl-1,
+.light-logo .depl-2 {
+  fill: #ffffff;
+}

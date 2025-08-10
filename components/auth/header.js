@@ -10,7 +10,7 @@ const font = Poppins({
 export const HeaderComponent = ({ label }) => {
     return (
         <div className="w-full flex flex-col pt-2 items-center justify-center">
-            <DeployLogo className="h-10 w-auto z-[99] relative" />
+            <DeployLogo className="dark-logo h-10 w-auto z-[99] relative" />
         </div>
     );
 };
