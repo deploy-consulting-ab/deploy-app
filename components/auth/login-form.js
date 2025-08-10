@@ -21,6 +21,7 @@ import { CardWrapperComponent } from '@/components/auth/card-wrapper';
 import { login } from '@/actions/login';
 import { useState, useTransition } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 
 export const LoginFormComponent = () => {
     const form = useForm({
@@ -114,8 +115,17 @@ export const LoginFormComponent = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button type="submit" className="w-full bg-black text-white" suppressHydrationWarning>
-                        Login
+                    <Button 
+                        type="submit" 
+                        className="w-full bg-black text-white" 
+                        disabled={isPending}
+                        suppressHydrationWarning
+                    >
+                        {isPending ? (
+                            <Spinner size="sm" variant="white" label="Logging in..." />
+                        ) : (
+                            "Login"
+                        )}
                     </Button>
                 </form>
             </Form>

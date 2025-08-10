@@ -7,6 +7,7 @@ import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { employeeData } from '@/lib/mock-data';
 import { homePageLinks } from '@/lib/external-links';
+import { Spinner } from "@/components/ui/spinner";
 
 // Server action for refreshing data
 async function refreshHolidayData() {
@@ -39,7 +40,7 @@ export default async function HomePage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <Spinner size="lg" label="Loading dashboard..." />
             </div>
         );
     }
