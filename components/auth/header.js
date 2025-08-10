@@ -1,5 +1,6 @@
 import { Poppins } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import DeployLogo from '@/components/deploy-logo';
 
 const font = Poppins({
     subsets: ['latin'],
@@ -8,9 +9,8 @@ const font = Poppins({
 
 export const HeaderComponent = ({ label }) => {
     return (
-        <div className="w-full flex flex-col gap-y-4 items-center justify-center">
-            <h1 className={cn('text-3xl font-semibold', font.className)}> ~/ Deploy</h1>
-            <p className="text-muted-foreground text-sm">{label}</p>
+        <div className="w-full flex flex-col pt-2 items-center justify-center">
+            <DeployLogo className="h-10 w-auto z-[99] relative" />
         </div>
     );
 };
