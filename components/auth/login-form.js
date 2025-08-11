@@ -69,7 +69,7 @@ export const LoginFormComponent = () => {
                                             disabled={isPending}
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
-                                            className="input bg-transparent border-black/20 hover:border-gray-300 focus:border-gray-400 text-black dark:text-black placeholder:text-black transition-all duration-300"
+                                            className="input bg-transparent border-black/20 hover:border-black/40 focus:border-gray-400 text-black dark:text-black placeholder:text-black/60 transition-all duration-300"
                                             suppressHydrationWarning
                                         />
                                     </FormControl>
@@ -91,7 +91,7 @@ export const LoginFormComponent = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="******"
                                                 {...field}
-                                                className="input pr-10 bg-transparent border-black/20 hover:border-gray-300 focus:border-gray-400 text-black dark:text-black placeholder:text-black transition-all duration-300"
+                                                className="input bg-transparent border-black/20 hover:border-black/40 focus:border-gray-400 text-black dark:text-black placeholder:text-black/60 transition-all duration-300"
                                                 suppressHydrationWarning
                                             />
                                             <button
@@ -100,9 +100,9 @@ export const LoginFormComponent = () => {
                                                 className="absolute inset-y-0 right-0 flex items-center pr-3"
                                             >
                                                 {showPassword ? (
-                                                    <EyeOff className="h-4 w-4 text-gray-500" />
+                                                    <EyeOff className="h-4 w-4" />
                                                 ) : (
-                                                    <Eye className="h-4 w-4 text-gray-500" />
+                                                    <Eye className="h-4 w-4" />
                                                 )}
                                             </button>
                                         </div>
@@ -116,7 +116,7 @@ export const LoginFormComponent = () => {
                     <FormSuccess message={success} />
                     <Button 
                         type="submit" 
-                        className="w-full bg-black hover:bg-white/20 text-white font-medium transition-all duration-300 border border-white/20 hover:border-white/30" 
+                        className="w-full bg-black hover:bg-black/60 text-white font-medium transition-all duration-300" 
                         disabled={isPending}
                         suppressHydrationWarning
                     >
