@@ -32,7 +32,7 @@ export function UsefulLinksGrid({ links, title }) {
             className="group hover:shadow-lg transition-all duration-200"
           >
             <Link href={link.href} className="block" target={link.target}>
-              <CardContent className="p-6 flex flex-col items-center text-center">
+              <CardContent className="p-4 flex flex-col items-center text-center">
                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
                   <Icon className="h-6 w-6 text-primary" />
                 </div>
