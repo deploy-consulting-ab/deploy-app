@@ -1,4 +1,4 @@
-import { Home, Inbox, TrendingUp, ClipboardList } from 'lucide-react';
+import { Home, Percent, TrendingUp, ClipboardList, Calendar } from 'lucide-react';
 import DeployLogo from '@/components/deploy-logo';
 import Link from 'next/link';
 
@@ -16,7 +16,13 @@ import {
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 
-import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
+import {
+    DEFAULT_REDIRECT_ROUTE,
+    OCCUPANCY_ROUTE,
+    HOLIDAYS_ROUTE,
+    ASSIGNMENTS_ROUTE,
+    OPPORTUNITIES_ROUTE,
+} from '@/routes';
 
 // Menu items.
 const items = [
@@ -26,18 +32,23 @@ const items = [
         icon: Home,
     },
     {
-        title: 'Inbox',
-        url: `${DEFAULT_REDIRECT_ROUTE}/inbox`,
-        icon: Inbox,
+        title: 'Holidays',
+        url: HOLIDAYS_ROUTE,
+        icon: Calendar,
+    },
+    {
+        title: 'Occupancy',
+        url: OCCUPANCY_ROUTE,
+        icon: Percent,
     },
     {
         title: 'Assignments',
-        url: `${DEFAULT_REDIRECT_ROUTE}/assignments`,
+        url: ASSIGNMENTS_ROUTE,
         icon: ClipboardList,
     },
     {
         title: 'Opportunities',
-        url: `${DEFAULT_REDIRECT_ROUTE}/opportunities`,
+        url: OPPORTUNITIES_ROUTE,
         icon: TrendingUp,
     },
 ];
@@ -66,12 +77,12 @@ export function AppSidebarComponent({ user }) {
                     <SidebarGroupLabel>Application</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
+                            {items.map((menu) => (
+                                <SidebarMenuItem key={menu.title}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
+                                        <Link href={menu.url}>
+                                            <menu.icon />
+                                            <span>{menu.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>

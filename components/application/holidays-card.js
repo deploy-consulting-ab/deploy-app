@@ -15,7 +15,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { formatDateToEnUSWithOptions } from "@/lib/utils";
-import { CALENDAR_ROUTE, DEFAULT_REDIRECT_ROUTE } from "@/routes";
+import { HOLIDAYS_ROUTE } from "@/routes";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export function HolidayCard({
@@ -46,7 +46,7 @@ export function HolidayCard({
   const handleCardClick = (e) => {
     // Only navigate if we're on mobile and the click wasn't on the refresh button
     if (isMobile && !isNavigationDisabled && !e.target.closest("button")) {
-      window.location.href = CALENDAR_ROUTE;
+      window.location.href = HOLIDAYS_ROUTE;
     }
   };
 
@@ -91,7 +91,7 @@ export function HolidayCard({
             </Button>
 
             {!isNavigationDisabled && (
-              <Link href={CALENDAR_ROUTE} className="md:block">
+              <Link href={HOLIDAYS_ROUTE} className="md:block">
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             )}

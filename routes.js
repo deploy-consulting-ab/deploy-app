@@ -18,3 +18,7 @@ export const apiAuthPrefix = '/api/auth';
  */
 export const DEFAULT_REDIRECT_ROUTE = '/home';
 export const LOGIN_ROUTE = '/auth/login';
+export const HOLIDAYS_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/holidays`;
+export const OCCUPANCY_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/occupancy`;
+export const ASSIGNMENTS_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/assignments`;
+export const OPPORTUNITIES_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/opportunities`;

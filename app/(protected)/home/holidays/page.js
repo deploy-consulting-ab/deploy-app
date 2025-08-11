@@ -12,7 +12,7 @@ async function refreshHolidayData() {
     return data;
 }
 
-export default async function CalendarPage() {
+export default async function HolidaysPage() {
     let loading = true;
     let data = null;
     let error = null;
