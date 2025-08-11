@@ -65,7 +65,7 @@ export function AppSidebarComponent({ user }) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
                         >
                             <Link href={DEFAULT_REDIRECT_ROUTE}>
-                                <div className="flex aspect-square size-32 items-center justify-center">
+                                <div className="flex aspect-square size-25 items-center justify-center">
                                     <DeployLogo className="h-10 w-auto z-[99] relative" />
                                 </div>
                             </Link>
