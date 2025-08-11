@@ -98,7 +98,7 @@ export function HolidayCard({
           </div>
         </CardAction>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="py-4">
         <div className="flex items-center gap-4">
           <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
             <Calendar className="h-6 w-6 text-white" />
