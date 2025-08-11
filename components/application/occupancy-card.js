@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { OCCUPANCY_ROUTE } from "@/routes";
 
 export function OccupancyCard({ occupancy, refreshAction, isNavigationDisabled }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -59,7 +60,7 @@ export function OccupancyCard({ occupancy, refreshAction, isNavigationDisabled }
             </Button>
 
             {!isNavigationDisabled && (
-              <Link href="/dashboard/occupancy" className="md:block">
+              <Link href={OCCUPANCY_ROUTE} className="md:block">
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             )}
