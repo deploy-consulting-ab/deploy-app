@@ -13,6 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarFooter,
+    SidebarRail,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 
@@ -55,7 +56,7 @@ const items = [
 
 export function AppSidebarComponent({ user }) {
     return (
-        <Sidebar variant="sidebar">
+        <Sidebar variant="sidebar" collapsible="icon">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -94,6 +95,7 @@ export function AppSidebarComponent({ user }) {
             <SidebarFooter>
                 <AppSidebarUserComponent user={user} />
             </SidebarFooter>
+            <SidebarRail />
         </Sidebar>
     );
 }
