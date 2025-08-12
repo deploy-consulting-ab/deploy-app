@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
 
 import { useIsMobile } from '@/hooks/use-mobile';
+import { getFiscalYear, isInFiscalYear } from '@/lib/utils';
 import {
     Card,
     CardAction,
@@ -29,7 +30,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 export const description = 'An interactive area chart';
 
-const chartData = [
+const chartDataOld = [
     { date: '2024-04-01', desktop: 222, mobile: 150 },
     { date: '2024-04-02', desktop: 97, mobile: 180 },
     { date: '2024-04-03', desktop: 167, mobile: 120 },
@@ -123,16 +124,32 @@ const chartData = [
     { date: '2024-06-30', desktop: 446, mobile: 400 },
 ];
 
+const chartData = [
+    { month: 'January 2024', date: '2024-01-01', occupancy: 86 },
+    { month: 'February 2024', date: '2024-02-01', occupancy: 95 },
+    { month: 'March 2024', date: '2024-03-01', occupancy: 87 },
+    { month: 'April 2024', date: '2024-04-01', occupancy: 73 },
+    { month: 'May 2024', date: '2024-05-01', occupancy: 89 },
+    { month: 'June 2024', date: '2024-06-01', occupancy: 84 },
+    { month: 'July 2024', date: '2024-07-01', occupancy: 85 },
+    { month: 'August 2024', date: '2024-08-01', occupancy: 88 },
+    { month: 'September 2024', date: '2024-09-01', occupancy: 92 },
+    { month: 'October 2024', date: '2024-10-01', occupancy: 89 },
+    { month: 'November 2024', date: '2024-11-01', occupancy: 87 },
+    { month: 'December 2024', date: '2024-12-01', occupancy: 88 },
+    { month: 'January 2025', date: '2025-01-01', occupancy: 86 },
+    { month: 'February 2025', date: '2025-02-01', occupancy: 95 },
+    { month: 'March 2025', date: '2025-03-01', occupancy: 87 },
+    { month: 'April 2025', date: '2025-04-01', occupancy: 93 },
+    { month: 'May 2025', date: '2025-05-01', occupancy: 89 },
+    { month: 'June 2025', date: '2025-06-01', occupancy: 94 },
+    { month: 'July 2025', date: '2025-07-01', occupancy: 96 },
+    { month: 'August 2025', date: '2025-08-01', occupancy: 30 },
+];
+
 const chartConfig = {
-    visitors: {
-        label: 'Visitors',
-    },
-    desktop: {
-        label: 'Desktop',
-        color: 'var(--primary)',
-    },
-    mobile: {
-        label: 'Mobile',
+    occupancy: {
+        label: 'Occupancy',
         color: 'var(--primary)',
     },
 };
@@ -143,31 +160,78 @@ export function OccupancyChartComponent() {
 
     React.useEffect(() => {
         if (isMobile) {
-            setTimeRange('7d');
+            setTimeRange('90d');
         }
     }, [isMobile]);
 
     const filteredData = chartData.filter((item) => {
         const date = new Date(item.date);
-        const referenceDate = new Date('2024-06-30');
-        let daysToSubtract = 90;
-        if (timeRange === '30d') {
-            daysToSubtract = 30;
-        } else if (timeRange === '7d') {
-            daysToSubtract = 7;
+        const currentDate = new Date();
+
+        if (timeRange === 'FY' || timeRange === 'PFY') {
+            const currentFiscalYear = getFiscalYear(currentDate);
+            const targetFiscalYear = timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1;
+            return isInFiscalYear(date, targetFiscalYear);
+        } else if (timeRange === 'CURRENT_MONTH') {
+            // Current month: same year and month as current date
+            return (
+                date.getFullYear() === currentDate.getFullYear() &&
+                date.getMonth() === currentDate.getMonth()
+            );
+        } else if (timeRange === 'LAST_MONTH') {
+            // Last month: get previous month
+            const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+            return (
+                date.getFullYear() === lastMonth.getFullYear() &&
+                date.getMonth() === lastMonth.getMonth()
+            );
+        } else if (timeRange === '90d') {
+            // Last 3 months
+            const startDate = new Date(currentDate);
+            startDate.setDate(startDate.getDate() - 90);
+            return date >= startDate;
         }
-        const startDate = new Date(referenceDate);
-        startDate.setDate(startDate.getDate() - daysToSubtract);
-        return date >= startDate;
+        return true; // Default case: show all data
     });
+
     return (
         <Card className="@container/card" variant="shadow">
             <CardHeader>
                 <CardTitle>Occupancy Rate</CardTitle>
-                {/* TODO: Add a description of the chart */}
                 <CardDescription>
-                    <span className="hidden @[540px]/card:block">Total for the last 3 months</span>
-                    <span className="@[540px]/card:hidden">Last 3 months</span>
+                    {timeRange === 'FY' ? (
+                        <>
+                            <span className="hidden @[540px]/card:block">
+                                Total for current fiscal year (Feb-Jan)
+                            </span>
+                            <span className="@[540px]/card:hidden">Current FY</span>
+                        </>
+                    ) : timeRange === 'PFY' ? (
+                        <>
+                            <span className="hidden @[540px]/card:block">
+                                Total for previous fiscal year (Feb-Jan)
+                            </span>
+                            <span className="@[540px]/card:hidden">Previous FY</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="hidden @[540px]/card:block">
+                                Total for the{' '}
+                                {timeRange === '90d'
+                                    ? 'last 3 months'
+                                    : timeRange === 'LAST_MONTH'
+                                    ? 'last month'
+                                    : 'current month'}
+                            </span>
+                            <span className="@[540px]/card:hidden">
+                                {timeRange === '90d'
+                                    ? 'Last 3 months'
+                                    : timeRange === 'LAST_MONTH'
+                                    ? 'Last month'
+                                    : 'Current month'}
+                            </span>
+                        </>
+                    )}
                 </CardDescription>
                 <CardAction>
                     <ToggleGroup
@@ -178,8 +242,10 @@ export function OccupancyChartComponent() {
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
                         <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
-                        <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
-                        <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
+                        <ToggleGroupItem value="FY">Current FY</ToggleGroupItem>
+                        <ToggleGroupItem value="PFY">Previous FY</ToggleGroupItem>
+                        <ToggleGroupItem value="CURRENT_MONTH">Current month</ToggleGroupItem>
+                        <ToggleGroupItem value="LAST_MONTH">Last month</ToggleGroupItem>
                     </ToggleGroup>
                     <Select value={timeRange} onValueChange={setTimeRange}>
                         <SelectTrigger
@@ -187,95 +253,60 @@ export function OccupancyChartComponent() {
                             size="sm"
                             aria-label="Select a value"
                         >
-                            <SelectValue placeholder="Last 3 months" />
+                            <SelectValue placeholder="Current FY" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
+                            <SelectItem value="FY" className="rounded-lg">
+                                Current FY
+                            </SelectItem>
+                            <SelectItem value="PFY" className="rounded-lg">
+                                Previous FY
+                            </SelectItem>
                             <SelectItem value="90d" className="rounded-lg">
                                 Last 3 months
                             </SelectItem>
-                            <SelectItem value="30d" className="rounded-lg">
-                                Last 30 days
+                            <SelectItem value="CURRENT_MONTH" className="rounded-lg">
+                                Current month
                             </SelectItem>
-                            <SelectItem value="7d" className="rounded-lg">
-                                Last 7 days
+                            <SelectItem value="LAST_MONTH" className="rounded-lg">
+                                Last month
                             </SelectItem>
                         </SelectContent>
                     </Select>
                 </CardAction>
             </CardHeader>
-            <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-                <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
-                    <AreaChart data={filteredData}>
-                        <defs>
-                            <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-desktop)"
-                                    stopOpacity={1.0}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-desktop)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                            <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-                        </defs>
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    <BarChart accessibilityLayer data={filteredData}>
                         <CartesianGrid vertical={false} />
                         <XAxis
-                            dataKey="date"
+                            dataKey="month"
                             tickLine={false}
+                            tickMargin={10}
                             axisLine={false}
-                            tickMargin={8}
-                            minTickGap={32}
                             tickFormatter={(value) => {
-                                const date = new Date(value);
-                                return date.toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                });
+                                return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
                             }}
                         />
-                        <ChartTooltip
-                            cursor={false}
+                        <ChartTooltip 
+                            cursor={false} 
                             content={
                                 <ChartTooltipContent
-                                    labelFormatter={(value) => {
-                                        return new Date(value).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                        });
-                                    }}
-                                    indicator="dot"
+                                    hideLabel 
+                                    formatter={(value) => 'Occupancy: ' + value + '%'} 
                                 />
-                            }
+                            } 
                         />
-                        <Area
-                            dataKey="mobile"
-                            type="natural"
-                            fill="url(#fillMobile)"
-                            stroke="var(--color-mobile)"
-                            stackId="a"
-                        />
-                        <Area
-                            dataKey="desktop"
-                            type="natural"
-                            fill="url(#fillDesktop)"
-                            stroke="var(--color-desktop)"
-                            stackId="a"
-                        />
-                    </AreaChart>
+                        <Bar dataKey="occupancy" fill="var(--color-occupancy)" radius={8}>
+                            <LabelList
+                                position="top"
+                                offset={12}
+                                className="fill-foreground"
+                                fontSize={12}
+                                formatter={(value) => `${value}%`}
+                            />
+                        </Bar>
+                    </BarChart>
                 </ChartContainer>
             </CardContent>
         </Card>
