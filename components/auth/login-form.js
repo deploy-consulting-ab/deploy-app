@@ -62,14 +62,14 @@ export const LoginFormComponent = () => {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-black dark:text-black">Email</FormLabel>
+                                    <FormLabel className="text-dark dark:text-white">Email</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
                                             disabled={isPending}
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
-                                            className="input bg-transparent border-black/20 hover:border-black/40 focus:border-gray-400 text-black dark:text-black placeholder:text-black/60 transition-all duration-300"
+                                            className="input"
                                             suppressHydrationWarning
                                         />
                                     </FormControl>
@@ -83,7 +83,7 @@ export const LoginFormComponent = () => {
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-black dark:text-black">Password</FormLabel>
+                                    <FormLabel className="text-black dark:text-white">Password</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input
@@ -91,7 +91,7 @@ export const LoginFormComponent = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="******"
                                                 {...field}
-                                                className="input bg-transparent border-black/20 hover:border-black/40 focus:border-gray-400 text-black dark:text-black placeholder:text-black/60 transition-all duration-300"
+                                                className="input"
                                                 suppressHydrationWarning
                                             />
                                             <button
@@ -116,7 +116,14 @@ export const LoginFormComponent = () => {
                     <FormSuccess message={success} />
                     <Button 
                         type="submit" 
-                        className="w-full bg-black hover:bg-black/60 text-white font-medium transition-all duration-300" 
+                        variant="outline"
+                        className="w-full bg-black text-white  dark:text-white
+                                    hover:bg-black/80
+                                    hover:text-white
+                                    dark:bg-primary
+                                    dark:hover:bg-primary/70 
+                                    dark:hover:text-white font-medium transition-all duration-300
+                                    border-none" 
                         disabled={isPending}
                         suppressHydrationWarning
                     >
