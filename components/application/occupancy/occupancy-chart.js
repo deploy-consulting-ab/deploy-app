@@ -295,8 +295,12 @@ export function OccupancyChartComponent() {
                 </CardAction>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart accessibilityLayer data={filteredData}>
+                <ChartContainer config={chartConfig} > {/* Set fixed height */}
+                    <BarChart 
+                        accessibilityLayer 
+                        data={filteredData}
+                        barSize={40} // Make bars thinner
+                    >
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="month"
@@ -308,7 +312,7 @@ export function OccupancyChartComponent() {
                             }}
                         />
                         <YAxis
-                            domain={[0, 150]}
+                            domain={[0, 'auto']}
                             tickLine={false}
                             axisLine={false}
                             tickFormatter={(value) => `${value}%`}
@@ -319,14 +323,14 @@ export function OccupancyChartComponent() {
                             stroke="var(--muted-foreground)"
                             strokeDasharray="3 3"
                             label={{
-                                value: 'Target',
+                                value: 'Target (85%)',
                                 position: 'insideTopRight',
                                 fill: 'var(--muted-foreground)',
                                 fontSize: 12,
                             }}
                         />
                         <ReferenceLine
-                            y={100}
+                            y={120}
                             stroke="var(--muted-foreground)"
                             strokeDasharray="3 3"
                             label={{
@@ -354,7 +358,7 @@ export function OccupancyChartComponent() {
                             ))}
                             <LabelList
                                 position="top"
-                                offset={12}
+                                offset={8}
                                 className="fill-foreground"
                                 fontSize={12}
                                 formatter={(value) => `${value}%`}
