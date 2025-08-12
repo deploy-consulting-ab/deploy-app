@@ -299,7 +299,13 @@ export function OccupancyChartComponent() {
                     <BarChart 
                         accessibilityLayer 
                         data={filteredData}
-                        barSize={isMobile ? 20 : 60} // Make bars thinner
+                        barSize={(() => {
+                            // Dynamic bar size based on number of bars
+                            if (filteredData.length <= 1) return isMobile ? 40 : 80; // Single bar
+                            if (filteredData.length <= 3) return isMobile ? 30 : 100; // Few bars (quarterly)
+                            if (filteredData.length >= 10) return isMobile ? 20 : 80; // More than 10
+                            return isMobile ? 30 : 100; // Many bars but less than 10
+                        })()}
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
