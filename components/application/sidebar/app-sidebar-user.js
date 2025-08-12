@@ -1,7 +1,6 @@
 'use client';
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
-import { LogoutButtonComponent } from '@/components/application/logout-button';
+import { ChevronsUpDown, LogOut } from 'lucide-react';
 import { logout } from '@/actions/logout';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,12 +15,10 @@ import {
 import {
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
+    SidebarMenuItem
 } from '@/components/ui/sidebar';
 
 export function AppSidebarUserComponent({ user }) {
-    const { isMobile } = useSidebar();
 
     const nameParts = user.name.split(' ');
     const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
@@ -48,7 +45,7 @@ export function AppSidebarUserComponent({ user }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                        side={isMobile ? 'bottom' : 'right'}
+                        side="right"
                         align="end"
                         sideOffset={4}
                     >

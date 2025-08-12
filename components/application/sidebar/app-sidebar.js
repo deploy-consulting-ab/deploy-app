@@ -1,5 +1,5 @@
 import { Home, Percent, TrendingUp, ClipboardList, Calendar } from 'lucide-react';
-import DeployLogo from '@/components/deploy-logo';
+import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
 import Link from 'next/link';
 
 import {
@@ -58,20 +58,7 @@ export function AppSidebarComponent({ user }) {
     return (
         <Sidebar variant="sidebar" collapsible="icon">
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            asChild
-                            className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2"
-                        >
-                            <Link href={DEFAULT_REDIRECT_ROUTE}>
-                                <div className="flex aspect-square size-25 items-center justify-center">
-                                    <DeployLogo className="h-10 w-auto z-[99] relative" />
-                                </div>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <AppSidebarLogoComponent />
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
