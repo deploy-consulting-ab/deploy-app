@@ -69,7 +69,7 @@ export const LoginFormComponent = () => {
                                             disabled={isPending}
                                             placeholder="john.doe@deployconsulting.se"
                                             {...field}
-                                            className="input shadow-box"
+                                            className="input shadow-box input-focus-effect"
                                             suppressHydrationWarning
                                         />
                                     </FormControl>
@@ -91,7 +91,7 @@ export const LoginFormComponent = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="******"
                                                 {...field}
-                                                className="input shadow-box"
+                                                className="input shadow-box input-focus-effect"
                                                 suppressHydrationWarning
                                             />
                                             <button

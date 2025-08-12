@@ -115,6 +115,14 @@
   --sidebar-ring: oklch(0.645 0.246 16.439);
 }
 
+/* Custom input focus */
+.input-focus-effect:focus-visible {
+  box-shadow: 0 0 0 4px var(--ring)/30%;
+  transform: scale(1.01);
+  box-shadow: var(--shadow-md);
+  transition: all 200ms ease;
+}
+
 /* Custom card */
 .shadow-box { 
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
