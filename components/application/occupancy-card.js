@@ -38,7 +38,7 @@ export function OccupancyCard({ occupancy, refreshAction, isNavigationDisabled }
   const isIncreasing = occupancyData.history[0].rate <= occupancyData.current;
 
   return (
-    <Card className="relative overflow-hidden" variant="gradient">
+    <Card className="relative overflow-hidden" variant="shadow">
       <CardHeader className="border-b">
         <CardTitle>Occupancy Rate</CardTitle>
         <CardDescription>

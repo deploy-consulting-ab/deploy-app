@@ -27,7 +27,7 @@ export function UsefulLinksGrid({ links, title }) {
 
         return (
           <Card
-            variant="gradient"
+            variant="shadow"
             key={link.href}
             className="group hover:shadow-lg transition-all duration-200"
           >

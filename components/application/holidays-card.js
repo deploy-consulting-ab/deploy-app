@@ -63,7 +63,7 @@ export function HolidayCard({
 
   return (
     <Card
-      variant="gradient"
+      variant="shadow"
       className={`relative overflow-hidden ${
         !isNavigationDisabled && isMobile && "md:hover:cursor-pointer"
       }`}

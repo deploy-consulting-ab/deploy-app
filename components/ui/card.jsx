@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 
 const cardVariants = {
   default: "bg-card shadow-sm",
-  gradient: "bg-card gradient-card",
+  shadow: "bg-card shadow-box",
   flat: "bg-card",
   elevated: "bg-card shadow-lg",
   bordered: "bg-card border-2",

@@ -31,7 +31,7 @@ export function CalendarHolidays({ holidays }) {
     };
 
     return (
-        <Card className="h-full pb-0" variant="gradient">
+        <Card className="h-full pb-0" variant="shadow">
             <CardHeader className="border-b">
                 <CardTitle>Holiday Calendar</CardTitle>
                 <CardDescription>
