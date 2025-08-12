@@ -4,16 +4,9 @@ import { OccupancyChartComponent } from '@/components/application/occupancy/occu
 
 export default function OccupancyPage() {
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-1 space-y-8 pt-4">
-                <div className="grid gap-4 grid-cols-1">
-                    <div className="w-full">
-                        <OccupancyChartComponent />
-                    </div>
-                    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-                        <OccupancyCard occupancy={employeeData.occupancy} />
-                    </div>
-                </div>
+        <div className="">
+            <div className="space-y-8 pt-4">
+                <OccupancyChartComponent />
             </div>
         </div>
     );
