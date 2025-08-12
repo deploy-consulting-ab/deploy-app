@@ -14,7 +14,7 @@ export const CardWrapperComponent = ({
 }) => {
     return (
         // bg-gray-800 interesting color
-        <Card className="w-[400px] shadow-sm">
+        <Card className="w-[400px] shadow-sm py-8">
             <CardHeader>
                 <HeaderComponent label={headerLabel} />
             </CardHeader>
