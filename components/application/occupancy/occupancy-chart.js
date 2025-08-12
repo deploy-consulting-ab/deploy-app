@@ -1,7 +1,16 @@
 'use client';
 
 import * as React from 'react';
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+import {
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    LabelList,
+    ReferenceLine,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getFiscalYear, isInFiscalYear } from '@/lib/utils';
@@ -143,15 +152,25 @@ const chartData = [
     { month: 'April 2025', date: '2025-04-01', occupancy: 93 },
     { month: 'May 2025', date: '2025-05-01', occupancy: 89 },
     { month: 'June 2025', date: '2025-06-01', occupancy: 94 },
-    { month: 'July 2025', date: '2025-07-01', occupancy: 96 },
+    { month: 'July 2025', date: '2025-07-01', occupancy: 127 },
     { month: 'August 2025', date: '2025-08-01', occupancy: 30 },
 ];
 
 const chartConfig = {
     occupancy: {
         label: 'Occupancy',
-        color: 'var(--primary)',
+        // color: 'var(--primary)',
     },
+};
+
+const getOccupancyColor = (value) => {
+    if (!value && value !== 0) return '#a1a1aa'; // fallback gray
+    const numValue = Number(value);
+    if (numValue > 120) return 'var(--occupancy-color-critical-high)'; // red for over 100%
+    if (numValue >= 100) return 'var(--occupancy-color-full)'; // green for at/above target
+    if (numValue >= 93) return 'var(--occupancy-color-optimal)'; // yellow for below target
+    if (numValue >= 85) return 'var(--occupancy-color-target)'; // gray for too low
+    return 'var(--occupancy-color-critical-low)'; // gray for too low
 };
 
 export function OccupancyChartComponent() {
@@ -288,16 +307,51 @@ export function OccupancyChartComponent() {
                                 return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
                             }}
                         />
-                        <ChartTooltip 
-                            cursor={false} 
+                        <YAxis
+                            domain={[0, 150]}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(value) => `${value}%`}
+                            width={35}
+                        />
+                        <ReferenceLine
+                            y={85}
+                            stroke="var(--muted-foreground)"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: 'Target',
+                                position: 'insideTopRight',
+                                fill: 'var(--muted-foreground)',
+                                fontSize: 12,
+                            }}
+                        />
+                        <ReferenceLine
+                            y={100}
+                            stroke="var(--muted-foreground)"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: 'Max',
+                                position: 'insideTopRight',
+                                fill: 'var(--muted-foreground)',
+                                fontSize: 12,
+                            }}
+                        />
+                        <ChartTooltip
+                            cursor={false}
                             content={
                                 <ChartTooltipContent
-                                    hideLabel 
-                                    formatter={(value) => 'Occupancy: ' + value + '%'} 
+                                    hideLabel
+                                    formatter={(value) => 'Occupancy: ' + value + '%'}
                                 />
-                            } 
+                            }
                         />
-                        <Bar dataKey="occupancy" fill="var(--color-occupancy)" radius={8}>
+                        <Bar dataKey="occupancy" radius={8}>
+                            {filteredData.map((entry, index) => (
+                                <Cell
+                                    key={`cell-${index}`}
+                                    fill={getOccupancyColor(entry.occupancy)}
+                                />
+                            ))}
                             <LabelList
                                 position="top"
                                 offset={12}

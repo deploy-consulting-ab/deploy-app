@@ -42,6 +42,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --occupancy-color-critical-low: var(--occupancy-color-critical-low);
+  --occupancy-color-warning-low: var(--occupancy-color-warning-low);
+  --occupancy-color-target: var(--occupancy-color-target);
+  --occupancy-color-optimal: var(--occupancy-color-optimal);
+  --occupancy-color-full: var(--occupancy-color-full);
+  --occupancy-color-critical-high: var(--occupancy-color-critical-high);
 }
 
 :root {
@@ -79,6 +85,34 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Occupancy colors */
+  --hue-red: 25;
+  --hue-green: 145;
+
+  /* --- Below Target (Problematic) --- */
+  /* 0% - 70%: A strong, clear red indicating low occupancy. */
+  --occupancy-color-critical-low: oklch(62% 0.25 var(--hue-red));
+
+  /* --- Approaching Target --- */
+  /* 70% - 85%: A lighter red, showing improvement but still below target. */
+  --occupancy-color-warning-low: oklch(75% 0.18 var(--hue-red));
+
+  /* --- Target Range (Good) --- */
+  /* 85% - 93%: The ideal state. A pleasant, light green. */
+  --occupancy-color-target: oklch(85% 0.2 var(--hue-green));
+
+  /* --- Nearing Full (Optimal) --- */
+  /* 93% - 100%: Still very good, but fuller. A slightly deeper green. */
+  --occupancy-color-optimal: oklch(80% 0.22 var(--hue-green));
+
+  /* --- Full Capacity --- */
+  /* 100% - 120%: At or slightly over capacity. A solid, saturated green. */
+  --occupancy-color-full: oklch(72% 0.24 var(--hue-green));
+
+  /* --- Over Capacity (Problematic) --- */
+  /* 120%+: Dangerously over capacity. Uses the same strong red as the critical-low state. */
+  --occupancy-color-critical-high: oklch(62% 0.25 var(--hue-red));
 }
 
 .dark {
