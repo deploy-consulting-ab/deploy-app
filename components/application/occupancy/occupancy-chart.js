@@ -214,7 +214,7 @@ export function OccupancyChartComponent() {
     });
 
     return (
-        <Card className="@container/card" variant="shadow">
+        <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
             <CardHeader>
                 <CardTitle>Occupancy Rate</CardTitle>
                 <CardDescription>
@@ -294,8 +294,8 @@ export function OccupancyChartComponent() {
                     </Select>
                 </CardAction>
             </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
+            <CardContent className="flex-1 h-[calc(100%-12rem)]">
+                <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)] w-full">
                     <BarChart 
                         accessibilityLayer 
                         data={filteredData}
