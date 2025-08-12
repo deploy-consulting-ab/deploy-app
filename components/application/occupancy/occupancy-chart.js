@@ -295,11 +295,11 @@ export function OccupancyChartComponent() {
                 </CardAction>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} > {/* Set fixed height */}
+                <ChartContainer config={chartConfig}>
                     <BarChart 
                         accessibilityLayer 
                         data={filteredData}
-                        barSize={40} // Make bars thinner
+                        barSize={isMobile ? 20 : 60} // Make bars thinner
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
@@ -356,13 +356,15 @@ export function OccupancyChartComponent() {
                                     fill={getOccupancyColor(entry.occupancy)}
                                 />
                             ))}
+                            {!isMobile && (
                             <LabelList
                                 position="top"
                                 offset={8}
                                 className="fill-foreground"
                                 fontSize={12}
-                                formatter={(value) => `${value}%`}
-                            />
+                                    formatter={(value) => `${value}%`}
+                                />
+                            )}
                         </Bar>
                     </BarChart>
                 </ChartContainer>
