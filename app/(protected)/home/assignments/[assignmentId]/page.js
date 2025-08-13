@@ -3,7 +3,7 @@ import { fetchAssignmentById } from "@/actions/salesforce/fetch-assignments";
 import { notFound } from "next/navigation";
 
 const AssignmentPage = async ({ params }) => {
-    const { assignmentId } = params;
+    const { assignmentId } = await params;
     const assignment = await fetchAssignmentById(assignmentId);
 
     if (!assignment) {

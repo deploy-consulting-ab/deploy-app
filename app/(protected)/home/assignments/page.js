@@ -2,10 +2,13 @@ import { AssignmentListComponent } from '@/components/application/assignment/ass
 import { fetchAssignments } from '@/actions/salesforce/fetch-assignments';
 
 const AssignmentsPage = async () => {
-    const data = await fetchAssignments();
-    return <div className="py-4">
-        <AssignmentListComponent assignments={data} />
-    </div>;
+    const assignments = await fetchAssignments();
+    
+    return (
+        <div className="py-4">
+            <AssignmentListComponent assignments={assignments} />
+        </div>
+    );
 };
 
 export default AssignmentsPage;

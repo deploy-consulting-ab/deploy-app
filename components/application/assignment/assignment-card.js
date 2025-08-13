@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDateToSwedish } from '@/lib/utils';
@@ -30,7 +30,7 @@ export function AssignmentCard({ assignment }) {
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">
-            <CardHeader className="space-y-1">
+            <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
                     <CardTitle className="text-2xl">{name}</CardTitle>
                     <Badge className={`${getStageColor(stage)} text-white`}>
@@ -64,15 +64,6 @@ export function AssignmentCard({ assignment }) {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter>
-                <Button 
-                    className="w-full" 
-                    onClick={handleClick}
-                >
-                    View Details
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-            </CardFooter>
         </Card>
     );
 }
