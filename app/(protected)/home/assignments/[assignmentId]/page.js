@@ -1,12 +1,20 @@
 import { AssignmentCard } from "@/components/application/assignment/assignment-card";
+import { fetchAssignmentById } from "@/actions/salesforce/fetch-assignments";
+import { notFound } from "next/navigation";
 
-const AssignmentPage = ({ params }) => {
+const AssignmentPage = async ({ params }) => {
     const { assignmentId } = params;
+    const assignment = await fetchAssignmentById(assignmentId);
 
-    return <div>
-        Visiting assignment: {assignmentId}
-        <AssignmentCard />
-    </div>;
+    if (!assignment) {
+        notFound();
+    }
+
+    return (
+        <div className="container mx-auto py-6">
+            <AssignmentCard assignment={assignment} />
+        </div>
+    );
 };
 
 export default AssignmentPage;

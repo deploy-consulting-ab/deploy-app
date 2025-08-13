@@ -38,3 +38,8 @@ export const fetchAssignments = async () => {
 
     return assignments;
 };
+
+export const fetchAssignmentById = async (id) => {
+    const assignments = await fetchAssignments();
+    return assignments.find(assignment => assignment.id === parseInt(id));
+};
