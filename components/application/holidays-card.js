@@ -17,6 +17,7 @@ import { useState } from "react";
 import { formatDateToEnUSWithOptions } from "@/lib/utils";
 import { HOLIDAYS_ROUTE } from "@/routes";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useRouter } from "next/navigation";
 
 export function HolidayCard({
   holidays: initialHolidays,
@@ -28,6 +29,7 @@ export function HolidayCard({
   const [holidays, setHolidays] = useState(initialHolidays);
   const [error, setError] = useState(initialError);
   const isMobile = useIsMobile();
+  const router = useRouter();
 
   const handleRefresh = async () => {
     if (isRefreshing) return;
@@ -46,7 +48,7 @@ export function HolidayCard({
   const handleCardClick = (e) => {
     // Only navigate if we're on mobile and the click wasn't on the refresh button
     if (isMobile && !isNavigationDisabled && !e.target.closest("button")) {
-      window.location.href = HOLIDAYS_ROUTE;
+      router.push(HOLIDAYS_ROUTE);
     }
   };
 
