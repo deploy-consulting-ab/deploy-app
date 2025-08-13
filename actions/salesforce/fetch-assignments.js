@@ -5,7 +5,7 @@ export const fetchAssignments = async () => {
         {
             id: 1,
             name: 'Assignment 1',
-            status: 'In Progress',
+            stage: 'In Progress',
             startDate: '2021-01-01',
             endDate: '2022-01-02',
             assignee: 'Álvaro',
@@ -13,7 +13,7 @@ export const fetchAssignments = async () => {
         {
             id: 2,
             name: 'Assignment 2',
-            status: 'Done',
+            stage: 'Done',
             startDate: '2021-01-01',
             endDate: '2022-01-02',
             assignee: 'Álvaro',
@@ -21,7 +21,7 @@ export const fetchAssignments = async () => {
         {
             id: 3,
             name: 'Assignment 3',
-            status: 'Not Started',
+            stage: 'Not Started',
             startDate: '2025-08-14',
             endDate: '2025-08-15',
             assignee: 'Álvaro',
@@ -29,7 +29,7 @@ export const fetchAssignments = async () => {
         {
             id: 4,
             name: 'Assignment 4',
-            status: 'Done',
+            stage: 'Done',
             startDate: '2024-01-01',
             endDate: '2024-09-02',
             assignee: 'Álvaro',
