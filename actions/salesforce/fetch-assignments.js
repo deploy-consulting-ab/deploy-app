@@ -1,8 +1,6 @@
 'use server';
 
 export const fetchAssignments = async () => {
-    // In a real app, this would be an API call
-    console.log('fetching assignments...');
     const assignments = [
         {
             id: 1234,
@@ -37,9 +35,6 @@ export const fetchAssignments = async () => {
             assignee: 'Álvaro',
         },
     ];
-
-    console.log('assignments...');
-
     return assignments;
 };
 /**
