@@ -318,11 +318,12 @@ export function OccupancyChartComponent() {
                             }}
                         />
                         <YAxis
-                            domain={[0, 'auto']}
+                            domain={[0, 150]}
                             tickLine={false}
                             axisLine={false}
+                            ticks={[0, 50, 85, 100, 120, 150]}
                             tickFormatter={(value) => `${value}%`}
-                            width={35}
+                            width={45}
                         />
                         <ReferenceLine
                             y={85}
