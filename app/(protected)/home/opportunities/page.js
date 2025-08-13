@@ -1,4 +1,4 @@
-import { OpportunitiesListEnhancedComponent } from '@/components/application/opportunities-list-enhanced';
+import { OpportunitiesListComponent } from '@/components/application/opportunities-list';
 import { fetchOpportunities } from '@/actions/salesforce/fetch-opportunities';
 
 const OpportunitiesPage = async () => {
@@ -6,7 +6,7 @@ const OpportunitiesPage = async () => {
 
     return (
         <div className="py-4">
-            <OpportunitiesListEnhancedComponent data={data}/>
+            <OpportunitiesListComponent data={data}/>
         </div>
     );
 };

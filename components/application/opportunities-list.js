@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export function OpportunitiesListEnhancedComponent({ data }) {
+export function OpportunitiesListComponent({ data }) {
     const { opportunities } = data;
 
     const columns = [
