@@ -2,16 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ArrowUpDown } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
