@@ -1,10 +1,10 @@
 import { AssignmentCard } from "@/components/application/assignment/assignment-card";
-import { fetchAssignmentById } from "@/actions/salesforce/fetch-assignments";
 import { notFound } from "next/navigation";
+import { getAssignmentById } from "@/actions/salesforce/salesforce-actions";
 
 const AssignmentPage = async ({ params }) => {
     const { assignmentId } = await params;
-    const assignment = await fetchAssignmentById(assignmentId);
+    const assignment = await getAssignmentById(assignmentId);
 
     if (!assignment) {
         notFound();

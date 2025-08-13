@@ -1,14 +1,10 @@
-'use client';
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { formatDateToSwedish } from '@/lib/utils';
-import { CalendarDays, User, ArrowRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { CalendarDays } from 'lucide-react';
 
-const getStageColor = (stage) => {
-    switch (stage.toLowerCase()) {
+const getStageColor = (projectStatus) => {
+    switch (projectStatus.toLowerCase()) {
         case 'in progress':
             return 'bg-blue-500';
         case 'done':
@@ -21,20 +17,15 @@ const getStageColor = (stage) => {
 };
 
 export function AssignmentCard({ assignment }) {
-    const router = useRouter();
-    const { id, name, stage, startDate, endDate, assignee } = assignment;
-
-    const handleClick = () => {
-        router.push(`/home/assignments/${id}`);
-    };
+    const { id, name, startDate, endDate, projectStatus, projectName } = assignment;
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
                     <CardTitle className="text-2xl">{name}</CardTitle>
-                    <Badge className={`${getStageColor(stage)} text-white`}>
-                        {stage}
+                    <Badge className={`${getStageColor(projectStatus)} text-white`}>
+                        {projectStatus}
                     </Badge>
                 </div>
                 <CardDescription>Assignment #{id}</CardDescription>
@@ -54,13 +45,6 @@ export function AssignmentCard({ assignment }) {
                             <p className="text-sm text-muted-foreground">End Date</p>
                             <p className="font-medium">{formatDateToSwedish(endDate)}</p>
                         </div>
-                    </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Assignee</p>
-                        <p className="font-medium">{assignee}</p>
                     </div>
                 </div>
             </CardContent>
