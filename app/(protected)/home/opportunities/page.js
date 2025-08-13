@@ -5,7 +5,7 @@ const OpportunitiesPage = async () => {
     const data = await fetchOpportunities();
 
     return (
-        <div className="p-8">
+        <div className="py-4">
             <OpportunitiesListEnhancedComponent data={data}/>
         </div>
     );

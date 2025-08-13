@@ -62,7 +62,7 @@ export function DatatableWrapperComponent({data, columns}) {
 
     return (
         <div className="w-full">
-            <div className="flex items-center py-4">
+            <div className="flex items-center pb-4">
                 <Input
                     placeholder="Filter opportunities..."
                     value={table.getColumn('name')?.getFilterValue() ?? ''}
