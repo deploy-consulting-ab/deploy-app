@@ -24,11 +24,6 @@ export function AssignmentListComponent({ assignments }) {
 
     const columns = [
         {
-            accessorKey: 'id',
-            header: 'ID',
-            cell: ({ row }) => <div className="capitalize">{row.getValue('id')}</div>,
-        },
-        {
             accessorKey: 'name',
             header: ({ column }) => {
                 return (
@@ -56,7 +51,7 @@ export function AssignmentListComponent({ assignments }) {
             },
         },
         {
-            accessorKey: 'stage',
+            accessorKey: 'projectName',
             header: ({ column }) => {
                 return (
                     <Button
@@ -64,12 +59,28 @@ export function AssignmentListComponent({ assignments }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Stage
+                        Project Name
                         <ArrowUpDown />
                     </Button>
                 );
             },
-            cell: ({ row }) => <div className="capitalize">{row.getValue('stage')}</div>,
+            cell: ({ row }) => <div>{row.getValue('projectName')}</div>,
+        },
+        {
+            accessorKey: 'projectStatus',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="large"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Project Status
+                        <ArrowUpDown />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => <div>{row.getValue('projectStatus')}</div>,
         },
         {
             accessorKey: 'startDate',
