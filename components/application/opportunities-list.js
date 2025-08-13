@@ -36,7 +36,7 @@ export function OpportunitiesListComponent({ data }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => <div className="lowercase">{row.getValue('name')}</div>,
+            cell: ({ row }) => <div>{row.getValue('name')}</div>,
         },
         {
             accessorKey: 'stage',
@@ -52,7 +52,7 @@ export function OpportunitiesListComponent({ data }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => <div className="capitalize">{row.getValue('stage')}</div>,
+            cell: ({ row }) => <div>{row.getValue('stage')}</div>,
         },
         {
             accessorKey: 'amount',
