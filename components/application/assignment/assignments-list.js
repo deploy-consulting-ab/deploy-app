@@ -22,7 +22,6 @@ export function AssignmentListComponent({ assignments }) {
         router.push(`/home/assignments/${id}`);
     }
 
-
     const columns = [
         {
             accessorKey: 'id',
@@ -43,14 +42,18 @@ export function AssignmentListComponent({ assignments }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <div 
-                    className="cursor-pointer text-blue-600 hover:underline"
-                    onClick={() => handleAssignmentClick(row.getValue('id'))}
-                >
-                    {row.getValue('name')}
-                </div>
-            ),
+            cell: ({ row }) => {
+                const id = row.original.id;
+
+                return (
+                    <div 
+                        className="cursor-pointer text-blue-600 hover:underline"
+                        onClick={() => handleAssignmentClick(id)}
+                    >
+                        {row.getValue('name')}
+                    </div>
+                );
+            },
         },
         {
             accessorKey: 'stage',

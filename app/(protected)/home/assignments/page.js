@@ -1,4 +1,4 @@
-import { AssignmentListComponent } from '@/components/application/assignment/assignment-list';
+import { AssignmentListComponent } from '@/components/application/assignment/assignments-list';
 import { fetchAssignments } from '@/actions/salesforce/fetch-assignments';
 
 const AssignmentsPage = async () => {
