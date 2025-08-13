@@ -114,5 +114,5 @@ export function OpportunitiesListComponent({ data }) {
         },
     ];
 
-    return <DatatableWrapperComponent asChild data={opportunities} columns={columns} />;
+    return <DatatableWrapperComponent asChild data={opportunities} columns={columns} placeholder="Filter opportunities..." />;
 }

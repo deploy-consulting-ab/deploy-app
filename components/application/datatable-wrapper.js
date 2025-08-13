@@ -35,7 +35,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-export function DatatableWrapperComponent({data, columns}) {
+export function DatatableWrapperComponent({data, columns, placeholder}) {
     const [sorting, setSorting] = React.useState([]);
     const [columnFilters, setColumnFilters] = React.useState([]);
     const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -64,7 +64,7 @@ export function DatatableWrapperComponent({data, columns}) {
         <div className="w-full">
             <div className="flex items-center pb-4">
                 <Input
-                    placeholder="Filter opportunities..."
+                    placeholder={placeholder}
                     value={table.getColumn('name')?.getFilterValue() ?? ''}
                     onChange={(event) =>
                         table.getColumn('name')?.setFilterValue(event.target.value)
