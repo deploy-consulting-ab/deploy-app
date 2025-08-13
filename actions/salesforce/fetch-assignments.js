@@ -3,7 +3,7 @@
 export const fetchAssignments = async () => {
     const assignments = [
         {
-            id: 1,
+            id: 1234,
             name: 'Assignment 1',
             stage: 'In Progress',
             startDate: '2021-01-01',
@@ -11,7 +11,7 @@ export const fetchAssignments = async () => {
             assignee: 'Álvaro',
         },
         {
-            id: 2,
+            id: 2231,
             name: 'Assignment 2',
             stage: 'Done',
             startDate: '2021-01-01',
@@ -19,7 +19,7 @@ export const fetchAssignments = async () => {
             assignee: 'Álvaro',
         },
         {
-            id: 3,
+            id: 8293,
             name: 'Assignment 3',
             stage: 'Not Started',
             startDate: '2025-08-14',
@@ -27,7 +27,7 @@ export const fetchAssignments = async () => {
             assignee: 'Álvaro',
         },
         {
-            id: 4,
+            id: 2399,
             name: 'Assignment 4',
             stage: 'Done',
             startDate: '2024-01-01',

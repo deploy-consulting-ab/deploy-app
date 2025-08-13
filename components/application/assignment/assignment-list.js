@@ -13,8 +13,16 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatDateToSwedish } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export function AssignmentListComponent({ assignments }) {
+    const router = useRouter();
+
+    const handleAssignmentClick = (id) => {
+        router.push(`/home/assignments/${id}`);
+    }
+
+
     const columns = [
         {
             accessorKey: 'id',
@@ -35,7 +43,14 @@ export function AssignmentListComponent({ assignments }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => <div>{row.getValue('name')}</div>,
+            cell: ({ row }) => (
+                <div 
+                    className="cursor-pointer text-blue-600 hover:underline"
+                    onClick={() => handleAssignmentClick(row.getValue('id'))}
+                >
+                    {row.getValue('name')}
+                </div>
+            ),
         },
         {
             accessorKey: 'stage',
