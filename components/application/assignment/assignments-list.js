@@ -16,6 +16,7 @@ export function AssignmentListComponent({ assignments }) {
     const columns = [
         {
             accessorKey: 'name',
+            size: 150, // Enough for ~20-25 characters with ellipsis
             header: ({ column }) => {
                 return (
                     <Button
@@ -33,8 +34,9 @@ export function AssignmentListComponent({ assignments }) {
 
                 return (
                     <div 
-                        className="cursor-pointer text-blue-600 hover:underline"
+                        className="cursor-pointer text-blue-600 hover:underline truncate"
                         onClick={() => handleAssignmentClick(id)}
+                        title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}
                     </div>
@@ -43,6 +45,7 @@ export function AssignmentListComponent({ assignments }) {
         },
         {
             accessorKey: 'projectName',
+            size: 300, // Larger size for project names
             header: ({ column }) => {
                 return (
                     <Button
@@ -55,10 +58,15 @@ export function AssignmentListComponent({ assignments }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => <div>{row.getValue('projectName')}</div>,
+            cell: ({ row }) => (
+                <div className="truncate" title={row.getValue('projectName')}>
+                    {row.getValue('projectName')}
+                </div>
+            ),
         },
         {
             accessorKey: 'projectStatus',
+            size: 150, // Fixed size for status
             header: ({ column }) => {
                 return (
                     <Button
@@ -71,10 +79,15 @@ export function AssignmentListComponent({ assignments }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => <div>{row.getValue('projectStatus')}</div>,
+            cell: ({ row }) => (
+                <div className="truncate" title={row.getValue('projectStatus')}>
+                    {row.getValue('projectStatus')}
+                </div>
+            ),
         },
         {
             accessorKey: 'startDate',
+            size: 120, // Fixed size for dates
             header: ({ column }) => {
                 return (
                     <Button
@@ -95,6 +108,7 @@ export function AssignmentListComponent({ assignments }) {
         },
         {
             accessorKey: 'endDate',
+            size: 120, // Fixed size for dates
             header: ({ column }) => {
                 return (
                     <Button
