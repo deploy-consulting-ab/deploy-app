@@ -2,22 +2,34 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, ChevronDown } from 'lucide-react';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { useState, useMemo } from 'react';
 
 export function AssignmentListComponent({ assignments, employeeNumber }) {
     const router = useRouter();
-
     const handleAssignmentClick = (id) => {
         router.push(`/home/assignments/${id}`);
     }
 
+    const [assignmentData, setAssignmentData] = useState(assignments);
+
     const handleRefresh = async () => {
-        return getAssignmentsByEmployeeNumber(employeeNumber);
+        const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
+        setAssignmentData(freshData);
+        return freshData;
     }
+
+    const views = [
+        { value: 'all', label: 'All Assignments' },
+        { value: 'Not Started', label: 'Not Started' },
+        { value: 'Ongoing', label: 'Ongoing' },
+        { value: 'Completed', label: 'Completed' }
+    ];
+
 
     const columns = [
         {
@@ -87,9 +99,6 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
                 );
             },
             cell: ({ row }) => {
-                // <div className="truncate" title={row.getValue('projectStatus')}>
-                //     {row.getValue('projectStatus')}
-                // </div>
                 const projectStatus = row.getValue('projectStatus');
                 return (
                 <Badge className={`${getStageColor(projectStatus)} text-white`}>
@@ -143,11 +152,12 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
 
     return (
         <DatatableWrapperComponent 
-            asChild 
-            data={assignments} 
+            data={assignmentData} 
             columns={columns} 
             placeholder="Filter assignments..."
             refreshAction={handleRefresh}
+            views={views}
+            defaultView="all"
         />
     );
 }
