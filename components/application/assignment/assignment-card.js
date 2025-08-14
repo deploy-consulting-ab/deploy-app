@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
-import { CalendarDays, Briefcase, Info, Clock } from 'lucide-react';
+import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
+import Link from 'next/link';
 
 export function AssignmentCard({ assignment }) {
     const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } = assignment;
@@ -61,6 +62,24 @@ export function AssignmentCard({ assignment }) {
                         </div>
                     </div>
                 </div>
+
+                {/* Link to Timecards */}
+                <Link 
+                    href={`/home/assignments/${assignment.id}/timecards`}
+                    className="block w-full"
+                >
+                    <Card className="transition-colors hover:bg-muted/50">
+                        <CardContent className="flex items-center justify-between p-4">
+                            <div className="flex items-center space-x-2">
+                                <ClipboardList className="h-4 w-4 text-muted-foreground" />
+                                <span>View Time Reports</span>
+                            </div>
+                            <span className="text-sm text-muted-foreground">
+                                {actualHours} hours logged
+                            </span>
+                        </CardContent>
+                    </Card>
+                </Link>
             </CardContent>
         </Card>
     );
