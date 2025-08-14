@@ -49,7 +49,7 @@ export function TimecardListComponent({ timecards = [] }) {
     };
 
     return (
-        <div className="space-y-4">
+        <div>
             <TimecardFilters
                 onDateChange={handleDateChange}
                 onPageChange={handlePageChange}
