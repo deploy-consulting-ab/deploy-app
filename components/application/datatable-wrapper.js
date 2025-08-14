@@ -52,6 +52,13 @@ export function DatatableWrapperComponent({data, columns, placeholder}) {
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
         onRowSelectionChange: setRowSelection,
+        enableColumnResizing: true,
+        columnResizeMode: "onChange",
+        defaultColumn: {
+            minSize: 100,
+            size: 200,
+            maxSize: 400,
+        },
         state: {
             sorting,
             columnFilters,
@@ -98,20 +105,37 @@ export function DatatableWrapperComponent({data, columns, placeholder}) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="overflow-hidden rounded-md border">
-                <Table>
+            <div className="overflow-x-auto rounded-md border">
+                <Table className="w-full min-w-full table-fixed">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead 
+                                            key={header.id}
+                                            style={{
+                                                position: 'relative',
+                                                width: header.getSize(),
+                                            }}
+                                        >
                                             {header.isPlaceholder
                                                 ? null
-                                                : flexRender(
-                                                      header.column.columnDef.header,
-                                                      header.getContext()
-                                                  )}
+                                                : (
+                                                    <>
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                        <div
+                                                            onMouseDown={header.getResizeHandler()}
+                                                            onTouchStart={header.getResizeHandler()}
+                                                            className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none bg-neutral-200 opacity-0 hover:opacity-100 ${
+                                                                header.column.getIsResizing() ? 'opacity-100 bg-blue-500' : ''
+                                                            }`}
+                                                        />
+                                                    </>
+                                                )}
                                         </TableHead>
                                     );
                                 })}
