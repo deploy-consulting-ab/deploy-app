@@ -6,12 +6,17 @@ import { ArrowUpDown } from 'lucide-react';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 
-export function AssignmentListComponent({ assignments }) {
+export function AssignmentListComponent({ assignments, employeeNumber }) {
     const router = useRouter();
 
     const handleAssignmentClick = (id) => {
         router.push(`/home/assignments/${id}`);
+    }
+
+    const handleRefresh = async () => {
+        return getAssignmentsByEmployeeNumber(employeeNumber);
     }
 
     const columns = [
@@ -136,5 +141,13 @@ export function AssignmentListComponent({ assignments }) {
         }
     ];
 
-    return <DatatableWrapperComponent asChild data={assignments} columns={columns} placeholder="Filter assignments..." />;
+    return (
+        <DatatableWrapperComponent 
+            asChild 
+            data={assignments} 
+            columns={columns} 
+            placeholder="Filter assignments..."
+            refreshAction={handleRefresh}
+        />
+    );
 }
