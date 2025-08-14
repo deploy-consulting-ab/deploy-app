@@ -17,9 +17,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem
 } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppSidebarUserComponent({ user }) {
-
+    const isPhone = useIsMobile();
     const nameParts = user.name.split(' ');
     const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
 
@@ -45,7 +46,7 @@ export function AppSidebarUserComponent({ user }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                        side="right"
+                        side={isPhone ? "top" : "right"}
                         align="end"
                         sideOffset={4}
                     >
