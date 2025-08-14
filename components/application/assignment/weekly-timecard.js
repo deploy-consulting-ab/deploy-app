@@ -5,7 +5,7 @@ import { formatDateToSwedish } from '@/lib/utils';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-export function WeeklyTimecard({ weekData }) {
+export function WeeklyTimecardComponent({ weekData }) {
     const { weekStartDate, weekEndDate, hours } = weekData;
     const totalHours = hours.reduce((sum, hour) => sum + hour, 0);
     

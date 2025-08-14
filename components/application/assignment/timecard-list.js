@@ -1,27 +1,36 @@
 'use client';
 
-import { WeeklyTimecard } from "./weekly-timecard";
+import { WeeklyTimecardComponent } from "./weekly-timecard";
 import { TimecardFilters } from "./timecard-filters";
 import { useState, useMemo } from "react";
 
 const ITEMS_PER_PAGE = 10;
 
-export function TimecardList({ timecards = [] }) {
+export function TimecardListComponent({ timecards = [] }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDate, setSelectedDate] = useState(null);
 
     // Filter timecards by date
     const filteredTimecards = useMemo(() => {
         if (!selectedDate) return timecards;
+
+        // Helper function to normalize dates to midnight UTC
+        const normalizeDate = (date) => {
+            const normalized = new Date(date);
+            normalized.setHours(0, 0, 0, 0);
+            return normalized;
+        };
         
-        const selectedDateStr = selectedDate.toISOString().split('T')[0];
+        const normalizedSelectedDate = normalizeDate(selectedDate);
+        
         return timecards.filter(timecard => {
             // Check if the week contains the selected date
-            const weekStart = new Date(timecard.weekStartDate);
+            const weekStart = normalizeDate(timecard.weekStartDate);
             const weekEnd = new Date(weekStart);
             weekEnd.setDate(weekEnd.getDate() + 6);
-            
-            return selectedDate >= weekStart && selectedDate <= weekEnd;
+            weekEnd.setHours(23, 59, 59, 999); // End of day
+
+            return normalizedSelectedDate >= weekStart && normalizedSelectedDate <= weekEnd;
         });
     }, [timecards, selectedDate]);
 
@@ -50,7 +59,7 @@ export function TimecardList({ timecards = [] }) {
             
             <div className="space-y-4">
                 {paginatedTimecards.map((weekData) => (
-                    <WeeklyTimecard 
+                    <WeeklyTimecardComponent 
                         key={weekData.weekStartDate} 
                         weekData={weekData} 
                     />

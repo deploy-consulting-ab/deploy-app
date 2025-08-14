@@ -1,4 +1,4 @@
-import { TimecardList } from "@/components/application/assignment/timecard-list";
+import { TimecardListComponent } from "@/components/application/assignment/timecard-list";
 import { getAssignmentById } from "@/actions/salesforce/salesforce-actions";
 import { sampleAssignmentData } from "@/lib/mock-data";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -27,7 +27,7 @@ const TimecardsPage = async ({ params }) => {
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
-                    <TimecardList timecards={assignment.timecards} />
+                    <TimecardListComponent timecards={assignment.timecards} />
                 </CardContent>
             </Card>
         </div>
