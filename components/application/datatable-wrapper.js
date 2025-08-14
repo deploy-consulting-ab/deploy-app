@@ -50,7 +50,6 @@ export function DatatableWrapperComponent({
     const [pageSize, setPageSize] = useState(10);
 
     const filteredData = useMemo(() => {
-
         if (selectedView === 'all') return initialData;
         return initialData.filter(item => item.projectStatus === selectedView);
     }, [initialData, selectedView]);
