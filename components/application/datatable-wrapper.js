@@ -9,15 +9,9 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { ChevronDown, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -37,10 +31,8 @@ export function DatatableWrapperComponent({
     refreshAction,
     views = [],
     defaultView = 'all',
-    filterKey = 'projectName',
+    filterKey,
 }) {
-
-
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState([]);

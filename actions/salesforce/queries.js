@@ -11,4 +11,8 @@ const getAssignmentByIdQuery = (assignmentId) => {
     return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name FROM Assignment__c WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
-export { getAssignmentsByEmployeeNumberQuery, getAssignmentByIdQuery };
+const getOpportunitiesQuery = () => {
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE StageName != 'Closed Lost'`;
+};
+
+export { getAssignmentsByEmployeeNumberQuery, getAssignmentByIdQuery, getOpportunitiesQuery };

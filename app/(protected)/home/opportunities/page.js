@@ -1,12 +1,16 @@
-import { OpportunitiesListComponent } from '@/components/application/opportunities-list';
-import { fetchOpportunities } from '@/actions/salesforce/fetch-opportunities';
+'use server';
+
+import { OpportunitiesListComponent } from '@/components/application/opportunities/opportunities-list';
+import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
 
 const OpportunitiesPage = async () => {
-    const data = await fetchOpportunities();
+    const opportunities = await getOpportunities();
+
+    console.log('opportunities...', opportunities);
 
     return (
         <div className="py-4">
-            <OpportunitiesListComponent data={data}/>
+            <OpportunitiesListComponent opportunities={opportunities}/>
         </div>
     );
 };
