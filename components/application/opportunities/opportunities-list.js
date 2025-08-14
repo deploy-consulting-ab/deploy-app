@@ -200,7 +200,8 @@ export function OpportunitiesListComponent({ opportunities }) {
             refreshAction={handleRefresh}
             views={views}
             defaultView="all"
-            filterKey="name"
+            searchKey="name"
+            filterKey="stage"
         />
     );
 }

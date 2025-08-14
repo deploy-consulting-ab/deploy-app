@@ -12,7 +12,7 @@ const getAssignmentByIdQuery = (assignmentId) => {
 };
 
 const getOpportunitiesQuery = () => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE StageName != 'Closed Lost'`;
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity ORDER BY CloseDate DESC`;
 };
 
 export { getAssignmentsByEmployeeNumberQuery, getAssignmentByIdQuery, getOpportunitiesQuery };

@@ -31,6 +31,7 @@ export function DatatableWrapperComponent({
     refreshAction,
     views = [],
     defaultView = 'all',
+    searchKey,
     filterKey,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -42,7 +43,7 @@ export function DatatableWrapperComponent({
 
     const filteredData = useMemo(() => {
         if (selectedView === 'all') return initialData;
-        return initialData.filter(item => item.projectStatus === selectedView);
+        return initialData.filter(item => item[filterKey] === selectedView);
     }, [initialData, selectedView]);
 
     const handleRefresh = async () => {
@@ -90,9 +91,9 @@ export function DatatableWrapperComponent({
                 <div className="flex items-center w-full">
                     <Input
                         placeholder={placeholder}
-                        value={table.getColumn(filterKey)?.getFilterValue() ?? ''}
+                        value={table.getColumn(searchKey)?.getFilterValue() ?? ''}
                         onChange={(event) =>
-                            table.getColumn(filterKey)?.setFilterValue(event.target.value)
+                            table.getColumn(searchKey)?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm mr-2"
                     />
