@@ -27,6 +27,8 @@ export async function getAssignmentById(assignmentId) {
         endDate: result.EndDate__c,
         projectStatus: result.ProjectStatus__c,
         projectName: result.Project__r.Name,
+        projectedHours: result.ProjectedHours__c,
+        actualHours: result.ActualHours__c,
     };
 }
 

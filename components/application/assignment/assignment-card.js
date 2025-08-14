@@ -1,24 +1,37 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Briefcase, Info, Clock } from 'lucide-react';
 
 export function AssignmentCard({ assignment }) {
-    const { id, name, startDate, endDate, projectStatus, projectName } = assignment;
+    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } = assignment;
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
-                    <CardTitle className="text-2xl">{name}</CardTitle>
+                    <CardTitle className="text-2xl">{name} - {projectName}</CardTitle>
                     <Badge className={`${getStageColor(projectStatus)} text-white`}>
                         {projectStatus}
                     </Badge>
                 </div>
-                <CardDescription>Assignment #{id}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="flex items-center space-x-2">
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Assignment Name</p>
+                            <p className="font-medium">{name}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Project Name</p>
+                            <p className="font-medium">{projectName}</p>
+                        </div>
+                    </div>
                     <div className="flex items-center space-x-2">
                         <CalendarDays className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
@@ -31,6 +44,20 @@ export function AssignmentCard({ assignment }) {
                         <div className="space-y-1">
                             <p className="text-sm text-muted-foreground">End Date</p>
                             <p className="font-medium">{formatDateToSwedish(endDate)}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Projected Hours</p>
+                            <p className="font-medium">{projectedHours} hours</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Actual Hours</p>
+                            <p className="font-medium">{actualHours} hours</p>
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,7 @@ const getAssignmentsByEmployeeNumberQuery = (employeeNumber) => {
 };
 
 const getAssignmentByIdQuery = (assignmentId) => {
-    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name FROM Assignment__c WHERE Id = '${assignmentId}' LIMIT 1`;
+    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c FROM Assignment__c WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
 const getOpportunitiesQuery = () => {
