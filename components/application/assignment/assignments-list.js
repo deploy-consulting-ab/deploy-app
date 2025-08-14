@@ -158,6 +158,7 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
             refreshAction={handleRefresh}
             views={views}
             defaultView="all"
+            filterKey="projectName"
         />
     );
 }

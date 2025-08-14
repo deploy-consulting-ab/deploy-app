@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function DatatableWrapperComponent({
@@ -37,7 +37,7 @@ export function DatatableWrapperComponent({
     refreshAction,
     views = [],
     defaultView = 'all',
-    onViewChange,
+    filterKey = 'projectName',
 }) {
 
 
@@ -98,9 +98,9 @@ export function DatatableWrapperComponent({
                 <div className="flex items-center w-full">
                     <Input
                         placeholder={placeholder}
-                        value={table.getColumn('name')?.getFilterValue() ?? ''}
+                        value={table.getColumn(filterKey)?.getFilterValue() ?? ''}
                         onChange={(event) =>
-                            table.getColumn('name')?.setFilterValue(event.target.value)
+                            table.getColumn(filterKey)?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm mr-2"
                     />
