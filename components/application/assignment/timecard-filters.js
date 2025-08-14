@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDateToSwedish } from "@/lib/utils";
 import { useState } from "react";
+import { enGB } from 'react-day-picker/locale';
 
 export function TimecardFilters({ 
     onDateChange, 
@@ -36,6 +37,7 @@ export function TimecardFilters({
                             selected={date}
                             onSelect={handleSelect}
                             initialFocus
+                            locale={enGB}
                         />
                     </PopoverContent>
                 </Popover>
