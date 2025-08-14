@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 
 const TimecardsPage = async ({ params }) => {
-    const { assignmentId } = params;
+    const { assignmentId } = await params;
     const realAssignment = await getAssignmentById(assignmentId);
     
     if (!realAssignment) {
