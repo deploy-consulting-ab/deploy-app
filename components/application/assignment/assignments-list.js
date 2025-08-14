@@ -16,7 +16,8 @@ export function AssignmentListComponent({ assignments }) {
     const columns = [
         {
             accessorKey: 'name',
-            size: 150, // Enough for ~20-25 characters with ellipsis
+            size: 80,
+            minSize: 80,
             header: ({ column }) => {
                 return (
                     <Button
