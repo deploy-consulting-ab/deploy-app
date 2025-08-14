@@ -22,53 +22,85 @@ export function TimecardFilters({
     };
 
     return (
-        <div className="flex items-center justify-between pb-6">
-            <div className="flex items-center space-x-2">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="outline" className="min-w-[240px] justify-start text-left font-normal">
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? formatDateToSwedish(date) : "Filter by date"}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
+            <div className="flex items-center gap-2 w-full justify-between sm:w-auto sm:justify-start">
+                <div className="flex items-center gap-2">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="outline" className="w-[160px] sm:w-[200px] justify-start text-left font-normal">
+                                <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                                <span className="truncate">
+                                    {date ? formatDateToSwedish(date) : "Filter by date"}
+                                </span>
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={handleSelect}
+                                initialFocus
+                                locale={enGB}
+                            />
+                        </PopoverContent>
+                    </Popover>
+                    {date && (
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleSelect(null)}
+                            className="text-muted-foreground h-9 w-9"
+                            title="Clear filter"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                         </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={handleSelect}
-                            initialFocus
-                            locale={enGB}
-                        />
-                    </PopoverContent>
-                </Popover>
-                {date && (
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => handleSelect(null)}
-                        className="text-muted-foreground"
+                    )}
+                </div>
+
+                <div className="flex items-center gap-2 sm:hidden">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => onPageChange(currentPage - 1)}
+                        disabled={currentPage <= 1}
+                        className="h-9 w-9"
                     >
-                        Clear filter
+                        <ChevronLeft className="h-4 w-4" />
                     </Button>
-                )}
+                    <span className="text-sm text-muted-foreground whitespace-nowrap min-w-[3rem] text-center">
+                        {currentPage} / {totalPages}
+                    </span>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => onPageChange(currentPage + 1)}
+                        disabled={currentPage >= totalPages}
+                        className="h-9 w-9"
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="hidden sm:flex items-center gap-2">
                 <Button
                     variant="outline"
                     size="icon"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage <= 1}
+                    className="h-9 w-9"
                 >
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
+                <span className="text-sm text-muted-foreground whitespace-nowrap min-w-[3rem] text-center">
+                    {currentPage} / {totalPages}
                 </span>
                 <Button
                     variant="outline"
                     size="icon"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage >= totalPages}
+                    className="h-9 w-9"
                 >
                     <ChevronRight className="h-4 w-4" />
                 </Button>
