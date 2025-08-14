@@ -1,20 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatDateToSwedish } from '@/lib/utils';
+import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { CalendarDays } from 'lucide-react';
-
-const getStageColor = (projectStatus) => {
-    switch (projectStatus.toLowerCase()) {
-        case 'ongoing':
-            return 'bg-blue-500';
-        case 'completed':
-            return 'bg-green-500';
-        case 'not started':
-            return 'bg-gray-500';
-        default:
-            return 'bg-gray-500';
-    }
-};
 
 export function AssignmentCard({ assignment }) {
     const { id, name, startDate, endDate, projectStatus, projectName } = assignment;

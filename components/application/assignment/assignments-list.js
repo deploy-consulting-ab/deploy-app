@@ -3,8 +3,9 @@
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
-import { formatDateToSwedish } from '@/lib/utils';
+import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 export function AssignmentListComponent({ assignments }) {
     const router = useRouter();
@@ -80,11 +81,16 @@ export function AssignmentListComponent({ assignments }) {
                     </Button>
                 );
             },
-            cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('projectStatus')}>
-                    {row.getValue('projectStatus')}
-                </div>
-            ),
+            cell: ({ row }) => {
+                // <div className="truncate" title={row.getValue('projectStatus')}>
+                //     {row.getValue('projectStatus')}
+                // </div>
+                const projectStatus = row.getValue('projectStatus');
+                return (
+                <Badge className={`${getStageColor(projectStatus)} text-white`}>
+                    {projectStatus}
+                </Badge>
+            )},
         },
         {
             accessorKey: 'startDate',
