@@ -5,9 +5,9 @@ import { CalendarDays } from 'lucide-react';
 
 const getStageColor = (projectStatus) => {
     switch (projectStatus.toLowerCase()) {
-        case 'in progress':
+        case 'ongoing':
             return 'bg-blue-500';
-        case 'done':
+        case 'completed':
             return 'bg-green-500';
         case 'not started':
             return 'bg-gray-500';
