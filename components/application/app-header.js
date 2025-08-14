@@ -12,7 +12,7 @@ export function AppHeaderComponent() {
             </div>
             <div className="ml-auto flex items-center gap-2">
                 <ModeToggleComponent />
-                <LogoutButtonComponent className="hidden sm:flex" />
+                <LogoutButtonComponent />
             </div>
         </header>
     );
