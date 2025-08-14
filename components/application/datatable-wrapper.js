@@ -47,7 +47,6 @@ export function DatatableWrapperComponent({
     const [columnVisibility, setColumnVisibility] = useState({});
     const [rowSelection, setRowSelection] = useState({});
     const [selectedView, setSelectedView] = useState(defaultView);
-    const [pageSize, setPageSize] = useState(10);
 
     const filteredData = useMemo(() => {
         if (selectedView === 'all') return initialData;
@@ -96,15 +95,17 @@ export function DatatableWrapperComponent({
     return (
         <Tabs defaultValue="table" className="w-full">
             <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center w-full">
                     <Input
                         placeholder={placeholder}
                         value={table.getColumn('name')?.getFilterValue() ?? ''}
                         onChange={(event) =>
                             table.getColumn('name')?.setFilterValue(event.target.value)
                         }
-                        className="max-w-sm"
+                        className="max-w-sm mr-2"
                     />
+                </div>
+                <div className="flex items-center gap-2">
                     {views.length > 0 && (
                         <Select 
                             value={selectedView} 
@@ -124,8 +125,6 @@ export function DatatableWrapperComponent({
                             </SelectContent>
                         </Select>
                     )}
-                </div>
-                <div className="flex items-center gap-2">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -136,44 +135,6 @@ export function DatatableWrapperComponent({
                         <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         <span className="sr-only">Refresh data</span>
                     </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                Columns <ChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {table
-                                .getAllColumns()
-                                .filter((column) => column.getCanHide())
-                                .map((column) => {
-                                    return (
-                                        <DropdownMenuCheckboxItem
-                                            key={column.id}
-                                            className="capitalize"
-                                            checked={column.getIsVisible()}
-                                            onCheckedChange={(value) =>
-                                                column.toggleVisibility(!!value)
-                                            }
-                                        >
-                                            {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                    );
-                                })}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Select value={pageSize.toString()} onValueChange={(value) => setPageSize(Number(value))}>
-                        <SelectTrigger className="w-[100px]">
-                            <SelectValue placeholder="Rows" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {[10, 20, 30, 50].map((size) => (
-                                <SelectItem key={size} value={size.toString()}>
-                                    {size} rows
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
                 </div>
             </div>
             <TabsContent value="table" className="mt-0">
