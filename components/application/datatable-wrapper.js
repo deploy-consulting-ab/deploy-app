@@ -22,7 +22,13 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 export function DatatableWrapperComponent({
     data: initialData,
@@ -43,7 +49,7 @@ export function DatatableWrapperComponent({
 
     const filteredData = useMemo(() => {
         if (selectedView === 'all') return initialData;
-        return initialData.filter(item => item[filterKey] === selectedView);
+        return initialData.filter((item) => item[filterKey] === selectedView);
     }, [initialData, selectedView]);
 
     const handleRefresh = async () => {
@@ -100,8 +106,8 @@ export function DatatableWrapperComponent({
                 </div>
                 <div className="flex items-center gap-2">
                     {views.length > 0 && (
-                        <Select 
-                            value={selectedView} 
+                        <Select
+                            value={selectedView}
                             onValueChange={(value) => {
                                 setSelectedView(value);
                             }}
@@ -187,7 +193,10 @@ export function DatatableWrapperComponent({
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
                                         No results.
                                     </TableCell>
                                 </TableRow>
@@ -196,28 +205,22 @@ export function DatatableWrapperComponent({
                     </Table>
                 </div>
                 <div className="flex items-center justify-end space-x-2 py-4">
-                    <div className="text-muted-foreground flex-1 text-sm">
-                        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-                        {table.getFilteredRowModel().rows.length} row(s) selected.
-                    </div>
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            Next
-                        </Button>
-                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        Next
+                    </Button>
                 </div>
             </TabsContent>
             <TabsContent value="board" className="mt-0">
