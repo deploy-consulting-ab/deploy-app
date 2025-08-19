@@ -1,17 +1,25 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AssignmentCard({ assignment }) {
-    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } = assignment;
+    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } =
+        assignment;
+
+    const isMobile = useIsMobile();
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
-                    <CardTitle className="text-2xl">{name} - {projectName}</CardTitle>
+                    <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
+                        {projectName}
+                    </CardTitle>
                     <Badge className={`${getStageColor(projectStatus)} text-white`}>
                         {projectStatus}
                     </Badge>
@@ -64,7 +72,7 @@ export function AssignmentCard({ assignment }) {
                 </div>
 
                 {/* Link to Timecards */}
-                <Link 
+                <Link
                     href={`/home/assignments/${assignment.id}/timecards`}
                     className="block w-full"
                 >
