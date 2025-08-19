@@ -17,7 +17,7 @@ const AssignmentPage = async ({ params }) => {
     }
 
     return (
-        <div className="py-6">
+        <div className="py-4">
             <AssignmentCard assignment={assignment} />
         </div>
     );
