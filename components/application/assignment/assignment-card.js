@@ -6,12 +6,17 @@ import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function AssignmentCard({ assignment }) {
+export function AssignmentCard({ assignment, error }) {
     const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } =
         assignment;
 
     const isMobile = useIsMobile();
+
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">
