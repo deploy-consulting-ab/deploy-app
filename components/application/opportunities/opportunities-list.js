@@ -8,8 +8,9 @@ import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
 import { useState } from 'react';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function OpportunitiesListComponent({ opportunities }) {
+export function OpportunitiesListComponent({ opportunities, error: initialError }) {
     const router = useRouter();
     const handleAssignmentClick = (id) => {
         // router.push(`/home/opportunities/${id}`);
@@ -35,12 +36,16 @@ export function OpportunitiesListComponent({ opportunities }) {
     };
 
     const [opportunitiesData, setOpportunities] = useState(opportunities);
-
-    console.log('opportunitiesData...', opportunitiesData);
+    const [error, setError] = useState(initialError);
 
     const handleRefresh = async () => {
-        const freshData = await getOpportunities();
-        setOpportunities(freshData);
+        try {
+            const freshData = await getOpportunities(employeeNumber);
+            setOpportunities(freshData);
+            setError(null);
+        } catch (err) {
+            setError(err);
+        }
         return freshData;
     };
 
@@ -127,11 +132,7 @@ export function OpportunitiesListComponent({ opportunities }) {
             },
             cell: ({ row }) => {
                 const stage = row.getValue('stage');
-                return (
-                    <Badge className={`${getStageColor(stage)} text-white`}>
-                        {stage}
-                    </Badge>
-                );
+                return <Badge className={`${getStageColor(stage)} text-white`}>{stage}</Badge>;
             },
         },
         {
@@ -176,7 +177,7 @@ export function OpportunitiesListComponent({ opportunities }) {
             cell: ({ row }) => {
                 const amount = parseFloat(row.getValue('amount'));
                 const currency = row.original.currency;
-        
+
                 if (!amount) {
                     return <div className="text-right font-medium">-</div>;
                 }
@@ -186,11 +187,15 @@ export function OpportunitiesListComponent({ opportunities }) {
                     style: 'currency',
                     currency: currency,
                 }).format(amount);
-        
+
                 return <div className="text-right font-medium">{formatted}</div>;
             },
         },
     ];
+
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
 
     return (
         <DatatableWrapperComponent

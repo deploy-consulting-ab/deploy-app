@@ -4,11 +4,17 @@ import { OpportunitiesListComponent } from '@/components/application/opportuniti
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
 
 const OpportunitiesPage = async () => {
-    const opportunities = await getOpportunities();
+    let opportunities = null;
+    let error = null;
+    try {
+        assignments = await getOpportunities();
+    } catch (err) {
+        error = err;
+    }
 
     return (
         <div className="py-4">
-            <OpportunitiesListComponent opportunities={opportunities}/>
+            <OpportunitiesListComponent error={error} opportunities={opportunities} />
         </div>
     );
 };

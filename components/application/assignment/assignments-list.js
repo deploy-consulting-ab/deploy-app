@@ -19,12 +19,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
     const [assignmentData, setAssignmentData] = useState(assignments);
     const [error, setError] = useState(initialError);
 
-    if (error) {
-        return <ErrorDisplay error={error} />;
-    }
-
     const handleRefresh = async () => {
-        const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
         try {
             const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
             setAssignmentData(freshData);
@@ -163,6 +158,10 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
             ),
         },
     ];
+
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
 
     return (
         <DatatableWrapperComponent

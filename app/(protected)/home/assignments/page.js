@@ -10,7 +10,6 @@ const AssignmentsPage = async () => {
     try {
         assignments = await getAssignmentsByEmployeeNumber(employeeNumber);
     } catch (err) {
-        console.log('Error on assignment page:', err.message);
         error = err;
     }
 
