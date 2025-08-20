@@ -12,7 +12,7 @@ export function ErrorDisplay({ error }) {
     switch (error.name) {
       case "NetworkError":
         title = "Connection Error";
-        message = "Unable to connect to the server. Please check your internet connection.";
+        message = error.message || "Unable to connect to the server. Please check your internet connection.";
         icon = WifiOff;
         break;
       case "NoResultsError":
