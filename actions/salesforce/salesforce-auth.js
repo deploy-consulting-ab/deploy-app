@@ -1,6 +1,7 @@
 // lib/jsforce.js
 
 import jsforce from 'jsforce';
+import { NetworkError } from '../callouts/errors';
 
 // This variable will hold the cached connection.
 let connection = null;
@@ -49,9 +50,13 @@ export async function getSalesforceConnection() {
 
         return connection;
     } catch (error) {
-        console.error('Salesforce login error:', error.message);
         // Clear the failed connection attempt
         connection = null;
-        throw new Error('Could not connect to Salesforce. ' + error.message);
+        throw new NetworkError(
+            'Could not connect to Salesforce. ' + error.message,
+            error.status,
+            error.code,
+            error
+        );
     }
 }

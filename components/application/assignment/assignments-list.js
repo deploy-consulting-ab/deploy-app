@@ -8,28 +8,39 @@ import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { useState, useMemo } from 'react';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function AssignmentListComponent({ assignments, employeeNumber }) {
+export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
     const handleAssignmentClick = (id) => {
         router.push(`/home/assignments/${id}`);
-    }
+    };
 
     const [assignmentData, setAssignmentData] = useState(assignments);
+    const [error, setError] = useState(initialError);
+
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
 
     const handleRefresh = async () => {
         const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
-        setAssignmentData(freshData);
+        try {
+            const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
+            setAssignmentData(freshData);
+            setError(null);
+        } catch (err) {
+            setError(err);
+        }
         return freshData;
-    }
+    };
 
     const views = [
         { value: 'all', label: 'All Assignments' },
         { value: 'Not Started', label: 'Not Started' },
         { value: 'Ongoing', label: 'Ongoing' },
-        { value: 'Completed', label: 'Completed' }
+        { value: 'Completed', label: 'Completed' },
     ];
-
 
     const columns = [
         {
@@ -52,7 +63,7 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
                 const id = row.original.id;
 
                 return (
-                    <div 
+                    <div
                         className="cursor-pointer text-blue-600 hover:underline truncate"
                         onClick={() => handleAssignmentClick(id)}
                         title={row.getValue('name')} // Show full text on hover
@@ -101,10 +112,11 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
             cell: ({ row }) => {
                 const projectStatus = row.getValue('projectStatus');
                 return (
-                <Badge className={`${getStageColor(projectStatus)} text-white`}>
-                    {projectStatus}
-                </Badge>
-            )},
+                    <Badge className={`${getStageColor(projectStatus)} text-white`}>
+                        {projectStatus}
+                    </Badge>
+                );
+            },
         },
         {
             accessorKey: 'startDate',
@@ -123,7 +135,9 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
             },
             cell: ({ row }) => (
                 <div>
-                    {row.getValue('startDate') ? formatDateToSwedish(row.getValue('startDate')) : '-'}
+                    {row.getValue('startDate')
+                        ? formatDateToSwedish(row.getValue('startDate'))
+                        : '-'}
                 </div>
             ),
         },
@@ -147,13 +161,13 @@ export function AssignmentListComponent({ assignments, employeeNumber }) {
                     {row.getValue('endDate') ? formatDateToSwedish(row.getValue('endDate')) : '-'}
                 </div>
             ),
-        }
+        },
     ];
 
     return (
-        <DatatableWrapperComponent 
-            data={assignmentData} 
-            columns={columns} 
+        <DatatableWrapperComponent
+            data={assignmentData}
+            columns={columns}
             placeholder="Filter assignments..."
             refreshAction={handleRefresh}
             views={views}

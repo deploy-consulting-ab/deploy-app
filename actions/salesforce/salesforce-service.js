@@ -1,6 +1,7 @@
 'use server';
 
 import { getSalesforceConnection } from './salesforce-auth';
+import { NetworkError } from '../callouts/errors';
 
 /**
  * Generic error handler for Salesforce operations
@@ -8,6 +9,11 @@ import { getSalesforceConnection } from './salesforce-auth';
  * @param {string} operation - The name of the operation that failed
  */
 const handleSalesforceError = (error, operation) => {
+    if (error instanceof NetworkError) {
+        console.error(`Salesforce Network error when connecting to Salesforce to ${operation}`, error.message);
+        throw error;
+    }
+
     console.error(`Salesforce ${operation} error:`, error);
     throw new Error(`Failed to ${operation}: ${error.message}`);
 };
