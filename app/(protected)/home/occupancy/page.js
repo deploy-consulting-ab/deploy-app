@@ -4,10 +4,8 @@ import { OccupancyChartComponent } from '@/components/application/occupancy/occu
 
 export default function OccupancyPage() {
     return (
-        <div className="">
-            <div className="space-y-8 py-4">
+            <div className="py-4">
                 <OccupancyChartComponent />
             </div>
-        </div>
     );
 }
