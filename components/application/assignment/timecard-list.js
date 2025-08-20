@@ -3,10 +3,11 @@
 import { WeeklyTimecardComponent } from "./weekly-timecard";
 import { TimecardFilters } from "./timecard-filters";
 import { useState, useMemo } from "react";
+import { ErrorDisplay } from "@/components/errors/error-display";
 
 const ITEMS_PER_PAGE = 10;
 
-export function TimecardListComponent({ timecards = [] }) {
+export function TimecardListComponent({ timecards = [], error }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDate, setSelectedDate] = useState(null);
 
@@ -47,6 +48,10 @@ export function TimecardListComponent({ timecards = [] }) {
         setSelectedDate(date);
         setCurrentPage(1); // Reset to first page when filter changes
     };
+
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
 
     return (
         <div>
