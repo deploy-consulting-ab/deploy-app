@@ -34,8 +34,6 @@ export default async function HomePage() {
         const formattedToday = formatDateToISOString(today);
 
         occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
-
-        console.log('occupancyRates', occupancyRates);
     } catch (err) {
         error = err;
     } finally {
