@@ -19,7 +19,7 @@ import { HOLIDAYS_ROUTE } from '@/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 
-export function HolidayCard({
+export function HolidaysCard({
     holidays,
     error,
     isNavigationDisabled,

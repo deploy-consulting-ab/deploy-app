@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { HolidayCard } from './holidays-card';
-import { CalendarHolidays } from './holidays-calendar';
+import { HolidaysCard } from './holidays-card';
+import { HolidaysCalendar } from './holidays-calendar';
 
 export function HolidaysWrapper({ initialData, refreshAction, error }) {
     const [data, setData] = useState(initialData);
@@ -34,13 +34,13 @@ export function HolidaysWrapper({ initialData, refreshAction, error }) {
 
     return (
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-            <HolidayCard
+            <HolidaysCard
                 holidays={data}
                 error={currentError}
                 isNavigationDisabled={true}
                 refreshAction={handleRefresh}
             />
-            <CalendarHolidays
+            <HolidaysCalendar
                 holidays={data}
                 error={currentError}
             />

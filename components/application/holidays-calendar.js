@@ -15,7 +15,7 @@ import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
 import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function CalendarHolidays({ holidays, error }) {
+export function HolidaysCalendar({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState(holidays?.allHolidaysRange || []);
     const isSingleColumn = useLayoutSize(1260);
