@@ -7,7 +7,7 @@ const OpportunitiesPage = async () => {
     let opportunities = null;
     let error = null;
     try {
-        assignments = await getOpportunities();
+        opportunities = await getOpportunities();
     } catch (err) {
         error = err;
     }
