@@ -15,10 +15,16 @@ const getOpportunitiesQuery = () => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity ORDER BY CloseDate DESC`;
 };
 
-const getRecentOccupancyRateQuery = (employeeNumber, startDate, endDate) => {
+const getRecentOccupancyRateQuery = (employeeNumber, today, endDate) => {
     return `SELECT Id, OccupancyRate__c, Date__c, Month__c FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${startDate}
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
             ORDER BY Date__c DESC LIMIT 4`;
+};
+
+const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFiscalYear) => {
+    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c FROM HistoricalHour__c 
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today} AND Date__c >= ${lastFiscalYear}
+            ORDER BY Date__c ASC`;
 };
 
 export {
@@ -26,4 +32,5 @@ export {
     getAssignmentByIdQuery,
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
+    getOccupancyRateFromLastFiscalYearQuery,
 };

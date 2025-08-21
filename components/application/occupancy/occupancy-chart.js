@@ -133,31 +133,8 @@ const chartDataOld = [
     { date: '2024-06-30', desktop: 446, mobile: 400 },
 ];
 
-const chartData = [
-    { month: 'January 2024', date: '2024-01-01', occupancy: 86 },
-    { month: 'February 2024', date: '2024-02-01', occupancy: 95 },
-    { month: 'March 2024', date: '2024-03-01', occupancy: 87 },
-    { month: 'April 2024', date: '2024-04-01', occupancy: 73 },
-    { month: 'May 2024', date: '2024-05-01', occupancy: 89 },
-    { month: 'June 2024', date: '2024-06-01', occupancy: 84 },
-    { month: 'July 2024', date: '2024-07-01', occupancy: 85 },
-    { month: 'August 2024', date: '2024-08-01', occupancy: 88 },
-    { month: 'September 2024', date: '2024-09-01', occupancy: 92 },
-    { month: 'October 2024', date: '2024-10-01', occupancy: 89 },
-    { month: 'November 2024', date: '2024-11-01', occupancy: 87 },
-    { month: 'December 2024', date: '2024-12-01', occupancy: 88 },
-    { month: 'January 2025', date: '2025-01-01', occupancy: 86 },
-    { month: 'February 2025', date: '2025-02-01', occupancy: 95 },
-    { month: 'March 2025', date: '2025-03-01', occupancy: 87 },
-    { month: 'April 2025', date: '2025-04-01', occupancy: 93 },
-    { month: 'May 2025', date: '2025-05-01', occupancy: 89 },
-    { month: 'June 2025', date: '2025-06-01', occupancy: 94 },
-    { month: 'July 2025', date: '2025-07-01', occupancy: 127 },
-    { month: 'August 2025', date: '2025-08-01', occupancy: 30 },
-];
-
 const chartConfig = {
-    occupancy: {
+    rate: {
         label: 'Occupancy',
     },
 };
@@ -172,7 +149,7 @@ const getOccupancyColor = (value) => {
     return 'var(--occupancy-color-critical-low)'; // gray for too low
 };
 
-export function OccupancyChartComponent() {
+export function OccupancyChartComponent({ chartData }) {
     const isMobile = useIsMobile();
     const [timeRange, setTimeRange] = React.useState('90d');
 
@@ -355,11 +332,11 @@ export function OccupancyChartComponent() {
                                 />
                             }
                         />
-                        <Bar dataKey="occupancy" radius={8}>
+                        <Bar dataKey="rate" radius={8}>
                             {filteredData.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
-                                    fill={getOccupancyColor(entry.occupancy)}
+                                    fill={getOccupancyColor(entry.rate)}
                                 />
                             ))}
                             {!isMobile && (

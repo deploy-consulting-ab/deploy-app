@@ -6,6 +6,7 @@ import {
     getAssignmentByIdQuery,
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
+    getOccupancyRateFromLastFiscalYearQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -73,6 +74,23 @@ export async function getRecentOccupancyRate(employeeNumber, dates) {
                 rate: occupancyRate.OccupancyRate__c,
             })),
         };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, lastFiscalYear) {
+    try {
+        const result = await queryData(
+            getOccupancyRateFromLastFiscalYearQuery(employeeNumber, today, lastFiscalYear)
+        );
+
+        return result.map((occupancyRate) => ({
+            month: occupancyRate.Month__c + ' ' + occupancyRate.Year__c,
+            date: occupancyRate.Date__c,
+            rate: occupancyRate.OccupancyRate__c,
+        }));
+
     } catch (error) {
         throw error;
     }
