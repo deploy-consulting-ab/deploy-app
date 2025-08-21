@@ -159,7 +159,6 @@ const chartData = [
 const chartConfig = {
     occupancy: {
         label: 'Occupancy',
-        // color: 'var(--primary)',
     },
 };
 
