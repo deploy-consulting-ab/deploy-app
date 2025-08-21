@@ -20,14 +20,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 
 export function HolidayCard({
-    holidays: initialHolidays,
-    error: initialError,
+    holidays,
+    error,
     isNavigationDisabled,
     refreshAction,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [holidays, setHolidays] = useState(initialHolidays);
-    const [error, setError] = useState(initialError);
     const isMobile = useIsMobile();
     const router = useRouter();
 
@@ -35,11 +33,9 @@ export function HolidayCard({
         if (isRefreshing) return;
         setIsRefreshing(true);
         try {
-            const freshData = await refreshAction();
-            setHolidays(freshData); // Update the local state with fresh data
-            setError(null);
+            await refreshAction();
         } catch (err) {
-            setError(err);
+            console.error('Error refreshing holidays:', err);
         } finally {
             setIsRefreshing(false);
         }

@@ -10,14 +10,19 @@ import {
     CardAction,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function CalendarHolidays({ holidays }) {
+export function CalendarHolidays({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
-    const [selectedDates, setSelectedDates] = useState(holidays.allHolidaysRange || []);
+    const [selectedDates, setSelectedDates] = useState(holidays?.allHolidaysRange || []);
     const isSingleColumn = useLayoutSize(1260);
+
+    useEffect(() => {
+        setSelectedDates(holidays?.allHolidaysRange || []);
+    }, [holidays]);
 
     const handleSelect = (dates) => {
         setSelectedDates(dates || []);
@@ -27,8 +32,16 @@ export function CalendarHolidays({ holidays }) {
         const today = new Date();
         setMonth(today);
         // Reset selection to holidays
-        setSelectedDates(holidays.allHolidaysRange || []);
+        setSelectedDates(holidays?.allHolidaysRange || []);
     };
+
+    if (error) {
+        return (
+            <div>
+                <ErrorDisplay error={error} />
+            </div>
+        );
+    }
 
     return (
         <Card className="h-full pb-0" variant="shadow">
