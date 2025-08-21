@@ -13,29 +13,46 @@ import { Calendar, ChevronRight, RefreshCw } from 'lucide-react';
 import { ErrorDisplay } from '@/components/errors/error-display';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import { HOLIDAYS_ROUTE } from '@/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 
 export function HolidaysCard({
-    holidays,
-    error,
+    holidays: initialHolidays,
+    error: initialError,
     isNavigationDisabled,
     refreshAction,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
+
+    // Inner state for when HolidaysCard is used outside of HolidaysWrapper
+    const [holidays, setHolidays] = useState(initialHolidays);
+    const [error, setError] = useState(initialError);
     const isMobile = useIsMobile();
     const router = useRouter();
+
+    useEffect(() => {
+        setHolidays(initialHolidays);
+    }, [initialHolidays]);
+
+    useEffect(() => {
+        setError(initialError);
+    }, [initialError]);
 
     const handleRefresh = async () => {
         if (isRefreshing) return;
         setIsRefreshing(true);
         try {
-            await refreshAction();
+            const newData = await refreshAction();
+            if (newData) {
+                setHolidays(newData);
+                setError(null);
+            }
         } catch (err) {
             console.error('Error refreshing holidays:', err);
+            setError(err);
         } finally {
             setIsRefreshing(false);
         }
