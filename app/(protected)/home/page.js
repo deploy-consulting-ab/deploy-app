@@ -19,13 +19,13 @@ async function refreshHolidayData() {
 
 export default async function HomePage() {
     let loading = true;
-    let data = null;
+    let holidays = null;
     let error = null;
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     try {
-        data = await getAbsenceApplications(employeeNumber);
+        holidays = await getAbsenceApplications(employeeNumber);
     } catch (err) {
         error = err;
     } finally {
@@ -45,7 +45,7 @@ export default async function HomePage() {
             <div className="flex-1 space-y-8 pt-4">
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <HolidaysCard
-                        holidays={data}
+                        holidays={holidays}
                         error={error}
                         isNavigationDisabled={false}
                         refreshAction={refreshHolidayData}
