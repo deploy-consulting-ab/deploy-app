@@ -8,6 +8,8 @@ import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { employeeData } from '@/lib/mock-data';
 import { homePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
+import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
+import { formatDateToISOString } from '@/lib/utils';
 
 async function refreshHolidayData() {
     'use server';
@@ -20,12 +22,20 @@ async function refreshHolidayData() {
 export default async function HomePage() {
     let loading = true;
     let holidays = null;
+    let occupancyRates = null;
     let error = null;
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     try {
         holidays = await getAbsenceApplications(employeeNumber);
+
+        const today = new Date();
+        const formattedToday = formatDateToISOString(today);
+
+        occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
+
+        console.log('occupancyRates', occupancyRates);
     } catch (err) {
         error = err;
     } finally {
@@ -50,7 +60,10 @@ export default async function HomePage() {
                         isNavigationDisabled={false}
                         refreshAction={refreshHolidayData}
                     />
-                    <OccupancyCard occupancy={employeeData.occupancy} />
+                    <OccupancyCard
+                        occupancy={occupancyRates}
+                        //occupancy={employeeData.occupancy}
+                    />
                 </div>
                 <div>
                     <UsefulLinksGrid links={homePageLinks} title="Quick Access" />
