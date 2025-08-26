@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToSwedish, getStageColor } from '@/lib/utils';
 import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
