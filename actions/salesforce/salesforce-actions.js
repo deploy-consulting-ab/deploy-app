@@ -4,6 +4,7 @@ import { queryData } from './salesforce-service';
 import {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
+    getAssignmentTimecardsQuery,
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
@@ -41,6 +42,15 @@ export async function getAssignmentById(assignmentId) {
             projectedHours: result.ProjectedHours__c,
             actualHours: result.ActualHours__c,
         };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getAssignmentTimecards(assignmentId) {
+    try {
+        const result = await queryData(getAssignmentTimecardsQuery(assignmentId));
+        return result;
     } catch (error) {
         throw error;
     }

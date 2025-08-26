@@ -11,6 +11,10 @@ const getAssignmentByIdQuery = (assignmentId) => {
     return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c FROM Assignment__c WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
+const getAssignmentTimecardsQuery = (assignmentId) => {
+    return `SELECT Id, StartDate__c, EndDate__c,MondayHours__c, TuesdayHours__c, WednesdayHours__c, ThursdayHours__c, FridayHours__c, SaturdayHours__c, SundayHours__c FROM Timecard__c WHERE Assignment__c = '${assignmentId}' ORDER BY StartDate__c DESC`;
+};
+
 const getOpportunitiesQuery = () => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity ORDER BY CloseDate DESC`;
 };
@@ -30,6 +34,7 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
+    getAssignmentTimecardsQuery,
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,

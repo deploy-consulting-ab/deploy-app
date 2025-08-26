@@ -1,23 +1,27 @@
+'use server';
+
 import { TimecardListComponent } from '@/components/application/assignment/timecard-list';
-import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentTimecards } from '@/actions/salesforce/salesforce-actions';
 import { sampleAssignmentData } from '@/lib/mock-data';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { notFound } from 'next/navigation';
 
 const TimecardsPage = async ({ params }) => {
     const { assignmentId } = await params;
-    let realAssignment = null;
+    
+    let timecards = null;
     let error = null;
 
     try {
-        realAssignment = await getAssignmentById(assignmentId);
+        timecards = await getAssignmentTimecards(assignmentId);
+        console.log('timecards', timecards);
     } catch (err) {
         error = err;
+        console.log('error', error);
     }
 
     // For testing: Merge real assignment data with sample timecard data
     const assignment = {
-        ...realAssignment,
         timecards: sampleAssignmentData.timecards,
     };
 
