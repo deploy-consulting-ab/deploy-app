@@ -1,5 +1,4 @@
 import { AssignmentCard } from '@/components/application/assignment/assignment-card';
-import { notFound } from 'next/navigation';
 import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
 
 const AssignmentPage = async ({ params }) => {
@@ -12,10 +11,6 @@ const AssignmentPage = async ({ params }) => {
         assignment = await getAssignmentById(assignmentId);
     } catch (err) {
         error = err;
-    }
-
-    if (!assignment) {
-        notFound();
     }
 
     return (

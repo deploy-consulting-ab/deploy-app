@@ -9,14 +9,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplay } from '@/components/errors/error-display';
 
 export function AssignmentCard({ assignment, error }) {
-    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } =
-        assignment;
 
     const isMobile = useIsMobile();
 
     if (error) {
         return <ErrorDisplay error={error} />;
     }
+
+    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } =
+        assignment;
 
     return (
         <Card className="w-full transition-all hover:shadow-lg">

@@ -35,6 +35,10 @@ export function TimecardListComponent({ timecards = [], error }) {
         });
     }, [timecards, selectedDate]);
 
+    if (error) {
+        return <ErrorDisplay error={error} />;
+    }
+
     // Calculate pagination
     const totalPages = Math.ceil(filteredTimecards.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -48,10 +52,6 @@ export function TimecardListComponent({ timecards = [], error }) {
         setSelectedDate(date);
         setCurrentPage(1); // Reset to first page when filter changes
     };
-
-    if (error) {
-        return <ErrorDisplay error={error} />;
-    }
 
     return (
         <div>
