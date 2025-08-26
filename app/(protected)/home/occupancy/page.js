@@ -8,7 +8,6 @@ import {
     formatDateToISOString,
 } from '@/lib/utils';
 import { getOccupancyRateFromLastFiscalYear } from '@/actions/salesforce/salesforce-actions';
-import { chartData } from '@/lib/mock-data';
 
 export default async function OccupancyPage() {
     const session = await auth();

@@ -5,7 +5,6 @@ import { HolidaysCard } from '@/components/application/holidays-card';
 import { OccupancyCard } from '@/components/application/occupancy-card';
 import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
-import { employeeData } from '@/lib/mock-data';
 import { homePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
@@ -60,7 +59,6 @@ export default async function HomePage() {
                     />
                     <OccupancyCard
                         occupancy={occupancyRates}
-                        //occupancy={employeeData.occupancy}
                     />
                 </div>
                 <div>
