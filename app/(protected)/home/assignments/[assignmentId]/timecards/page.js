@@ -14,36 +14,17 @@ const TimecardsPage = async ({ params }) => {
 
     try {
         timecards = await getAssignmentTimecards(assignmentId);
-        console.log('timecards', timecards);
     } catch (err) {
         error = err;
-        console.log('error', error);
     }
 
-    // For testing: Merge real assignment data with sample timecard data
-    const assignment = {
-        timecards: sampleAssignmentData.timecards,
-    };
-
-    if (!assignment) {
+    if (!timecards) {
         notFound();
     }
 
     return (
-        // <div className="container mx-auto py-6">
-        //     <Card>
-        //         <CardHeader className="border-b">
-        //             <CardTitle className="text-2xl">
-        //                 Time Reports - {assignment.name}
-        //             </CardTitle>
-        //         </CardHeader>
-        //         <CardContent className="pt-6">
-        //             <TimecardListComponent timecards={assignment.timecards} />
-        //         </CardContent>
-        //     </Card>
-        // </div>
         <div className="py-4">
-            <TimecardListComponent error={error} timecards={assignment.timecards} />
+            <TimecardListComponent error={error} timecards={timecards} />
         </div>
     );
 };

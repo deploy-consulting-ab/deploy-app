@@ -50,7 +50,20 @@ export async function getAssignmentById(assignmentId) {
 export async function getAssignmentTimecards(assignmentId) {
     try {
         const result = await queryData(getAssignmentTimecardsQuery(assignmentId));
-        return result;
+        return result.map((timecard) => ({
+            id: timecard.Id,
+            weekStartDate: timecard.StartDate__c,
+            weekEndDate: timecard.EndDate__c,
+            hours: [
+                timecard.MondayHours__c,
+                timecard.TuesdayHours__c,
+                timecard.WednesdayHours__c,
+                timecard.ThursdayHours__c,
+                timecard.FridayHours__c,
+                timecard.SaturdayHours__c,
+                timecard.SundayHours__c,
+            ],
+        }));
     } catch (error) {
         throw error;
     }
@@ -100,7 +113,6 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
             date: occupancyRate.Date__c,
             rate: occupancyRate.OccupancyRate__c,
         }));
-
     } catch (error) {
         throw error;
     }
