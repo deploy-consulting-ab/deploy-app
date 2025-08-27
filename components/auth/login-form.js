@@ -49,11 +49,7 @@ export const LoginFormComponent = () => {
     };
 
     return (
-        <CardWrapperComponent
-            backButtonLabel="Don't have an account?"
-            backButtonHref="/auth/register"
-            showSocial={true}
-        >
+        <CardWrapperComponent showSocial={true} showBackButton={false} showLogo={true}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
@@ -62,7 +58,9 @@ export const LoginFormComponent = () => {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-dark dark:text-white">Email</FormLabel>
+                                    <FormLabel className="text-dark dark:text-white">
+                                        Email
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
@@ -77,18 +75,20 @@ export const LoginFormComponent = () => {
                                 </FormItem>
                             )}
                         />
-                        
+
                         <FormField
                             control={form.control}
                             name="password"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-black dark:text-white">Password</FormLabel>
+                                    <FormLabel className="text-black dark:text-white">
+                                        Password
+                                    </FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input
                                                 disabled={isPending}
-                                                type={showPassword ? "text" : "password"}
+                                                type={showPassword ? 'text' : 'password'}
                                                 placeholder="******"
                                                 {...field}
                                                 className="input shadow-box input-focus-effect"
@@ -114,8 +114,8 @@ export const LoginFormComponent = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button 
-                        type="submit" 
+                    <Button
+                        type="submit"
                         variant="outline"
                         className="w-full bg-black text-white  dark:text-white
                                     hover:bg-black/80
@@ -123,14 +123,14 @@ export const LoginFormComponent = () => {
                                     dark:bg-primary
                                     dark:hover:bg-primary/70 
                                     dark:hover:text-white font-medium transition-all duration-300
-                                    border-none" 
+                                    border-none"
                         disabled={isPending}
                         suppressHydrationWarning
                     >
                         {isPending ? (
                             <Spinner size="sm" variant="white" label="Logging in..." />
                         ) : (
-                            "Login"
+                            'Login'
                         )}
                     </Button>
                 </form>
