@@ -23,12 +23,16 @@ export const register = async (values) => {
 
     const existingUser = await getUserByEmail(email);
 
+    console.log('## existingUser', existingUser);
+
     if (existingUser) {
         return { error: 'User already existing' };
     }
 
     const createdUser = await createUser({ name, email, hashedPassword });
     // TODO: Sent verification token email
+
+    console.log('## createdUser', createdUser);
 
     return { success: 'User registered!' };
 };
