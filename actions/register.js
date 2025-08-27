@@ -30,7 +30,6 @@ export const register = async (values) => {
     }
 
     const createdUser = await createUser({ name, email, hashedPassword });
-    // TODO: Sent verification token email
 
     console.log('## createdUser', createdUser);
 
