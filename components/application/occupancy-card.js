@@ -15,7 +15,7 @@ import { RefreshCw, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { OCCUPANCY_ROUTE } from '@/routes';
-import { ErrorDisplay } from '@/components/application/error-display';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
 export function OccupancyCard({ occupancy, refreshAction, isNavigationDisabled }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
