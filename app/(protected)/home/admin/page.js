@@ -1,7 +1,10 @@
-'use server';
+import { RegisterFormComponent } from '@/components/auth/register-form';
+
 const AdminPage = async () => {
     return (
-        <p>Admin</p>
+        <div className="flex justify-center items-center h-full w-full">
+            <RegisterFormComponent />
+        </div>
     );
 };
 

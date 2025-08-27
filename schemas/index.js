@@ -20,4 +20,10 @@ export const RegisterSchema = z.object({
     name: z.string().min(1, {
         message: 'Name is required',
     }),
+    employeeNumber: z.string().min(4, {
+        message: 'Employee number is required',
+    }),
+    role: z.enum(['USER', 'ADMIN'], {
+        required_error: 'Role is required',
+    }),
 });

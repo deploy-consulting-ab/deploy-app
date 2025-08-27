@@ -2,7 +2,6 @@
 
 import { RegisterSchema } from '@/schemas';
 import bcryptjs from 'bcryptjs';
-import { db } from '@/lib/db';
 import { createUser, getUserByEmail } from '@/data/user';
 
 export const register = async (values) => {
@@ -17,21 +16,21 @@ export const register = async (values) => {
         return { error: 'Invalid fields' };
     }
 
-    const { email, password, name } = validatedFields.data;
+    const { email, password, name, role, employeeNumber } = validatedFields.data;
 
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const existingUser = await getUserByEmail(email);
 
-    console.log('## existingUser', existingUser);
-
     if (existingUser) {
         return { error: 'User already existing' };
     }
 
-    const createdUser = await createUser({ name, email, hashedPassword });
+    const createdUser = await createUser({ name, email, hashedPassword, role, employeeNumber });
 
-    console.log('## createdUser', createdUser);
+    if (!createdUser) {
+        return { error: 'Failed to create user' };
+    }
 
     return { success: 'User registered!' };
 };

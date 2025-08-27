@@ -30,16 +30,21 @@ export const getUserById = async (id) => {
 
 export const createUser = async (data) => {
     try {
-        const { name, email, hashedPassword } = data;
+        const { name, email, hashedPassword, role, employeeNumber } = data;
 
         const user = await db.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
+                role,
+                employee_number: employeeNumber,
             },
         });
 
         return user;
-    } catch (error) {}
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
 };

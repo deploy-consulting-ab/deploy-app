@@ -7,16 +7,18 @@ import { BackButtonComponent } from '@/components/auth/back-button';
 
 export const CardWrapperComponent = ({
     children,
+    showLogo = true,
+    showBackButton = true,
+    showSocial = true,
     headerLabel,
     backButtonLabel,
     backButtonHref,
-    showSocial,
 }) => {
     return (
         // bg-gray-800 interesting color
         <Card className="w-[400px] shadow-sm py-8">
             <CardHeader>
-                <HeaderComponent label={headerLabel} />
+                {showLogo && <HeaderComponent label={headerLabel} />}
             </CardHeader>
             <CardContent>{children}</CardContent>
             {showSocial && (
@@ -25,7 +27,9 @@ export const CardWrapperComponent = ({
                 </CardFooter>
             )}
             <CardFooter>
-                <BackButtonComponent label={backButtonLabel} href={backButtonHref} />
+                {showBackButton && (
+                    <BackButtonComponent label={backButtonLabel} href={backButtonHref} />
+                )}
             </CardFooter>
         </Card>
     );
