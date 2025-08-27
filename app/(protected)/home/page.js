@@ -59,6 +59,7 @@ export default async function HomePage() {
                     />
                     <OccupancyCard
                         occupancy={occupancyRates}
+                        error={error}
                     />
                 </div>
                 <div>

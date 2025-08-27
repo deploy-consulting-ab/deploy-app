@@ -17,6 +17,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 import { register } from '@/actions/register';
 import { useState, useTransition } from 'react';
@@ -27,7 +34,9 @@ export const RegisterFormComponent = () => {
         defaultValues: {
             email: '',
             password: '',
-            name: ''
+            name: '',
+            employeeNumber: '',
+            role: 'USER',
         },
     });
 
@@ -43,20 +52,29 @@ export const RegisterFormComponent = () => {
             const response = await register(values);
             setSuccess(response.success);
             setError(response.error);
+            
+            if (response.success) {
+                form.reset({
+                    email: '',
+                    password: '',
+                    name: '',
+                    employeeNumber: '',
+                    role: 'USER',
+                });
+            }
         });
     };
 
     return (
         <CardWrapperComponent
             headerLabel="Create an Account"
-            backButtonLabel="I already have an account!"
-            backButtonHref="/auth/login"
-            showSocial={true}
+            showSocial={false}
+            showBackButton={false}
+            showLogo={false}
         >
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="space-y-4">
-
                         <FormField
                             control={form.control}
                             name="name"
@@ -95,6 +113,25 @@ export const RegisterFormComponent = () => {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="employeeNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Employee Number</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            disabled={isPending}
+                                            type="text"
+                                            placeholder="D000"
+                                            {...field}
+                                            className="input"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -111,6 +148,32 @@ export const RegisterFormComponent = () => {
                                             className="input"
                                         />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="role"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Role</FormLabel>
+                                    <Select
+                                        disabled={isPending}
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a role" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="USER">User</SelectItem>
+                                            <SelectItem value="ADMIN">Admin</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}

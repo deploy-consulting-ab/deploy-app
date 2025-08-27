@@ -2,13 +2,16 @@
 
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { AssignmentListComponent } from '@/components/application/assignment/assignments-list';
+import { auth } from '@/auth';
+
 const AssignmentsPage = async () => {
-    const employeeNumber = 'D003'; // You might want to get this from session or props
+    const session = await auth();
+    const { user } = session;
 
     let assignments = null;
     let error = null;
     try {
-        assignments = await getAssignmentsByEmployeeNumber(employeeNumber);
+        assignments = await getAssignmentsByEmployeeNumber(user?.employeeNumber);
     } catch (err) {
         error = err;
     }
@@ -18,7 +21,7 @@ const AssignmentsPage = async () => {
             <AssignmentListComponent
                 error={error}
                 assignments={assignments}
-                employeeNumber={employeeNumber}
+                employeeNumber={user?.employeeNumber}
             />
         </div>
     );

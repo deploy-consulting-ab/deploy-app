@@ -98,6 +98,7 @@ export async function getRecentOccupancyRate(employeeNumber, dates) {
             })),
         };
     } catch (error) {
+        console.error('## Error when getting recent occupancy rate', error);
         throw error;
     }
 }
