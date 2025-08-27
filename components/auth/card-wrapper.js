@@ -24,9 +24,9 @@ export const CardWrapperComponent = ({
                     <SocialComponent />
                 </CardFooter>
             )}
-            {/* <CardFooter>
+            <CardFooter>
                 <BackButtonComponent label={backButtonLabel} href={backButtonHref} />
-            </CardFooter> */}
+            </CardFooter>
         </Card>
     );
 };
