@@ -1,4 +1,5 @@
-import { Home, Percent, TrendingUp, ClipboardList, Calendar } from 'lucide-react';
+
+import { Home, Percent, TrendingUp, ClipboardList, Calendar, Shield } from 'lucide-react';
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
 import Link from 'next/link';
 
@@ -23,6 +24,7 @@ import {
     HOLIDAYS_ROUTE,
     ASSIGNMENTS_ROUTE,
     OPPORTUNITIES_ROUTE,
+    ADMIN_ROUTE,
 } from '@/routes';
 
 // Menu items.
@@ -53,8 +55,17 @@ const items = [
         icon: TrendingUp,
     },
 ];
-
 export function AppSidebarComponent({ user }) {
+
+
+    if (user.role === 'ADMIN') {
+        items.push({
+            title: 'Admin',
+            url: ADMIN_ROUTE,
+            icon: Shield,
+        });
+    }
+
     return (
         <Sidebar variant="sidebar" collapsible="icon">
             <SidebarHeader>

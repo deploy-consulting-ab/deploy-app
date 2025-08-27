@@ -22,3 +22,4 @@ export const HOLIDAYS_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/occupancy`;
 export const ASSIGNMENTS_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/opportunities`;
+export const ADMIN_ROUTE = `${DEFAULT_REDIRECT_ROUTE}/admin`;

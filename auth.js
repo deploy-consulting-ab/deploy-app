@@ -34,6 +34,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.employeeNumber = token.employeeNumber;
             }
 
+            if (token.role) {
+                session.user.role = token.role;
+            }
+
             return session;
         },
         async jwt({ token }) {
@@ -50,6 +54,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             token.salesforceId = loggedUser['salesforce_id'];
             token.employeeNumber = loggedUser['employee_number'];
+            token.role = loggedUser['role'];
             return token;
         },
     },
