@@ -17,10 +17,15 @@ import { useState } from 'react';
 import { OCCUPANCY_ROUTE } from '@/routes';
 import { ErrorDisplay } from '@/components/errors/error-display';
 
-export function OccupancyCard({ occupancy, refreshAction, isNavigationDisabled }) {
+export function OccupancyCard({
+    occupancy,
+    refreshAction,
+    isNavigationDisabled,
+    error: initialError,
+}) {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [occupancyData, setOccupancyData] = useState(occupancy);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(initialError);
 
     if (error) {
         return (
