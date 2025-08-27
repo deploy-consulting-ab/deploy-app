@@ -41,5 +41,7 @@ export const createUser = async (data) => {
         });
 
         return user;
-    } catch (error) {}
+    } catch (error) {
+        return null;
+    }
 };

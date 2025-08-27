@@ -28,6 +28,7 @@ export const register = async (values) => {
     }
 
     const createdUser = await createUser({ name, email, hashedPassword });
+    console.log('## createdUser', createdUser);
     // TODO: Sent verification token email
 
     return { success: 'User registered!' };
