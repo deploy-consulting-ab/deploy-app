@@ -90,6 +90,10 @@ export async function getRecentOccupancyRate(employeeNumber, dates) {
     try {
         const result = await queryData(getRecentOccupancyRateQuery(employeeNumber, dates));
 
+        if (result?.length === 0) {
+            return null;
+        }
+
         return {
             current: result[0].OccupancyRate__c,
             history: result.slice(1).map((occupancyRate) => ({
@@ -108,6 +112,10 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
         const result = await queryData(
             getOccupancyRateFromLastFiscalYearQuery(employeeNumber, today, lastFiscalYear)
         );
+
+        if (result?.length === 0) {
+            return null;
+        }
 
         return result.map((occupancyRate) => ({
             month: occupancyRate.Month__c + ' ' + occupancyRate.Year__c,
