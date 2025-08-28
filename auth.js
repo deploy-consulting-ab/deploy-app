@@ -2,13 +2,24 @@ import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
-import { getUserById } from '@/data/user';
+import { getUserById, getUserByEmail } from '@/data/user';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(db),
     callbacks: {
-        async signIn({ user }) {
+        async signIn({ user, account }) {            
+
+            if (account?.provider !== 'credentials') {
+                const existingUser = await getUserByEmail(user.email);
+
+                if (!existingUser) {
+                    return false;
+                }
+
+                return true;
+            }
+            
             const existingUser = await getUserById(user.id);
 
             if (!existingUser) {

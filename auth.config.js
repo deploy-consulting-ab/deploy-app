@@ -1,4 +1,5 @@
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 import { LoginSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user';
 import bcryptjs from 'bcryptjs';
@@ -28,6 +29,11 @@ const authObject = {
 
                 return null;
             },
+        }),
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            allowDangerousEmailAccountLinking: true,
         }),
     ],
     jwt: {
