@@ -6,7 +6,7 @@ import { logout } from '@/actions/logout';
 import { useTransition } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 
-export function LogoutButtonComponent({ className }) {
+export function LogoutButtonComponent() {
     const [isPending, startTransition] = useTransition();
 
     const handleLogout = () => {
@@ -19,7 +19,7 @@ export function LogoutButtonComponent({ className }) {
         <Button 
             variant="ghost" 
             size="sm" 
-            className={className}
+            className="hover:cursor-pointer"
             onClick={handleLogout}
             disabled={isPending}
         >
