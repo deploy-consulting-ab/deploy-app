@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Deploy",
-  description: "Deploy App",
+  title: "Tilde",
+  description: "Tilde App",
 };
 
 export default function RootLayout({ children }) {
