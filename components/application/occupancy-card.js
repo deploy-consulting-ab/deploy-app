@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { OCCUPANCY_ROUTE } from '@/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function OccupancyCard({
     occupancy,
@@ -27,19 +28,17 @@ export function OccupancyCard({
     const [occupancyData, setOccupancyData] = useState(occupancy);
     const [error, setError] = useState(initialError);
 
-    if (!occupancyData) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-sm text-muted-foreground">No occupancy data found</p>
-            </div>
-        );
-    }
-
     if (error) {
         return (
             <div>
                 <ErrorDisplayComponent error={error} />
             </div>
+        );
+    }
+
+    if (!occupancyData) {
+        return (
+            <NoDataComponent text="No occupancy data found"/>
         );
     }
 

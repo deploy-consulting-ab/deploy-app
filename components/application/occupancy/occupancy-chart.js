@@ -22,11 +22,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import {
     Select,
     SelectContent,
@@ -36,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 const chartConfig = {
     rate: {
@@ -72,11 +69,7 @@ export function OccupancyChartComponent({ chartData, error }) {
     }
 
     if (!chartData) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-sm text-muted-foreground">No occupancy data found</p>
-            </div>
-        );
+        return <NoDataComponent text="No occupancy data found" />;
     }
 
     const filteredData = chartData.filter((item) => {
@@ -192,8 +185,8 @@ export function OccupancyChartComponent({ chartData, error }) {
             </CardHeader>
             <CardContent className="flex-1 h-[calc(100%-12rem)]">
                 <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)] w-full">
-                    <BarChart 
-                        accessibilityLayer 
+                    <BarChart
+                        accessibilityLayer
                         data={filteredData}
                         barSize={(() => {
                             // Dynamic bar size based on number of bars
@@ -254,17 +247,14 @@ export function OccupancyChartComponent({ chartData, error }) {
                         />
                         <Bar dataKey="rate" radius={8}>
                             {filteredData.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={getOccupancyColor(entry.rate)}
-                                />
+                                <Cell key={`cell-${index}`} fill={getOccupancyColor(entry.rate)} />
                             ))}
                             {!isMobile && (
-                            <LabelList
-                                position="top"
-                                offset={8}
-                                className="fill-foreground"
-                                fontSize={12}
+                                <LabelList
+                                    position="top"
+                                    offset={8}
+                                    className="fill-foreground"
+                                    fontSize={12}
                                     formatter={(value) => `${value}%`}
                                 />
                             )}
