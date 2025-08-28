@@ -22,8 +22,12 @@ import { login } from '@/actions/login';
 import { useState, useTransition } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
+import { useSearchParams } from 'next/navigation';
 
 export const LoginFormComponent = () => {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl');
+
     const form = useForm({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -42,7 +46,7 @@ export const LoginFormComponent = () => {
         setError('');
 
         startTransition(async () => {
-            const response = await login(values);
+            const response = await login(values, callbackUrl);
             setSuccess(response.success);
             setError(response.error);
         });

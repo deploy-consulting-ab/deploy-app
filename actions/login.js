@@ -5,7 +5,7 @@ import { signIn } from '@/auth';
 import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
 import { AuthError } from 'next-auth';
 
-export const login = async (values) => {
+export const login = async (values, callbackUrl) => {
     /**
      * Since a hacker can get this server action ID and execute it from postman,
      * we need to add extra layer of protection and check that the sent stuff is valid
@@ -25,7 +25,7 @@ export const login = async (values) => {
         await signIn('credentials', {
             email,
             password,
-            redirectTo: DEFAULT_REDIRECT_ROUTE,
+            redirectTo: callbackUrl || DEFAULT_REDIRECT_ROUTE,
         });
     } catch (error) {
         if (error instanceof AuthError) {

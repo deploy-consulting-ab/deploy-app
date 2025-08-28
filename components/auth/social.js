@@ -4,10 +4,14 @@ import { FcGoogle } from 'react-icons/fc';
 import { Button } from '@/components/ui/button';
 import { ModeToggleComponent } from '@/components/application/mode-toggle';
 import { loginGoogle } from '@/actions/login-google';
+import { useSearchParams } from 'next/navigation';
 
 export const SocialComponent = () => {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl');
+
     const handleGoogleLogin = () => {
-        loginGoogle();
+        loginGoogle(callbackUrl);
     };
 
     return (

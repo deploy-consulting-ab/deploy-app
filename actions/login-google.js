@@ -3,8 +3,8 @@
 import { signIn } from '@/auth';
 import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
 
-export const loginGoogle = async () => {
+export const loginGoogle = async (callbackUrl) => {
     await signIn('google', {
-        redirectTo: DEFAULT_REDIRECT_ROUTE,
+        redirectTo: callbackUrl || DEFAULT_REDIRECT_ROUTE,
     });
 };
