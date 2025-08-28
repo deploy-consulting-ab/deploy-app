@@ -1,6 +1,6 @@
 import { AlertCircle, WifiOff, Search, AlertTriangle } from "lucide-react";
 
-export function ErrorDisplay({ error }) {
+export function ErrorDisplayComponent({ error }) {
   // Default error state
   let title = "An error occurred";
   let message = "Please try again later";

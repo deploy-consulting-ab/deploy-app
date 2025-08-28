@@ -3,7 +3,7 @@
 import { WeeklyTimecardComponent } from "./weekly-timecard";
 import { TimecardFilters } from "./timecard-filters";
 import { useState, useMemo } from "react";
-import { ErrorDisplay } from "@/components/errors/error-display";
+import { ErrorDisplayComponent } from "@/components/errors/error-display";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -36,7 +36,7 @@ export function TimecardListComponent({ timecards = [], error }) {
     }, [timecards, selectedDate]);
 
     if (error) {
-        return <ErrorDisplay error={error} />;
+        return <ErrorDisplayComponent error={error} />;
     }
 
     // Calculate pagination

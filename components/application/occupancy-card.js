@@ -15,7 +15,7 @@ import { RefreshCw, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { OCCUPANCY_ROUTE } from '@/routes';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function OccupancyCard({
     occupancy,
@@ -38,7 +38,7 @@ export function OccupancyCard({
     if (error) {
         return (
             <div>
-                <ErrorDisplay error={error} />
+                <ErrorDisplayComponent error={error} />
             </div>
         );
     }

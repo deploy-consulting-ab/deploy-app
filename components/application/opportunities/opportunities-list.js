@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
 import { useState } from 'react';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
     const router = useRouter();
@@ -194,7 +194,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
     ];
 
     if (error) {
-        return <ErrorDisplay error={error} />;
+        return <ErrorDisplayComponent error={error} />;
     }
 
     return (

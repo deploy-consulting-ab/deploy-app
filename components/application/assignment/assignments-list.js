@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { useState, useMemo } from 'react';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
@@ -160,7 +160,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
     ];
 
     if (error) {
-        return <ErrorDisplay error={error} />;
+        return <ErrorDisplayComponent error={error} />;
     }
 
     return (

@@ -35,7 +35,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 const chartConfig = {
     rate: {
@@ -66,7 +66,7 @@ export function OccupancyChartComponent({ chartData, error }) {
     if (error) {
         return (
             <div>
-                <ErrorDisplay error={error} />
+                <ErrorDisplayComponent error={error} />
             </div>
         );
     }

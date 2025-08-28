@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function HolidaysCalendar({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
@@ -38,7 +38,7 @@ export function HolidaysCalendar({ holidays, error }) {
     if (error) {
         return (
             <div>
-                <ErrorDisplay error={error} />
+                <ErrorDisplayComponent error={error} />
             </div>
         );
     }

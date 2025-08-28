@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, ChevronRight, RefreshCw } from 'lucide-react';
-import { ErrorDisplay } from '@/components/errors/error-display';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
@@ -68,7 +68,7 @@ export function HolidaysCard({
     if (error) {
         return (
             <div>
-                <ErrorDisplay error={error} />
+                <ErrorDisplayComponent error={error} />
             </div>
         );
     }
