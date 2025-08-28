@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { useState, useMemo } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
@@ -161,6 +162,10 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
+    }
+
+    if (!assignmentData) {
+        return <NoDataComponent text="No assignments found" />;
     }
 
     return (

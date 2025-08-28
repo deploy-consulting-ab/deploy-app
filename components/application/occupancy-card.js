@@ -37,9 +37,7 @@ export function OccupancyCard({
     }
 
     if (!occupancyData) {
-        return (
-            <NoDataComponent text="No occupancy data found"/>
-        );
+        return <NoDataComponent text="No occupancy data found" />;
     }
 
     const handleRefresh = async () => {
