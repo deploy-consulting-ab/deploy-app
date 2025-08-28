@@ -27,7 +27,7 @@ export const LoginFormGoogleComponent = () => {
                     onClick={handleGoogleLogin}
                 >
                     <FcGoogle className="h-5 w-5" />
-                    <span>Continue with Google</span>
+                    <span className="dark:text-black">Continue with Google</span>
                 </Button>
             </div>
         </CardWrapperComponent>
