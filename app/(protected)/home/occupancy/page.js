@@ -22,16 +22,24 @@ export default async function OccupancyPage() {
     const previousFiscalYearStartDate = getFiscalYearStartDate(previousFiscalYear);
     const formattedPreviousFiscalYearStartDate = formatDateToISOString(previousFiscalYearStartDate);
 
-    const occupancyRates = await getOccupancyRateFromLastFiscalYear(
-        employeeNumber,
-        formattedToday,
-        formattedPreviousFiscalYearStartDate
-    );
+    let occupancyRates = null;
+    let error = null;
+
+    try {
+        occupancyRates = await getOccupancyRateFromLastFiscalYear(
+            employeeNumber,
+            formattedToday,
+            formattedPreviousFiscalYearStartDate
+        );
+    } catch (err) {
+        error = err;
+    }
 
     return (
         <div className="py-4">
             <OccupancyChartComponent
                 chartData={occupancyRates}
+                error={error}
             />
         </div>
     );

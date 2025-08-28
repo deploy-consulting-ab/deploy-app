@@ -35,6 +35,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { ErrorDisplay } from '@/components/errors/error-display';
 
 const chartConfig = {
     rate: {
@@ -52,7 +53,7 @@ const getOccupancyColor = (value) => {
     return 'var(--occupancy-color-critical-low)'; // gray for too low
 };
 
-export function OccupancyChartComponent({ chartData }) {
+export function OccupancyChartComponent({ chartData, error }) {
     const isMobile = useIsMobile();
     const [timeRange, setTimeRange] = React.useState('90d');
 
@@ -61,6 +62,14 @@ export function OccupancyChartComponent({ chartData }) {
             setTimeRange('90d');
         }
     }, [isMobile]);
+
+    if (error) {
+        return (
+            <div>
+                <ErrorDisplay error={error} />
+            </div>
+        );
+    }
 
     if (!chartData) {
         return (
