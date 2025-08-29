@@ -84,7 +84,7 @@ export function OccupancyCard({
                     </div>
                 </CardAction>
             </CardHeader>
-            <CardContent className="py-4">
+            <CardContent>
                 <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
                         <Users className="h-6 w-6 text-white" />
