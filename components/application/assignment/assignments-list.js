@@ -164,7 +164,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         return <ErrorDisplayComponent error={error} />;
     }
 
-    if (!assignmentData) {
+    if (!assignmentData || assignmentData.length === 0) {
         return <NoDataComponent text="No assignments found" />;
     }
 
