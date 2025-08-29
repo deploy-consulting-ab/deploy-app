@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { ReadOnlyCalendar } from "@/components/ui/read-only-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDateToSwedish } from "@/lib/utils";
@@ -35,7 +35,7 @@ export function TimecardFilters({
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
+                            <ReadOnlyCalendar
                                 mode="single"
                                 selected={date}
                                 onSelect={handleSelect}

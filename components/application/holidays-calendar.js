@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar } from '@/components/ui/calendar';
+import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
 import {
     Card,
     CardContent,
@@ -17,16 +17,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function HolidaysCalendar({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
-    const [selectedDates, setSelectedDates] = useState(holidays?.allHolidaysRange || []);
     const isSingleColumn = useLayoutSize(1260);
-
-    useEffect(() => {
-        setSelectedDates(holidays?.allHolidaysRange || []);
-    }, [holidays]);
-
-    const handleSelect = (dates) => {
-        setSelectedDates(dates || []);
-    };
 
     const handleToday = () => {
         const today = new Date();
@@ -59,16 +50,15 @@ export function HolidaysCalendar({ holidays, error }) {
             </CardHeader>
             <CardContent className="p-0">
                 <div className="w-full h-full flex items-center justify-center">
-                    <Calendar
+                    <ReadOnlyCalendar
                         mode="multiple"
                         defaultMonth={month}
                         month={month}
                         onMonthChange={setMonth}
-                        selected={selectedDates}
+                        selected={holidays?.allHolidaysRange || []}
                         numberOfMonths={isSingleColumn ? 1 : 2}
-                        onSelect={handleSelect}
                         locale={enGB}
-                        disabled={{ dayOfWeek: [0, 6] }}
+                        disabled
                         showWeekNumber
                         showOutsideDays={false}
                         className="w-full flex items-center justify-center rounded-lg"
