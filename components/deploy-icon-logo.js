@@ -1,7 +1,7 @@
 import React from 'react';
 import './deploy-logo.css';
 
-const DeployLogo = ({ className = "h-6 md:h-8 w-auto z-[99] relative" }) => {
+const DeployIconLogo = ({ className = "h-6 md:h-8 w-auto z-[99] relative" }) => {
   return (
     <svg
       id="Layer_2"
@@ -26,4 +26,4 @@ const DeployLogo = ({ className = "h-6 md:h-8 w-auto z-[99] relative" }) => {
   );
 };
 
-export default DeployLogo;
+export default DeployIconLogo;
