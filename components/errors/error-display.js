@@ -48,11 +48,11 @@ export function ErrorDisplayComponent({ error }) {
   const IconComponent = icon;
 
   return (
-    <div className={`p-4 rounded-lg border ${variantStyles[variant]} flex items-start gap-3`}>
+    <div className={`p-4 rounded-lg border ${variantStyles[variant]} flex items-start gap-3 break-words`}>
       <IconComponent className="h-5 w-5 mt-0.5 flex-shrink-0" />
-      <div>
-        <h3 className="font-semibold mb-1">{title}</h3>
-        <p className="text-sm opacity-90">{message}</p>
+      <div className="min-w-0">
+        <h3 className="font-semibold mb-1 break-words">{title}</h3>
+        <p className="text-sm opacity-90 break-words whitespace-pre-wrap">{message}</p>
       </div>
     </div>
   );
