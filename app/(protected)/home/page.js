@@ -48,23 +48,21 @@ export default async function HomePage() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-1 space-y-8 pt-4">
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                    <HolidaysCard
-                        holidays={holidays}
-                        error={error}
-                        isNavigationDisabled={false}
-                        refreshAction={refreshHolidayData}
-                    />
-                    <OccupancyCard
-                        occupancy={occupancyRates}
-                        error={error}
-                    />
-                </div>
-                <div>
-                    <UsefulLinksGrid links={homePageLinks} title="Quick Access" />
-                </div>
+        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                <HolidaysCard
+                    holidays={holidays}
+                    error={error}
+                    isNavigationDisabled={false}
+                    refreshAction={refreshHolidayData}
+                />
+                <OccupancyCard
+                    occupancy={occupancyRates}
+                    error={error}
+                />
+            </div>
+            <div className="self-start">
+                <UsefulLinksGrid links={homePageLinks} title="Quick Access" />
             </div>
         </div>
     );

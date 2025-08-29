@@ -28,16 +28,14 @@ export default async function HolidaysPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-1 space-y-8 pt-4">
-                <HolidaysWrapper
+        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+            <HolidaysWrapper
                     initialData={data}
                     refreshAction={refreshHolidayData}
                     error={error}
                 />
-                <div className="w-full">
-                    <UsefulLinksGrid links={timeReportingLinks} title="Flex" />
-                </div>
+            <div className="self-start">
+                <UsefulLinksGrid links={timeReportingLinks} title="Flex" />
             </div>
         </div>
     );
