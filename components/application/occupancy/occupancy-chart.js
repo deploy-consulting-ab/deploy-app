@@ -214,28 +214,6 @@ export function OccupancyChartComponent({ chartData, error }) {
                             tickFormatter={(value) => `${value}%`}
                             width={45}
                         />
-                        <ReferenceLine
-                            y={85}
-                            stroke="var(--muted-foreground)"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: 'Target (85%)',
-                                position: 'insideTopRight',
-                                fill: 'var(--muted-foreground)',
-                                fontSize: 12,
-                            }}
-                        />
-                        <ReferenceLine
-                            y={120}
-                            stroke="var(--muted-foreground)"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: 'Max',
-                                position: 'insideTopRight',
-                                fill: 'var(--muted-foreground)',
-                                fontSize: 12,
-                            }}
-                        />
                         <ChartTooltip
                             cursor={false}
                             content={
@@ -259,6 +237,28 @@ export function OccupancyChartComponent({ chartData, error }) {
                                 />
                             )}
                         </Bar>
+                        <ReferenceLine
+                            y={85}
+                            stroke="var(--muted-foreground)"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: 'Target (85%)',
+                                position: 'insideTopRight',
+                                fill: 'var(--muted-foreground)',
+                                fontSize: 12,
+                            }}
+                        />
+                        <ReferenceLine
+                            y={120}
+                            stroke="var(--muted-foreground)"
+                            strokeDasharray="3 3"
+                            label={{
+                                value: 'Max',
+                                position: 'insideTopRight',
+                                fill: 'var(--muted-foreground)',
+                                fontSize: 12,
+                            }}
+                        />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
