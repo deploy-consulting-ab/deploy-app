@@ -18,6 +18,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Tilde",
   description: "Tilde App",
+  icons: {
+    icon: [
+      {
+        url: '/images/favicon.png',
+        sizes: '64x64',
+        type: 'image/png',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
