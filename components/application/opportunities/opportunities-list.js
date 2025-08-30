@@ -4,18 +4,15 @@ import { DatatableWrapperComponent } from '@/components/application/datatable-wr
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { OpportunityCardPhoneComponent } from './opportunity-card-phone';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
-    const router = useRouter();
-    const handleAssignmentClick = (id) => {
-        // router.push(`/home/opportunities/${id}`);
-    };
-
     const getStageColor = (stage) => {
         switch (stage.toLowerCase()) {
             case 'closed won':
@@ -39,8 +36,9 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
     const [error, setError] = useState(initialError);
 
     const handleRefresh = async () => {
+        let freshData = null;
         try {
-            const freshData = await getOpportunities(employeeNumber);
+            freshData = await getOpportunities();
             setOpportunities(freshData);
             setError(null);
         } catch (err) {
@@ -85,8 +83,6 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
 
                 return (
                     <div
-                        className="cursor-pointer text-blue-600 hover:underline truncate"
-                        onClick={() => handleAssignmentClick(id)}
                         title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}
@@ -193,8 +189,106 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         },
     ];
 
+    const [isMobile, setIsMobile] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedView, setSelectedView] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768); // 768px is typical md breakpoint
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Reset to first page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedView]);
+
+    const filteredOpportunities = opportunitiesData
+        .filter(opp => selectedView === 'all' || opp.stage === selectedView)
+        .filter(opp => 
+            searchQuery === '' || 
+            opp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            opp.accountName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
     if (error) {
         return <ErrorDisplayComponent error={error} />;
+    }
+
+    if (isMobile) {
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const paginatedOpportunities = filteredOpportunities.slice(startIndex, startIndex + itemsPerPage);
+        
+        return (
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <Input
+                        placeholder="Search opportunities..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full"
+                    />
+                    <Select value={selectedView} onValueChange={setSelectedView}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Filter by stage" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {views.map((view) => (
+                                <SelectItem key={view.value} value={view.value}>
+                                    {view.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-4">
+                    {paginatedOpportunities.map((opportunity) => (
+                        <OpportunityCardPhoneComponent
+                            key={opportunity.id}
+                            opportunity={opportunity}
+                            onClick={handleOpportunityClick}
+                        />
+                    ))}
+                    {filteredOpportunities.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                            No opportunities found
+                        </div>
+                    )}
+                </div>
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between pt-4">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </Button>
+                        <span className="text-sm text-gray-600">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                )}
+            </div>
+        );
     }
 
     return (
