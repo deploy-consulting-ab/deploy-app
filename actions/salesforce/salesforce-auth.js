@@ -14,11 +14,8 @@ let connection = null;
 export async function getSalesforceConnection() {
     // If we already have a connection and its access token is valid, return it.
     if (connection && connection.accessToken) {
-        console.log('Using cached jsforce connection.');
         return connection;
     }
-
-    console.log('No valid jsforce connection found. Creating new one.');
 
     // Create a new connection instance.
     // The 'oauth2' property will be used for the Username-Password flow.
@@ -39,11 +36,7 @@ export async function getSalesforceConnection() {
         await newConnection.login(
             process.env.SALESFORCE_USERNAME,
             `${process.env.SALESFORCE_PASSWORD}${process.env.SALESFORCE_SECURITY_TOKEN}`
-        );
-
-        console.log('Successfully logged in to Salesforce.');
-        console.log('Instance URL:', newConnection.instanceUrl);
-        console.log('Access Token:', newConnection.accessToken.substring(0, 10) + '...'); // Don't log the full token in production
+        ); // Don't log the full token in production
 
         // Cache the successful connection
         connection = newConnection;

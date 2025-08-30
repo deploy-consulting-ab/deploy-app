@@ -32,10 +32,6 @@ export const fetchOpportunities = async () => {
     ];
 
     const totalAmount = opportunities.map(opportunity => opportunity.amount).reduce((totalAmount, amount) => totalAmount + amount);
-
-    console.log('Total amount', totalAmount);
-    
-
     return {
         opportunities, totalAmount
     };
