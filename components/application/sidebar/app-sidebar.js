@@ -1,3 +1,4 @@
+'use client';
 
 import { Home, Percent, TrendingUp, ClipboardList, Calendar, Shield } from 'lucide-react';
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
@@ -15,6 +16,7 @@ import {
     SidebarMenuItem,
     SidebarFooter,
     SidebarRail,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 
@@ -28,6 +30,15 @@ import {
 } from '@/routes';
 
 export function AppSidebarComponent({ user }) {
+    const { isMobile, setOpenMobile } = useSidebar();
+
+    // Function to handle menu item clicks
+    const handleMenuClick = () => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    };
+
     // Menu items defined inside component to avoid shared state
     const items = [
         {
@@ -79,7 +90,7 @@ export function AppSidebarComponent({ user }) {
                             {menuItems.map((menu) => (
                                 <SidebarMenuItem key={menu.title}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={menu.url}>
+                                        <Link href={menu.url} onClick={handleMenuClick}>
                                             <menu.icon />
                                             <span>{menu.title}</span>
                                         </Link>
