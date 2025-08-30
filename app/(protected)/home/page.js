@@ -14,8 +14,19 @@ async function refreshHolidayData() {
     'use server';
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
-    const data = await getAbsenceApplications(employeeNumber, { cache: 'no-store' });
-    return data;
+    const holidays = await getAbsenceApplications(employeeNumber, { cache: 'no-store' });
+    return holidays;
+}
+
+async function refreshOccupancyData() {
+    'use server';
+    const session = await auth();
+    const employeeNumber = session.user.employeeNumber;
+    const today = new Date();
+    const formattedToday = formatDateToISOString(today);
+
+    const occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
+    return occupancyRates;
 }
 
 export default async function HomePage() {
@@ -59,6 +70,7 @@ export default async function HomePage() {
                 <OccupancyCard
                     occupancy={occupancyRates}
                     error={error}
+                    refreshAction={refreshOccupancyData}
                 />
             </div>
             <div className="self-start">
