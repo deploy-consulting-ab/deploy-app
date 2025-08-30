@@ -149,11 +149,11 @@ export function OccupancyChartComponent({ chartData, error }) {
                         variant="outline"
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
-                        <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
-                        <ToggleGroupItem value="FY">Current FY</ToggleGroupItem>
-                        <ToggleGroupItem value="PFY">Previous FY</ToggleGroupItem>
-                        <ToggleGroupItem value="CURRENT_MONTH">Current month</ToggleGroupItem>
-                        <ToggleGroupItem value="LAST_MONTH">Last month</ToggleGroupItem>
+                        <ToggleGroupItem value="90d" className="hover:cursor-pointer">Last 3 months</ToggleGroupItem>
+                        <ToggleGroupItem value="FY" className="hover:cursor-pointer">Current FY</ToggleGroupItem>
+                        <ToggleGroupItem value="PFY" className="hover:cursor-pointer">Previous FY</ToggleGroupItem>
+                        <ToggleGroupItem value="CURRENT_MONTH" className="hover:cursor-pointer">Current month</ToggleGroupItem>
+                        <ToggleGroupItem value="LAST_MONTH" className="hover:cursor-pointer">Last month</ToggleGroupItem>
                     </ToggleGroup>
                     <Select value={timeRange} onValueChange={setTimeRange}>
                         <SelectTrigger
@@ -164,19 +164,19 @@ export function OccupancyChartComponent({ chartData, error }) {
                             <SelectValue placeholder="Current FY" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
-                            <SelectItem value="FY" className="rounded-lg">
-                                Current FY
-                            </SelectItem>
-                            <SelectItem value="PFY" className="rounded-lg">
-                                Previous FY
-                            </SelectItem>
-                            <SelectItem value="90d" className="rounded-lg">
+                            <SelectItem value="90d">
                                 Last 3 months
                             </SelectItem>
-                            <SelectItem value="CURRENT_MONTH" className="rounded-lg">
+                            <SelectItem value="FY">
+                                Current FY
+                            </SelectItem>
+                            <SelectItem value="PFY">
+                                Previous FY
+                            </SelectItem>
+                            <SelectItem value="CURRENT_MONTH">
                                 Current month
                             </SelectItem>
-                            <SelectItem value="LAST_MONTH" className="rounded-lg">
+                            <SelectItem value="LAST_MONTH">
                                 Last month
                             </SelectItem>
                         </SelectContent>
