@@ -48,8 +48,11 @@
   --occupancy-color-optimal: var(--occupancy-color-optimal);
   --occupancy-color-full: var(--occupancy-color-full);
   --occupancy-color-critical-high: var(--occupancy-color-critical-high);
-  --deploy-light: var(--deploy-light);
-  --deploy-dark: var(--deploy-dark);
+  --color-deploy-teal: var(--deploy-teal);
+  --color-deploy-blue: var(--deploy-blue);
+  --color-deploy-ocean: var(--deploy-ocean);
+  --color-deploy-purple: var(--deploy-purple);
+  --color-deploy-gray: var(--deploy-gray);
 }
 
 :root {
@@ -86,7 +89,15 @@
   --sidebar-accent-foreground: var(--deploy-light);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --deploy-light: oklch(0.5474 0.0839 240.35);
+
+  /* Deploy colors */
+  --deploy-teal: oklch(0.6519 0.0827 200.48);
+  --deploy-blue: oklch(0.5474 0.0839 240.35);
+  --deploy-ocean: oklch(0.6926 0.0806 236.83);
+  --deploy-purple: oklch(0.6267 0.1997 277.38);
+  --deploy-gray: oklch(0.2478 0 0);
+
+  --deploy-light: var(--deploy-blue);
   
   /* Occupancy colors - Using 240.35 - #3f779d in OKLCH with different opacities */
   --deploy-chart: 240.35;
@@ -149,7 +160,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: var(--deploy-dark);
 
-  --deploy-dark: oklch(0.6267 0.1997 277.38);
+  --deploy-dark: var(--deploy-purple);
 
   /* Occupancy colors - Using 277.38 - #6f74fd in OKLCH with different opacities */
   --deploy-chart: 277.385;
