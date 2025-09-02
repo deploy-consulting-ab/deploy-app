@@ -218,7 +218,6 @@ export function OccupancyChartComponent({ chartData, error }) {
                             cursor={false}
                             content={
                                 <ChartTooltipContent
-                                    hideLabel
                                     formatter={(value) => 'Occupancy: ' + value + '%'}
                                 />
                             }
