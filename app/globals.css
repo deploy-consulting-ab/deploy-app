@@ -88,32 +88,32 @@
   --sidebar-ring: oklch(0.708 0 0);
   --deploy-light: oklch(0.5474 0.0839 240.35);
   
-  /* Occupancy colors - Using 240.35 in OKLCH with different opacities */
+  /* Occupancy colors - Using 240.35 - #3f779d in OKLCH with different opacities */
   --deploy-chart: 240.35;
 
   /* --- Below Target (Problematic) --- */
   /* 0% - 70%: Very transparent blue */
-  --occupancy-color-critical-low: oklch(60% 0.1 var(--deploy-chart) / 0.3);
+  --occupancy-color-critical-low: oklch(0.5474 0.0839 var(--deploy-chart) / 0.3);
 
   /* --- Approaching Target --- */
   /* 70% - 85%: Light transparency */
-  --occupancy-color-warning-low: oklch(60% 0.1 var(--deploy-chart) / 0.5);
+  --occupancy-color-warning-low: oklch(0.5474 0.0839 var(--deploy-chart) / 0.5);
 
   /* --- Target Range (Good) --- */
   /* 85% - 93%: Medium transparency - getting closer to ideal */
-  --occupancy-color-target: oklch(60% 0.1 var(--deploy-chart) / 0.7);
+  --occupancy-color-target: oklch(0.5474 0.0839 var(--deploy-chart) / 0.7);
 
   /* --- Nearing Full (Optimal) --- */
   /* 93% - 100%: Almost solid - optimal range */
-  --occupancy-color-optimal: oklch(60% 0.1 var(--deploy-chart) / 0.85);
+  --occupancy-color-optimal: oklch(0.5474 0.0839 var(--deploy-chart) / 0.85);
 
   /* --- Full Capacity --- */
   /* 100% - 120%: Solid color - at capacity */
-  --occupancy-color-full: oklch(60% 0.1 var(--deploy-chart));
+  --occupancy-color-full: oklch(0.5474 0.0839 var(--deploy-chart));
 
   /* --- Over Capacity (Problematic) --- */
   /* 120%+: Fully saturated - over capacity */
-  --occupancy-color-critical-high: oklch(60% 0.1 var(--deploy-chart));
+  --occupancy-color-critical-high: oklch(0.5474 0.0839 var(--deploy-chart));
 }
 
 .dark {
@@ -151,32 +151,32 @@
 
   --deploy-dark: oklch(0.6267 0.1997 277.38);
 
-  /* Occupancy colors - Using 277.38 in OKLCH with different opacities */
+  /* Occupancy colors - Using 277.38 - #6f74fd in OKLCH with different opacities */
   --deploy-chart: 277.385;
 
   /* --- Below Target (Problematic) --- */
   /* 0% - 70%: Very transparent blue */
-  --occupancy-color-critical-low: oklch(60% 0.1 var(--deploy-chart) / 0.3);
+  --occupancy-color-critical-low: oklch(0.6267 0.1997 var(--deploy-chart) / 0.3);
 
   /* --- Approaching Target --- */
   /* 70% - 85%: Light transparency */
-  --occupancy-color-warning-low: oklch(60% 0.1 var(--deploy-chart) / 0.5);
+  --occupancy-color-warning-low: oklch(0.6267 0.1997 var(--deploy-chart) / 0.5);
 
   /* --- Target Range (Good) --- */
   /* 85% - 93%: Medium transparency - getting closer to ideal */
-  --occupancy-color-target: oklch(60% 0.1 var(--deploy-chart) / 0.7);
+  --occupancy-color-target: oklch(0.6267 0.1997 var(--deploy-chart) / 0.7);
 
   /* --- Nearing Full (Optimal) --- */
   /* 93% - 100%: Almost solid - optimal range */
-  --occupancy-color-optimal: oklch(60% 0.1 var(--deploy-chart) / 0.85);
+  --occupancy-color-optimal: oklch(0.6267 0.1997 var(--deploy-chart) / 0.85);
 
   /* --- Full Capacity --- */
   /* 100% - 120%: Solid color - at capacity */
-  --occupancy-color-full: oklch(60% 0.1 var(--deploy-chart));
+  --occupancy-color-full: oklch(0.6267 0.1997 var(--deploy-chart));
 
   /* --- Over Capacity (Problematic) --- */
   /* 120%+: Fully saturated - over capacity */
-  --occupancy-color-critical-high: oklch(60% 0.1 var(--deploy-chart));
+  --occupancy-color-critical-high: oklch(0.6267 0.1997 var(--deploy-chart));
 }
 
 /* Custom input focus */
