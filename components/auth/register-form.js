@@ -36,7 +36,7 @@ export const RegisterFormComponent = () => {
             password: '',
             name: '',
             employeeNumber: '',
-            role: 'USER',
+            role: 'ADMIN',
         },
     });
 
@@ -59,7 +59,7 @@ export const RegisterFormComponent = () => {
                     password: '',
                     name: '',
                     employeeNumber: '',
-                    role: 'USER',
+                    role: 'ADMIN',
                 });
             }
         });
@@ -170,7 +170,9 @@ export const RegisterFormComponent = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="USER">User</SelectItem>
+                                            <SelectItem value="CONSULTANT">Consultant</SelectItem>
+                                            <SelectItem value="SALES">Sales</SelectItem>
+                                            <SelectItem value="MANAGEMENT">Management</SelectItem>
                                             <SelectItem value="ADMIN">Admin</SelectItem>
                                         </SelectContent>
                                     </Select>

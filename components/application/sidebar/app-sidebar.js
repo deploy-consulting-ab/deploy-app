@@ -21,7 +21,7 @@ import {
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 
 import {
-    DEFAULT_REDIRECT_ROUTE,
+    HOME_ROUTE,
     OCCUPANCY_ROUTE,
     HOLIDAYS_ROUTE,
     ASSIGNMENTS_ROUTE,
@@ -43,7 +43,7 @@ export function AppSidebarComponent({ user }) {
     const items = [
         {
             title: 'Home',
-            url: DEFAULT_REDIRECT_ROUTE,
+            url: HOME_ROUTE,
             icon: Home,
         },
         {

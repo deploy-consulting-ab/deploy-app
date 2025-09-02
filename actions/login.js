@@ -2,7 +2,7 @@
 
 import { LoginSchema } from '@/schemas';
 import { signIn } from '@/auth';
-import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
+import { HOME_ROUTE } from '@/routes';
 import { AuthError } from 'next-auth';
 
 export const login = async (values, callbackUrl) => {
@@ -25,7 +25,7 @@ export const login = async (values, callbackUrl) => {
         await signIn('credentials', {
             email,
             password,
-            redirectTo: callbackUrl || DEFAULT_REDIRECT_ROUTE,
+            redirectTo: callbackUrl || HOME_ROUTE,
         });
     } catch (error) {
         if (error instanceof AuthError) {

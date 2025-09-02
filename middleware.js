@@ -1,28 +1,36 @@
-import authConfig from '@/auth.config';
-import NextAuth from 'next-auth';
+import {
+    LOGIN_ROUTE,
+    HOME_ROUTE,
+    API_AUTH_PREFIX,
+    AUTH_ROUTES,
+    PUBLIC_ROUTES,
+    CONSULTANTS_ROUTES,
+    SALES_ROUTES,
+    GENERAL_ROUTES,
+} from '@/routes';
 
-import { LOGIN_ROUTE, DEFAULT_REDIRECT_ROUTE, apiAuthPrefix, authRoutes, publicRoutes } from '@/routes';
-
-// Use auth config compatible the edge
-const { auth } = NextAuth(authConfig);
+// Import the configured auth instance instead of creating a new one
+import { auth } from '@/auth';
 
 export default auth((req) => {
     const { nextUrl } = req;
 
     const isLoggedIn = !!req.auth;
+    const user = req.auth?.user;
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-    const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+    const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
+    const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
+    const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
+    // API auth routes
     if (isApiAuthRoute) {
         return null; // No action -> Allow access
     }
 
+    // Auth routes
     if (isAuthRoute) {
         if (isLoggedIn) {
-            // Redirect to /home
-            return Response.redirect(new URL(DEFAULT_REDIRECT_ROUTE, nextUrl));
+            return Response.redirect(new URL(HOME_ROUTE, nextUrl));
         }
         // Allow access
         return null;
@@ -30,7 +38,6 @@ export default auth((req) => {
 
     // Not public and not logged in? -> Redirect to login
     if (!isPublicRoute && !isLoggedIn) {
-
         let callbackUrl = nextUrl.pathname;
 
         if (nextUrl.search) {
@@ -38,14 +45,40 @@ export default auth((req) => {
         }
 
         const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-        
-        return Response.redirect(new URL(`${LOGIN_ROUTE}?callbackUrl=${encodedCallbackUrl}`, nextUrl));
+
+        return Response.redirect(
+            new URL(`${LOGIN_ROUTE}?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+        );
     }
 
-    return null;
-
-
+    return handleLoggedInUsers(nextUrl, user?.role);
 });
+
+const handleLoggedInUsers = (nextUrl, role) => {
+    if (GENERAL_ROUTES.includes(nextUrl.pathname)) {
+        return null;
+    }
+
+    if (role === 'CONSULTANT') {
+        if (CONSULTANTS_ROUTES.includes(nextUrl.pathname)) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    if (role === 'ADMIN') {
+        return null;
+    }
+
+    if (role === 'SALES') {
+        if (SALES_ROUTES.includes(nextUrl.pathname)) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+};
 
 /**
  * Every in the regex will invoke the middleware

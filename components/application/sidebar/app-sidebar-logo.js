@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
 } from '@/components/ui/sidebar';
 
-import { DEFAULT_REDIRECT_ROUTE } from '@/routes';
+import { HOME_ROUTE } from '@/routes';
 
 export function AppSidebarLogoComponent() {
     const { state } = useSidebar();
@@ -19,7 +19,7 @@ export function AppSidebarLogoComponent() {
         <SidebarMenu>
             <SidebarMenuItem>
                 <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2">
-                    <Link href={DEFAULT_REDIRECT_ROUTE}>
+                    <Link href={HOME_ROUTE}>
                         {state === 'collapsed' ? (
                             <div className="flex aspect-square size-25 items-center justify-center">
                                 <DeployIconLogo className="h-10 w-auto z-[99] relative" />

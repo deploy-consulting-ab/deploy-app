@@ -8,8 +8,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(db),
     callbacks: {
-        async signIn({ user, account }) {            
-
+        async signIn({ user, account }) {
             if (account?.provider !== 'credentials') {
                 const existingUser = await getUserByEmail(user.email);
 
@@ -19,7 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 return true;
             }
-            
+
             const existingUser = await getUserById(user.id);
 
             if (!existingUser) {
@@ -51,21 +50,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return session;
         },
-        async jwt({ token }) {
-            // Check if I am logged out
-            if (!token.sub) {
-                return token;
+        async jwt({ token, user }) {
+            if (user) {
+                // This runs only on sign in
+                token.salesforceId = user.salesforce_id;
+                token.employeeNumber = user.employee_number;
+                token.role = user.role;
             }
-
-            // Token sub equals to the user id in the database
-            const loggedUser = await getUserById(token.sub);
-            if (!loggedUser) {
-                return token;
-            }
-
-            token.salesforceId = loggedUser['salesforce_id'];
-            token.employeeNumber = loggedUser['employee_number'];
-            token.role = loggedUser['role'];
             return token;
         },
     },

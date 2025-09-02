@@ -11,8 +11,10 @@ generator client {
 }
 
 enum UserRole {
-  USER
   ADMIN
+  CONSULTANT
+  SALES
+  MANAGEMENT
 }
 
 model User {
@@ -24,7 +26,7 @@ model User {
   employee_number String? @unique
   image         String?
   password      String?
-  role          UserRole  @default(USER)
+  role          UserRole  @default(CONSULTANT)
   accounts      Account[]
 
   createdAt DateTime? @default(now())
