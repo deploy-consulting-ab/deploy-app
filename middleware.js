@@ -1,3 +1,6 @@
+import authConfig from '@/auth.config';
+import NextAuth from 'next-auth';
+
 import {
     LOGIN_ROUTE,
     HOME_ROUTE,
@@ -12,27 +15,25 @@ import {
 
 import { ADMIN_ROLE, CONSULTANT_ROLE, SALES_ROLE, MANAGEMENT_ROLE } from '@/menus/roles';
 
-// Import the configured auth instance instead of creating a new one
-import { auth } from '@/auth';
+// Use auth config compatible the edge
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
     const { nextUrl } = req;
 
     const isLoggedIn = !!req.auth;
-    const user = req.auth?.user;
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
     const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
     const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
-    // API auth routes
     if (isApiAuthRoute) {
         return null; // No action -> Allow access
     }
 
-    // Auth routes
     if (isAuthRoute) {
         if (isLoggedIn) {
+            // Redirect to /home
             return Response.redirect(new URL(HOME_ROUTE, nextUrl));
         }
         // Allow access
@@ -41,6 +42,7 @@ export default auth((req) => {
 
     // Not public and not logged in? -> Redirect to login
     if (!isPublicRoute && !isLoggedIn) {
+
         let callbackUrl = nextUrl.pathname;
 
         if (nextUrl.search) {
@@ -48,13 +50,11 @@ export default auth((req) => {
         }
 
         const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-
-        return Response.redirect(
-            new URL(`${LOGIN_ROUTE}?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-        );
+        
+        return Response.redirect(new URL(`${LOGIN_ROUTE}?callbackUrl=${encodedCallbackUrl}`, nextUrl));
     }
 
-    return handleLoggedInUsers(nextUrl, user?.role);
+    return handleLoggedInUsers(nextUrl, req.auth.user.role);
 });
 
 const handleLoggedInUsers = (nextUrl, role) => {

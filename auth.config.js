@@ -5,6 +5,25 @@ import { getUserByEmail } from '@/data/user';
 import bcryptjs from 'bcryptjs';
 
 const authObject = {
+    // Add this callbacks to the auth config because NextAuth is not using the callbacks from the auth.js file due to Prisma and Edge Runtime issues
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.role = user.role;
+                token.salesforceId = user.salesforce_id;
+                token.employeeNumber = user.employee_number;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.role = token.role;
+                session.user.salesforceId = token.salesforceId;
+                session.user.employeeNumber = token.employeeNumber;
+            }
+            return session;
+        }
+    },
     providers: [
         Credentials({
             async authorize(credentials) {

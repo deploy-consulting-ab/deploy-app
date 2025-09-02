@@ -54,13 +54,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             return session;
         },
-        async jwt({ token, user }) {
-            if (user) {
-                // This runs only on sign in
-                token.salesforceId = user.salesforce_id;
-                token.employeeNumber = user.employee_number;
-                token.role = user.role;
+        async jwt({ token }) {
+            // Check if I am logged out
+            if (!token.sub) {
+                return token;
             }
+
+            // Token sub equals to the user id in the database
+            const loggedUser = await getUserById(token.sub);
+            if (!loggedUser) {
+                return token;
+            }
+
+            token.salesforceId = loggedUser['salesforce_id'];
+            token.employeeNumber = loggedUser['employee_number'];
+            token.role = loggedUser['role'];
             return token;
         },
     },
