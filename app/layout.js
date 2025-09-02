@@ -21,7 +21,14 @@ export const metadata = {
     icons: {
         icon: [
             {
-                url: '/images/favicon.PNG',
+                media: '(prefers-color-scheme: light)',
+                url: '/images/full-tilde-black.png',
+                sizes: '64x64',
+                type: 'image/png',
+            },
+            {
+                media: '(prefers-color-scheme: dark)',
+                url: '/images/full-tilde-white.png',
                 sizes: '64x64',
                 type: 'image/png',
             },
