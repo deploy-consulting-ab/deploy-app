@@ -8,7 +8,7 @@ export const PUBLIC_ROUTES = ['/'];
 /**
  * Routes used for authentication they will redirect the user after authentication to /home
  */
-export const AUTH_ROUTES = [LOGIN_ROUTE, '/auth/register'];
+export const AUTH_ROUTES = [LOGIN_ROUTE];
 
 /**
  * Prefix for API authentication routes routes that start with this prefix are used for API Authentication
@@ -24,16 +24,8 @@ export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
 
-export const GENERAL_ROUTES =[
-    HOME_ROUTE,
-    HOLIDAYS_ROUTE,
-];
+export const GENERAL_ROUTES = [HOME_ROUTE, HOLIDAYS_ROUTE];
 
-export const CONSULTANTS_ROUTES = [
-    OCCUPANCY_ROUTE,
-    ASSIGNMENTS_ROUTE,
-];
+export const CONSULTANTS_ROUTES = [OCCUPANCY_ROUTE, ASSIGNMENTS_ROUTE];
 
-export const SALES_ROUTES = [
-    OPPORTUNITIES_ROUTE,
-];
+export const SALES_ROUTES = [OPPORTUNITIES_ROUTE];
