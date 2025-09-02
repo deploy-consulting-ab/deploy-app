@@ -1,6 +1,7 @@
 'use client';
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import {
     Sidebar,
@@ -22,6 +23,7 @@ import MENU_ITEMS from '@/menus/sidebar-menus';
 
 export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
+    const pathname = usePathname();
 
     const menuItems = MENU_ITEMS[user.role];
 
@@ -31,7 +33,18 @@ export function AppSidebarComponent({ user }) {
             setOpenMobile(false);
         }
     };
-    // Add admin item conditionally without mutating the array
+
+    // Function to check if a menu item is active
+    const isMenuActive = (menuUrl) => {
+        // For home page, only match exact /home path
+        if (menuUrl === '/home') {
+            return pathname === '/home';
+        }
+        // For other pages, check if the pathname starts with the menu URL
+        // This ensures that sub-pages also highlight their parent menu item
+        return pathname.startsWith(menuUrl);
+    };
+
     return (
         <Sidebar variant="sidebar" collapsible="icon">
             <SidebarHeader>
@@ -44,7 +57,7 @@ export function AppSidebarComponent({ user }) {
                         <SidebarMenu>
                             {menuItems.map((menu) => (
                                 <SidebarMenuItem key={menu.title}>
-                                    <SidebarMenuButton asChild>
+                                    <SidebarMenuButton asChild isActive={isMenuActive(menu.url)}>
                                         <Link href={menu.url} onClick={handleMenuClick}>
                                             <menu.icon />
                                             <span>{menu.title}</span>
