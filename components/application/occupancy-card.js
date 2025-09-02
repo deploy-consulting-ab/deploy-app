@@ -95,7 +95,7 @@ export function OccupancyCard({
                             <h3 className="text-2xl font-bold">{occupancyData.current}%</h3>
                             <span
                                 className={`flex items-center text-sm  ${
-                                    isIncreasing ? 'text-green-600' : 'text-primary-dark'
+                                    isIncreasing ? 'text-green-600' : 'text-red-400'
                                 }`}
                             >
                                 <TrendingUp
