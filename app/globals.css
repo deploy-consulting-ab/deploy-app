@@ -103,12 +103,8 @@
   --deploy-chart: 240.35;
 
   /* --- Below Target (Problematic) --- */
-  /* 0% - 70%: Very transparent blue */
-  --occupancy-color-critical-low: oklch(0.5474 0.0839 var(--deploy-chart) / 0.3);
-
-  /* --- Approaching Target --- */
-  /* 70% - 85%: Light transparency */
-  --occupancy-color-warning-low: oklch(0.5474 0.0839 var(--deploy-chart) / 0.5);
+  /* < 85%: Very transparent blue */
+  --occupancy-color-critical-low: oklch(0.5474 0.0839 var(--deploy-chart) / 0.5);
 
   /* --- Target Range (Good) --- */
   /* 85% - 93%: Medium transparency - getting closer to ideal */

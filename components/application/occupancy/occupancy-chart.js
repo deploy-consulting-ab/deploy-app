@@ -41,13 +41,13 @@ const chartConfig = {
 };
 
 const getOccupancyColor = (value) => {
-    if (!value && value !== 0) return '#a1a1aa'; // fallback gray
+    if (!value && value !== 0) return '#a1a1aa';
     const numValue = Number(value);
-    if (numValue > 120) return 'var(--occupancy-color-critical-high)'; // red for over 100%
-    if (numValue >= 100) return 'var(--occupancy-color-full)'; // green for at/above target
-    if (numValue >= 93) return 'var(--occupancy-color-optimal)'; // yellow for below target
-    if (numValue >= 85) return 'var(--occupancy-color-target)'; // gray for too low
-    return 'var(--occupancy-color-critical-low)'; // gray for too low
+    if (numValue > 120) return 'var(--occupancy-color-critical-high)';
+    if (numValue >= 100) return 'var(--occupancy-color-full)';
+    if (numValue >= 93) return 'var(--occupancy-color-optimal)';
+    if (numValue >= 85) return 'var(--occupancy-color-target)';
+    return 'var(--occupancy-color-critical-low)';
 };
 
 export function OccupancyChartComponent({ chartData, error }) {
