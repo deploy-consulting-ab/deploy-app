@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { OCCUPANCY_ROUTE } from '@/routes';
+import { OCCUPANCY_ROUTE } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 

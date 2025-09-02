@@ -2,7 +2,7 @@
 
 import { LoginSchema } from '@/schemas';
 import { signIn } from '@/auth';
-import { HOME_ROUTE } from '@/routes';
+import { HOME_ROUTE } from '@/menus/routes';
 import { AuthError } from 'next-auth';
 
 export const login = async (values, callbackUrl) => {

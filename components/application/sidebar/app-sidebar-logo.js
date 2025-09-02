@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
 } from '@/components/ui/sidebar';
 
-import { HOME_ROUTE } from '@/routes';
+import { HOME_ROUTE } from '@/menus/routes';
 
 export function AppSidebarLogoComponent() {
     const { state } = useSidebar();

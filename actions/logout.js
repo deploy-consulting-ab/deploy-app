@@ -1,6 +1,6 @@
 'use server';
 import { signOut } from "@/auth";
-import { LOGIN_ROUTE } from "@/routes";
+import { LOGIN_ROUTE } from "@/menus/routes";
 
 export const logout = async () => {
     await signOut({

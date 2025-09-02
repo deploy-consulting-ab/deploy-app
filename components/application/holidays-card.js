@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { formatDateToEnUSWithOptions } from '@/lib/utils';
-import { HOLIDAYS_ROUTE } from '@/routes';
+import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 

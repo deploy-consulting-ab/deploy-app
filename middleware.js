@@ -7,7 +7,10 @@ import {
     CONSULTANTS_ROUTES,
     SALES_ROUTES,
     GENERAL_ROUTES,
-} from '@/routes';
+    MANAGEMENT_ROUTES,
+} from '@/menus/routes';
+
+import { ADMIN_ROLE, CONSULTANT_ROLE, SALES_ROLE, MANAGEMENT_ROLE } from '@/menus/roles';
 
 // Import the configured auth instance instead of creating a new one
 import { auth } from '@/auth';
@@ -59,22 +62,29 @@ const handleLoggedInUsers = (nextUrl, role) => {
         return null;
     }
 
-    if (role === 'CONSULTANT') {
+    if (role === CONSULTANT_ROLE) {
         if (CONSULTANTS_ROUTES.includes(nextUrl.pathname)) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (role === 'ADMIN') {
-        return null;
+    if (role === MANAGEMENT_ROLE) {
+        if (MANAGEMENT_ROUTES.includes(nextUrl.pathname)) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (role === 'SALES') {
+    if (role === SALES_ROLE) {
         if (SALES_ROUTES.includes(nextUrl.pathname)) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    if (role === ADMIN_ROLE) {
+        return null;
     }
 
     return Response.redirect(new URL(HOME_ROUTE, nextUrl));
