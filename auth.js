@@ -12,6 +12,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (account?.provider !== 'credentials') {
                 const existingUser = await getUserByEmail(user.email);
 
+                return true;
+
                 if (!existingUser) {
                     return false;
                 }
