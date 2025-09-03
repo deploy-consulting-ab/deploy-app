@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import debounce from 'lodash/debounce';
@@ -45,7 +45,7 @@ export function GlobalSearch({ user }) {
     }, []);
 
     const debouncedSearch = useCallback(
-        debounce(async (query) => {
+        async (query) => {
             if (!query) {
                 setResults(null);
                 setLoading(false);
@@ -62,8 +62,13 @@ export function GlobalSearch({ user }) {
             } finally {
                 setLoading(false);
             }
-        }, 300),
+        },
         [setResults, setLoading, setOpen, user?.employeeNumber, user?.role]
+    );
+
+    const debouncedSearchWithDelay = useMemo(
+        () => debounce(debouncedSearch, 300),
+        [debouncedSearch]
     );
 
     // Clear search when route changes
@@ -71,15 +76,15 @@ export function GlobalSearch({ user }) {
         clearSearch();
         // Cancel any pending searches when route changes
         return () => {
-            debouncedSearch.cancel();
+            debouncedSearchWithDelay.cancel();
         };
-    }, [pathname, clearSearch, debouncedSearch]);
+    }, [pathname, clearSearch, debouncedSearchWithDelay]);
 
     const handleSearch = (e) => {
         const query = e.target.value;
         setSearchValue(query);
         if (!query) {
-            debouncedSearch.cancel(); // Cancel any pending searches
+            debouncedSearchWithDelay.cancel(); // Cancel any pending searches
             setResults(null);
             setOpen(false);
             return;
@@ -92,11 +97,11 @@ export function GlobalSearch({ user }) {
         }
 
         setLoading(true);
-        debouncedSearch(query);
+        debouncedSearchWithDelay(query);
     };
 
     const handleClear = () => {
-        debouncedSearch.cancel(); // Cancel any pending searches
+        debouncedSearchWithDelay.cancel(); // Cancel any pending searches
         clearSearch();
     };
 
