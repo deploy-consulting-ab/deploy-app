@@ -96,7 +96,7 @@ export function GlobalSearch() {
                     <Input
                         ref={searchRef}
                         value={searchValue}
-                        placeholder="Search opportunities, assignments..."
+                        placeholder="Search records..."
                         className="pl-9 pr-8"
                         onChange={handleSearch}
                         onFocus={() => setOpen(true)}
