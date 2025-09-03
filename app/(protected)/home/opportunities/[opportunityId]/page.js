@@ -10,7 +10,6 @@ const OpportunityPage = async ({ params }) => {
     try {
         opportunity = await getOpportunityById(opportunityId);
     } catch (err) {
-        console.log('#error', err);
         error = err;
     }
 
