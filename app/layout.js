@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono, Inter } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/form/theme-provider';
+import { ThemeProvider } from '@/components/auth/form/theme-provider';
 import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({

@@ -15,8 +15,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { FormError } from '@/components/form/form-error';
-import { FormSuccess } from '@/components/form/form-success';
+import { FormError } from '@/components/auth/form/form-error';
+import { FormSuccess } from '@/components/auth/form/form-success';
 import {
     Select,
     SelectContent,
