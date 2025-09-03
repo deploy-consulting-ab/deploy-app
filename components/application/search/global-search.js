@@ -91,7 +91,7 @@ export function GlobalSearch() {
 
     return (
         <div ref={containerRef} className="relative w-full">
-                            <div className="relative w-full max-w-sm">
+                            <div className="relative w-full">
                     <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         ref={searchRef}
@@ -115,7 +115,7 @@ export function GlobalSearch() {
                     )}
             </div>
             {open && (loading || results) && (
-                <div className="absolute top-full left-0 w-[400px] mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+                <div className="absolute top-full left-0 w-full mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
                     <div className="space-y-4">
                         {loading && (
                             <div className="flex justify-center p-4">
