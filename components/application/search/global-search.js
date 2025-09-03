@@ -143,8 +143,8 @@ export function GlobalSearch({ user }) {
                 )}
             </div>
             {open && (loading || results) && (
-                <div className="absolute top-full left-0 w-fit min-w-full mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
-                    <div className="w-max min-w-full">
+                <div className="absolute top-full left-0 w-full sm:w-fit min-w-full max-w-[600px] mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+                    <div className="w-full overflow-hidden text-ellipsis sm:w-max sm:min-w-full">
                         {loading && (
                             <div className="flex justify-center p-4">
                                 <Spinner />
@@ -164,15 +164,15 @@ export function GlobalSearch({ user }) {
                                                         handleSelect(record.type, record)
                                                     }
                                                 >
-                                                    <div className="text-xs sm:text-base font-medium whitespace-normal break-words">{record.name}</div>
-                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                    <div className="text-xs sm:text-base font-medium truncate">{record.name}</div>
+                                                    <div className="flex items-center gap-2">
                                                         {record.type === 'Opportunity' && (
                                                             <TrendingUp className="h-4 w-4 flex-shrink-0" />
                                                         )}
                                                         {record.type === 'Assignment' && (
                                                             <ClipboardList className="h-4 w-4 flex-shrink-0" />
                                                         )}
-                                                        <div className="text-[10px] sm:text-xs text-muted-foreground whitespace-normal">
+                                                        <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
                                                             {record.type} - {record.accountName}
                                                         </div>
                                                     </div>
