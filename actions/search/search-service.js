@@ -1,10 +1,15 @@
 'use server';
 
-import { getOpportunitiesByName, getAssignmentsByEmployeeNumberAndProjectName } from '@/actions/salesforce/salesforce-actions';
+import {
+    getOpportunitiesByName,
+    getAssignmentsByEmployeeNumberAndProjectName,
+} from '@/actions/salesforce/salesforce-actions';
 import { getSearchableTypes } from '@/lib/permissions';
 
 export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
-    if (!query) return { opportunities: [], assignments: [] };
+    if (!query) {
+        return { opportunities: [], assignments: [] };
+    }
 
     try {
         // Get searchable types for the user's role
@@ -12,7 +17,7 @@ export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
 
         // Only fetch data that the user has permission to see
         const promises = [];
-        
+
         if (searchableTypes.includes('opportunities')) {
             promises.push(searchOpportunities(query, limit));
         } else {
@@ -49,7 +54,10 @@ async function searchOpportunities(opportunityName, limit) {
 
 async function searchAssignments(projectName, employeeNumber, limit) {
     try {
-        const assignments = await getAssignmentsByEmployeeNumberAndProjectName(employeeNumber, projectName);
+        const assignments = await getAssignmentsByEmployeeNumberAndProjectName(
+            employeeNumber,
+            projectName
+        );
         return assignments.slice(0, limit);
     } catch (error) {
         console.error('Search assignments error:', error);
