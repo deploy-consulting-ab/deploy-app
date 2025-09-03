@@ -63,14 +63,14 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: var(--deploy-light);
+  --primary: var(--deploy-blue);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
-  --secondary-foreground: var(--deploy-light);
+  --secondary-foreground: var(--deploy-blue);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
-  --accent-foreground: var(--deploy-light);
+  --accent-foreground: var(--deploy-blue);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -83,10 +83,10 @@
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: var(--deploy-light);
+  --sidebar-primary: var(--deploy-blue);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: var(--deploy-light);
+  --sidebar-accent-foreground: var(--deploy-blue);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
@@ -96,8 +96,6 @@
   --deploy-ocean: oklch(0.6926 0.0806 236.83);
   --deploy-purple: oklch(0.6267 0.1997 277.38);
   --deploy-gray: oklch(0.2478 0 0);
-
-  --deploy-light: var(--deploy-blue);
   
   /* Occupancy colors - Using 240.35 - #3f779d in OKLCH with different opacities */
   --deploy-chart: 240.35;
@@ -130,7 +128,7 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: var(--deploy-dark);
+  --primary: var(--deploy-blue);
   --primary-foreground: oklch(0.969 0.015 12.422);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -141,22 +139,20 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: var(--deploy-dark);
+  --ring: var(--deploy-blue);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: var(--deploy-dark);
+  --chart-5: var(--deploy-blue);
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: var(--deploy-dark);
+  --sidebar-primary: var(--deploy-blue);
   --sidebar-primary-foreground: oklch(0.969 0.015 12.422);
   --sidebar-accent: oklch(0.274 0.006 286.033);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: var(--deploy-dark);
-
-  --deploy-dark: var(--deploy-purple);
+  --sidebar-ring: var(--deploy-blue);
 
   /* Occupancy colors - Using 277.38 - #6f74fd in OKLCH with different opacities */
   --deploy-chart: 277.385;
