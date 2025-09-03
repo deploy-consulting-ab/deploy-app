@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { HolidaysCard } from '@/components/application/holidays-card';
+import { HolidaysCardComponent } from '@/components/application/holidays/holidays-card';
 import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
 import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
@@ -61,7 +61,7 @@ export default async function HomePage() {
     return (
         <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCard
+                <HolidaysCardComponent
                     holidays={holidays}
                     error={error}
                     isNavigationDisabled={false}

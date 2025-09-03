@@ -10,12 +10,12 @@ import {
     CardAction,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
-export function HolidaysCalendar({ holidays, error }) {
+export function HolidaysCalendarComponent({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
     const isSingleColumn = useLayoutSize(1260);
 

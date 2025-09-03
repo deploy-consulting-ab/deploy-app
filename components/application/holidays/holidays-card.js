@@ -19,7 +19,7 @@ import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 
-export function HolidaysCard({
+export function HolidaysCardComponent({
     holidays: initialHolidays,
     error: initialError,
     isNavigationDisabled,
@@ -27,7 +27,7 @@ export function HolidaysCard({
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    // Inner state for when HolidaysCard is used outside of HolidaysWrapper
+    // Inner state for when HolidaysCard is used outside of HolidaysWrapperComponent
     const [holidays, setHolidays] = useState(initialHolidays);
     const [error, setError] = useState(initialError);
     const isMobile = useIsMobile();

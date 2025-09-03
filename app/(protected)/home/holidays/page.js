@@ -4,7 +4,7 @@ import { auth } from '@/auth';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { timeReportingLinks } from '@/lib/external-links';
 import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
-import { HolidaysWrapper } from '@/components/application/holidays-wrapper';
+import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
 async function refreshHolidayData() {
@@ -29,7 +29,7 @@ export default async function HolidaysPage() {
 
     return (
         <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <HolidaysWrapper
+            <HolidaysWrapperComponent
                     initialData={data}
                     refreshAction={refreshHolidayData}
                     error={error}
