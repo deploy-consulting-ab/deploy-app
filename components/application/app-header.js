@@ -14,15 +14,16 @@ export function AppHeaderComponent() {
                     <DynamicBreadcrumbComponent />
                 </div>
             </div>
-            {/* Center/Right section with search and icons */}
-            <div className="flex flex-1 items-center justify-end gap-4 pl-8">
-                <div className="flex-1 max-w-xl">
+            {/* Center section with search */}
+            <div className="flex-1 flex justify-center px-4">
+                <div className="w-full max-w-xl">
                     <GlobalSearch />
                 </div>
-                <div className="flex items-center gap-2">
-                    <ModeToggleComponent />
-                    <LogoutButtonComponent />
-                </div>
+            </div>
+            {/* Right section with icons */}
+            <div className="flex items-center gap-2">
+                <ModeToggleComponent />
+                <LogoutButtonComponent />
             </div>
         </header>
     );
