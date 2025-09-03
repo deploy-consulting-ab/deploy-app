@@ -9,105 +9,104 @@ import {
     ADMIN_ROUTE,
 } from '@/menus/routes';
 
-const MENU_ITEMS = {
-    ADMIN: [
-        {
-            title: 'Home',
-            url: HOME_ROUTE,
-            icon: Home,
-        },
-        {
-            title: 'Holidays',
-            url: HOLIDAYS_ROUTE,
-            icon: Calendar,
-        },
-        {
-            title: 'Occupancy',
-            url: OCCUPANCY_ROUTE,
-            icon: Percent,
-        },
-        {
-            title: 'Assignments',
-            url: ASSIGNMENTS_ROUTE,
-            icon: ClipboardList,
-        },
-        {
-            title: 'Opportunities',
-            url: OPPORTUNITIES_ROUTE,
-            icon: TrendingUp,
-        },
-        {
-            title: 'Admin',
-            url: ADMIN_ROUTE,
-            icon: Shield,
-        },
-    ],
-    MANAGEMENT: [
-        {
-            title: 'Home',
-            url: HOME_ROUTE,
-            icon: Home,
-        },
-        {
-            title: 'Holidays',
-            url: HOLIDAYS_ROUTE,
-            icon: Calendar,
-        },
-        {
-            title: 'Occupancy',
-            url: OCCUPANCY_ROUTE,
-            icon: Percent,
-        },
-        {
-            title: 'Assignments',
-            url: ASSIGNMENTS_ROUTE,
-            icon: ClipboardList,
-        },
-        {
-            title: 'Opportunities',
-            url: OPPORTUNITIES_ROUTE,
-            icon: TrendingUp,
-        },
-    ],
-    CONSULTANT: [
-        {
-            title: 'Home',
-            url: HOME_ROUTE,
-            icon: Home,
-        },
-        {
-            title: 'Holidays',
-            url: HOLIDAYS_ROUTE,
-            icon: Calendar,
-        },
-        {
-            title: 'Occupancy',
-            url: OCCUPANCY_ROUTE,
-            icon: Percent,
-        },
-        {
-            title: 'Assignments',
-            url: ASSIGNMENTS_ROUTE,
-            icon: ClipboardList,
-        },
-    ],
-    SALES: [
-        {
-            title: 'Home',
-            url: HOME_ROUTE,
-            icon: Home,
-        },
-        {
-            title: 'Holidays',
-            url: HOLIDAYS_ROUTE,
-            icon: Calendar,
-        },
-        {
-            title: 'Opportunities',
-            url: OPPORTUNITIES_ROUTE,
-            icon: TrendingUp,
-        },
-    ],
-};
+export const ADMIN_ROLE_MENU = [
+    {
+        title: 'Home',
+        url: HOME_ROUTE,
+        icon: Home,
+    },
+    {
+        title: 'Holidays',
+        url: HOLIDAYS_ROUTE,
+        icon: Calendar,
+    },
+    {
+        title: 'Occupancy',
+        url: OCCUPANCY_ROUTE,
+        icon: Percent,
+    },
+    {
+        title: 'Assignments',
+        url: ASSIGNMENTS_ROUTE,
+        icon: ClipboardList,
+    },
+    {
+        title: 'Opportunities',
+        url: OPPORTUNITIES_ROUTE,
+        icon: TrendingUp,
+    },
+    {
+        title: 'Admin',
+        url: ADMIN_ROUTE,
+        icon: Shield,
+    },
+];
 
-export default MENU_ITEMS;
+export const MANAGEMENT_ROLE_MENU = [
+    {
+        title: 'Home',
+        url: HOME_ROUTE,
+        icon: Home,
+    },
+    {
+        title: 'Holidays',
+        url: HOLIDAYS_ROUTE,
+        icon: Calendar,
+    },
+    {
+        title: 'Occupancy',
+        url: OCCUPANCY_ROUTE,
+        icon: Percent,
+    },
+    {
+        title: 'Assignments',
+        url: ASSIGNMENTS_ROUTE,
+        icon: ClipboardList,
+    },
+    {
+        title: 'Opportunities',
+        url: OPPORTUNITIES_ROUTE,
+        icon: TrendingUp,
+    },
+];
+
+export const CONSULTANT_ROLE_MENU = [
+    {
+        title: 'Home',
+        url: HOME_ROUTE,
+        icon: Home,
+    },
+    {
+        title: 'Holidays',
+        url: HOLIDAYS_ROUTE,
+        icon: Calendar,
+    },
+    {
+        title: 'Occupancy',
+        url: OCCUPANCY_ROUTE,
+        icon: Percent,
+    },
+    {
+        title: 'Assignments',
+        url: ASSIGNMENTS_ROUTE,
+        icon: ClipboardList,
+    },
+];
+
+export const SALES_ROLE_MENU = [
+    {
+        title: 'Home',
+        url: HOME_ROUTE,
+        icon: Home,
+    },
+    {
+        title: 'Holidays',
+        url: HOLIDAYS_ROUTE,
+        icon: Calendar,
+    },
+    {
+        title: 'Opportunities',
+        url: OPPORTUNITIES_ROUTE,
+        icon: TrendingUp,
+    },
+];

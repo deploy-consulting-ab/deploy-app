@@ -23,10 +23,3 @@ export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
-
-export const GENERAL_ROUTES = [HOME_ROUTE, HOLIDAYS_ROUTE];
-
-export const CONSULTANTS_ROUTES = [OCCUPANCY_ROUTE, ASSIGNMENTS_ROUTE];
-
-export const SALES_ROUTES = [OPPORTUNITIES_ROUTE];
-export const MANAGEMENT_ROUTES = [...CONSULTANTS_ROUTES, ...SALES_ROUTES];

@@ -4,13 +4,14 @@ import {
     API_AUTH_PREFIX,
     AUTH_ROUTES,
     PUBLIC_ROUTES,
-    CONSULTANTS_ROUTES,
-    SALES_ROUTES,
-    GENERAL_ROUTES,
-    MANAGEMENT_ROUTES,
+    HOLIDAYS_ROUTE,
+    OCCUPANCY_ROUTE,
+    ASSIGNMENTS_ROUTE,
+    OPPORTUNITIES_ROUTE,
+    ADMIN_ROUTE,
 } from '@/menus/routes';
 
-import { ADMIN_ROLE, CONSULTANT_ROLE, SALES_ROLE, MANAGEMENT_ROLE } from '@/menus/roles';
+import { hasPermission } from '@/lib/permissions';
 
 // Import the configured auth instance instead of creating a new one
 import { auth } from '@/auth';
@@ -58,33 +59,46 @@ export default auth((req) => {
 });
 
 const handleLoggedInUsers = (nextUrl, role) => {
-    if (GENERAL_ROUTES.includes(nextUrl.pathname)) {
-        return null;
-    }
-
-    if (role === CONSULTANT_ROLE) {
-        if (CONSULTANTS_ROUTES.includes(nextUrl.pathname)) {
+    if (HOME_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewHome')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (role === MANAGEMENT_ROLE) {
-        if (MANAGEMENT_ROUTES.includes(nextUrl.pathname)) {
+    if (HOLIDAYS_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewHolidays')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (role === SALES_ROLE) {
-        if (SALES_ROUTES.includes(nextUrl.pathname)) {
+    if (OCCUPANCY_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewOccupancy')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (role === ADMIN_ROLE) {
-        return null;
+    if (ASSIGNMENTS_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewAssignments')) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    if (OPPORTUNITIES_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewOpportunities')) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    if (ADMIN_ROUTE.includes(nextUrl.pathname)) {
+        if (hasPermission(role, 'viewAdmin')) {
+            return null;
+        }
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     return Response.redirect(new URL(HOME_ROUTE, nextUrl));

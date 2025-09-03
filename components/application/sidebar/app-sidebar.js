@@ -2,7 +2,6 @@
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import {
     Sidebar,
     SidebarHeader,
@@ -18,6 +17,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
+import { getMenuItems } from '@/lib/permissions';
 
 import MENU_ITEMS from '@/menus/sidebar-menus';
 
@@ -25,7 +25,9 @@ export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
 
-    const menuItems = MENU_ITEMS[user.role];
+    const menuItems = getMenuItems(user.role);
+
+    console.log('menuItems', menuItems);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {
