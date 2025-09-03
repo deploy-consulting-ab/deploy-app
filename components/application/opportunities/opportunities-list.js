@@ -10,23 +10,31 @@ import { useState, useEffect } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { OpportunityCardPhoneComponent } from './opportunity-card-phone';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
     const getStageColor = (stage) => {
         switch (stage.toLowerCase()) {
+            case 'qualification':
+                return 'bg-deploy-ocean';
+            case 'discovery':
+                return 'bg-deploy-ocean';
+            case 'engagement scoping':
+                return 'bg-deploy-purple';
+            case 'engagement proposal':
+                return 'bg-deploy-purple';
+            case 'negotiation':
+                return 'bg-deploy-blue';
             case 'closed won':
-                return 'bg-green-500';
+                return 'bg-deploy-teal';
             case 'closed lost':
                 return 'bg-red-500';
-            case 'proposal/price quote':
-                return 'bg-yellow-500';
-            case 'negotiation/review':
-                return 'bg-purple-500';
-            case 'qualification':
-                return 'bg-blue-500';
-            case 'needs analysis':
-                return 'bg-orange-500';
             default:
                 return 'bg-gray-500';
         }
@@ -49,14 +57,11 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
 
     const views = [
         { value: 'all', label: 'All Opportunities' },
-        { value: 'Prospecting', label: 'Prospecting' },
         { value: 'Qualification', label: 'Qualification' },
-        { value: 'Needs Analysis', label: 'Needs Analysis' },
-        { value: 'Value Proposition', label: 'Value Proposition' },
-        { value: 'Id. Decision Makers', label: 'Id. Decision Makers' },
-        { value: 'Perception Analysis', label: 'Perception Analysis' },
-        { value: 'Proposal/Price Quote', label: 'Proposal/Price Quote' },
-        { value: 'Negotiation/Review', label: 'Negotiation/Review' },
+        { value: 'Discovery', label: 'Discovery' },
+        { value: 'Engagement Scoping', label: 'Engagement Scoping' },
+        { value: 'Engagement Proposal', label: 'Engagement Proposal' },
+        { value: 'Negotiation', label: 'Negotiation' },
         { value: 'Closed Won', label: 'Closed Won' },
         { value: 'Closed Lost', label: 'Closed Lost' },
     ];
@@ -199,7 +204,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical md breakpoint
         };
-        
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
@@ -211,11 +216,12 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
     }, [searchQuery, selectedView]);
 
     const filteredOpportunities = opportunitiesData
-        .filter(opp => selectedView === 'all' || opp.stage === selectedView)
-        .filter(opp => 
-            searchQuery === '' || 
-            opp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            opp.accountName.toLowerCase().includes(searchQuery.toLowerCase())
+        .filter((opp) => selectedView === 'all' || opp.stage === selectedView)
+        .filter(
+            (opp) =>
+                searchQuery === '' ||
+                opp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                opp.accountName.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
     if (error) {
@@ -226,8 +232,11 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         // Calculate pagination
         const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginatedOpportunities = filteredOpportunities.slice(startIndex, startIndex + itemsPerPage);
-        
+        const paginatedOpportunities = filteredOpportunities.slice(
+            startIndex,
+            startIndex + itemsPerPage
+        );
+
         return (
             <div className="space-y-4">
                 <div className="space-y-2">
@@ -259,9 +268,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         />
                     ))}
                     {filteredOpportunities.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">
-                            No opportunities found
-                        </div>
+                        <div className="text-center py-8 text-gray-500">No opportunities found</div>
                     )}
                 </div>
                 {totalPages > 1 && (
@@ -269,7 +276,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
                         >
                             Previous
@@ -280,7 +287,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
                         >
                             Next
