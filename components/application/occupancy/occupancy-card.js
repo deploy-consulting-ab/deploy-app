@@ -18,7 +18,7 @@ import { OCCUPANCY_ROUTE } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 
-export function OccupancyCard({
+export function OccupancyCardComponent({
     occupancy,
     refreshAction,
     isNavigationDisabled,

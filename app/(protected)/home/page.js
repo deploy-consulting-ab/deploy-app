@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth';
 import { HolidaysCard } from '@/components/application/holidays-card';
-import { OccupancyCard } from '@/components/application/occupancy-card';
+import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
 import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { homePageLinks } from '@/lib/external-links';
@@ -67,7 +67,7 @@ export default async function HomePage() {
                     isNavigationDisabled={false}
                     refreshAction={refreshHolidayData}
                 />
-                <OccupancyCard
+                <OccupancyCardComponent
                     occupancy={occupancyRates}
                     error={error}
                     refreshAction={refreshOccupancyData}
