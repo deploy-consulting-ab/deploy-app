@@ -21,13 +21,19 @@ export async function globalSearch(query, limit = 3, employeeNumber, userRole) {
         if (searchableTypes.includes('opportunities')) {
             promises.push(searchOpportunities(query, limit));
         } else {
-            promises.push([]);
+            promises.push({
+                opportunities: [],
+                totalOpportunities: 0,
+            });
         }
 
         if (searchableTypes.includes('assignments')) {
             promises.push(searchAssignments(query, employeeNumber, limit));
         } else {
-            promises.push([]);
+            promises.push({
+                assignments: [],
+                totalAssignments: 0,
+            });
         }
 
         const [opportunitiesResults, assignmentsResults] = await Promise.all(promises);
@@ -47,7 +53,10 @@ async function searchOpportunities(opportunityName, limit) {
         const opportunities = await getOpportunitiesByName(opportunityName);
 
         if (opportunities?.length === 0) {
-            return [];
+            return {
+                opportunities: [],
+                totalOpportunities: 0,
+            };
         }
 
         return {
@@ -71,7 +80,10 @@ async function searchAssignments(projectName, employeeNumber, limit) {
         );
 
         if (assignments?.length === 0) {
-            return [];
+            return {
+                assignments: [],
+                totalAssignments: 0,
+            };
         }
 
         return {

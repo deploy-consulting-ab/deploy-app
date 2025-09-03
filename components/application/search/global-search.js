@@ -46,9 +46,16 @@ export function GlobalSearch({ user }) {
                 return;
             }
 
+            // if (query.length < 3) {
+            //     setResults(null);
+            //     setLoading(false);
+            //     return;
+            // }            
+
             const search = async () => {
                 try {
                     const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
+                    console.log('#response for query', query);
                     setResults(response);
                     setOpen(true);
                 } catch (error) {
@@ -68,6 +75,8 @@ export function GlobalSearch({ user }) {
         const query = e.target.value;
         setSearchValue(query);
         if (!query) {
+            console.log('No query');
+            
             setResults(null);
             setOpen(false);
             return;
@@ -89,6 +98,7 @@ export function GlobalSearch({ user }) {
             searchRef.current.focus();
         }
     };
+
     const handleSelect = (type, item) => {
         if (type === 'opportunity') {
             router.push(`/home/opportunities/${item.id}`);
@@ -118,7 +128,7 @@ export function GlobalSearch({ user }) {
                     onFocus={() => setOpen(true)}
                     onBlur={() => {
                         // Small delay to allow click events on results to fire before closing
-                        setTimeout(() => setOpen(false), 100);
+                        setTimeout(() => setOpen(false), 200);
                     }}
                 />
                 {searchValue && (
@@ -142,7 +152,7 @@ export function GlobalSearch({ user }) {
                         {results && !loading && (
                             <>
                                 <div className="space-y-1">
-                                    {results.opportunitiesResults.length > 0 && (
+                                    {results?.opportunitiesResults?.opportunities?.length > 0 && (
                                         <div>
                                             {results.opportunitiesResults.opportunities.map((opportunity) => (
                                                 <div
@@ -174,7 +184,7 @@ export function GlobalSearch({ user }) {
                                         </div>
                                     )}
 
-                                    {results.assignmentsResults.length > 0 && (
+                                    {results?.assignmentsResults?.assignments?.length > 0 && (
                                         <div>
                                             {results.assignmentsResults.assignments.map((assignment) => (
                                                 <div
@@ -207,8 +217,8 @@ export function GlobalSearch({ user }) {
                                     )}
                                 </div>
 
-                                {results?.opportunitiesResults?.length === 0 &&
-                                    results?.assignmentsResults?.length === 0 && (
+                                {results?.opportunitiesResults?.opportunities?.length === 0 &&
+                                    results?.assignmentsResults?.assignments?.length === 0 && (
                                         <div className="text-center text-muted-foreground py-4">
                                             No results found
                                         </div>
