@@ -86,9 +86,6 @@ const handleLoggedInUsers = (nextUrl, role) => {
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    console.log('##### nextUrl.pathname', nextUrl.pathname);
-    console.log('##### ASSIGNMENTS_ROUTE', ASSIGNMENTS_ROUTE);
-
     if (pathname.includes(ASSIGNMENTS_ROUTE)) {
         if (hasPermission(role, 'viewAssignments')) {
             return null;
