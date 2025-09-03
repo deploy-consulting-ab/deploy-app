@@ -41,7 +41,7 @@ export function DynamicBreadcrumbComponent() {
                             <BreadcrumbItem>
                                 {isLast ? (
                                     <BreadcrumbPage title={segment}>
-                                        {truncateText(segment)}
+                                        {displayText}
                                     </BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink asChild>
