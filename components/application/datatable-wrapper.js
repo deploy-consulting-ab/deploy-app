@@ -124,16 +124,20 @@ export function DatatableWrapperComponent({
                             </SelectContent>
                         </Select>
                     )}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isRefreshing}
-                        className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
-                    >
-                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                        <span className="sr-only">Refresh data</span>
-                    </Button>
+                    {refreshAction && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isRefreshing}
+                            className={`md:hover:cursor-pointer ${
+                                isRefreshing ? 'animate-spin' : ''
+                            }`}
+                        >
+                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                            <span className="sr-only">Refresh data</span>
+                        </Button>
+                    )}
                 </div>
             </div>
             <div className="overflow-x-auto rounded-md border">

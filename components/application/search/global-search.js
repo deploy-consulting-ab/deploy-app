@@ -6,14 +6,68 @@ import debounce from 'lodash/debounce';
 import { globalSearch } from '@/actions/search/search-service';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-
+import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import Link from 'next/link';
 import { ClipboardList, TrendingUp } from 'lucide-react';
+
+const columns = [
+    {
+        accessorKey: 'type',
+        header: 'Type',
+        cell: ({ row }) => {
+            const type = row.getValue('type');
+            return (
+                <div className="flex items-center gap-2">
+                    {type === 'Opportunity' && <TrendingUp className="h-4 w-4" />}
+                    {type === 'Assignment' && <ClipboardList className="h-4 w-4" />}
+                    <span>{type}</span>
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: 'name',
+        header: 'Name',
+        cell: ({ row }) => {
+            const type = row.getValue('type');
+            const id = row.original.id;
+            const name = row.getValue('name');
+            
+            const href = type === 'Opportunity' 
+                ? `/home/opportunities/${id}`
+                : `/home/assignments/${id}`;
+            
+            return (
+                <Link href={href} className="hover:underline">
+                    {name}
+                </Link>
+            );
+        },
+    },
+    {
+        accessorKey: 'accountName',
+        header: 'Account',
+    },
+];
+
+function SearchResultsTable({ data }) {
+    return (
+        <DatatableWrapperComponent
+            data={data}
+            columns={columns}
+            placeholder="Filter records..."
+            searchKey="name"
+        />
+    );
+}
 
 export function GlobalSearch({ user }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
     const [searchValue, setSearchValue] = useState('');
+    const [sheetOpen, setSheetOpen] = useState(false);
     const searchRef = useRef(null);
     const containerRef = useRef(null);
     const router = useRouter();
@@ -114,6 +168,11 @@ export function GlobalSearch({ user }) {
 
     const navigateToAssignments = () => {
         router.push('/home/assignments');
+    };
+
+    const openSearchResults = () => {
+        setSheetOpen(true);
+        setOpen(false); // Close the dropdown
     };
 
     return (
@@ -232,16 +291,7 @@ export function GlobalSearch({ user }) {
 
                                     {results?.records?.length > 5 && (
                                         <button
-                                            onClick={() => {
-                                                if (
-                                                    results?.opportunitiesResults
-                                                        ?.totalOpportunities > 0
-                                                ) {
-                                                    navigateToOpportunities();
-                                                } else {
-                                                    navigateToAssignments();
-                                                }
-                                            }}
+                                            onClick={openSearchResults}
                                             className="w-full text-sm text-muted-foreground hover:text-foreground mt-4 p-2 hover:bg-accent rounded-md text-center"
                                         >
                                             View More
@@ -260,6 +310,19 @@ export function GlobalSearch({ user }) {
                     </div>
                 </div>
             )}
+
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                <SheetContent className="w-full sm:max-w-3xl">
+                    <SheetHeader>
+                        <SheetTitle>Search Results</SheetTitle>
+                    </SheetHeader>
+                    {results?.records && (
+                        <div className="mt-6 px-4 pb-4">
+                            <SearchResultsTable data={results.records} />
+                        </div>
+                    )}
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }
