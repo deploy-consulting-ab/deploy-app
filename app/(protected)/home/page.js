@@ -3,7 +3,7 @@
 import { auth } from '@/auth';
 import { HolidaysCardComponent } from '@/components/application/holidays/holidays-card';
 import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
-import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
+import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { homePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
@@ -74,7 +74,7 @@ export default async function HomePage() {
                 />
             </div>
             <div className="self-start">
-                <UsefulLinksGrid links={homePageLinks} title="Quick Access" />
+                <UsefulLinksComponent links={homePageLinks} title="Quick Access" />
             </div>
         </div>
     );

@@ -13,7 +13,7 @@ const iconMap = {
     FileText,
 };
 
-export function UsefulLinksGrid({ links, title }) {
+export function UsefulLinksComponent({ links, title }) {
     // Convert single item to array if needed
     const linksArray = Array.isArray(links) ? links : [links];
     const isMobile = useIsMobile();

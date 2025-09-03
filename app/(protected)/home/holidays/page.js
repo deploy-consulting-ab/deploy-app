@@ -3,7 +3,7 @@
 import { auth } from '@/auth';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { timeReportingLinks } from '@/lib/external-links';
-import { UsefulLinksGrid } from '@/components/application/useful-links-grid';
+import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
@@ -35,7 +35,7 @@ export default async function HolidaysPage() {
                     error={error}
                 />
             <div className="self-start">
-                <UsefulLinksGrid links={timeReportingLinks} title="Flex" />
+                <UsefulLinksComponent links={timeReportingLinks} title="Flex" />
             </div>
         </div>
     );
