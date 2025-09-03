@@ -1,7 +1,7 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import debounce from 'lodash/debounce';
 import { globalSearch } from '@/actions/search/search-service';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,9 @@ export function GlobalSearch({ user }) {
     const searchRef = useRef(null);
     const containerRef = useRef(null);
     const router = useRouter();
+    const pathname = usePathname();
 
+    // Handle clicks outside of search component
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -30,6 +32,11 @@ export function GlobalSearch({ user }) {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // Clear search when route changes
+    useEffect(() => {
+        clearSearch();
+    }, [pathname]);
 
     const debouncedSearch = useCallback(
         (query) => {
@@ -88,7 +95,6 @@ export function GlobalSearch({ user }) {
         } else if (type === 'assignment') {
             router.push(`/home/assignments/${item.id}`);
         }
-        clearSearch();
     };
 
     const navigateToOpportunities = () => {
