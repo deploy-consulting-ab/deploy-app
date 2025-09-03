@@ -1,10 +1,17 @@
+'use server';
+
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { DynamicBreadcrumbComponent } from '@/components/application/breadcrumb/dynamic-breadcrumb';
 import { ModeToggleComponent } from '@/components/application/mode-toggle';
 import { LogoutButtonComponent } from '@/components/application/logout-button';
 import { GlobalSearch } from '@/components/application/search/global-search';
 
-export function AppHeaderComponent() {
+import { auth } from '@/auth';
+
+export async function AppHeaderComponent() {
+    const session = await auth();
+    const { user } = session;
+
     return (
         <header className="flex h-16 shrink-0 items-center border-b px-4">
             {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
@@ -17,7 +24,7 @@ export function AppHeaderComponent() {
             {/* Center section with search */}
             <div className="flex-1 flex justify-center px-4">
                 <div className="w-full max-w-xl">
-                    <GlobalSearch />
+                    <GlobalSearch user={user} />
                 </div>
             </div>
             {/* Right section with icons */}

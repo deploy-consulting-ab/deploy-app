@@ -2,21 +2,36 @@
 
 import { fetchOpportunities } from '@/actions/salesforce/salesforce-service';
 import { fetchAssignments } from '@/actions/salesforce/fetch-assignments';
-
 import { getOpportunitiesByName } from '@/actions/salesforce/salesforce-actions';
+import { getSearchableTypes } from '@/lib/permissions';
 
-export async function globalSearch(query, limit = 5) {
-    
-    console.log('query', query);
-    
+export async function globalSearch(query, limit = 5, userRole) {
     if (!query) return { opportunities: [], assignments: [] };
 
+    console.log('##### userRole', userRole);
+
     try {
-        // Fetch data in parallel
-        const [opportunities, assignments] = await Promise.all([
-            searchOpportunities(query, limit),
-            //   searchAssignments(query, limit)
-        ]);
+        // Get searchable types for the user's role
+        const searchableTypes = getSearchableTypes(userRole);
+
+        console.log('##### searchableTypes', searchableTypes);
+
+        // Only fetch data that the user has permission to see
+        const promises = [];
+        
+        if (searchableTypes.includes('opportunities')) {
+            promises.push(searchOpportunities(query, limit));
+        } else {
+            promises.push([]);
+        }
+
+        if (searchableTypes.includes('assignments')) {
+            promises.push(searchAssignments(query, limit));
+        } else {
+            promises.push([]);
+        }
+
+        const [opportunities, assignments] = await Promise.all(promises);
 
         return {
             opportunities,

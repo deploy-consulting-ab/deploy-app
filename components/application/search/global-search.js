@@ -3,14 +3,11 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash/debounce';
-
 import { globalSearch } from '@/actions/search/search-service';
-
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Spinner } from '@/components/ui/spinner';
 
-export function GlobalSearch() {
+export function GlobalSearch({ user }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
@@ -42,7 +39,8 @@ export function GlobalSearch() {
 
             const search = async () => {
                 try {
-                    const response = await globalSearch(query);
+                    const response = await globalSearch(query, 5, user?.role);
+                    console.log('##### response', response);
                     setResults(response);
                     setOpen(true);
                 } catch (error) {
@@ -91,28 +89,28 @@ export function GlobalSearch() {
 
     return (
         <div ref={containerRef} className="relative w-full">
-                            <div className="relative w-full">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        ref={searchRef}
-                        value={searchValue}
-                        placeholder="Search records..."
-                        className="pl-9 pr-8"
-                        onChange={handleSearch}
-                        onFocus={() => setOpen(true)}
-                        onBlur={() => {
-                            // Small delay to allow click events on results to fire before closing
-                            setTimeout(() => setOpen(false), 100);
-                        }}
-                    />
-                    {searchValue && (
-                        <button
-                            onClick={handleClear}
-                            className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground"
-                        >
-                            <X className="h-4 w-4" />
-                        </button>
-                    )}
+            <div className="relative w-full">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                    ref={searchRef}
+                    value={searchValue}
+                    placeholder="Search records..."
+                    className="pl-9 pr-8"
+                    onChange={handleSearch}
+                    onFocus={() => setOpen(true)}
+                    onBlur={() => {
+                        // Small delay to allow click events on results to fire before closing
+                        setTimeout(() => setOpen(false), 100);
+                    }}
+                />
+                {searchValue && (
+                    <button
+                        onClick={handleClear}
+                        className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground"
+                    >
+                        <X className="h-4 w-4" />
+                    </button>
+                )}
             </div>
             {open && (loading || results) && (
                 <div className="absolute top-full left-0 w-full mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
@@ -133,9 +131,13 @@ export function GlobalSearch() {
                                                 <div
                                                     key={opportunity.id}
                                                     className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() => handleSelect('opportunity', opportunity)}
+                                                    onClick={() =>
+                                                        handleSelect('opportunity', opportunity)
+                                                    }
                                                 >
-                                                    <div className="font-medium">{opportunity.name}</div>
+                                                    <div className="font-medium">
+                                                        {opportunity.name}
+                                                    </div>
                                                     <div className="text-sm text-muted-foreground">
                                                         {opportunity.accountName}
                                                     </div>
@@ -145,7 +147,7 @@ export function GlobalSearch() {
                                     </div>
                                 )}
 
-                                {/* {results.assignments.length > 0 && (
+                                {results.assignments.length > 0 && (
                                     <div>
                                         <h3 className="font-medium mb-2">Assignments</h3>
                                         <div className="space-y-2">
@@ -165,15 +167,14 @@ export function GlobalSearch() {
                                             ))}
                                         </div>
                                     </div>
-                                )} */}
+                                )}
 
-                                {results?.opportunities?.length === 0 &&
-                                    // results?.assignments?.length === 0 && 
-                                    (
-                                        <div className="text-center text-muted-foreground py-4">
-                                            No results found
-                                        </div>
-                                    )}
+                                {results?.opportunities?.length === 0 && (
+                                    results?.assignments?.length === 0 &&
+                                    <div className="text-center text-muted-foreground py-4">
+                                        No results found
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
