@@ -21,31 +21,23 @@ export async function globalSearch(query, limit = 3, employeeNumber, userRole) {
         if (searchableTypes.includes('opportunities')) {
             promises.push(searchOpportunities(query, limit));
         } else {
-            promises.push({
-                opportunities: [],
-                totalOpportunities: 0,
-            });
+            promises.push([]);
         }
 
         if (searchableTypes.includes('assignments')) {
             promises.push(searchAssignments(query, employeeNumber, limit));
         } else {
-            promises.push({
-                assignments: [],
-                totalAssignments: 0,
-            });
+            promises.push([]);
         }
 
-        const [opportunitiesResults, assignmentsResults] = await Promise.all(promises);
+        const [opportunities, assignments] = await Promise.all(promises);
 
-        const records = [...opportunitiesResults.opportunities, ...assignmentsResults.assignments];
+        const records = [...opportunities, ...assignments];
         const slicedRecords = records.slice(0, limit);
 
         return {
             records,
             slicedRecords,
-            opportunitiesResults,
-            assignmentsResults,
         };
     } catch (error) {
         console.error('Global search error:', error);
@@ -58,22 +50,13 @@ async function searchOpportunities(opportunityName, limit) {
         const opportunities = await getOpportunitiesByName(opportunityName);
 
         if (opportunities?.length === 0) {
-            return {
-                opportunities: [],
-                totalOpportunities: 0,
-            };
+            return [];
         }
 
-        return {
-            opportunities: opportunities.slice(0, limit),
-            totalOpportunities: opportunities.length,
-        };
+        return opportunities;   
     } catch (error) {
         console.error('Search opportunities error:', error);
-        return {
-            opportunities: [],
-            totalOpportunities: 0,
-        };
+        return [];
     }
 }
 
@@ -85,21 +68,12 @@ async function searchAssignments(projectName, employeeNumber, limit) {
         );
 
         if (assignments?.length === 0) {
-            return {
-                assignments: [],
-                totalAssignments: 0,
-            };
+            return [];
         }
 
-        return {
-            assignments: assignments.slice(0, limit),
-            totalAssignments: assignments.length,
-        };
+        return assignments;
     } catch (error) {
         console.error('Search assignments error:', error);
-        return {
-            assignments: [],
-            totalAssignments: 0,
-        };
+        return [];
     }
 }

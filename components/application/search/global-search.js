@@ -53,7 +53,8 @@ export function GlobalSearch({ user }) {
             }
 
             try {
-                const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
+                const response = await globalSearch(query, 6, user?.employeeNumber, user?.role);
+                console.log('## records', response.records);
                 setResults(response);
                 setOpen(true);
             } catch (error) {
@@ -85,11 +86,11 @@ export function GlobalSearch({ user }) {
             return;
         }
 
-        if (query.length < 3) {
-            setResults(null);
-            setLoading(false);
-            return;
-        }
+        // if (query.length < 3) {
+        //     setResults(null);
+        //     setLoading(false);
+        //     return;
+        // }
 
         setLoading(true);
         debouncedSearch(query);
@@ -108,17 +109,9 @@ export function GlobalSearch({ user }) {
         }
     };
 
-    const navigateToOpportunities = () => {
-        router.push('/home/opportunities');
-    };
-
-    const navigateToAssignments = () => {
-        router.push('/home/assignments');
-    };
-
     const openSearchResults = () => {
         setSheetOpen(true);
-        setOpen(false); // Close the dropdown
+        setOpen(false);
     };
 
     return (
@@ -133,7 +126,6 @@ export function GlobalSearch({ user }) {
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
                     onBlur={() => {
-                        // Small delay to allow click events on results to fire before closing
                         setTimeout(() => setOpen(false), 200);
                     }}
                 />
@@ -158,59 +150,9 @@ export function GlobalSearch({ user }) {
                         {results && !loading && (
                             <>
                                 <div className="space-y-1">
-                                    {/* {results?.opportunitiesResults?.opportunities?.length > 0 && (
+                                    {results?.slicedRecords?.length > 0 && (
                                         <div>
-                                            {results.opportunitiesResults.opportunities.map((opportunity) => (
-                                                <div
-                                                    key={opportunity.id}
-                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() =>
-                                                        handleSelect('opportunity', opportunity)
-                                                    }
-                                                >
-                                                    <div className="font-medium">
-                                                        {opportunity.name}
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <TrendingUp className="h-4 w-4" />
-                                                        <div className="text-sm text-muted-foreground">
-                                                            Opportunity - {opportunity.accountName}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-
-                                        </div>
-                                    )}
-
-                                    {results?.assignmentsResults?.assignments?.length > 0 && (
-                                        <div>
-                                            {results.assignmentsResults.assignments.map((assignment) => (
-                                                <div
-                                                    key={assignment.id}
-                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() =>
-                                                        handleSelect('assignment', assignment)
-                                                    }
-                                                >
-                                                    <div className="font-medium">
-                                                        {assignment.projectName}
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <ClipboardList className="h-4 w-4" />
-                                                        <div className="text-sm text-muted-foreground">
-                                                            Assignment - {assignment.accountName}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-
-                                        </div>
-                                    )} */}
-
-                                    {results?.records?.length > 0 && (
-                                        <div>
-                                            {results.records.map((record) => (
+                                            {results.slicedRecords.map((record) => (
                                                 <div
                                                     key={record.id}
                                                     className="p-2 hover:bg-accent rounded-md cursor-pointer"
@@ -256,11 +198,7 @@ export function GlobalSearch({ user }) {
                 </div>
             )}
 
-            <SearchResultsSheet 
-                open={sheetOpen} 
-                onOpenChange={setSheetOpen} 
-                results={results}
-            />
+            <SearchResultsSheet open={sheetOpen} onOpenChange={setSheetOpen} results={results} />
         </div>
     );
 }
