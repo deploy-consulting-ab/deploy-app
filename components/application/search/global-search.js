@@ -41,7 +41,7 @@ export function GlobalSearch({ user }) {
 
             const search = async () => {
                 try {
-                    const response = await globalSearch(query, 5, user?.employeeNumber, user?.role);
+                    const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
                     setResults(response);
                     setOpen(true);
                 } catch (error) {
@@ -91,6 +91,14 @@ export function GlobalSearch({ user }) {
         clearSearch();
     };
 
+    const navigateToOpportunities = () => {
+        router.push('/home/opportunities');
+    };
+
+    const navigateToAssignments = () => {
+        router.push('/home/assignments');
+    };
+
     return (
         <div ref={containerRef} className="relative w-full">
             <div className="relative w-full">
@@ -128,51 +136,73 @@ export function GlobalSearch({ user }) {
                         {results && !loading && (
                             <>
                                 <div className="space-y-1">
-                                    {results.opportunities.length > 0 &&
-                                        results.opportunities.map((opportunity) => (
-                                            <div
-                                                key={opportunity.id}
-                                                className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                onClick={() =>
-                                                    handleSelect('opportunity', opportunity)
-                                                }
-                                            >
-                                                <div className="font-medium">
-                                                    {opportunity.name}
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <TrendingUp className="h-4 w-4" />
-                                                    <div className="text-sm text-muted-foreground">
-                                                        Opportunity - {opportunity.accountName}
+                                    {results.opportunitiesResults.opportunities.length > 0 && (
+                                        <div>
+                                            {results.opportunitiesResults.opportunities.map((opportunity) => (
+                                                <div
+                                                    key={opportunity.id}
+                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                    onClick={() =>
+                                                        handleSelect('opportunity', opportunity)
+                                                    }
+                                                >
+                                                    <div className="font-medium">
+                                                        {opportunity.name}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <TrendingUp className="h-4 w-4" />
+                                                        <div className="text-sm text-muted-foreground">
+                                                            Opportunity - {opportunity.accountName}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                            {results.opportunitiesResults.totalOpportunities > 3 && (
+                                                <button
+                                                    onClick={navigateToOpportunities}
+                                                    className="w-full text-sm text-muted-foreground hover:text-foreground mt-2 p-2 hover:bg-accent rounded-md text-center"
+                                                >
+                                                    Show all {results.opportunitiesResults.totalOpportunities} opportunities
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
 
-                                    {results.assignments.length > 0 &&
-                                        results.assignments.map((assignment) => (
-                                            <div
-                                                key={assignment.id}
-                                                className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                onClick={() =>
-                                                    handleSelect('assignment', assignment)
-                                                }
-                                            >
-                                                <div className="font-medium">
-                                                    {assignment.projectName}
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <ClipboardList className="h-4 w-4" />
-                                                    <div className="text-sm text-muted-foreground">
-                                                        Assignment - {assignment.accountName}
+                                    {results.assignmentsResults.assignments.length > 0 && (
+                                        <div>
+                                            {results.assignmentsResults.assignments.map((assignment) => (
+                                                <div
+                                                    key={assignment.id}
+                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                    onClick={() =>
+                                                        handleSelect('assignment', assignment)
+                                                    }
+                                                >
+                                                    <div className="font-medium">
+                                                        {assignment.projectName}
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <ClipboardList className="h-4 w-4" />
+                                                        <div className="text-sm text-muted-foreground">
+                                                            Assignment - {assignment.accountName}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                            {results.assignmentsResults.totalAssignments > 3 && (
+                                                <button
+                                                    onClick={navigateToAssignments}
+                                                    className="w-full text-sm text-muted-foreground hover:text-foreground mt-2 p-2 hover:bg-accent rounded-md text-center"
+                                                >
+                                                    Show all {results.assignmentsResults.totalAssignments} assignments
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
-                                {results?.opportunities?.length === 0 &&
-                                    results?.assignments?.length === 0 && (
+                                {results?.opportunitiesResults?.opportunities?.length === 0 &&
+                                    results?.assignmentsResults?.assignments?.length === 0 && (
                                         <div className="text-center text-muted-foreground py-4">
                                             No results found
                                         </div>

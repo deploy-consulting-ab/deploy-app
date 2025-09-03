@@ -6,7 +6,7 @@ import {
 } from '@/actions/salesforce/salesforce-actions';
 import { getSearchableTypes } from '@/lib/permissions';
 
-export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
+export async function globalSearch(query, limit = 3, employeeNumber, userRole) {
     if (!query) {
         return { opportunities: [], assignments: [] };
     }
@@ -30,11 +30,11 @@ export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
             promises.push([]);
         }
 
-        const [opportunities, assignments] = await Promise.all(promises);
+        const [opportunitiesResults, assignmentsResults] = await Promise.all(promises);
 
         return {
-            opportunities,
-            assignments,
+            opportunitiesResults,
+            assignmentsResults,
         };
     } catch (error) {
         console.error('Global search error:', error);
@@ -45,10 +45,17 @@ export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
 async function searchOpportunities(opportunityName, limit) {
     try {
         const opportunities = await getOpportunitiesByName(opportunityName);
-        return opportunities.slice(0, limit);
+
+        return {
+            opportunities: opportunities.slice(0, limit),
+            totalOpportunities: opportunities.length,
+        };
     } catch (error) {
         console.error('Search opportunities error:', error);
-        return [];
+        return {
+            opportunities: [],
+            totalOpportunities: 0,
+        };
     }
 }
 
@@ -58,9 +65,15 @@ async function searchAssignments(projectName, employeeNumber, limit) {
             employeeNumber,
             projectName
         );
-        return assignments.slice(0, limit);
+        return {
+            assignments: assignments.slice(0, limit),
+            totalAssignments: assignments.length,
+        };
     } catch (error) {
         console.error('Search assignments error:', error);
-        return [];
+        return {
+            assignments: [],
+            totalAssignments: 0,
+        };
     }
 }
