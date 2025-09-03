@@ -46,6 +46,10 @@ async function searchOpportunities(opportunityName, limit) {
     try {
         const opportunities = await getOpportunitiesByName(opportunityName);
 
+        if (opportunities?.length === 0) {
+            return [];
+        }
+
         return {
             opportunities: opportunities.slice(0, limit),
             totalOpportunities: opportunities.length,
@@ -65,6 +69,11 @@ async function searchAssignments(projectName, employeeNumber, limit) {
             employeeNumber,
             projectName
         );
+
+        if (assignments?.length === 0) {
+            return [];
+        }
+
         return {
             assignments: assignments.slice(0, limit),
             totalAssignments: assignments.length,

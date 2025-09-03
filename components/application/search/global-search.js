@@ -142,7 +142,7 @@ export function GlobalSearch({ user }) {
                         {results && !loading && (
                             <>
                                 <div className="space-y-1">
-                                    {results.opportunitiesResults.opportunities.length > 0 && (
+                                    {results.opportunitiesResults.length > 0 && (
                                         <div>
                                             {results.opportunitiesResults.opportunities.map((opportunity) => (
                                                 <div
@@ -174,7 +174,7 @@ export function GlobalSearch({ user }) {
                                         </div>
                                     )}
 
-                                    {results.assignmentsResults.assignments.length > 0 && (
+                                    {results.assignmentsResults.length > 0 && (
                                         <div>
                                             {results.assignmentsResults.assignments.map((assignment) => (
                                                 <div
@@ -207,8 +207,8 @@ export function GlobalSearch({ user }) {
                                     )}
                                 </div>
 
-                                {results?.opportunitiesResults?.opportunities?.length === 0 &&
-                                    results?.assignmentsResults?.assignments?.length === 0 && (
+                                {results?.opportunitiesResults?.length === 0 &&
+                                    results?.assignmentsResults?.length === 0 && (
                                         <div className="text-center text-muted-foreground py-4">
                                             No results found
                                         </div>
