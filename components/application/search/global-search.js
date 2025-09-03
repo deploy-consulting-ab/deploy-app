@@ -123,7 +123,7 @@ export function GlobalSearch({ user }) {
                     ref={searchRef}
                     value={searchValue}
                     placeholder="Search records..."
-                    className="pl-9 pr-8"
+                    className="pl-9 pr-8 text-sm"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
                     onBlur={() => {

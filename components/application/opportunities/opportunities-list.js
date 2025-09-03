@@ -260,7 +260,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         placeholder="Search opportunities..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full"
+                        className="w-full text-sm"
                     />
                     <Select value={selectedView} onValueChange={setSelectedView}>
                         <SelectTrigger className="w-full">
