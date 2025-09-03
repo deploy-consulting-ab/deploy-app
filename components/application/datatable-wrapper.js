@@ -137,7 +137,7 @@ export function DatatableWrapperComponent({
                 </div>
             </div>
             <div className="overflow-x-auto rounded-md border">
-                <Table className="w-full min-w-full table-fixed">
+                <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>

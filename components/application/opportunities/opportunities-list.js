@@ -69,8 +69,9 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
     const columns = [
         {
             accessorKey: 'name',
-            size: 300,
-            minSize: 300,
+            size: 250,
+            minSize: 200,
+            maxSize: 400,
             header: ({ column }) => {
                 return (
                     <Button
@@ -98,7 +99,9 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         },
         {
             accessorKey: 'accountName',
-            size: 200, // Larger size for project names
+            size: 200,
+            minSize: 150,
+            maxSize: 300, // Responsive size for account names
             header: ({ column }) => {
                 return (
                     <Button
@@ -119,7 +122,9 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         },
         {
             accessorKey: 'stage',
-            size: 150, // Fixed size for status
+            size: 150,
+            minSize: 120,
+            maxSize: 200, // Responsive size for status
             header: ({ column }) => {
                 return (
                     <Button
@@ -139,7 +144,9 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         },
         {
             accessorKey: 'closeDate',
-            size: 120, // Fixed size for dates
+            size: 120,
+            minSize: 100,
+            maxSize: 150, // Responsive size for dates
             header: ({ column }) => {
                 return (
                     <Button
