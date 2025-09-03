@@ -13,6 +13,7 @@ import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentCardPhoneComponent } from '@/components/application/assignment/assignment-card-phone';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Link from 'next/link';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
@@ -83,13 +84,13 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                 const id = row.original.id;
 
                 return (
-                    <div
+                    <Link
+                        href={`/home/assignments/${id}`}
                         className="cursor-pointer text-blue-600 hover:underline truncate"
-                        onClick={() => handleAssignmentClick(id)}
                         title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}
-                    </div>
+                    </Link>
                 );
             },
         },

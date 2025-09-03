@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 import { getOpportunityStageColor } from '@/lib/utils';
+import Link from 'next/link';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
 
@@ -74,15 +75,14 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
             },
             cell: ({ row }) => {
                 const id = row.original.id;
-
                 return (
-                    <div
+                    <Link 
+                        href={`/home/opportunities/${id}`}
                         className="cursor-pointer text-blue-600 hover:underline truncate"
-                        onClick={() => handleOpportunityClick(id)}
-                        title={row.getValue('name')} // Show full text on hover
+                        title={row.getValue('name')}
                     >
                         {row.getValue('name')}
-                    </div>
+                    </Link>
                 );
             },
         },
