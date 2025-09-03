@@ -88,6 +88,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
 
                 return (
                     <div
+                        className="truncate"
                         title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}
@@ -264,7 +265,6 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         <OpportunityCardPhoneComponent
                             key={opportunity.id}
                             opportunity={opportunity}
-                            onClick={handleOpportunityClick}
                         />
                     ))}
                     {filteredOpportunities.length === 0 && (
