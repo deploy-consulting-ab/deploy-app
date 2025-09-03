@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatDateToSwedish, getStageColor } from '@/lib/utils';
+import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -26,7 +26,7 @@ export function AssignmentCard({ assignment, error }) {
                     <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
                         {projectName}
                     </CardTitle>
-                    <Badge className={`${getStageColor(projectStatus)} text-white`}>
+                    <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`}>
                         {projectStatus}
                     </Badge>
                 </div>

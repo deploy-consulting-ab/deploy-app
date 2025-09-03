@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { formatDateToSwedish, getStageColor } from '@/lib/utils';
+import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 
 export function AssignmentCardPhoneComponent({ assignment, onClick }) {
     return (
@@ -15,7 +15,7 @@ export function AssignmentCardPhoneComponent({ assignment, onClick }) {
                     <CardTitle className="text-lg font-semibold">
                         {assignment.name}
                     </CardTitle>
-                    <Badge className={`${getStageColor(assignment.projectStatus)} text-white ml-2`}>
+                    <Badge className={`${getAssignmentStageColor(assignment.projectStatus)} text-white ml-2`}>
                         {assignment.projectStatus}
                     </Badge>
                 </div>

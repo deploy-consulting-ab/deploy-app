@@ -3,7 +3,7 @@
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
-import { formatDateToSwedish, getStageColor } from '@/lib/utils';
+import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
@@ -132,7 +132,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
             cell: ({ row }) => {
                 const projectStatus = row.getValue('projectStatus');
                 return (
-                    <Badge className={`${getStageColor(projectStatus)} text-white`}>
+                    <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`}>
                         {projectStatus}
                     </Badge>
                 );

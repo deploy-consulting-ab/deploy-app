@@ -18,30 +18,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
+import { getOpportunityStageColor } from '@/lib/utils';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
 
     const router = useRouter();
-    const getStageColor = (stage) => {
-        switch (stage.toLowerCase()) {
-            case 'qualification':
-                return 'bg-deploy-ocean';
-            case 'discovery':
-                return 'bg-deploy-ocean';
-            case 'engagement scoping':
-                return 'bg-deploy-purple';
-            case 'engagement proposal':
-                return 'bg-deploy-purple';
-            case 'negotiation':
-                return 'bg-deploy-blue';
-            case 'closed won':
-                return 'bg-deploy-teal';
-            case 'closed lost':
-                return 'bg-red-500';
-            default:
-                return 'bg-gray-500';
-        }
-    };
 
     const [opportunitiesData, setOpportunities] = useState(opportunities);
     const [error, setError] = useState(initialError);
@@ -147,7 +128,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
             },
             cell: ({ row }) => {
                 const stage = row.getValue('stage');
-                return <Badge className={`${getStageColor(stage)} text-white`}>{stage}</Badge>;
+                return <Badge className={`${getOpportunityStageColor(stage)} text-white`}>{stage}</Badge>;
             },
         },
         {

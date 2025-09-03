@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getStageColor } from '@/lib/utils';
+import { getOpportunityStageColor } from '@/lib/utils';
 import { Briefcase, Info, DollarSign, Building2, CalendarDays } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -24,7 +24,7 @@ export function OpportunityCardComponent({ opportunity, error }) {
                     <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
                         {name}
                     </CardTitle>
-                    <Badge className={`${getStageColor(stage)} text-white`}>
+                    <Badge className={`${getOpportunityStageColor(stage)} text-white`}>
                         {stage}
                     </Badge>
                 </div>
