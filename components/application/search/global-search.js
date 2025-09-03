@@ -1,6 +1,6 @@
 'use client';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash/debounce';
 
@@ -14,6 +14,7 @@ export function GlobalSearch() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
+    const [searchValue, setSearchValue] = useState('');
     const searchRef = useRef(null);
     const containerRef = useRef(null);
     const router = useRouter();
@@ -59,6 +60,7 @@ export function GlobalSearch() {
 
     const handleSearch = (e) => {
         const query = e.target.value;
+        setSearchValue(query);
         if (!query) {
             setResults(null);
             setOpen(false);
@@ -66,6 +68,16 @@ export function GlobalSearch() {
         }
         setLoading(true);
         debouncedSearch(query);
+    };
+
+    const handleClear = () => {
+        setSearchValue('');
+        setResults(null);
+        setOpen(false);
+        setLoading(false);
+        if (searchRef.current) {
+            searchRef.current.focus();
+        }
     };
 
     const handleSelect = (type, item) => {
@@ -79,21 +91,30 @@ export function GlobalSearch() {
 
     return (
         <div ref={containerRef} className="relative w-full">
-            <div className="relative w-full max-w-sm">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                    ref={searchRef}
-                    placeholder="Search opportunities, assignments..."
-                    className="pl-9"
-                    onChange={handleSearch}
-                    onFocus={() => setOpen(true)}
-                    onBlur={() => {
-                        // Small delay to allow click events on results to fire before closing
-                        setTimeout(() => setOpen(false), 100);
-                    }}
-                />
+                            <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        ref={searchRef}
+                        value={searchValue}
+                        placeholder="Search opportunities, assignments..."
+                        className="pl-9 pr-8"
+                        onChange={handleSearch}
+                        onFocus={() => setOpen(true)}
+                        onBlur={() => {
+                            // Small delay to allow click events on results to fire before closing
+                            setTimeout(() => setOpen(false), 100);
+                        }}
+                    />
+                    {searchValue && (
+                        <button
+                            onClick={handleClear}
+                            className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    )}
             </div>
-            {open && (
+            {open && (loading || results) && (
                 <div className="absolute top-full left-0 w-[400px] mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
                     <div className="space-y-4">
                         {loading && (
@@ -147,7 +168,8 @@ export function GlobalSearch() {
                                 )} */}
 
                                 {results?.opportunities?.length === 0 &&
-                                    results?.assignments?.length === 0 && (
+                                    // results?.assignments?.length === 0 && 
+                                    (
                                         <div className="text-center text-muted-foreground py-4">
                                             No results found
                                         </div>
