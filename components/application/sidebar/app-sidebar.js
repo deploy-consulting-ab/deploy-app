@@ -19,15 +19,11 @@ import {
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 import { getMenuItems } from '@/lib/permissions';
 
-import MENU_ITEMS from '@/menus/sidebar-menus';
-
 export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
 
     const menuItems = getMenuItems(user.role);
-
-    console.log('menuItems', menuItems);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {
