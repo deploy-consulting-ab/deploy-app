@@ -36,10 +36,8 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Name,
-            startDate: assignment.StartDate__c,
-            endDate: assignment.EndDate__c,
-            projectStatus: assignment.ProjectStatus__c,
             projectName: assignment.Project__r.Name,
+            accountName: assignment.Project__r.Account__r.Name,
         }));
     } catch (error) {
         throw error;

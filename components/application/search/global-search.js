@@ -40,7 +40,6 @@ export function GlobalSearch({ user }) {
             const search = async () => {
                 try {
                     const response = await globalSearch(query, 5, user?.employeeNumber, user?.role);
-                    console.log('##### response', response);
                     setResults(response);
                     setOpen(true);
                 } catch (error) {
@@ -53,7 +52,7 @@ export function GlobalSearch({ user }) {
 
             debounce(search, 300)();
         },
-        [setResults, setLoading, setOpen]
+        [setResults, setLoading, setOpen, user?.employeeNumber, user?.role]
     );
 
     const handleSearch = (e) => {
@@ -160,10 +159,10 @@ export function GlobalSearch({ user }) {
                                                     }
                                                 >
                                                     <div className="font-medium">
-                                                        {assignment.name}
+                                                        {assignment.projectName}
                                                     </div>
                                                     <div className="text-sm text-muted-foreground">
-                                                        {assignment.projectName}
+                                                        {assignment.accountName}
                                                     </div>
                                                 </div>
                                             ))}

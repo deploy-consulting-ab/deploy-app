@@ -1,6 +1,5 @@
 'use server';
 
-import { fetchAssignments } from '@/actions/salesforce/fetch-assignments';
 import { getOpportunitiesByName, getAssignmentsByEmployeeNumberAndProjectName } from '@/actions/salesforce/salesforce-actions';
 import { getSearchableTypes } from '@/lib/permissions';
 

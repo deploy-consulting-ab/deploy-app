@@ -8,7 +8,7 @@ const getAssignmentsByEmployeeNumberQuery = (employeeNumber) => {
 };
 
 const getAssignmentsByEmployeeNumberAndProjectNameQuery = (employeeNumber, projectName) => {
-    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name FROM Assignment__c 
+    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, Project__r.Account__r.Name FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
             AND Project__r.Name LIKE '%${projectName}%'
             AND ProjectStatus__c != 'Draft'
