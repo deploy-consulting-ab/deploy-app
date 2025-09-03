@@ -33,50 +33,52 @@ export function GlobalSearch({ user }) {
         };
     }, []);
 
-    // Clear search when route changes
-    useEffect(() => {
-        clearSearch();
-    }, [pathname]);
+    const clearSearch = useCallback(() => {
+        setSearchValue('');
+        setResults(null);
+        setOpen(false);
+        setLoading(false);
+        if (searchRef.current) {
+            searchRef.current.focus();
+        }
+    }, []);
 
     const debouncedSearch = useCallback(
-        (query) => {
+        debounce(async (query) => {
             if (!query) {
                 setResults(null);
                 setLoading(false);
                 return;
             }
 
-            // if (query.length < 3) {
-            //     setResults(null);
-            //     setLoading(false);
-            //     return;
-            // }            
-
-            const search = async () => {
-                try {
-                    const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
-                    console.log('#response for query', query);
-                    setResults(response);
-                    setOpen(true);
-                } catch (error) {
-                    console.error('Search error:', error);
-                    setResults(null);
-                } finally {
-                    setLoading(false);
-                }
-            };
-
-            debounce(search, 300)();
-        },
+            try {
+                const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
+                setResults(response);
+                setOpen(true);
+            } catch (error) {
+                console.error('Search error:', error);
+                setResults(null);
+            } finally {
+                setLoading(false);
+            }
+        }, 300),
         [setResults, setLoading, setOpen, user?.employeeNumber, user?.role]
     );
+
+    // Clear search when route changes
+    useEffect(() => {
+        clearSearch();
+        // Cancel any pending searches when route changes
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [pathname, clearSearch, debouncedSearch]);
 
     const handleSearch = (e) => {
         const query = e.target.value;
         setSearchValue(query);
         if (!query) {
-            console.log('No query');
-            
+            debouncedSearch.cancel(); // Cancel any pending searches
             setResults(null);
             setOpen(false);
             return;
@@ -86,17 +88,8 @@ export function GlobalSearch({ user }) {
     };
 
     const handleClear = () => {
+        debouncedSearch.cancel(); // Cancel any pending searches
         clearSearch();
-    };
-
-    const clearSearch = () => {
-        setSearchValue('');
-        setResults(null);
-        setOpen(false);
-        setLoading(false);
-        if (searchRef.current) {
-            searchRef.current.focus();
-        }
     };
 
     const handleSelect = (type, item) => {
