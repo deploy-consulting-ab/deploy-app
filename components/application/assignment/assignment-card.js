@@ -78,6 +78,7 @@ export function AssignmentCard({ assignment, error }) {
                 </div>
 
                 {/* Link to Timecards */}
+                {actualHours > 0 && (
                 <Link
                     href={`/home/assignments/${assignment.id}/timecards`}
                     className="block w-full"
@@ -94,6 +95,7 @@ export function AssignmentCard({ assignment, error }) {
                         </CardContent>
                     </Card>
                 </Link>
+                )}
             </CardContent>
         </Card>
     );
