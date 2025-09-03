@@ -7,6 +7,8 @@ import { globalSearch } from '@/actions/search/search-service';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 
+import { ClipboardList, TrendingUp } from 'lucide-react';
+
 export function GlobalSearch({ user }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -68,6 +70,10 @@ export function GlobalSearch({ user }) {
     };
 
     const handleClear = () => {
+        clearSearch();
+    };
+
+    const clearSearch = () => {
         setSearchValue('');
         setResults(null);
         setOpen(false);
@@ -76,14 +82,13 @@ export function GlobalSearch({ user }) {
             searchRef.current.focus();
         }
     };
-
     const handleSelect = (type, item) => {
-        setOpen(false);
         if (type === 'opportunity') {
             router.push(`/home/opportunities/${item.id}`);
         } else if (type === 'assignment') {
             router.push(`/home/assignments/${item.id}`);
         }
+        clearSearch();
     };
 
     return (
@@ -122,53 +127,49 @@ export function GlobalSearch({ user }) {
 
                         {results && !loading && (
                             <>
-                                {results.opportunities.length > 0 && (
-                                    <div>
-                                        <h3 className="font-medium mb-2">Opportunities</h3>
-                                        <div className="space-y-2">
-                                            {results.opportunities.map((opportunity) => (
-                                                <div
-                                                    key={opportunity.id}
-                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() =>
-                                                        handleSelect('opportunity', opportunity)
-                                                    }
-                                                >
-                                                    <div className="font-medium">
-                                                        {opportunity.name}
-                                                    </div>
+                                <div className="space-y-1">
+                                    {results.opportunities.length > 0 &&
+                                        results.opportunities.map((opportunity) => (
+                                            <div
+                                                key={opportunity.id}
+                                                className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                onClick={() =>
+                                                    handleSelect('opportunity', opportunity)
+                                                }
+                                            >
+                                                <div className="font-medium">
+                                                    {opportunity.name}
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <TrendingUp className="h-4 w-4" />
                                                     <div className="text-sm text-muted-foreground">
-                                                        {opportunity.accountName}
+                                                        Opportunity - {opportunity.accountName}
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                            </div>
+                                        ))}
 
-                                {results.assignments.length > 0 && (
-                                    <div>
-                                        <h3 className="font-medium mb-2">Assignments</h3>
-                                        <div className="space-y-2">
-                                            {results.assignments.map((assignment) => (
-                                                <div
-                                                    key={assignment.id}
-                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() =>
-                                                        handleSelect('assignment', assignment)
-                                                    }
-                                                >
-                                                    <div className="font-medium">
-                                                        {assignment.projectName}
-                                                    </div>
+                                    {results.assignments.length > 0 &&
+                                        results.assignments.map((assignment) => (
+                                            <div
+                                                key={assignment.id}
+                                                className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                onClick={() =>
+                                                    handleSelect('assignment', assignment)
+                                                }
+                                            >
+                                                <div className="font-medium">
+                                                    {assignment.projectName}
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <ClipboardList className="h-4 w-4" />
                                                     <div className="text-sm text-muted-foreground">
-                                                        {assignment.accountName}
+                                                        Assignment - {assignment.accountName}
                                                     </div>
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                            </div>
+                                        ))}
+                                </div>
 
                                 {results?.opportunities?.length === 0 &&
                                     results?.assignments?.length === 0 && (
