@@ -36,9 +36,9 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
         );
         return result.map((assignment) => ({
             id: assignment.Id,
-            name: assignment.Name,
-            projectName: assignment.Project__r.Name,
+            name: assignment.Project__r.Name,
             accountName: assignment.Project__r.Account__r.Name,
+            type: 'Assignment',
         }));
     } catch (error) {
         throw error;
@@ -116,6 +116,7 @@ export async function getOpportunitiesByName(name) {
             amount: opportunity.Amount,
             accountName: opportunity.Account.Name,
             currency: opportunity.CurrencyIsoCode,
+            type: 'Opportunity',
         }));
     } catch (error) {
         throw error;

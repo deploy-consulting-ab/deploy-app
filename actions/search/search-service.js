@@ -38,7 +38,12 @@ export async function globalSearch(query, limit = 3, employeeNumber, userRole) {
 
         const [opportunitiesResults, assignmentsResults] = await Promise.all(promises);
 
+        const records = [...opportunitiesResults.opportunities, ...assignmentsResults.assignments];
+        const slicedRecords = records.slice(0, limit);
+
         return {
+            records,
+            slicedRecords,
             opportunitiesResults,
             assignmentsResults,
         };

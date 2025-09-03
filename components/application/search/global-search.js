@@ -53,6 +53,7 @@ export function GlobalSearch({ user }) {
 
             try {
                 const response = await globalSearch(query, 3, user?.employeeNumber, user?.role);
+                console.log('## response', response);
                 setResults(response);
                 setOpen(true);
             } catch (error) {
@@ -100,9 +101,9 @@ export function GlobalSearch({ user }) {
     };
 
     const handleSelect = (type, item) => {
-        if (type === 'opportunity') {
+        if (type === 'Opportunity') {
             router.push(`/home/opportunities/${item.id}`);
-        } else if (type === 'assignment') {
+        } else if (type === 'Assignment') {
             router.push(`/home/assignments/${item.id}`);
         }
     };
@@ -152,7 +153,7 @@ export function GlobalSearch({ user }) {
                         {results && !loading && (
                             <>
                                 <div className="space-y-1">
-                                    {results?.opportunitiesResults?.opportunities?.length > 0 && (
+                                    {/* {results?.opportunitiesResults?.opportunities?.length > 0 && (
                                         <div>
                                             {results.opportunitiesResults.opportunities.map((opportunity) => (
                                                 <div
@@ -173,14 +174,7 @@ export function GlobalSearch({ user }) {
                                                     </div>
                                                 </div>
                                             ))}
-                                            {results.opportunitiesResults.totalOpportunities > 3 && (
-                                                <button
-                                                    onClick={navigateToOpportunities}
-                                                    className="w-full text-sm text-muted-foreground hover:text-foreground mt-2 p-2 hover:bg-accent rounded-md text-center"
-                                                >
-                                                    Show all {results.opportunitiesResults.totalOpportunities} opportunities
-                                                </button>
-                                            )}
+
                                         </div>
                                     )}
 
@@ -205,15 +199,53 @@ export function GlobalSearch({ user }) {
                                                     </div>
                                                 </div>
                                             ))}
-                                            {results.assignmentsResults.totalAssignments > 3 && (
-                                                <button
-                                                    onClick={navigateToAssignments}
-                                                    className="w-full text-sm text-muted-foreground hover:text-foreground mt-2 p-2 hover:bg-accent rounded-md text-center"
-                                                >
-                                                    Show all {results.assignmentsResults.totalAssignments} assignments
-                                                </button>
-                                            )}
+
                                         </div>
+                                    )} */}
+
+                                    {results?.records?.length > 0 && (
+                                        <div>
+                                            {results.records.map((record) => (
+                                                <div
+                                                    key={record.id}
+                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                    onClick={() =>
+                                                        handleSelect(record.type, record)
+                                                    }
+                                                >
+                                                    <div className="font-medium">{record.name}</div>
+                                                    <div className="flex items-center gap-2">
+                                                        {record.type === 'Opportunity' && (
+                                                            <TrendingUp className="h-4 w-4" />
+                                                        )}
+                                                        {record.type === 'Assignment' && (
+                                                            <ClipboardList className="h-4 w-4" />
+                                                        )}
+                                                        <div className="text-sm text-muted-foreground">
+                                                            {record.type} - {record.accountName}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {results?.records?.length > 5 && (
+                                        <button
+                                            onClick={() => {
+                                                if (
+                                                    results?.opportunitiesResults
+                                                        ?.totalOpportunities > 0
+                                                ) {
+                                                    navigateToOpportunities();
+                                                } else {
+                                                    navigateToAssignments();
+                                                }
+                                            }}
+                                            className="w-full text-sm text-muted-foreground hover:text-foreground mt-4 p-2 hover:bg-accent rounded-md text-center"
+                                        >
+                                            View More
+                                        </button>
                                     )}
                                 </div>
 
