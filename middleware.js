@@ -59,42 +59,51 @@ export default auth((req) => {
 });
 
 const handleLoggedInUsers = (nextUrl, role) => {
-    if (HOME_ROUTE.includes(nextUrl.pathname)) {
+    const pathname = nextUrl.pathname;
+
+    if (!pathname) {
+        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
+    }
+
+    if (pathname.includes(HOME_ROUTE)) {
         if (hasPermission(role, 'viewHome')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (HOLIDAYS_ROUTE.includes(nextUrl.pathname)) {
+    if (pathname.includes(HOLIDAYS_ROUTE)) {
         if (hasPermission(role, 'viewHolidays')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (OCCUPANCY_ROUTE.includes(nextUrl.pathname)) {
+    if (pathname.includes(OCCUPANCY_ROUTE)) {
         if (hasPermission(role, 'viewOccupancy')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (ASSIGNMENTS_ROUTE.includes(nextUrl.pathname)) {
+    console.log('##### nextUrl.pathname', nextUrl.pathname);
+    console.log('##### ASSIGNMENTS_ROUTE', ASSIGNMENTS_ROUTE);
+
+    if (pathname.includes(ASSIGNMENTS_ROUTE)) {
         if (hasPermission(role, 'viewAssignments')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (OPPORTUNITIES_ROUTE.includes(nextUrl.pathname)) {
+    if (pathname.includes(OPPORTUNITIES_ROUTE)) {
         if (hasPermission(role, 'viewOpportunities')) {
             return null;
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (ADMIN_ROUTE.includes(nextUrl.pathname)) {
+    if (pathname.includes(ADMIN_ROUTE)) {
         if (hasPermission(role, 'viewAdmin')) {
             return null;
         }
