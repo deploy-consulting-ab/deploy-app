@@ -83,6 +83,13 @@ export function GlobalSearch({ user }) {
             setOpen(false);
             return;
         }
+
+        if (query.length < 3) {
+            setResults(null);
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         debouncedSearch(query);
     };
