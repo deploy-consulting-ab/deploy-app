@@ -13,25 +13,31 @@ export async function AppHeaderComponent() {
     const { user } = session;
 
     return (
-        <header className="flex h-16 shrink-0 items-center border-b px-4">
-            {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
-            <div className="flex items-center gap-4 min-w-fit">
-                <SidebarTrigger className="-ml-1" />
-                <div className="hidden md:block whitespace-nowrap">
-                    <DynamicBreadcrumbComponent />
+        <>
+            <header className="flex h-16 shrink-0 items-center border-b px-4">
+                {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
+                <div className="flex items-center gap-4 min-w-fit">
+                    <SidebarTrigger className="-ml-1" />
+                    <div className="hidden md:block whitespace-nowrap">
+                        <DynamicBreadcrumbComponent />
+                    </div>
                 </div>
-            </div>
-            {/* Center section with search */}
-            <div className="flex-1 flex justify-center px-4">
-                <div className="w-full max-w-xl">
-                    <GlobalSearch user={user} />
+                {/* Center section with search */}
+                <div className="flex-1 flex justify-center px-4">
+                    <div className="w-full max-w-xl">
+                        <GlobalSearch user={user} />
+                    </div>
                 </div>
+                {/* Right section with icons */}
+                <div className="flex items-center gap-2">
+                    <ModeToggleComponent />
+                    <LogoutButtonComponent />
+                </div>
+            </header>
+            {/* Mobile breadcrumb */}
+            <div className="md:hidden px-4 pt-4">
+                <DynamicBreadcrumbComponent />
             </div>
-            {/* Right section with icons */}
-            <div className="flex items-center gap-2">
-                <ModeToggleComponent />
-                <LogoutButtonComponent />
-            </div>
-        </header>
+        </>
     );
 }
