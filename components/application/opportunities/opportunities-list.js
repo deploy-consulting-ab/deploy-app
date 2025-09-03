@@ -17,8 +17,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { useRouter } from 'next/navigation';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
+
+    const router = useRouter();
     const getStageColor = (stage) => {
         switch (stage.toLowerCase()) {
             case 'qualification':
@@ -55,6 +58,10 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         return freshData;
     };
 
+    const handleOpportunityClick = (id) => {
+        router.push(`/home/opportunities/${id}`);
+    };
+
     const views = [
         { value: 'all', label: 'All Opportunities' },
         { value: 'Qualification', label: 'Qualification' },
@@ -89,7 +96,8 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
 
                 return (
                     <div
-                        className="truncate"
+                        className="cursor-pointer text-blue-600 hover:underline truncate"
+                        onClick={() => handleOpportunityClick(id)}
                         title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}

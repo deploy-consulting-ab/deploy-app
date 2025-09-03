@@ -10,6 +10,7 @@ import {
     getOccupancyRateFromLastFiscalYearQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
+    getOpportunityByIdQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -116,6 +117,24 @@ export async function getOpportunitiesByName(name) {
             accountName: opportunity.Account.Name,
             currency: opportunity.CurrencyIsoCode,
         }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getOpportunityById(opportunityId) {
+    try {
+        const results = await queryData(getOpportunityByIdQuery(opportunityId));
+        const result = results[0];
+        return {
+            id: result.Id,
+            name: result.Name,
+            stage: result.StageName,
+            closeDate: result.CloseDate,
+            amount: result.Amount,
+            accountName: result.Account.Name,
+            currency: result.CurrencyIsoCode,
+        };
     } catch (error) {
         throw error;
     }

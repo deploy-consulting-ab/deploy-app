@@ -20,7 +20,7 @@ export function AssignmentCard({ assignment, error }) {
         assignment;
 
     return (
-        <Card className="w-full transition-all hover:shadow-lg">
+        <Card className="w-full transition-all hover:shadow-md">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
                     <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
