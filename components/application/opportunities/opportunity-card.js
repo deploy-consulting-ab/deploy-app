@@ -3,7 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getStageColor } from '@/lib/utils';
-import { Briefcase, Info, DollarSign } from 'lucide-react';
+import { Briefcase, Info, DollarSign, Building2, CalendarDays } from 'lucide-react';
+import { formatDateToSwedish } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
@@ -14,7 +15,7 @@ export function OpportunityCardComponent({ opportunity, error }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const { name, stage, amount, currency } = opportunity;
+    const { name, stage, amount, currency, accountName, closeDate } = opportunity;
 
     return (
         <Card className="w-full transition-all hover:shadow-md">
@@ -38,10 +39,24 @@ export function OpportunityCardComponent({ opportunity, error }) {
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Account Name</p>
+                            <p className="font-medium">{accountName}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
                             <p className="text-sm text-muted-foreground">Stage</p>
                             <p className="font-medium">{stage}</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                        <div className="space-y-1">
+                            <p className="text-sm text-muted-foreground">Close Date</p>
+                            <p className="font-medium">{formatDateToSwedish(closeDate)}</p>
                         </div>
                     </div>
                     {amount && (
