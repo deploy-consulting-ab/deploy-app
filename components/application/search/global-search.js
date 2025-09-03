@@ -87,6 +87,10 @@ export function GlobalSearch() {
                     className="pl-9"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
+                    onBlur={() => {
+                        // Small delay to allow click events on results to fire before closing
+                        setTimeout(() => setOpen(false), 100);
+                    }}
                 />
             </div>
             {open && (
