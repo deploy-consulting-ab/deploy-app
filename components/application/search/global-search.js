@@ -39,7 +39,7 @@ export function GlobalSearch({ user }) {
 
             const search = async () => {
                 try {
-                    const response = await globalSearch(query, 5, user?.role);
+                    const response = await globalSearch(query, 5, user?.employeeNumber, user?.role);
                     console.log('##### response', response);
                     setResults(response);
                     setOpen(true);
@@ -81,9 +81,9 @@ export function GlobalSearch({ user }) {
     const handleSelect = (type, item) => {
         setOpen(false);
         if (type === 'opportunity') {
-            router.push(`/home/opportunities/${item.Id}`);
+            router.push(`/home/opportunities/${item.id}`);
         } else if (type === 'assignment') {
-            router.push(`/home/assignments/${item.Id}`);
+            router.push(`/home/assignments/${item.id}`);
         }
     };
 
@@ -153,15 +153,17 @@ export function GlobalSearch({ user }) {
                                         <div className="space-y-2">
                                             {results.assignments.map((assignment) => (
                                                 <div
-                                                    key={assignment.Id}
+                                                    key={assignment.id}
                                                     className="p-2 hover:bg-accent rounded-md cursor-pointer"
                                                     onClick={() =>
                                                         handleSelect('assignment', assignment)
                                                     }
                                                 >
-                                                    <div className="font-medium">{assignment.Name}</div>
+                                                    <div className="font-medium">
+                                                        {assignment.name}
+                                                    </div>
                                                     <div className="text-sm text-muted-foreground">
-                                                        {assignment.Project_Name__c}
+                                                        {assignment.projectName}
                                                     </div>
                                                 </div>
                                             ))}
@@ -169,12 +171,12 @@ export function GlobalSearch({ user }) {
                                     </div>
                                 )}
 
-                                {results?.opportunities?.length === 0 && (
-                                    results?.assignments?.length === 0 &&
-                                    <div className="text-center text-muted-foreground py-4">
-                                        No results found
-                                    </div>
-                                )}
+                                {results?.opportunities?.length === 0 &&
+                                    results?.assignments?.length === 0 && (
+                                        <div className="text-center text-muted-foreground py-4">
+                                            No results found
+                                        </div>
+                                    )}
                             </>
                         )}
                     </div>

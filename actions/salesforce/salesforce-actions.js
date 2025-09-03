@@ -9,11 +9,30 @@ import {
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
     getOpportunitiesByNameQuery,
+    getAssignmentsByEmployeeNumberAndProjectNameQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
     try {
         const result = await queryData(getAssignmentsByEmployeeNumberQuery(employeeNumber));
+        return result.map((assignment) => ({
+            id: assignment.Id,
+            name: assignment.Name,
+            startDate: assignment.StartDate__c,
+            endDate: assignment.EndDate__c,
+            projectStatus: assignment.ProjectStatus__c,
+            projectName: assignment.Project__r.Name,
+        }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumber, projectName) {
+    try {
+        const result = await queryData(
+            getAssignmentsByEmployeeNumberAndProjectNameQuery(employeeNumber, projectName)
+        );
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Name,

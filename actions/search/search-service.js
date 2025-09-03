@@ -1,11 +1,10 @@
 'use server';
 
-import { fetchOpportunities } from '@/actions/salesforce/salesforce-service';
 import { fetchAssignments } from '@/actions/salesforce/fetch-assignments';
-import { getOpportunitiesByName } from '@/actions/salesforce/salesforce-actions';
+import { getOpportunitiesByName, getAssignmentsByEmployeeNumberAndProjectName } from '@/actions/salesforce/salesforce-actions';
 import { getSearchableTypes } from '@/lib/permissions';
 
-export async function globalSearch(query, limit = 5, userRole) {
+export async function globalSearch(query, limit = 5, employeeNumber, userRole) {
     if (!query) return { opportunities: [], assignments: [] };
 
     console.log('##### userRole', userRole);
@@ -26,7 +25,7 @@ export async function globalSearch(query, limit = 5, userRole) {
         }
 
         if (searchableTypes.includes('assignments')) {
-            promises.push(searchAssignments(query, limit));
+            promises.push(searchAssignments(query, employeeNumber, limit));
         } else {
             promises.push([]);
         }
@@ -43,10 +42,9 @@ export async function globalSearch(query, limit = 5, userRole) {
     }
 }
 
-async function searchOpportunities(query, limit) {
+async function searchOpportunities(opportunityName, limit) {
     try {
-        const opportunities = await getOpportunitiesByName(query);
-        console.log('opportunities', opportunities);
+        const opportunities = await getOpportunitiesByName(opportunityName);
         return opportunities.slice(0, limit);
     } catch (error) {
         console.error('Search opportunities error:', error);
@@ -54,17 +52,13 @@ async function searchOpportunities(query, limit) {
     }
 }
 
-async function searchAssignments(query, limit) {
+async function searchAssignments(projectName, employeeNumber, limit) {
+    console.log('SS: projectName', projectName);
+    console.log('SS: employeeNumber', employeeNumber);
     try {
-        const assignments = await fetchAssignments();
-        return assignments
-            .filter(
-                (assignment) =>
-                    assignment.Name?.toLowerCase().includes(query.toLowerCase()) ||
-                    assignment.Project_Name__c?.toLowerCase().includes(query.toLowerCase()) ||
-                    assignment.Resource_Name__c?.toLowerCase().includes(query.toLowerCase())
-            )
-            .slice(0, limit);
+        const assignments = await getAssignmentsByEmployeeNumberAndProjectName(employeeNumber, projectName);
+        console.log('SS: assignments', assignments);
+        return assignments.slice(0, limit);
     } catch (error) {
         console.error('Search assignments error:', error);
         return [];
