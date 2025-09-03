@@ -53,8 +53,7 @@ export function GlobalSearch({ user }) {
             }
 
             try {
-                const response = await globalSearch(query, 6, user?.employeeNumber, user?.role);
-                console.log('## records', response.records);
+                const response = await globalSearch(query, 5, user?.employeeNumber, user?.role);
                 setResults(response);
                 setOpen(true);
             } catch (error) {
@@ -86,11 +85,11 @@ export function GlobalSearch({ user }) {
             return;
         }
 
-        // if (query.length < 3) {
-        //     setResults(null);
-        //     setLoading(false);
-        //     return;
-        // }
+        if (query.length < 3) {
+            setResults(null);
+            setLoading(false);
+            return;
+        }
 
         setLoading(true);
         debouncedSearch(query);
@@ -115,7 +114,7 @@ export function GlobalSearch({ user }) {
     };
 
     return (
-        <div ref={containerRef} className="relative w-full">
+        <div ref={containerRef} className="relative w-full max-w-[600px] md:w-[400px]">
             <div className="relative w-full">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -139,7 +138,7 @@ export function GlobalSearch({ user }) {
                 )}
             </div>
             {open && (loading || results) && (
-                <div className="absolute top-full left-0 w-full mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+                <div className="absolute top-full left-0 w-full mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
                     <div>
                         {loading && (
                             <div className="flex justify-center p-4">
@@ -155,12 +154,12 @@ export function GlobalSearch({ user }) {
                                             {results.slicedRecords.map((record) => (
                                                 <div
                                                     key={record.id}
-                                                    className="p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                    className="p-1.5 sm:p-2 hover:bg-accent rounded-md cursor-pointer"
                                                     onClick={() =>
                                                         handleSelect(record.type, record)
                                                     }
                                                 >
-                                                    <div className="font-medium">{record.name}</div>
+                                                    <div className="text-xs sm:text-base font-medium">{record.name}</div>
                                                     <div className="flex items-center gap-2">
                                                         {record.type === 'Opportunity' && (
                                                             <TrendingUp className="h-4 w-4" />
@@ -168,7 +167,7 @@ export function GlobalSearch({ user }) {
                                                         {record.type === 'Assignment' && (
                                                             <ClipboardList className="h-4 w-4" />
                                                         )}
-                                                        <div className="text-sm text-muted-foreground">
+                                                        <div className="text-[10px] sm:text-xs text-muted-foreground">
                                                             {record.type} - {record.accountName}
                                                         </div>
                                                     </div>
