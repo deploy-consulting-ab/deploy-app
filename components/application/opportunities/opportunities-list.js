@@ -280,6 +280,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         <OpportunityCardPhoneComponent
                             key={opportunity.id}
                             opportunity={opportunity}
+                            onClick={handleOpportunityClick}
                         />
                     ))}
                     {filteredOpportunities.length === 0 && (
