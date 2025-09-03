@@ -8,6 +8,7 @@ import {
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
+    getOpportunitiesByNameQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -72,6 +73,23 @@ export async function getAssignmentTimecards(assignmentId) {
 export async function getOpportunities() {
     try {
         const result = await queryData(getOpportunitiesQuery());
+        return result.map((opportunity) => ({
+            id: opportunity.Id,
+            name: opportunity.Name,
+            stage: opportunity.StageName,
+            closeDate: opportunity.CloseDate,
+            amount: opportunity.Amount,
+            accountName: opportunity.Account.Name,
+            currency: opportunity.CurrencyIsoCode,
+        }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getOpportunitiesByName(name) {
+    try {
+        const result = await queryData(getOpportunitiesByNameQuery(name));
         return result.map((opportunity) => ({
             id: opportunity.Id,
             name: opportunity.Name,

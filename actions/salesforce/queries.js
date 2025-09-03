@@ -19,6 +19,10 @@ const getOpportunitiesQuery = () => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity ORDER BY CloseDate DESC`;
 };
 
+const getOpportunitiesByNameQuery = (name) => {
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Name LIKE '%${name}%' ORDER BY CloseDate DESC`;
+};
+
 const getRecentOccupancyRateQuery = (employeeNumber, today, endDate) => {
     return `SELECT Id, OccupancyRate__c, Date__c, Month__c FROM HistoricalHour__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
@@ -38,4 +42,5 @@ export {
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
+    getOpportunitiesByNameQuery
 };
