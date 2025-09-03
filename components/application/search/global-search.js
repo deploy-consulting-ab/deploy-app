@@ -33,11 +33,10 @@ const columns = [
             const type = row.getValue('type');
             const id = row.original.id;
             const name = row.getValue('name');
-            
-            const href = type === 'Opportunity' 
-                ? `/home/opportunities/${id}`
-                : `/home/assignments/${id}`;
-            
+
+            const href =
+                type === 'Opportunity' ? `/home/opportunities/${id}` : `/home/assignments/${id}`;
+
             return (
                 <Link href={href} className="hover:underline">
                     {name}
@@ -202,7 +201,7 @@ export function GlobalSearch({ user }) {
             </div>
             {open && (loading || results) && (
                 <div className="absolute top-full left-0 w-full mt-2 p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
-                    <div className="space-y-4">
+                    <div>
                         {loading && (
                             <div className="flex justify-center p-4">
                                 <Spinner />
@@ -299,12 +298,11 @@ export function GlobalSearch({ user }) {
                                     )}
                                 </div>
 
-                                {results?.opportunitiesResults?.opportunities?.length === 0 &&
-                                    results?.assignmentsResults?.assignments?.length === 0 && (
-                                        <div className="text-center text-muted-foreground py-4">
-                                            No results found
-                                        </div>
-                                    )}
+                                {results?.records?.length === 0 && (
+                                    <div className="text-center text-muted-foreground">
+                                        No results found
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
