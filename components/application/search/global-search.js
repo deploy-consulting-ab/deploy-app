@@ -143,7 +143,7 @@ export function GlobalSearch({ user }) {
                 )}
             </div>
             {open && (loading || results) && (
-                <div className="absolute top-full left-0 w-[calc(100%+7.5rem)] -translate-x-8 sm:translate-x-0 sm:w-fit min-w-full max-w-[600px] mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+                <div className="absolute top-full left-0 w-full sm:w-fit min-w-full max-w-[600px] mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
                     <div className="w-full overflow-hidden text-ellipsis sm:w-max sm:min-w-full">
                         {loading && (
                             <div className="flex justify-center p-4">
