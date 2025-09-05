@@ -128,15 +128,15 @@ export function OccupancyChartComponent({ chartData, error }) {
                                 {timeRange === '90d'
                                     ? 'last 3 months'
                                     : timeRange === 'LAST_MONTH'
-                                    ? 'last month'
-                                    : 'current month'}
+                                      ? 'last month'
+                                      : 'current month'}
                             </span>
                             <span className="@[540px]/card:hidden">
                                 {timeRange === '90d'
                                     ? 'Last 3 months'
                                     : timeRange === 'LAST_MONTH'
-                                    ? 'Last month'
-                                    : 'Current month'}
+                                      ? 'Last month'
+                                      : 'Current month'}
                             </span>
                         </>
                     )}
@@ -149,11 +149,21 @@ export function OccupancyChartComponent({ chartData, error }) {
                         variant="outline"
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
-                        <ToggleGroupItem value="90d" className="hover:cursor-pointer">Last 3 months</ToggleGroupItem>
-                        <ToggleGroupItem value="FY" className="hover:cursor-pointer">Current FY</ToggleGroupItem>
-                        <ToggleGroupItem value="PFY" className="hover:cursor-pointer">Previous FY</ToggleGroupItem>
-                        <ToggleGroupItem value="CURRENT_MONTH" className="hover:cursor-pointer">Current month</ToggleGroupItem>
-                        <ToggleGroupItem value="LAST_MONTH" className="hover:cursor-pointer">Last month</ToggleGroupItem>
+                        <ToggleGroupItem value="90d" className="hover:cursor-pointer">
+                            Last 3 months
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="FY" className="hover:cursor-pointer">
+                            Current FY
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="PFY" className="hover:cursor-pointer">
+                            Previous FY
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="CURRENT_MONTH" className="hover:cursor-pointer">
+                            Current month
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="LAST_MONTH" className="hover:cursor-pointer">
+                            Last month
+                        </ToggleGroupItem>
                     </ToggleGroup>
                     <Select value={timeRange} onValueChange={setTimeRange}>
                         <SelectTrigger
@@ -164,21 +174,11 @@ export function OccupancyChartComponent({ chartData, error }) {
                             <SelectValue placeholder="Current FY" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
-                            <SelectItem value="90d">
-                                Last 3 months
-                            </SelectItem>
-                            <SelectItem value="FY">
-                                Current FY
-                            </SelectItem>
-                            <SelectItem value="PFY">
-                                Previous FY
-                            </SelectItem>
-                            <SelectItem value="CURRENT_MONTH">
-                                Current month
-                            </SelectItem>
-                            <SelectItem value="LAST_MONTH">
-                                Last month
-                            </SelectItem>
+                            <SelectItem value="90d">Last 3 months</SelectItem>
+                            <SelectItem value="FY">Current FY</SelectItem>
+                            <SelectItem value="PFY">Previous FY</SelectItem>
+                            <SelectItem value="CURRENT_MONTH">Current month</SelectItem>
+                            <SelectItem value="LAST_MONTH">Last month</SelectItem>
                         </SelectContent>
                     </Select>
                 </CardAction>

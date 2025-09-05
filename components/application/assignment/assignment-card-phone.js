@@ -6,16 +6,16 @@ import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 
 export function AssignmentCardPhoneComponent({ assignment, onClick }) {
     return (
-        <Card 
+        <Card
             className="w-full mb-4 cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => onClick?.(assignment.id)}
         >
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg font-semibold">
-                        {assignment.name}
-                    </CardTitle>
-                    <Badge className={`${getAssignmentStageColor(assignment.projectStatus)} text-white ml-2`}>
+                    <CardTitle className="text-lg font-semibold">{assignment.name}</CardTitle>
+                    <Badge
+                        className={`${getAssignmentStageColor(assignment.projectStatus)} text-white ml-2`}
+                    >
                         {assignment.projectStatus}
                     </Badge>
                 </div>
@@ -30,7 +30,9 @@ export function AssignmentCardPhoneComponent({ assignment, onClick }) {
                         <div>
                             <p className="text-sm text-gray-500">Start Date</p>
                             <p className="font-medium">
-                                {assignment.startDate ? formatDateToSwedish(assignment.startDate) : '-'}
+                                {assignment.startDate
+                                    ? formatDateToSwedish(assignment.startDate)
+                                    : '-'}
                             </p>
                         </div>
                         <div>

@@ -5,7 +5,7 @@ import { getAssignmentTimecards } from '@/actions/salesforce/salesforce-actions'
 
 const TimecardsPage = async ({ params }) => {
     const { assignmentId } = await params;
-    
+
     let timecards = null;
     let error = null;
 

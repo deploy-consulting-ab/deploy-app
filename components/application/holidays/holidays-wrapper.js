@@ -40,10 +40,7 @@ export function HolidaysWrapperComponent({ initialData, refreshAction, error }) 
                 isNavigationDisabled={true}
                 refreshAction={handleRefresh}
             />
-            <HolidaysCalendarComponent
-                holidays={data}
-                error={currentError}
-            />
+            <HolidaysCalendarComponent holidays={data} error={currentError} />
         </div>
     );
 }

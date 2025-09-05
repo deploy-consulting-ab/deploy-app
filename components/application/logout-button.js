@@ -16,18 +16,14 @@ export function LogoutButtonComponent() {
     };
 
     return (
-        <Button 
-            variant="ghost" 
-            size="sm" 
+        <Button
+            variant="ghost"
+            size="sm"
             className="hover:cursor-pointer"
             onClick={handleLogout}
             disabled={isPending}
         >
-            {isPending ? (
-                <Spinner size="sm" variant="default" />
-            ) : (
-                <LogOut />
-            )}
+            {isPending ? <Spinner size="sm" variant="default" /> : <LogOut />}
         </Button>
     );
 }

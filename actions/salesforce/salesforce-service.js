@@ -10,7 +10,10 @@ import { NetworkError } from '../callouts/errors';
  */
 const handleSalesforceError = (error, operation) => {
     if (error instanceof NetworkError) {
-        console.error(`Salesforce Network error when connecting to Salesforce to ${operation}`, error.message);
+        console.error(
+            `Salesforce Network error when connecting to Salesforce to ${operation}`,
+            error.message
+        );
         throw error;
     }
 

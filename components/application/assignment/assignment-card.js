@@ -9,7 +9,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function AssignmentCard({ assignment, error }) {
-
     const isMobile = useIsMobile();
 
     if (error) {
@@ -79,22 +78,22 @@ export function AssignmentCard({ assignment, error }) {
 
                 {/* Link to Timecards */}
                 {actualHours > 0 && (
-                <Link
-                    href={`/home/assignments/${assignment.id}/timecards`}
-                    className="block w-full"
-                >
-                    <Card className="transition-colors hover:bg-muted/50">
-                        <CardContent className="flex items-center justify-between p-4">
-                            <div className="flex items-center space-x-2">
-                                <ClipboardList className="h-4 w-4 text-muted-foreground" />
-                                <span>View Time Reports</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                                {actualHours} hours logged
-                            </span>
-                        </CardContent>
-                    </Card>
-                </Link>
+                    <Link
+                        href={`/home/assignments/${assignment.id}/timecards`}
+                        className="block w-full"
+                    >
+                        <Card className="transition-colors hover:bg-muted/50">
+                            <CardContent className="flex items-center justify-between p-4">
+                                <div className="flex items-center space-x-2">
+                                    <ClipboardList className="h-4 w-4 text-muted-foreground" />
+                                    <span>View Time Reports</span>
+                                </div>
+                                <span className="text-sm text-muted-foreground">
+                                    {actualHours} hours logged
+                                </span>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 )}
             </CardContent>
         </Card>

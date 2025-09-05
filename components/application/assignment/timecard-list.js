@@ -1,9 +1,9 @@
 'use client';
 
-import { WeeklyTimecardComponent } from "./weekly-timecard";
-import { TimecardFilters } from "./timecard-filters";
-import { useState, useMemo } from "react";
-import { ErrorDisplayComponent } from "@/components/errors/error-display";
+import { WeeklyTimecardComponent } from './weekly-timecard';
+import { TimecardFilters } from './timecard-filters';
+import { useState, useMemo } from 'react';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -21,10 +21,10 @@ export function TimecardListComponent({ timecards = [], error }) {
             normalized.setHours(0, 0, 0, 0);
             return normalized;
         };
-        
+
         const normalizedSelectedDate = normalizeDate(selectedDate);
-        
-        return timecards.filter(timecard => {
+
+        return timecards.filter((timecard) => {
             // Check if the week contains the selected date
             const weekStart = normalizeDate(timecard.weekStartDate);
             const weekEnd = new Date(weekStart);
@@ -61,19 +61,16 @@ export function TimecardListComponent({ timecards = [], error }) {
                 totalPages={totalPages}
                 currentPage={currentPage}
             />
-            
+
             <div className="space-y-4">
                 {paginatedTimecards.map((weekData) => (
-                    <WeeklyTimecardComponent 
-                        key={weekData.weekStartDate} 
-                        weekData={weekData} 
-                    />
+                    <WeeklyTimecardComponent key={weekData.weekStartDate} weekData={weekData} />
                 ))}
                 {paginatedTimecards.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                        {selectedDate 
-                            ? "No time reports found for the selected date." 
-                            : "No time reports available for this assignment."}
+                        {selectedDate
+                            ? 'No time reports found for the selected date.'
+                            : 'No time reports available for this assignment.'}
                     </p>
                 )}
             </div>

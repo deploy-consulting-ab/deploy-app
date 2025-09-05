@@ -58,5 +58,5 @@ export {
     getOccupancyRateFromLastFiscalYearQuery,
     getOpportunitiesByNameQuery,
     getOpportunityByIdQuery,
-    getAssignmentsByEmployeeNumberAndProjectNameQuery
+    getAssignmentsByEmployeeNumberAndProjectNameQuery,
 };

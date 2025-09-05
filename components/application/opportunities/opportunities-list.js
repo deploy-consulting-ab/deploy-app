@@ -22,7 +22,6 @@ import { getOpportunityStageColor } from '@/lib/utils';
 import Link from 'next/link';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
-
     const router = useRouter();
 
     const [opportunitiesData, setOpportunities] = useState(opportunities);
@@ -76,7 +75,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
             cell: ({ row }) => {
                 const id = row.original.id;
                 return (
-                    <Link 
+                    <Link
                         href={`/home/opportunities/${id}`}
                         className="cursor-pointer text-blue-600 hover:underline truncate"
                         title={row.getValue('name')}
@@ -128,7 +127,11 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
             },
             cell: ({ row }) => {
                 const stage = row.getValue('stage');
-                return <Badge className={`${getOpportunityStageColor(stage)} text-white`}>{stage}</Badge>;
+                return (
+                    <Badge className={`${getOpportunityStageColor(stage)} text-white`}>
+                        {stage}
+                    </Badge>
+                );
             },
         },
         {

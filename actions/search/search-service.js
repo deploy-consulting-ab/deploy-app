@@ -53,7 +53,7 @@ async function searchOpportunities(opportunityName, limit) {
             return [];
         }
 
-        return opportunities;   
+        return opportunities;
     } catch (error) {
         console.error('Search opportunities error:', error);
         return [];

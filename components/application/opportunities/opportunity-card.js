@@ -21,9 +21,7 @@ export function OpportunityCardComponent({ opportunity, error }) {
         <Card className="w-full transition-all hover:shadow-md">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
-                    <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
-                        {name}
-                    </CardTitle>
+                    <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>{name}</CardTitle>
                     <Badge className={`${getOpportunityStageColor(stage)} text-white`}>
                         {stage}
                     </Badge>
@@ -60,11 +58,13 @@ export function OpportunityCardComponent({ opportunity, error }) {
                         </div>
                     </div>
                     {amount && (
-                    <div className="flex items-center space-x-2">
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Amount</p>
-                            <p className="font-medium">{currency} {amount.toLocaleString()}</p>
+                        <div className="flex items-center space-x-2">
+                            <DollarSign className="h-4 w-4 text-muted-foreground" />
+                            <div className="space-y-1">
+                                <p className="text-sm text-muted-foreground">Amount</p>
+                                <p className="font-medium">
+                                    {currency} {amount.toLocaleString()}
+                                </p>
                             </div>
                         </div>
                     )}

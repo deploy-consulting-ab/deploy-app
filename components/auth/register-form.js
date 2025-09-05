@@ -52,7 +52,7 @@ export const RegisterFormComponent = () => {
             const response = await register(values);
             setSuccess(response.success);
             setError(response.error);
-            
+
             if (response.success) {
                 form.reset({
                     email: '',

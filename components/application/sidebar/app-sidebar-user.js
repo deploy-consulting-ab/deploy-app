@@ -12,11 +12,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem
-} from '@/components/ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppSidebarUserComponent({ user }) {
@@ -46,7 +42,7 @@ export function AppSidebarUserComponent({ user }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                        side={isPhone ? "top" : "right"}
+                        side={isPhone ? 'top' : 'right'}
                         align="end"
                         sideOffset={4}
                     >

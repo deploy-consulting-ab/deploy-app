@@ -66,9 +66,7 @@ export function HolidaysCardComponent({
     };
 
     if (error) {
-        return (
-            <NoDataComponent text="No holidays data found" />
-        );
+        return <NoDataComponent text="No holidays data found" />;
     }
 
     const progressPercentage = (holidays.currentFiscalUsedHolidays / holidays.totalHolidays) * 100;

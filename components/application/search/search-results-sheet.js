@@ -30,11 +30,13 @@ function SearchResultsTable({ data, onNavigate }) {
                 const name = row.getValue('name');
 
                 const href =
-                    type === 'Opportunity' ? `/home/opportunities/${id}` : `/home/assignments/${id}`;
+                    type === 'Opportunity'
+                        ? `/home/opportunities/${id}`
+                        : `/home/assignments/${id}`;
 
                 return (
-                    <Link 
-                        href={href} 
+                    <Link
+                        href={href}
                         className="cursor-pointer text-blue-600 hover:underline truncate"
                         onClick={() => onNavigate?.()}
                     >
@@ -68,8 +70,8 @@ export function SearchResultsSheet({ open, onOpenChange, results }) {
                 </SheetHeader>
                 {results?.records && (
                     <div className="mt-6 px-4 pb-4">
-                        <SearchResultsTable 
-                            data={results.records} 
+                        <SearchResultsTable
+                            data={results.records}
                             onNavigate={() => onOpenChange(false)}
                         />
                     </div>

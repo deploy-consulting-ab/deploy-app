@@ -12,7 +12,13 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentCardPhoneComponent } from '@/components/application/assignment/assignment-card-phone';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import Link from 'next/link';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
@@ -33,7 +39,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical md breakpoint
         };
-        
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
@@ -187,13 +193,19 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
 
     // Filter assignments based on search and view
     const filteredAssignments = useMemo(() => {
-        return assignmentData
-            ?.filter(assignment => selectedView === 'all' || assignment.projectStatus === selectedView)
-            ?.filter(assignment => 
-                searchQuery === '' || 
-                assignment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase())
-            ) || [];
+        return (
+            assignmentData
+                ?.filter(
+                    (assignment) =>
+                        selectedView === 'all' || assignment.projectStatus === selectedView
+                )
+                ?.filter(
+                    (assignment) =>
+                        searchQuery === '' ||
+                        assignment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+                ) || []
+        );
     }, [assignmentData, selectedView, searchQuery]);
 
     if (error) {
@@ -208,8 +220,11 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         // Calculate pagination
         const totalPages = Math.ceil(filteredAssignments.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginatedAssignments = filteredAssignments.slice(startIndex, startIndex + itemsPerPage);
-        
+        const paginatedAssignments = filteredAssignments.slice(
+            startIndex,
+            startIndex + itemsPerPage
+        );
+
         return (
             <div className="space-y-4">
                 <div className="space-y-2">
@@ -241,9 +256,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                         />
                     ))}
                     {filteredAssignments.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">
-                            No assignments found
-                        </div>
+                        <div className="text-center py-8 text-gray-500">No assignments found</div>
                     )}
                 </div>
                 {totalPages > 1 && (
@@ -251,7 +264,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
                         >
                             Previous
@@ -262,7 +275,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
                         >
                             Next

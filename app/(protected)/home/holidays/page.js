@@ -30,10 +30,10 @@ export default async function HolidaysPage() {
     return (
         <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
             <HolidaysWrapperComponent
-                    initialData={data}
-                    refreshAction={refreshHolidayData}
-                    error={error}
-                />
+                initialData={data}
+                refreshAction={refreshHolidayData}
+                error={error}
+            />
             <div className="self-start">
                 <UsefulLinksComponent links={timeReportingLinks} title="Flex" />
             </div>

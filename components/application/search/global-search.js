@@ -164,7 +164,9 @@ export function GlobalSearch({ user }) {
                                                         handleSelect(record.type, record)
                                                     }
                                                 >
-                                                    <div className="text-xs sm:text-base font-medium truncate">{record.name}</div>
+                                                    <div className="text-xs sm:text-base font-medium truncate">
+                                                        {record.name}
+                                                    </div>
                                                     <div className="flex items-center gap-2">
                                                         {record.type === 'Opportunity' && (
                                                             <TrendingUp className="h-4 w-4 flex-shrink-0" />

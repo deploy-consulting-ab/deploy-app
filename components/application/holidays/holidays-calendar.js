@@ -34,7 +34,12 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                     Have a look at your calendar to see what you have been up to.
                 </CardDescription>
                 <CardAction>
-                    <Button size="sm" variant="outline" onClick={handleToday} className="hover:cursor-pointer">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleToday}
+                        className="hover:cursor-pointer"
+                    >
                         {/* <RefreshCw className="h-4 w-4" /> */}
                         Today
                     </Button>

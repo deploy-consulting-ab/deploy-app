@@ -2,11 +2,7 @@
 
 import { auth } from '@/auth';
 import { OccupancyChartComponent } from '@/components/application/occupancy/occupancy-chart';
-import {
-    getCurrentFiscalYear,
-    getFiscalYearStartDate,
-    formatDateToISOString,
-} from '@/lib/utils';
+import { getCurrentFiscalYear, getFiscalYearStartDate, formatDateToISOString } from '@/lib/utils';
 import { getOccupancyRateFromLastFiscalYear } from '@/actions/salesforce/salesforce-actions';
 
 export default async function OccupancyPage() {
@@ -37,10 +33,7 @@ export default async function OccupancyPage() {
 
     return (
         <div className="py-4">
-            <OccupancyChartComponent
-                chartData={occupancyRates}
-                error={error}
-            />
+            <OccupancyChartComponent chartData={occupancyRates} error={error} />
         </div>
     );
 }

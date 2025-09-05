@@ -1,19 +1,14 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { ReadOnlyCalendar } from "@/components/ui/read-only-calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { formatDateToSwedish } from "@/lib/utils";
-import { useState } from "react";
+import { Button } from '@/components/ui/button';
+import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { formatDateToSwedish } from '@/lib/utils';
+import { useState } from 'react';
 import { enGB } from 'react-day-picker/locale';
 
-export function TimecardFilters({ 
-    onDateChange, 
-    onPageChange,
-    totalPages,
-    currentPage
-}) {
+export function TimecardFilters({ onDateChange, onPageChange, totalPages, currentPage }) {
     const [date, setDate] = useState(null);
 
     const handleSelect = (date) => {
@@ -27,10 +22,13 @@ export function TimecardFilters({
                 <div className="flex items-center gap-2">
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-[160px] sm:w-[200px] justify-start text-left font-normal">
+                            <Button
+                                variant="outline"
+                                className="w-[160px] sm:w-[200px] justify-start text-left font-normal"
+                            >
                                 <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
                                 <span className="truncate">
-                                    {date ? formatDateToSwedish(date) : "Filter by date"}
+                                    {date ? formatDateToSwedish(date) : 'Filter by date'}
                                 </span>
                             </Button>
                         </PopoverTrigger>
@@ -45,14 +43,27 @@ export function TimecardFilters({
                         </PopoverContent>
                     </Popover>
                     {date && (
-                        <Button 
-                            variant="ghost" 
+                        <Button
+                            variant="ghost"
                             size="icon"
                             onClick={() => handleSelect(null)}
                             className="text-muted-foreground h-9 w-9"
                             title="Clear filter"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
                         </Button>
                     )}
                 </div>
@@ -81,7 +92,7 @@ export function TimecardFilters({
                     </Button>
                 </div>
             </div>
-            
+
             <div className="hidden sm:flex items-center gap-2">
                 <Button
                     variant="outline"
