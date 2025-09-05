@@ -26,12 +26,6 @@ export function HolidaysCalendarComponent({ holidays, error }) {
         setSelectedDates(holidays?.allHolidaysRange || []);
     };
 
-    // if (error) {
-    //     return (
-    //         <NoDataComponent text="No holidays data found" />
-    //     );
-    // }
-
     return (
         <Card className="h-full pb-0" variant="shadow">
             <CardHeader className="border-b">
