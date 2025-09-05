@@ -33,19 +33,28 @@ export default async function HomePage() {
     let loading = true;
     let holidays = null;
     let occupancyRates = null;
-    let error = null;
+    let errors = {
+        holidays: null,
+        occupancyRates: null,
+    };
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     try {
         holidays = await getAbsenceApplications(employeeNumber);
+    } catch (err) {
+        errors.holidays = err;
+    } finally {
+        loading = false;
+    }
 
+    try {
         const today = new Date();
         const formattedToday = formatDateToISOString(today);
 
         occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
     } catch (err) {
-        error = err;
+        errors.occupancyRates = err;
     } finally {
         loading = false;
     }
@@ -63,13 +72,13 @@ export default async function HomePage() {
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                 <HolidaysCardComponent
                     holidays={holidays}
-                    error={error}
+                    error={errors.holidays}
                     isNavigationDisabled={false}
                     refreshAction={refreshHolidayData}
                 />
                 <OccupancyCardComponent
                     occupancy={occupancyRates}
-                    error={error}
+                    error={errors.occupancyRates}
                     refreshAction={refreshOccupancyData}
                 />
             </div>
