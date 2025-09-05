@@ -54,7 +54,7 @@ export function OccupancyCardComponent({
         }
     };
 
-    const isIncreasing = occupancyData.history[0].rate <= occupancyData.current;
+    const isIncreasing = occupancyData.history[0]?.rate <= occupancyData.current;
 
     return (
         <Card className="relative overflow-hidden" variant="shadow">
@@ -120,12 +120,16 @@ export function OccupancyCardComponent({
                 <div className="mt-4 pt-4 border-t">
                     <p className="text-sm font-medium mb-2">Monthly History</p>
                     <div className="space-y-2">
-                        {occupancyData.history.map((month, index) => (
-                            <div key={index} className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">{month.month}</span>
-                                <span className="font-medium">{month.rate}%</span>
-                            </div>
-                        ))}
+                        {occupancyData.history?.length > 0 ? (
+                            occupancyData.history.map((month, index) => (
+                                <div key={index} className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">{month.month}</span>
+                                    <span className="font-medium">{month.rate}%</span>
+                                </div>
+                            ))
+                        ) : (
+                            <NoDataComponent text="No historical occupancy data found" />
+                        )}
                     </div>
                 </div>
             </CardContent>
