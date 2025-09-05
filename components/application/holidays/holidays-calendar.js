@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
-import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function HolidaysCalendarComponent({ holidays, error }) {
     const [month, setMonth] = useState(new Date());
@@ -26,13 +26,11 @@ export function HolidaysCalendarComponent({ holidays, error }) {
         setSelectedDates(holidays?.allHolidaysRange || []);
     };
 
-    if (error) {
-        return (
-            <div>
-                <ErrorDisplayComponent error={error} />
-            </div>
-        );
-    }
+    // if (error) {
+    //     return (
+    //         <NoDataComponent text="No holidays data found" />
+    //     );
+    // }
 
     return (
         <Card className="h-full pb-0" variant="shadow">

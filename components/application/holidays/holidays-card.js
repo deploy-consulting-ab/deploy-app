@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Calendar, ChevronRight, RefreshCw } from 'lucide-react';
-import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
@@ -18,6 +17,7 @@ import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function HolidaysCardComponent({
     holidays: initialHolidays,
@@ -67,9 +67,7 @@ export function HolidaysCardComponent({
 
     if (error) {
         return (
-            <div>
-                <ErrorDisplayComponent error={error} />
-            </div>
+            <NoDataComponent text="No holidays data found" />
         );
     }
 
