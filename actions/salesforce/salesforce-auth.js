@@ -14,34 +14,54 @@ let connection = null;
 export async function getSalesforceConnection() {
     // If we already have a connection and its access token is valid, return it.
     if (connection && connection.accessToken) {
+        console.log('Existing connection & valid token!');
         return connection;
     }
 
-    // Create a new connection instance.
-    // The 'oauth2' property will be used for the Username-Password flow.
-    // const newConnection = new jsforce.Connection({
-    //     oauth2: {
-    //         loginUrl: process.env.SALESFORCE_LOGIN_URL,
-    //         clientId: process.env.SALESFORCE_CLIENT_ID,
-    //         clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
-    //     },
-    // });
-
-    const newConnection = new jsforce.Connection({
-        loginUrl: process.env.SALESFORCE_LOGIN_URL,
-    });
-
     try {
-        // Log in to Salesforce using the Username-Password flow.
-        await newConnection.login(
-            process.env.SALESFORCE_USERNAME,
-            `${process.env.SALESFORCE_PASSWORD}${process.env.SALESFORCE_SECURITY_TOKEN}`
-        ); // Don't log the full token in production
+        console.log('Token expired, getting new token...');
 
-        // Cache the successful connection
+        // Use fetch as jsforce did not with the client credentials flow
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+        myHeaders.append(
+            'Cookie',
+            'BrowserId=iswviZGUEfCLqenlO9eaxQ; CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'
+        );
+
+        const urlencoded = new URLSearchParams();
+        urlencoded.append('grant_type', 'client_credentials');
+        urlencoded.append(
+            'client_id',
+            process.env.SALESFORCE_CLIENT_ID            
+        );
+        urlencoded.append(
+            'client_secret',
+            process.env.SALESFORCE_CLIENT_SECRET
+        );
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow',
+        };
+
+        const fetchResponse = await fetch(
+            process.env.SALESFORCE_LOGIN_URL + '/services/oauth2/token',
+            requestOptions
+        );
+
+        const result = await fetchResponse.json();
+        const newConnection = new jsforce.Connection({
+            instanceUrl: result.instance_url,
+            accessToken: result.access_token,
+        });
+
         connection = newConnection;
 
         return connection;
+        
     } catch (error) {
         // Clear the failed connection attempt
         connection = null;
