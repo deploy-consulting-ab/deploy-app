@@ -56,7 +56,7 @@ export function OccupancyChartComponent({ chartData, error }) {
 
     React.useEffect(() => {
         if (isMobile) {
-            setTimeRange('90d');
+            setTimeRange('CURRENT_MONTH');
         }
     }, [isMobile]);
 
@@ -94,10 +94,11 @@ export function OccupancyChartComponent({ chartData, error }) {
                 date.getMonth() === lastMonth.getMonth()
             );
         } else if (timeRange === '90d') {
-            // Last 3 months
-            const startDate = new Date(currentDate);
-            startDate.setDate(startDate.getDate() - 90);
-            return date >= startDate;
+            // Last 3 full months excluding current month
+            const currentDate = new Date();
+            const firstDayOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
+            return date >= startDate && date < firstDayOfCurrentMonth;
         }
         return true; // Default case: show all data
     });
