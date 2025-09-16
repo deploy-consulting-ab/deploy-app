@@ -102,6 +102,8 @@ export function OccupancyChartComponent({ chartData, error }) {
         return true; // Default case: show all data
     });
 
+    console.log('##filteredData', filteredData);
+
     return (
         <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
             <CardHeader>
@@ -184,82 +186,89 @@ export function OccupancyChartComponent({ chartData, error }) {
                 </CardAction>
             </CardHeader>
             <CardContent className="flex-1 h-[calc(100%-12rem)]">
-                <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)] w-full">
-                    <BarChart
-                        accessibilityLayer
-                        data={filteredData}
-                        barSize={(() => {
-                            // Dynamic bar size based on number of bars
-                            if (filteredData.length <= 1) return isMobile ? 40 : 80; // Single bar
-                            if (filteredData.length <= 3) return isMobile ? 30 : 100; // Few bars (quarterly)
-                            if (filteredData.length >= 10) return isMobile ? 20 : 80; // More than 10
-                            return isMobile ? 30 : 100; // Many bars but less than 10
-                        })()}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
-                            tickFormatter={(value) => {
-                                return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
-                            }}
-                        />
-                        <YAxis
-                            domain={[0, 150]}
-                            tickLine={false}
-                            axisLine={false}
-                            ticks={[0, 50, 85, 100, 120, 150]}
-                            tickFormatter={(value) => `${value}%`}
-                            width={45}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={
-                                <ChartTooltipContent
-                                    formatter={(value) => 'Occupancy: ' + value + '%'}
-                                />
-                            }
-                        />
-                        <Bar dataKey="rate" radius={8}>
-                            {filteredData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={getOccupancyColor(entry.rate)} />
-                            ))}
-                            {!isMobile && (
-                                <LabelList
-                                    position="top"
-                                    offset={8}
-                                    className="fill-foreground"
-                                    fontSize={12}
-                                    formatter={(value) => `${value}%`}
-                                />
-                            )}
-                        </Bar>
-                        <ReferenceLine
-                            y={85}
-                            stroke="var(--muted-foreground)"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: 'Target (85%)',
-                                position: 'insideTopRight',
-                                fill: 'var(--muted-foreground)',
-                                fontSize: 12,
-                            }}
-                        />
-                        <ReferenceLine
-                            y={120}
-                            stroke="var(--muted-foreground)"
-                            strokeDasharray="3 3"
-                            label={{
-                                value: 'Max',
-                                position: 'insideTopRight',
-                                fill: 'var(--muted-foreground)',
-                                fontSize: 12,
-                            }}
-                        />
-                    </BarChart>
-                </ChartContainer>
+                {filteredData.length === 0 ? (
+                    <NoDataComponent text="No occupancy data found" />
+                ) : (
+                    <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)] w-full">
+                        <BarChart
+                            accessibilityLayer
+                            data={filteredData}
+                            barSize={(() => {
+                                // Dynamic bar size based on number of bars
+                                if (filteredData.length <= 1) return isMobile ? 40 : 80; // Single bar
+                                if (filteredData.length <= 3) return isMobile ? 30 : 100; // Few bars (quarterly)
+                                if (filteredData.length >= 10) return isMobile ? 20 : 80; // More than 10
+                                return isMobile ? 30 : 100; // Many bars but less than 10
+                            })()}
+                        >
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => {
+                                    return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
+                                }}
+                            />
+                            <YAxis
+                                domain={[0, 150]}
+                                tickLine={false}
+                                axisLine={false}
+                                ticks={[0, 50, 85, 100, 120, 150]}
+                                tickFormatter={(value) => `${value}%`}
+                                width={45}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={
+                                    <ChartTooltipContent
+                                        formatter={(value) => 'Occupancy: ' + value + '%'}
+                                    />
+                                }
+                            />
+                            <Bar dataKey="rate" radius={8}>
+                                {filteredData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={getOccupancyColor(entry.rate)}
+                                    />
+                                ))}
+                                {!isMobile && (
+                                    <LabelList
+                                        position="top"
+                                        offset={8}
+                                        className="fill-foreground"
+                                        fontSize={12}
+                                        formatter={(value) => `${value}%`}
+                                    />
+                                )}
+                            </Bar>
+                            <ReferenceLine
+                                y={85}
+                                stroke="var(--muted-foreground)"
+                                strokeDasharray="3 3"
+                                label={{
+                                    value: 'Target (85%)',
+                                    position: 'insideTopRight',
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
+                            />
+                            <ReferenceLine
+                                y={120}
+                                stroke="var(--muted-foreground)"
+                                strokeDasharray="3 3"
+                                label={{
+                                    value: 'Max',
+                                    position: 'insideTopRight',
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
+                            />
+                        </BarChart>
+                    </ChartContainer>
+                )}
             </CardContent>
         </Card>
     );
