@@ -45,9 +45,13 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
     }
 }
 
-export async function getAssignmentById(assignmentId) {
+export async function getAssignmentById(assignmentId, employeeNumber) {
     try {
-        const results = await queryData(getAssignmentByIdQuery(assignmentId));
+        const results = await queryData(getAssignmentByIdQuery(assignmentId, employeeNumber));
+
+        if (results?.length === 0) {
+            return null;
+        }
 
         const result = results[0];
 
@@ -66,9 +70,9 @@ export async function getAssignmentById(assignmentId) {
     }
 }
 
-export async function getAssignmentTimecards(assignmentId) {
+export async function getAssignmentTimecards(assignmentId, employeeNumber) {
     try {
-        const result = await queryData(getAssignmentTimecardsQuery(assignmentId));
+        const result = await queryData(getAssignmentTimecardsQuery(assignmentId, employeeNumber));
         return result.map((timecard) => ({
             id: timecard.Id,
             weekStartDate: timecard.StartDate__c,

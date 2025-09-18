@@ -7,9 +7,14 @@ import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-reac
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function AssignmentCard({ assignment, error }) {
     const isMobile = useIsMobile();
+
+    if (!assignment) {
+        return <NoDataComponent text="Assignment not found" />;
+    }
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;

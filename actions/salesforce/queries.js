@@ -17,12 +17,12 @@ const getAssignmentsByEmployeeNumberAndProjectNameQuery = (employeeNumber, proje
             ORDER BY StartDate__c DESC`;
 };
 
-const getAssignmentByIdQuery = (assignmentId) => {
-    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c FROM Assignment__c WHERE Id = '${assignmentId}' LIMIT 1`;
+const getAssignmentByIdQuery = (assignmentId, employeeNumber) => {
+    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c FROM Assignment__c WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
 };
 
-const getAssignmentTimecardsQuery = (assignmentId) => {
-    return `SELECT Id, StartDate__c, EndDate__c,MondayHours__c, TuesdayHours__c, WednesdayHours__c, ThursdayHours__c, FridayHours__c, SaturdayHours__c, SundayHours__c FROM Timecard__c WHERE Assignment__c = '${assignmentId}' ORDER BY StartDate__c DESC`;
+const getAssignmentTimecardsQuery = (assignmentId, employeeNumber) => {
+    return `SELECT Id, StartDate__c, EndDate__c,MondayHours__c, TuesdayHours__c, WednesdayHours__c, ThursdayHours__c, FridayHours__c, SaturdayHours__c, SundayHours__c FROM Timecard__c WHERE Assignment__c = '${assignmentId}' AND Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}' ORDER BY StartDate__c DESC`;
 };
 
 const getOpportunitiesQuery = () => {
@@ -37,7 +37,7 @@ const getOpportunityByIdQuery = (opportunityId) => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
 };
 
-const getRecentOccupancyRateQuery = (employeeNumber, today, endDate) => {
+const getRecentOccupancyRateQuery = (employeeNumber, today) => {
     return `SELECT Id, OccupancyRate__c, Date__c, Month__c FROM HistoricalHour__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
             ORDER BY Date__c DESC LIMIT 4`;
