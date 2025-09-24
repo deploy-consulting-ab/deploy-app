@@ -10,11 +10,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         async signIn({ user, account }) {
             if (account?.provider !== 'credentials') {
-                const existingUser = await getUserByEmail(user.email);
 
                 if (process.env.ENABLE_AUTO_REGISTRATION === 'true') {
                     return true;
                 }
+                
+                const existingUser = await getUserByEmail(user.email);
 
                 if (!existingUser) {
                     return false;
