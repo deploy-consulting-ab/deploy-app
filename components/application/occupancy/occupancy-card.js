@@ -99,8 +99,8 @@ export function OccupancyCardComponent({
                                 }`}
                             >
                                 <TrendingUp
-                                    className={`h-4 w-4 ${!isIncreasing && 'rotate-180'}`}
-                                />
+                                            className={`h-4 w-4 mr-1 ${!isIncreasing && 'rotate-180'}`}
+                                        />
                                 vs last month
                             </span>
                         </div>
