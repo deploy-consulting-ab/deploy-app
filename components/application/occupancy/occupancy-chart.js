@@ -52,7 +52,7 @@ const getOccupancyColor = (value) => {
 
 export function OccupancyChartComponent({ chartData, error }) {
     const isMobile = useIsMobile();
-    const [timeRange, setTimeRange] = React.useState('90d');
+    const [timeRange, setTimeRange] = React.useState('CURRENT_MONTH');
 
     React.useEffect(() => {
         if (isMobile) {
@@ -93,10 +93,14 @@ export function OccupancyChartComponent({ chartData, error }) {
                 date.getFullYear() === lastMonth.getFullYear() &&
                 date.getMonth() === lastMonth.getMonth()
             );
-        } else if (timeRange === '90d') {
+        } else if (timeRange === 'LAST_THREE_MONTHS') {
             // Last 3 full months excluding current month
             const currentDate = new Date();
-            const firstDayOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const firstDayOfCurrentMonth = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1
+            );
             const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
             return date >= startDate && date < firstDayOfCurrentMonth;
         }
@@ -128,14 +132,14 @@ export function OccupancyChartComponent({ chartData, error }) {
                         <>
                             <span className="hidden @[540px]/card:block">
                                 Total for the{' '}
-                                {timeRange === '90d'
+                                {timeRange === 'LAST_THREE_MONTHS'
                                     ? 'last 3 months'
                                     : timeRange === 'LAST_MONTH'
                                       ? 'last month'
                                       : 'current month'}
                             </span>
                             <span className="@[540px]/card:hidden">
-                                {timeRange === '90d'
+                                {timeRange === 'LAST_THREE_MONTHS'
                                     ? 'Last 3 months'
                                     : timeRange === 'LAST_MONTH'
                                       ? 'Last month'
@@ -152,7 +156,13 @@ export function OccupancyChartComponent({ chartData, error }) {
                         variant="outline"
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
-                        <ToggleGroupItem value="90d" className="hover:cursor-pointer">
+                        <ToggleGroupItem value="CURRENT_MONTH" className="hover:cursor-pointer">
+                            Current month
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="LAST_MONTH" className="hover:cursor-pointer">
+                            Last month
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="LAST_THREE_MONTHS" className="hover:cursor-pointer">
                             Last 3 months
                         </ToggleGroupItem>
                         <ToggleGroupItem value="FY" className="hover:cursor-pointer">
@@ -160,12 +170,6 @@ export function OccupancyChartComponent({ chartData, error }) {
                         </ToggleGroupItem>
                         <ToggleGroupItem value="PFY" className="hover:cursor-pointer">
                             Previous FY
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="CURRENT_MONTH" className="hover:cursor-pointer">
-                            Current month
-                        </ToggleGroupItem>
-                        <ToggleGroupItem value="LAST_MONTH" className="hover:cursor-pointer">
-                            Last month
                         </ToggleGroupItem>
                     </ToggleGroup>
                     <Select value={timeRange} onValueChange={setTimeRange}>
@@ -177,11 +181,11 @@ export function OccupancyChartComponent({ chartData, error }) {
                             <SelectValue placeholder="Current FY" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
-                            <SelectItem value="90d">Last 3 months</SelectItem>
-                            <SelectItem value="FY">Current FY</SelectItem>
-                            <SelectItem value="PFY">Previous FY</SelectItem>
                             <SelectItem value="CURRENT_MONTH">Current month</SelectItem>
                             <SelectItem value="LAST_MONTH">Last month</SelectItem>
+                            <SelectItem value="LAST_THREE_MONTHS">Last 3 months</SelectItem>
+                            <SelectItem value="FY">Current FY</SelectItem>
+                            <SelectItem value="PFY">Previous FY</SelectItem>
                         </SelectContent>
                     </Select>
                 </CardAction>
