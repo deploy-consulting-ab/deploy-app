@@ -50,8 +50,6 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         { value: 'Engagement Scoping', label: 'Engagement Scoping' },
         { value: 'Engagement Proposal', label: 'Engagement Proposal' },
         { value: 'Negotiation', label: 'Negotiation' },
-        { value: 'Closed Won', label: 'Closed Won' },
-        { value: 'Closed Lost', label: 'Closed Lost' },
     ];
 
     const columns = [

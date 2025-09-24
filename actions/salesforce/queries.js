@@ -26,15 +26,15 @@ const getAssignmentTimecardsQuery = (assignmentId, employeeNumber) => {
 };
 
 const getOpportunitiesQuery = () => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity ORDER BY CloseDate DESC`;
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE StageName != 'Closed Lost' AND StageName != 'Closed Won' ORDER BY CloseDate DESC`;
 };
 
 const getOpportunitiesByNameQuery = (name) => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Name LIKE '%${name}%' ORDER BY CloseDate DESC`;
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Name LIKE '%${name}%' AND StageName != 'Closed Lost' AND StageName != 'Closed Won' ORDER BY CloseDate DESC`;
 };
 
 const getOpportunityByIdQuery = (opportunityId) => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode FROM Opportunity WHERE Id = '${opportunityId}' AND StageName != 'Closed Lost' AND StageName != 'Closed Won' LIMIT 1`;
 };
 
 const getRecentOccupancyRateQuery = (employeeNumber, today) => {
