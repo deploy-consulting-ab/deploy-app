@@ -58,7 +58,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                         disabled
                         showWeekNumber
                         showOutsideDays={false}
-                        className="w-full flex items-center justify-center rounded-lg"
+                        className="w-full flex items-center justify-center rounded-lg pt-0"
                     />
                 </div>
             </CardContent>
