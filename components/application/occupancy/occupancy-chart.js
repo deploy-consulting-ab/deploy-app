@@ -107,8 +107,6 @@ export function OccupancyChartComponent({ chartData, error }) {
         return true; // Default case: show all data
     });
 
-    console.log('##filteredData', filteredData);
-
     return (
         <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
             <CardHeader>
