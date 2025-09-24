@@ -92,7 +92,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                 return (
                     <Link
                         href={`/home/assignments/${id}`}
-                        className="cursor-pointer text-blue-600 hover:underline truncate"
+                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')} // Show full text on hover
                     >
                         {row.getValue('name')}

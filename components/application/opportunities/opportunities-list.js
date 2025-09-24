@@ -77,7 +77,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                 return (
                     <Link
                         href={`/home/opportunities/${id}`}
-                        className="cursor-pointer text-blue-600 hover:underline truncate"
+                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
                         {row.getValue('name')}
