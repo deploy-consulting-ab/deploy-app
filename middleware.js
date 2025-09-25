@@ -9,6 +9,7 @@ import {
     ASSIGNMENTS_ROUTE,
     OPPORTUNITIES_ROUTE,
     ADMIN_ROUTE,
+    PROTECTED_ROUTES,
 } from '@/menus/routes';
 
 import { NextResponse } from 'next/server';
@@ -66,43 +67,10 @@ const handleLoggedInUsers = (nextUrl, role) => {
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    if (pathname.includes(HOME_ROUTE)) {
-        if (hasPermission(role, 'viewHome')) {
-            return NextResponse.next();
-        }
-        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
-    }
+    const protectedRoute = PROTECTED_ROUTES.find(route => pathname === route.path);
 
-    if (pathname.includes(HOLIDAYS_ROUTE)) {
-        if (hasPermission(role, 'viewHolidays')) {
-            return NextResponse.next();
-        }
-        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
-    }
-
-    if (pathname.includes(OCCUPANCY_ROUTE)) {
-        if (hasPermission(role, 'viewOccupancy')) {
-            return NextResponse.next();
-        }
-        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
-    }
-
-    if (pathname.includes(ASSIGNMENTS_ROUTE)) {
-        if (hasPermission(role, 'viewAssignments')) {
-            return NextResponse.next();
-        }
-        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
-    }
-
-    if (pathname.includes(OPPORTUNITIES_ROUTE)) {
-        if (hasPermission(role, 'viewOpportunities')) {
-            return NextResponse.next();
-        }
-        return Response.redirect(new URL(HOME_ROUTE, nextUrl));
-    }
-
-    if (pathname.includes(ADMIN_ROUTE)) {
-        if (hasPermission(role, 'viewAdmin')) {
+    if (protectedRoute) {
+        if (hasPermission(role, protectedRoute.permission)) {
             return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
