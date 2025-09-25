@@ -54,8 +54,8 @@ model User {
     image           String?
     password        String?
     role            UserRole        @default(CONSULTANT)
-    profile         Profile         @relation(fields: [profileId], references: [id]) // Required - one profile
-    profileId       String
+    profile         Profile?        @relation(fields: [profileId], references: [id]) // Optional temporarily
+    profileId       String?         // Optional temporarily
     permissionSets  PermissionSet[] // Optional - many permission sets
     accounts        Account[]
 
