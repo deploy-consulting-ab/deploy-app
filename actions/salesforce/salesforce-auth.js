@@ -73,3 +73,7 @@ export async function getSalesforceConnection() {
         );
     }
 }
+
+export async function invalidateSalesforceConnection() {
+    connection = null;
+}
