@@ -11,6 +11,7 @@ import {
     ADMIN_ROUTE,
 } from '@/menus/routes';
 
+import { NextResponse } from 'next/server';
 import { hasPermission } from '@/lib/permissions';
 
 // Import the configured auth instance instead of creating a new one
@@ -28,7 +29,7 @@ export default auth((req) => {
 
     // API auth routes
     if (isApiAuthRoute) {
-        return null; // No action -> Allow access
+        return NextResponse.next(); // No action -> Allow access
     }
 
     // Auth routes
@@ -37,7 +38,7 @@ export default auth((req) => {
             return Response.redirect(new URL(HOME_ROUTE, nextUrl));
         }
         // Allow access
-        return null;
+        return NextResponse.next();
     }
 
     // Not public and not logged in? -> Redirect to login
@@ -67,42 +68,42 @@ const handleLoggedInUsers = (nextUrl, role) => {
 
     if (pathname.includes(HOME_ROUTE)) {
         if (hasPermission(role, 'viewHome')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     if (pathname.includes(HOLIDAYS_ROUTE)) {
         if (hasPermission(role, 'viewHolidays')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     if (pathname.includes(OCCUPANCY_ROUTE)) {
         if (hasPermission(role, 'viewOccupancy')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     if (pathname.includes(ASSIGNMENTS_ROUTE)) {
         if (hasPermission(role, 'viewAssignments')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     if (pathname.includes(OPPORTUNITIES_ROUTE)) {
         if (hasPermission(role, 'viewOpportunities')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
     if (pathname.includes(ADMIN_ROUTE)) {
         if (hasPermission(role, 'viewAdmin')) {
-            return null;
+            return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
