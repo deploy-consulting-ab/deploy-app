@@ -17,7 +17,8 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
-import { getMenuItems } from '@/lib/permissions';
+import { getMenuItems } from '@/menus/sidebar-menus';
+
 
 export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
