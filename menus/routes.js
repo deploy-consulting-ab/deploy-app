@@ -25,10 +25,10 @@ export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
 
 export const PROTECTED_ROUTES = [
-    { path : HOME_ROUTE, permission : 'viewHome' },
-    { path : HOLIDAYS_ROUTE, permission : 'viewHolidays' },
-    { path : OCCUPANCY_ROUTE, permission : 'viewOccupancy' },
-    { path : ASSIGNMENTS_ROUTE, permission : 'viewAssignments' },
-    { path : OPPORTUNITIES_ROUTE, permission : 'viewOpportunities' },
-    { path : ADMIN_ROUTE, permission : 'viewAdmin' },
+    { path : HOME_ROUTE, permission : 'Home:View' },
+    { path : HOLIDAYS_ROUTE, permission : 'Holidays:View' },
+    { path : OCCUPANCY_ROUTE, permission : 'Occupancy:View' },
+    { path : ASSIGNMENTS_ROUTE, permission : 'Assignments:View' },
+    { path : OPPORTUNITIES_ROUTE, permission : 'Opportunities:View' },
+    { path : ADMIN_ROUTE, permission : 'Admin:View' },
 ]

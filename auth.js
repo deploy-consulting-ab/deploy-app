@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
-import { getUserById, getUserByEmail } from '@/data/user';
+import { getUserById, getUserByEmail, getCombinedPermissionsForUser } from '@/data/user';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
@@ -53,14 +53,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.role = token.role;
             }
 
+            if (token.permissions) {
+                session.user.permissions = token.permissions;
+            }
+
             return session;
         },
         async jwt({ token, user }) {
+            // Only populated on sign in
             if (user) {
-                // This runs only on sign in
+                const permissions = await getCombinedPermissionsForUser(user.id);
+
+                token.permissions = permissions;
                 token.salesforceId = user.salesforce_id;
                 token.employeeNumber = user.employee_number;
                 token.role = user.role;
+                token.sub = user.id;
             }
             return token;
         },

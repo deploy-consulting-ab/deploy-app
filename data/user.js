@@ -48,3 +48,46 @@ export const createUser = async (data) => {
         return false;
     }
 };
+
+export async function getCombinedPermissionsForUser(id) {
+    // 1. Fetch the user and include their profile, permission sets,
+    //    and all nested permissions in a single query.
+    const userWithPermissions = await db.user.findUnique({
+        where: { id },
+        include: {
+            profile: {
+                include: {
+                    permissions: true, // Get permissions from the profile
+                },
+            },
+            permissionSets: {
+                include: {
+                    permissions: true, // Get permissions from all permission sets
+                },
+            },
+        },
+    });
+
+    if (!userWithPermissions) {
+        return []; // Return empty array if user not found
+    }
+
+    // 2. Extract permissions from the user's profile
+    const profilePermissions = (userWithPermissions.profile?.permissions || []).map(
+        (permission) => permission.name
+    );
+
+    // 3. Extract permissions from all assigned permission sets flatMap is used to merge the permissions from multiple sets into one array
+    const permissionSetPermissions = userWithPermissions.permissionSets.flatMap(
+        (set) => set.permissions.map((permission) => permission.name)
+    );
+
+    // 4. Combine both lists
+    const allPermissions = [...profilePermissions, ...permissionSetPermissions];
+
+    return allPermissions;
+
+    // const allPermissionsMap = new Set(allPermissions);
+
+    // return allPermissionsMap;
+}

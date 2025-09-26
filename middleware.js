@@ -4,16 +4,10 @@ import {
     API_AUTH_PREFIX,
     AUTH_ROUTES,
     PUBLIC_ROUTES,
-    HOLIDAYS_ROUTE,
-    OCCUPANCY_ROUTE,
-    ASSIGNMENTS_ROUTE,
-    OPPORTUNITIES_ROUTE,
-    ADMIN_ROUTE,
     PROTECTED_ROUTES,
 } from '@/menus/routes';
 
 import { NextResponse } from 'next/server';
-import { hasPermission } from '@/lib/permissions';
 
 // Import the configured auth instance instead of creating a new one
 import { auth } from '@/auth';
@@ -57,10 +51,12 @@ export default auth((req) => {
         );
     }
 
-    return handleLoggedInUsers(nextUrl, user?.role);
+    const permissionsSet = new Set(user?.permissions);
+
+    return handleLoggedInUsers(nextUrl, permissionsSet);
 });
 
-const handleLoggedInUsers = (nextUrl, role) => {
+const handleLoggedInUsers = (nextUrl, permissionsSet) => {
     const pathname = nextUrl.pathname;
 
     if (!pathname) {
@@ -70,7 +66,7 @@ const handleLoggedInUsers = (nextUrl, role) => {
     const protectedRoute = PROTECTED_ROUTES.find(route => pathname === route.path);
 
     if (protectedRoute) {
-        if (hasPermission(role, protectedRoute.permission)) {
+        if (permissionsSet.has(protectedRoute.permission)) {
             return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
