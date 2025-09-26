@@ -4,27 +4,28 @@ import {
     getOpportunitiesByName,
     getAssignmentsByEmployeeNumberAndProjectName,
 } from '@/actions/salesforce/salesforce-actions';
-import { getSearchableTypes } from '@/lib/permissions';
+import { auth } from '@/auth';
 
-export async function globalSearch(query, limit = 3, employeeNumber, userRole) {
+export async function globalSearch(query, limit = 3, employeeNumber) {
     if (!query) {
         return { opportunities: [], assignments: [] };
     }
 
+    const session = await auth();
+    const { user } = session;
+    const permissionsSet = new Set(user?.permissions);
+    
     try {
-        // Get searchable types for the user's role
-        const searchableTypes = getSearchableTypes(userRole);
-
         // Only fetch data that the user has permission to see
         const promises = [];
 
-        if (searchableTypes.includes('opportunities')) {
+        if (permissionsSet.has('Opportunities:View')) {
             promises.push(searchOpportunities(query, limit));
         } else {
             promises.push([]);
         }
 
-        if (searchableTypes.includes('assignments')) {
+        if (permissionsSet.has('Assignments:View')) {
             promises.push(searchAssignments(query, employeeNumber, limit));
         } else {
             promises.push([]);

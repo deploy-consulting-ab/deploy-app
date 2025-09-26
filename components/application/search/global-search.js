@@ -53,7 +53,7 @@ export function GlobalSearch({ user }) {
             }
 
             try {
-                const response = await globalSearch(query, 5, user?.employeeNumber, user?.role);
+                const response = await globalSearch(query, 5, user?.employeeNumber);
                 setResults(response);
                 setOpen(true);
             } catch (error) {
@@ -63,7 +63,7 @@ export function GlobalSearch({ user }) {
                 setLoading(false);
             }
         },
-        [setResults, setLoading, setOpen, user?.employeeNumber, user?.role]
+        [setResults, setLoading, setOpen, user?.employeeNumber]
     );
 
     const debouncedSearchWithDelay = useMemo(
