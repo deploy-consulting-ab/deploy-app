@@ -14,37 +14,37 @@ export const MENU_ITEMS_MAP = {
         title: 'Home',
         url: HOME_ROUTE,
         icon: Home,
-        permission: 'viewHome',
+        permission: 'Home:View',
     },
     holidays: {
         title: 'Holidays',
         url: HOLIDAYS_ROUTE,
         icon: Calendar,
-        permission: 'viewHolidays',
+        permission: 'Holidays:View',
     },
     occupancy: {
         title: 'Occupancy',
         url: OCCUPANCY_ROUTE,
         icon: Percent,
-        permission: 'viewOccupancy',
+        permission: 'Occupancy:View',
     },
     assignments: {
         title: 'Assignments',
         url: ASSIGNMENTS_ROUTE,
         icon: ClipboardList,
-        permission: 'viewAssignments',
+        permission: 'Assignments:View',
     },
     opportunities: {
         title: 'Opportunities',
         url: OPPORTUNITIES_ROUTE,
         icon: TrendingUp,
-        permission: 'viewOpportunities',
+        permission: 'Opportunities:View',
     },
     admin: {
         title: 'Admin',
         url: ADMIN_ROUTE,
         icon: Shield,
-        permission: 'viewAdmin',
+        permission: 'Admin:View',
     },
 };
 
@@ -60,7 +60,7 @@ export function buildMenu(permissions) {
     const menu = [];
     
     for (const [key, menuItem] of Object.entries(MENU_ITEMS_MAP)) {
-        if (permissions[menuItem.permission]) {
+        if (permissions.has(menuItem.permission)) {
             menu.push({
                 title: menuItem.title,
                 url: menuItem.url,
@@ -78,24 +78,19 @@ export function buildMenu(permissions) {
  * @param {Object} rolePermissions - The permissions configuration object
  * @returns {Array} Array of menu items for the user
  */
-export function getMenuForRole(userRole, rolePermissions) {
+export function getMenuForRole(userRole, userPermissions) {
     // If no role or permissions, return empty menu
-    if (!userRole || !rolePermissions[userRole]) {
+    if (!userPermissions || !userPermissions.has('Home:View')) {
         return [];
     }
 
     // Check cache first
     if (menuCache.has(userRole)) {
-        console.log('## Menu for role', userRole, 'found in cache');
         return menuCache.get(userRole);
     }
 
-
-    console.log('%% Menu for role', userRole, 'not found in cache');
-
     // Generate menu based on role permissions
-    const permissions = rolePermissions[userRole].features;
-    const menu = buildMenu(permissions);
+    const menu = buildMenu(userPermissions);
 
     // Cache the generated menu
     menuCache.set(userRole, menu);
