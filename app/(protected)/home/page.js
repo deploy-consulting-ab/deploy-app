@@ -1,63 +1,77 @@
 'use server';
 
 import { auth } from '@/auth';
-import { HolidaysCardComponent } from '@/components/application/holidays/holidays-card';
-import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
-import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
-import { homePageLinks } from '@/lib/external-links';
+import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
 import { formatDateToISOString } from '@/lib/utils';
+import {
+    getLayoutForProfile,
+    getRequiredDataForProfile,
+} from '@/components/application/home/layout-selector';
 
-async function refreshHolidayData() {
+async function refreshHolidays() {
     'use server';
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
-    const holidays = await getAbsenceApplications(employeeNumber, { cache: 'no-store' });
-    return holidays;
+    return await getAbsenceApplications(employeeNumber, { cache: 'no-store' });
 }
 
-async function refreshOccupancyData() {
+async function refreshOccupancy() {
     'use server';
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
     const today = new Date();
     const formattedToday = formatDateToISOString(today);
-
-    const occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
-    return occupancyRates;
+    return await getRecentOccupancyRate(employeeNumber, formattedToday);
 }
 
+const refreshActions = {
+    holidays: refreshHolidays,
+    occupancy: refreshOccupancy,
+};
+
 export default async function HomePage() {
+    const session = await auth();
+    const { employeeNumber, profileId } = session.user;
+    
+    console.log('#### profileId', profileId);
+
+    // Determine what data this profile needs
+    const dataRequirements = getRequiredDataForProfile(profileId);
+
+    // Initialize data and errors
     let loading = true;
-    let holidays = null;
-    let occupancyRates = null;
-    let errors = {
+    const data = {
         holidays: null,
         occupancyRates: null,
     };
-    const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
+    const errors = {
+        holidays: null,
+        occupancyRates: null,
+    };
 
-    try {
-        holidays = await getAbsenceApplications(employeeNumber);
-    } catch (err) {
-        errors.holidays = err;
-    } finally {
-        loading = false;
+    // Fetch required data based on profile
+    if (dataRequirements.holidays) {
+        try {
+            data.holidays = await getAbsenceApplications(employeeNumber);
+        } catch (err) {
+            errors.holidays = err;
+        }
     }
 
-    try {
-        const today = new Date();
-        const formattedToday = formatDateToISOString(today);
-
-        occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
-    } catch (err) {
-        errors.occupancyRates = err;
-    } finally {
-        loading = false;
+    if (dataRequirements.occupancyRates) {
+        try {
+            const today = new Date();
+            const formattedToday = formatDateToISOString(today);
+            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
+        } catch (err) {
+            errors.occupancyRates = err;
+        }
     }
+
+    loading = false;
 
     if (loading) {
         return (
@@ -66,25 +80,17 @@ export default async function HomePage() {
             </div>
         );
     }
+    
+    // Get the appropriate layout component for this profile
+    const LayoutComponent = getLayoutForProfile(profileId);
 
+    // Render the layout with the fetched data
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshHolidayData}
-                />
-                <OccupancyCardComponent
-                    occupancy={occupancyRates}
-                    error={errors.occupancyRates}
-                    refreshAction={refreshOccupancyData}
-                />
-            </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={homePageLinks} title="Quick Access" />
-            </div>
-        </div>
+        <LayoutComponent
+            {...data}
+            errors={errors}
+            refreshActions={refreshActions}
+            links={getHomePageLinks(profileId)}
+        />
     );
 }
