@@ -49,10 +49,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.employeeNumber = token.employeeNumber;
             }
 
-            if (token.role) {
-                session.user.role = token.role;
-            }
-
             if (token.permissions) {
                 session.user.permissions = token.permissions;
             }
@@ -71,7 +67,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.permissions = permissions;
                 token.salesforceId = user.salesforce_id;
                 token.employeeNumber = user.employee_number;
-                token.role = user.role;
                 token.sub = user.id;
                 token.profileId = user.profileId;
             }

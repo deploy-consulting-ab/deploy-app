@@ -17,16 +17,15 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
-import { getMenuForRole } from '@/menus/menu-builder';
+import { getMenuForProfile } from '@/menus/menu-builder';
 
 
 export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
 
-    const permissionsSet = new Set(user?.permissions);
-    
-    const menuItems = getMenuForRole(user?.role, permissionsSet);
+    const permissionsSet = new Set(user?.permissions);    
+    const menuItems = getMenuForProfile(user?.profileId, permissionsSet);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {

@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { PROFILE_MAP } from '@/lib/permissions';
 
 export const getUserByEmail = async (email) => {
     try {
@@ -30,15 +31,18 @@ export const getUserById = async (id) => {
 
 export const createUser = async (data) => {
     try {
-        const { name, email, hashedPassword, role, employeeNumber } = data;
-
+        const { name, email, hashedPassword, profile, employeeNumber } = data;
         const user = await db.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                role,
                 employee_number: employeeNumber,
+                profile: {
+                    connect: {
+                        id: PROFILE_MAP[profile],
+                    },
+                },
             },
         });
 
@@ -78,8 +82,8 @@ export async function getCombinedPermissionsForUser(id) {
     );
 
     // 3. Extract permissions from all assigned permission sets flatMap is used to merge the permissions from multiple sets into one array
-    const permissionSetPermissions = userWithPermissions.permissionSets.flatMap(
-        (set) => set.permissions.map((permission) => permission.name)
+    const permissionSetPermissions = userWithPermissions.permissionSets.flatMap((set) =>
+        set.permissions.map((permission) => permission.name)
     );
 
     // 4. Combine both lists

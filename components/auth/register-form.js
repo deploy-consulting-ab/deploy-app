@@ -36,7 +36,7 @@ export const RegisterFormComponent = () => {
             password: '',
             name: '',
             employeeNumber: '',
-            role: 'ADMIN',
+            profile: 'ADMIN',
         },
     });
 
@@ -59,7 +59,7 @@ export const RegisterFormComponent = () => {
                     password: '',
                     name: '',
                     employeeNumber: '',
-                    role: 'ADMIN',
+                    profile: 'ADMIN',
                 });
             }
         });
@@ -155,10 +155,10 @@ export const RegisterFormComponent = () => {
 
                         <FormField
                             control={form.control}
-                            name="role"
+                            name="profile"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Role</FormLabel>
+                                    <FormLabel>Profile</FormLabel>
                                     <Select
                                         disabled={isPending}
                                         onValueChange={field.onChange}
@@ -166,7 +166,7 @@ export const RegisterFormComponent = () => {
                                     >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select a role" />
+                                                <SelectValue placeholder="Select a profile" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>

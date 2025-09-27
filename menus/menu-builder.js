@@ -1,6 +1,6 @@
 import { MENU_ITEMS_MAP } from '@/menus/menus';
 
-// Cache for storing generated menus by role
+// Cache for storing generated menus by profile
 const menuCache = new Map();
 
 /**
@@ -25,27 +25,27 @@ export function buildMenu(permissions) {
 }
 
 /**
- * Gets or generates a menu for a user role, using caching
- * @param {string} userRole - The role of the user
- * @param {Object} rolePermissions - The permissions configuration object
+ * Gets or generates a menu for a user profile, using caching
+ * @param {string} userProfile - The profile of the user
+ * @param {Object} userPermissions - The permissions configuration object
  * @returns {Array} Array of menu items for the user
  */
-export function getMenuForRole(userRole, userPermissions) {
-    // If no role or permissions, return empty menu
+export function getMenuForProfile(userProfile, userPermissions) {
+    // If no profile or permissions, return empty menu
     if (!userPermissions) {
         return [];
     }
 
     // Check cache first
-    if (menuCache.has(userRole)) {
-        return menuCache.get(userRole);
+    if (menuCache.has(userProfile)) {
+        return menuCache.get(userProfile);
     }
 
-    // Generate menu based on role permissions
+    // Generate menu based on profile permissions
     const menu = buildMenu(userPermissions);
 
     // Cache the generated menu
-    menuCache.set(userRole, menu);
+    menuCache.set(userProfile, menu);
 
     return menu;
 }
