@@ -7,6 +7,14 @@ import {
     OPPORTUNITIES_ROUTE,
     ADMIN_ROUTE,
 } from '@/menus/routes';
+import {
+    VIEW_HOME_PERMISSION,
+    VIEW_HOLIDAYS_PERMISSION,
+    VIEW_OCCUPANCY_PERMISSION,
+    VIEW_ASSIGNMENTS_PERMISSION,
+    VIEW_OPPORTUNITIES_PERMISSION,
+    VIEW_ADMIN_PERMISSION,
+} from '@/lib/permissions';
 
 // Map of menu items with their required permissions and configurations
 export const MENU_ITEMS_MAP = {
@@ -14,36 +22,36 @@ export const MENU_ITEMS_MAP = {
         title: 'Home',
         url: HOME_ROUTE,
         icon: Home,
-        permission: 'Home:View',
+        permission: VIEW_HOME_PERMISSION,
     },
     holidays: {
         title: 'Holidays',
         url: HOLIDAYS_ROUTE,
         icon: Calendar,
-        permission: 'Holidays:View',
+        permission: VIEW_HOLIDAYS_PERMISSION,
     },
     occupancy: {
         title: 'Occupancy',
         url: OCCUPANCY_ROUTE,
         icon: Percent,
-        permission: 'Occupancy:View',
+        permission: VIEW_OCCUPANCY_PERMISSION,
     },
     assignments: {
         title: 'Assignments',
         url: ASSIGNMENTS_ROUTE,
         icon: ClipboardList,
-        permission: 'Assignments:View',
+        permission: VIEW_ASSIGNMENTS_PERMISSION,
     },
     opportunities: {
         title: 'Opportunities',
         url: OPPORTUNITIES_ROUTE,
         icon: TrendingUp,
-        permission: 'Opportunities:View',
+        permission: VIEW_OPPORTUNITIES_PERMISSION,
     },
     admin: {
         title: 'Admin',
         url: ADMIN_ROUTE,
         icon: Shield,
-        permission: 'Admin:View',
+        permission: VIEW_ADMIN_PERMISSION,
     },
 };

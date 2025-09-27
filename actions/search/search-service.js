@@ -5,6 +5,7 @@ import {
     getAssignmentsByEmployeeNumberAndProjectName,
 } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
+import { VIEW_OPPORTUNITIES_PERMISSION, VIEW_ASSIGNMENTS_PERMISSION } from '@/lib/permissions';
 
 export async function globalSearch(query, limit = 3, employeeNumber) {
     if (!query) {
@@ -14,18 +15,18 @@ export async function globalSearch(query, limit = 3, employeeNumber) {
     const session = await auth();
     const { user } = session;
     const permissionsSet = new Set(user?.permissions);
-    
+
     try {
         // Only fetch data that the user has permission to see
         const promises = [];
 
-        if (permissionsSet.has('Opportunities:View')) {
+        if (permissionsSet.has(VIEW_OPPORTUNITIES_PERMISSION)) {
             promises.push(searchOpportunities(query, limit));
         } else {
             promises.push([]);
         }
 
-        if (permissionsSet.has('Assignments:View')) {
+        if (permissionsSet.has(VIEW_ASSIGNMENTS_PERMISSION)) {
             promises.push(searchAssignments(query, employeeNumber, limit));
         } else {
             promises.push([]);

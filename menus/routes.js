@@ -1,3 +1,12 @@
+import {
+    VIEW_HOME_PERMISSION,
+    VIEW_HOLIDAYS_PERMISSION,
+    VIEW_OCCUPANCY_PERMISSION,
+    VIEW_ASSIGNMENTS_PERMISSION,
+    VIEW_OPPORTUNITIES_PERMISSION,
+    VIEW_ADMIN_PERMISSION,
+} from '@/lib/permissions';
+
 export const LOGIN_ROUTE = '/auth/login';
 export const HOME_ROUTE = '/home';
 /**
@@ -25,10 +34,10 @@ export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
 
 export const PROTECTED_ROUTES = [
-    { path : HOME_ROUTE, permission : 'Home:View' },
-    { path : HOLIDAYS_ROUTE, permission : 'Holidays:View' },
-    { path : OCCUPANCY_ROUTE, permission : 'Occupancy:View' },
-    { path : ASSIGNMENTS_ROUTE, permission : 'Assignments:View' },
-    { path : OPPORTUNITIES_ROUTE, permission : 'Opportunities:View' },
-    { path : ADMIN_ROUTE, permission : 'Admin:View' },
+    { path : HOME_ROUTE, permission : VIEW_HOME_PERMISSION },
+    { path : HOLIDAYS_ROUTE, permission : VIEW_HOLIDAYS_PERMISSION },
+    { path : OCCUPANCY_ROUTE, permission : VIEW_OCCUPANCY_PERMISSION },
+    { path : ASSIGNMENTS_ROUTE, permission : VIEW_ASSIGNMENTS_PERMISSION },
+    { path : OPPORTUNITIES_ROUTE, permission : VIEW_OPPORTUNITIES_PERMISSION },
+    { path : ADMIN_ROUTE, permission : VIEW_ADMIN_PERMISSION },
 ]
