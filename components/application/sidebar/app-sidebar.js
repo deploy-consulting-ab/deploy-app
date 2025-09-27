@@ -17,7 +17,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
-import { getMenuItems } from '@/menus/sidebar-menus';
+import { getMenuForRole } from '@/menus/menu-builder';
 
 
 export function AppSidebarComponent({ user }) {
@@ -26,7 +26,7 @@ export function AppSidebarComponent({ user }) {
 
     const permissionsSet = new Set(user?.permissions);
     
-    const menuItems = getMenuItems(user?.role, permissionsSet);
+    const menuItems = getMenuForRole(user?.role, permissionsSet);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {
