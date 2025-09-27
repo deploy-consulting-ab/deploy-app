@@ -1,11 +1,6 @@
-import { 
-    ConsultantLayout, 
-    SalesLayout, 
-    ManagementLayout, 
-    AdminLayout 
-} from './home-layouts';
+import { ConsultantLayout, SalesLayout, ManagementLayout, AdminLayout } from './home-layouts';
 
-import { 
+import {
     ADMIN_PROFILE,
     CONSULTANT_PROFILE,
     SALES_PROFILE,
@@ -30,11 +25,15 @@ export function getRequiredDataForProfile(profileId) {
 
     switch (profileId) {
         case ADMIN_PROFILE:
+            return {
+                ...dataRequirements,
+                occupancyRates: true,
+                holidays: true,
+            };
         case MANAGEMENT_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: true,
-                assignments: true,
                 holidays: true,
             };
         case CONSULTANT_PROFILE:

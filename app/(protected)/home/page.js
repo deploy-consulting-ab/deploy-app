@@ -35,8 +35,6 @@ const refreshActions = {
 export default async function HomePage() {
     const session = await auth();
     const { employeeNumber, profileId } = session.user;
-    
-    console.log('#### profileId', profileId);
 
     // Determine what data this profile needs
     const dataRequirements = getRequiredDataForProfile(profileId);
@@ -80,7 +78,7 @@ export default async function HomePage() {
             </div>
         );
     }
-    
+
     // Get the appropriate layout component for this profile
     const LayoutComponent = getLayoutForProfile(profileId);
 
