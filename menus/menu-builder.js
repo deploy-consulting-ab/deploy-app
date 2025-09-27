@@ -80,7 +80,7 @@ export function buildMenu(permissions) {
  */
 export function getMenuForRole(userRole, userPermissions) {
     // If no role or permissions, return empty menu
-    if (!userPermissions || !userPermissions.has('Home:View')) {
+    if (!userPermissions) {
         return [];
     }
 
