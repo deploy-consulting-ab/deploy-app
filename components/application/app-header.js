@@ -1,12 +1,10 @@
-'use server';
-
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { DynamicBreadcrumbComponent } from '@/components/application/breadcrumb/dynamic-breadcrumb';
-import { ModeToggleComponent } from '@/components/application/mode-toggle';
-import { LogoutButtonComponent } from '@/components/application/logout-button';
-import { GlobalSearch } from '@/components/application/search/global-search';
-
 import { auth } from '@/auth';
+import { ImpersonationBanner } from './admin/impersonation-banner';
+import { SidebarTrigger } from '@/components/ui/sidebar';
+import { DynamicBreadcrumbComponent } from './breadcrumb/dynamic-breadcrumb';
+import { ModeToggleComponent } from './mode-toggle';
+import { LogoutButtonComponent } from './logout-button';
+import { GlobalSearch } from './search/global-search';
 
 export async function AppHeaderComponent() {
     const session = await auth();
@@ -14,6 +12,7 @@ export async function AppHeaderComponent() {
 
     return (
         <>
+            <ImpersonationBanner />
             <header className="flex h-16 shrink-0 items-center border-b px-4">
                 {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
                 <div className="flex items-center gap-4 min-w-fit">

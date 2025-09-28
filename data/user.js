@@ -53,6 +53,25 @@ export const createUser = async (data) => {
     }
 };
 
+export async function getUsers() {
+    try {
+        const users = await db.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                email: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+        return users;
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
+
 export async function getCombinedPermissionsForUser(id) {
     // 1. Fetch the user and include their profile, permission sets,
     //    and all nested permissions in a single query.

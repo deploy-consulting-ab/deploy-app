@@ -2,6 +2,8 @@ import { Geist, Geist_Mono, Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/auth/form/theme-provider';
 import { Analytics } from '@vercel/analytics/next';
+import { auth } from '@/auth';
+import { SessionProvider } from 'next-auth/react';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -36,7 +38,8 @@ export const metadata = {
     },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+    const session = await auth();
     return (
         <html lang="en" suppressHydrationWarning className="h-full">
             <head>
@@ -46,14 +49,16 @@ export default function RootLayout({ children }) {
                 />
             </head>
             <body className={`${inter.className} antialiased h-full`}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <div className="h-full bg-background">{children}</div>
-                </ThemeProvider>
+                <SessionProvider session={session}>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <div className="h-full bg-background">{children}</div>
+                    </ThemeProvider>
+                </SessionProvider>
                 <Analytics />
             </body>
         </html>
