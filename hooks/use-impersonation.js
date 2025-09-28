@@ -24,15 +24,7 @@ export const useImpersonation = () => {
             await update({
                 impersonating: true,
                 originalUser: result.originalUser,
-                impersonatedUser: {
-                    id: result.impersonatedUser.id,
-                    name: result.impersonatedUser.name,
-                    email: result.impersonatedUser.email,
-                    profileId: result.impersonatedUser.profileId,
-                    employeeNumber: result.impersonatedUser.employeeNumber,
-                    permissions: result.impersonatedUser.permissions,
-                    image: result.impersonatedUser.image,
-                },
+                impersonatedUser: result.impersonatedUser,
             });
 
             // Refresh the page to update all components with new user data
