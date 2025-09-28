@@ -89,7 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 const permissions = await getCombinedPermissionsForUser(user.id);
 
                 token.permissions = permissions;
-                token.employeeNumber = user.employee_number;
+                token.employeeNumber = user.employeeNumber;
                 token.sub = user.id;
                 token.profileId = user.profileId;
             }

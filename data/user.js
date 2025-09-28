@@ -37,7 +37,7 @@ export const createUser = async (data) => {
                 name,
                 email,
                 password: hashedPassword,
-                employee_number: employeeNumber,
+                employeeNumber: employeeNumber,
                 profile: {
                     connect: {
                         id: PROFILE_MAP[profile],

@@ -35,7 +35,7 @@ export async function startImpersonation(userId) {
                 name: targetUser.name,
                 email: targetUser.email,
                 profileId: targetUser.profileId,
-                employeeNumber: targetUser.employee_number,
+                employeeNumber: targetUser.employeeNumber,
                 permissions: targetPermissions,
             },
             originalUser: {
