@@ -3,7 +3,7 @@
 import { useImpersonation } from '@/hooks/use-impersonation';
 import { Button } from '@/components/ui/button';
 
-export function ImpersonationBanner() {
+export function ImpersonationBannerComponent() {
     const { isImpersonating, originalUser, impersonatedUser, endImpersonation, isLoading } = useImpersonation();
 
     if (!isImpersonating) return null;
