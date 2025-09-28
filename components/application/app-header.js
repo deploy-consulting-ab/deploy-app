@@ -1,10 +1,14 @@
+'use server';
+
 import { auth } from '@/auth';
-import { ImpersonationBanner } from './admin/impersonation-banner';
+import { ImpersonationBannerComponent } from '@/components/application/admin/impersonation/impersonation-banner';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { DynamicBreadcrumbComponent } from './breadcrumb/dynamic-breadcrumb';
-import { ModeToggleComponent } from './mode-toggle';
-import { LogoutButtonComponent } from './logout-button';
-import { GlobalSearch } from './search/global-search';
+import { DynamicBreadcrumbComponent } from '@/components/application/breadcrumb/dynamic-breadcrumb';
+import { ModeToggleComponent } from '@/components/application/mode-toggle';
+import { LogoutButtonComponent } from '@/components/application/logout-button';
+import { GlobalSearch } from '@/components/application/search/global-search';
+import { SetupButtonComponent } from '@/components/application/setup-button';
+import { VIEW_ADMIN_PERMISSION } from '@/lib/permissions';
 
 export async function AppHeaderComponent() {
     const session = await auth();
@@ -12,7 +16,7 @@ export async function AppHeaderComponent() {
 
     return (
         <>
-            <ImpersonationBanner />
+            <ImpersonationBannerComponent />
             <header className="flex h-16 shrink-0 items-center border-b px-4">
                 {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
                 <div className="flex items-center gap-4 min-w-fit">
@@ -29,6 +33,9 @@ export async function AppHeaderComponent() {
                 </div>
                 {/* Right section with icons */}
                 <div className="flex items-center gap-2">
+                    {user.permissions.includes(VIEW_ADMIN_PERMISSION) && (
+                        <SetupButtonComponent />
+                    )}
                     <ModeToggleComponent />
                     <LogoutButtonComponent />
                 </div>
