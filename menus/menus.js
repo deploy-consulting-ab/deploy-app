@@ -55,3 +55,12 @@ export const MENU_ITEMS_MAP = {
         permission: VIEW_ADMIN_PERMISSION,
     },
 };
+
+export const SETUP_MENU_ITEMS_MAP = {
+    home: {
+        title: 'Home',
+        url: HOME_ROUTE,
+        icon: Home,
+        permission: VIEW_HOME_PERMISSION,
+    }
+};

@@ -1,7 +1,8 @@
-import { MENU_ITEMS_MAP } from '@/menus/menus';
+import { MENU_ITEMS_MAP, SETUP_MENU_ITEMS_MAP } from '@/menus/menus';
 
 // Cache for storing generated menus by profile
 const menuCache = new Map();
+const setupMenuCache = new Map();
 
 /**
  * Generates a menu based on user permissions
@@ -21,6 +22,26 @@ export function buildMenu(permissions) {
         }
     }
     
+    return menu;
+}
+
+/**
+ * Generates a menu based on user permissions
+ * @param {Object} permissions - Object containing user permissions
+ * @returns {Array} Array of menu items the user has access to
+ */
+export function buildSetupMenu(permissions) {
+    const menu = [];
+    
+    for (const [key, menuItem] of Object.entries(SETUP_MENU_ITEMS_MAP)) {
+        if (permissions.has(menuItem.permission)) {
+            menu.push({
+                title: menuItem.title,
+                url: menuItem.url,
+                icon: menuItem.icon,
+            });
+        }
+    }
     return menu;
 }
 
@@ -51,9 +72,36 @@ export function getMenuForProfile(userProfile, userPermissions) {
 }
 
 /**
+ * Gets or generates a menu for a user profile, using caching
+ * @param {string} userProfile - The profile of the user
+ * @param {Object} userPermissions - The permissions configuration object
+ * @returns {Array} Array of menu items for the user
+ */
+export function getSetupMenuForProfile(userProfile, userPermissions) {
+    // If no profile or permissions, return empty menu
+    if (!userPermissions) {
+        return [];
+    }
+
+    // Check cache first
+    if (setupMenuCache.has(userProfile)) {
+        return setupMenuCache.get(userProfile);
+    }
+
+    // Generate menu based on profile permissions
+    const menu = buildSetupMenu(userPermissions);
+
+    // Cache the generated menu
+    setupMenuCache.set(userProfile, menu);
+
+    return menu;
+}
+
+/**
  * Clears the menu cache
  * Useful when permissions change and menus need to be regenerated
  */
 export function clearMenuCache() {
     menuCache.clear();
+    setupMenuCache.clear();
 }

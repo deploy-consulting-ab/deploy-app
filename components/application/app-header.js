@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { ImpersonationBannerComponent } from '@/components/application/admin/impersonation/impersonation-banner';
+import { ImpersonationBannerComponent } from '@/components/application/impersonation/impersonation-banner';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { DynamicBreadcrumbComponent } from '@/components/application/breadcrumb/dynamic-breadcrumb';
 import { ModeToggleComponent } from '@/components/application/mode-toggle';

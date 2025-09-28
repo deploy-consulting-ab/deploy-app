@@ -32,6 +32,7 @@ export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
+export const SETUP_ROUTE = `/setup`;
 
 export const PROTECTED_ROUTES = [
     { path : HOME_ROUTE, permission : VIEW_HOME_PERMISSION },
@@ -40,4 +41,5 @@ export const PROTECTED_ROUTES = [
     { path : ASSIGNMENTS_ROUTE, permission : VIEW_ASSIGNMENTS_PERMISSION },
     { path : OPPORTUNITIES_ROUTE, permission : VIEW_OPPORTUNITIES_PERMISSION },
     { path : ADMIN_ROUTE, permission : VIEW_ADMIN_PERMISSION },
+    { path : SETUP_ROUTE, permission : VIEW_ADMIN_PERMISSION },
 ]

@@ -1,5 +1,5 @@
 import { RegisterFormComponent } from '@/components/auth/register-form';
-import { ImpersonateUserContainer } from '@/components/application/admin/impersonation/impersonate-user';
+import { ImpersonateUserContainer } from '@/components/application/impersonation/impersonate-user';
 
 // This is a server component by default (no 'use client' directive)
 
