@@ -78,16 +78,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 }
                 
                 // STOP IMPERSONATING
-                if (session.stopImpersonating) {
-                    console.log('#### STOP IMPERSONATING');
+                if (!session.impersonating) {
                     token.impersonating = false;
                     token.originalUser = undefined;
-                    token.impersonatedId = undefined;
-                    token.impersonatedName = undefined;
-                    token.impersonatedEmail = undefined;
-                    token.impersonatedProfileId = undefined;
-                    token.impersonatedEmployeeNumber = undefined;
-                    token.impersonatedPermissions = undefined;
                     token.impersonatedUser = undefined;
                 }
             }

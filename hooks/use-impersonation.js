@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';
 import { startImpersonation, endImpersonation } from '@/actions/impersonate';
 
 export const useImpersonation = () => {
@@ -13,13 +13,13 @@ export const useImpersonation = () => {
     const handleStartImpersonation = async (userId) => {
         try {
             setIsLoading(true);
-            
+
             const result = await startImpersonation(userId);
 
             if (result.error) {
                 throw new Error(result.error);
             }
-            
+
             // Update the session with impersonation data
             await update({
                 impersonating: true,
@@ -31,7 +31,7 @@ export const useImpersonation = () => {
                     profileId: result.impersonatedUser.profileId,
                     employeeNumber: result.impersonatedUser.employeeNumber,
                     permissions: result.impersonatedUser.permissions,
-                }
+                },
             });
 
             // Refresh the page to update all components with new user data
@@ -47,7 +47,7 @@ export const useImpersonation = () => {
     const handleEndImpersonation = async () => {
         try {
             setIsLoading(true);
-            
+
             const result = await endImpersonation();
 
             if (result.error) {
@@ -56,24 +56,10 @@ export const useImpersonation = () => {
 
             // Restore original user data
             if (session?.user?.originalUser) {
-                const originalUser = session.user.originalUser;
                 await update({
-                    ...session,
-                    stopImpersonating: true,
                     impersonating: false,
                     originalUser: null,
-                    impersonatedId: null,
-                    impersonatedName: null,
-                    impersonatedEmail: null,
-                    impersonatedProfileId: null,
-                    impersonatedEmployeeNumber: null,
-                    impersonatedPermissions: null,
-                    // Restore original user data
-                    sub: originalUser.id,
-                    name: originalUser.name,
-                    email: originalUser.email,
-                    profileId: originalUser.profileId,
-                    employeeNumber: originalUser.employeeNumber,
+                    impersonatedUser: null,
                 });
             }
 
