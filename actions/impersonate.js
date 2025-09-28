@@ -44,6 +44,7 @@ export async function startImpersonation(userId) {
                 email: session.user.email,
                 profileId: session.user.profileId,
                 employeeNumber: session.user.employeeNumber,
+                permissions: session.user.permissions,
             }
         };
 

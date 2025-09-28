@@ -59,6 +59,7 @@ export const useImpersonation = () => {
                 const originalUser = session.user.originalUser;
                 await update({
                     ...session,
+                    stopImpersonating: true,
                     impersonating: false,
                     originalUser: null,
                     impersonatedId: null,
@@ -72,7 +73,7 @@ export const useImpersonation = () => {
                     name: originalUser.name,
                     email: originalUser.email,
                     profileId: originalUser.profileId,
-                    employeeNumber: originalUser.employee_number,
+                    employeeNumber: originalUser.employeeNumber,
                 });
             }
 
