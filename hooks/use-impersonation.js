@@ -31,6 +31,7 @@ export const useImpersonation = () => {
                     profileId: result.impersonatedUser.profileId,
                     employeeNumber: result.impersonatedUser.employeeNumber,
                     permissions: result.impersonatedUser.permissions,
+                    image: result.impersonatedUser.image,
                 },
             });
 
@@ -60,6 +61,7 @@ export const useImpersonation = () => {
                     impersonating: false,
                     originalUser: null,
                     impersonatedUser: null,
+                    image: null,
                 });
             }
 

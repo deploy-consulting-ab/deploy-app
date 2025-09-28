@@ -10,11 +10,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         async signIn({ user, account }) {
             if (account?.provider !== 'credentials') {
-
                 if (process.env.ENABLE_AUTO_REGISTRATION === 'true') {
                     return true;
                 }
-                
+
                 const existingUser = await getUserByEmail(user.email);
 
                 if (!existingUser) {
@@ -64,19 +63,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.profileId = token.impersonatedUser.profileId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.permissions = token.impersonatedUser.permissions;
+                session.user.image = token.impersonatedUser.image;
             }
-
             return session;
         },
         async jwt({ token, user, trigger, session }) {
-            if (trigger === "update" && session) {
+            if (trigger === 'update' && session) {
                 // START IMPERSONATING
                 if (session.impersonating) {
                     token.originalUser = session.originalUser; // Save original user
                     token.impersonatedUser = session.impersonatedUser; // Save impersonated user details
                     token.impersonating = true;
                 }
-                
+
                 // STOP IMPERSONATING
                 if (!session.impersonating) {
                     token.impersonating = false;
