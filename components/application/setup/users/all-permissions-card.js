@@ -12,12 +12,12 @@ export function AllPermissionsCardComponent({ user }) {
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <div className="grid grid-cols-1 gap-1">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 max-h-[200px] overflow-y-auto pr-2">
                 {Array.from(user.allPermissions).map((permission) => (
                     <Badge
                         key={permission}
                         variant="secondary"
-                        className="justify-start my-1"
+                        className="justify-start"
                     >
                         {permission}
                     </Badge>
