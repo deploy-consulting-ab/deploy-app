@@ -34,6 +34,7 @@ import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
+import { AllPermissionsCardComponent } from './all-permissions-card';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -60,10 +61,12 @@ export function UserCardComponent({ user }) {
         // TODO: Implement actual update logic
     };
 
+    user.allPermissions = ['Home:View', 'Holidays:View', 'Assignments:View', 'Lead:Create', 'Lead:View', 'Lead:Edit', 'Lead:Delete', 'Home:View', 'Holidays:View', 'Assignments:View', 'Lead:Create'];
+
     return (
         <div className="grid grid-cols-2 gap-6">
             {/* User Details Card */}
-            <Card className="col-span-1">
+            <Card className="col-span-1 py-4">
                 <CardHeader>
                     <CardTitle className="text-2xl">{user.name}</CardTitle>
                     <CardDescription>{user.email}</CardDescription>
@@ -119,24 +122,7 @@ export function UserCardComponent({ user }) {
                                     </FormItem>
                                 )}
                             />
-
-                            {/* Permission Sets */}
-                            <div className="space-y-2">
-                                <h3 className="text-sm font-medium">Assigned Permission Sets</h3>
-                                {user.permissionSets.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
-                                        {user.permissionSets.map((permSet) => (
-                                            <Badge key={permSet} variant="secondary">
-                                                {permSet}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-gray-500">
-                                        No permission sets assigned
-                                    </p>
-                                )}
-                            </div>
+                            
                             {/* Action Buttons */}
                             {isEditing ? (
                                 <div className="flex gap-2">
@@ -171,27 +157,7 @@ export function UserCardComponent({ user }) {
             </Card>
 
             {/* Permissions Card */}
-            <Card className="col-span-1">
-                <CardHeader>
-                    <CardTitle>All Permissions</CardTitle>
-                    <CardDescription>
-                        Combined permissions from Profile and Permission Sets
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 gap-1">
-                        {Array.from(user.allPermissions).map((permission) => (
-                            <Badge
-                                key={permission}
-                                variant="secondary"
-                                className="justify-start my-1"
-                            >
-                                {permission}
-                            </Badge>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+            <AllPermissionsCardComponent user={user} />
 
             {/** Permission Sets Card */}
             <Card className="col-span-2">
