@@ -13,13 +13,9 @@ export const updateUserAction = async (id, data) => {
 
     const { employeeNumber, profile } = validatedFields.data;
 
-    console.log('#### updateUserAction data: ', data);
-    console.log('#### updateUserAction id: ', id);
-
     const result = await updateUser(id, { employeeNumber, profile });
 
     if (!result.success) {
-        console.log('#### updateUserAction result: ', result.error);
         return { error: result.error };
     }
 
