@@ -25,7 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { register } from '@/actions/register';
+import { register } from '@/actions/user/register';
 import { useState, useTransition } from 'react';
 
 export const RegisterFormComponent = () => {
