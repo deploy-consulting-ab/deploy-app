@@ -61,26 +61,6 @@ export function UserCardComponent({ user }) {
         // TODO: Implement actual update logic
     };
 
-    // user.allPermissions = [
-    //     'Home:View',
-    //     'Holidays:View',
-    //     'Assignments:View',
-    //     'Lead:Create',
-    //     'Lead:View',
-    //     'Lead:Edit',
-    //     'Lead:Delete',
-    //     'Home:View',
-    //     'Holidays:View',
-    //     'Assignments:View',
-    //     'Lead:Create',
-    //     'Assignments:View',
-    //     'Lead:Create',
-    //     'Lead:View',
-    //     'Lead:Edit',
-    //     'Lead:Delete',
-    //     'Home:View',
-    // ];
-
     return (
         <div className="grid grid-cols-2 gap-6">
             {/* User Details Card */}
