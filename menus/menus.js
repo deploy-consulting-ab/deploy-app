@@ -63,4 +63,18 @@ export const SETUP_MENU_ITEMS_MAP = {
         icon: Home,
         permission: VIEW_HOME_PERMISSION,
     }
+    /**
+     * User
+     *  Create User
+     *  Edit User - data table with users
+     * Profile
+     *  Create Profile, select permission sets
+     *  Edit Profile - data table with profiles
+     * Permission Set
+     *  Create Permission Set
+     *  Edit Permission Set - data table with permission sets
+     * Permission
+     *  Create Permission
+     *  Edit Permission - data table with permissions     * 
+     */
 };
