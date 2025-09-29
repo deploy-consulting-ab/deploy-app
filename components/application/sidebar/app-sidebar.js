@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 import { getMenuForProfile } from '@/menus/menu-builder';
+import { HOME_ROUTE } from '@/menus/routes';
 
 
 export function AppSidebarComponent({ user }) {
@@ -37,8 +38,8 @@ export function AppSidebarComponent({ user }) {
     // Function to check if a menu item is active
     const isMenuActive = (menuUrl) => {
         // For home page, only match exact /home path
-        if (menuUrl === '/home') {
-            return pathname === '/home';
+        if (menuUrl === HOME_ROUTE) {
+            return pathname === HOME_ROUTE;
         }
         // For other pages, check if the pathname starts with the menu URL
         // This ensures that sub-pages also highlight their parent menu item
