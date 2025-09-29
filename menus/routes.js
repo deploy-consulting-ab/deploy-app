@@ -35,11 +35,11 @@ export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
 export const SETUP_ROUTE = `/setup`;
 
 export const PROTECTED_ROUTES = [
-    { path : HOME_ROUTE, permission : VIEW_HOME_PERMISSION },
     { path : HOLIDAYS_ROUTE, permission : VIEW_HOLIDAYS_PERMISSION },
     { path : OCCUPANCY_ROUTE, permission : VIEW_OCCUPANCY_PERMISSION },
     { path : ASSIGNMENTS_ROUTE, permission : VIEW_ASSIGNMENTS_PERMISSION },
     { path : OPPORTUNITIES_ROUTE, permission : VIEW_OPPORTUNITIES_PERMISSION },
     { path : ADMIN_ROUTE, permission : VIEW_ADMIN_PERMISSION },
     { path : SETUP_ROUTE, permission : VIEW_ADMIN_PERMISSION },
+    { path : HOME_ROUTE, permission : VIEW_HOME_PERMISSION },
 ]

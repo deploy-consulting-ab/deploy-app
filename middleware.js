@@ -63,7 +63,7 @@ const handleLoggedInUsers = (nextUrl, permissionsSet) => {
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    const protectedRoute = PROTECTED_ROUTES.find(route => pathname === route.path);
+    const protectedRoute = PROTECTED_ROUTES.find(route => pathname.includes(route.path));
 
     if (protectedRoute) {
         if (permissionsSet.has(protectedRoute.permission)) {
