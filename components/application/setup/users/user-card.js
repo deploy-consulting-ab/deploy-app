@@ -63,7 +63,7 @@ export function UserCardComponent({ user }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             {/* User Details Card */}
-            <Card>
+            <Card className="col-span-1">
                 <CardHeader>
                     <CardTitle className="text-2xl">{user.name}</CardTitle>
                     <CardDescription>{user.email}</CardDescription>
@@ -171,7 +171,7 @@ export function UserCardComponent({ user }) {
             </Card>
 
             {/* Permissions Card */}
-            <Card>
+            <Card className="col-span-1">
                 <CardHeader>
                     <CardTitle>All Permissions</CardTitle>
                     <CardDescription>
@@ -181,10 +181,36 @@ export function UserCardComponent({ user }) {
                 <CardContent>
                     <div className="grid grid-cols-1 gap-1">
                         {Array.from(user.allPermissions).map((permission) => (
-                            <Badge key={permission} variant="outline" className="justify-start my-1">
+                            <Badge
+                                key={permission}
+                                variant="secondary"
+                                className="justify-start my-1"
+                            >
                                 {permission}
                             </Badge>
                         ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/** Permission Sets Card */}
+            <Card className="col-span-2">
+                <CardHeader>
+                    <CardTitle>Permission Sets</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-2">
+                        {user.permissionSets.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                                {user.permissionSets.map((permissionSet) => (
+                                    <Badge key={permissionSet} variant="primary">
+                                        {permissionSet}
+                                    </Badge>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-gray-500">No permission sets assigned</p>
+                        )}
                     </div>
                 </CardContent>
             </Card>
