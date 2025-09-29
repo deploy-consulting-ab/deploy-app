@@ -4,6 +4,7 @@
  */
 
 import * as z from 'zod';
+import { PROFILES } from '@/lib/permissions';
 
 export const LoginSchema = z.object({
     email: z.email({ message: 'Email is required' }),
@@ -23,7 +24,16 @@ export const RegisterSchema = z.object({
     employeeNumber: z.string().min(4, {
         message: 'Employee number is required',
     }),
-    profile: z.enum(['ADMIN', 'CONSULTANT', 'SALES', 'MANAGEMENT'], {
+    profileId: z.enum(PROFILES, {
+        required_error: 'Profile is required',
+    }),
+});
+
+export const UpdateUserSchema = z.object({
+    employeeNumber: z.string().min(4, {
+        message: 'Employee number is required',
+    }),
+    profileId: z.enum(PROFILES, {
         required_error: 'Profile is required',
     }),
 });

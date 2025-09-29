@@ -28,21 +28,35 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { PROFILES } from '@/lib/permissions';
+import { updateUserAction } from '@/actions/user/update-user';
+import { useTransition } from 'react';
 
-const mockProfiles = ['Standard User', 'System Administrator', 'Sales Manager', 'Support Manager'];
+import { FormError } from '@/components/auth/form/form-error';
+import { FormSuccess } from '@/components/auth/form/form-success';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isPending, startTransition] = useTransition();
     const form = useForm({
         defaultValues: {
             employeeNumber: user.employeeNumber,
-            profile: user.profile.name,
+            profileId: user.profileId,
         },
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        setSuccess('');
+        setError('');
         console.log('Form submitted:', data);
-        setIsEditing(false);
+        startTransition(async () => {
+            const response = await updateUserAction(user.id, data);
+            setSuccess(response.success);
+            setError(response.error);
+            setIsEditing(false);
+        });
         // TODO: Implement actual update logic
     };
 
@@ -79,7 +93,7 @@ export function UserCardComponent({ user }) {
                             {/* Profile */}
                             <FormField
                                 control={form.control}
-                                name="profile"
+                                name="profileId"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Profile</FormLabel>
@@ -89,12 +103,12 @@ export function UserCardComponent({ user }) {
                                             value={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="hover:cursor-pointer">
                                                     <SelectValue placeholder="Select a profile" />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {mockProfiles.map((profile) => (
+                                                {PROFILES.map((profile) => (
                                                     <SelectItem key={profile} value={profile}>
                                                         {profile}
                                                     </SelectItem>
@@ -115,33 +129,44 @@ export function UserCardComponent({ user }) {
                                             <Badge key={permSet} variant="secondary">
                                                 {permSet}
                                             </Badge>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-sm text-gray-500">No permission sets assigned</p>
-                                    )}
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-gray-500">
+                                        No permission sets assigned
+                                    </p>
+                                )}
                             </div>
+                            {/* Action Buttons */}
+                            {isEditing ? (
+                                <div className="flex gap-2">
+                                    <Button type="submit" className="hover:cursor-pointer">
+                                        Save Changes
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="hover:cursor-pointer"
+                                        onClick={() => setIsEditing(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    onClick={() => setIsEditing(true)}
+                                    className="hover:cursor-pointer"
+                                >
+                                    Edit User
+                                </Button>
+                            )}
                         </form>
                     </Form>
                 </CardContent>
                 <CardFooter>
-                    {/* Action Buttons */}
-                    {isEditing ? (
-                        <div className="flex gap-2">
-                            <Button type="submit">Save Changes</Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setIsEditing(false)}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
-                    ) : (
-                        <Button type="button" onClick={() => setIsEditing(true)}>
-                            Edit User
-                        </Button>
-                    )}
+                    <FormError message={error} />
+                    <FormSuccess message={success} />
                 </CardFooter>
             </Card>
 

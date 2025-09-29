@@ -13,8 +13,6 @@ export default async function UserPage({ params }) {
         error = err;
     }
 
-    console.log('#### user', user);
-
     return (
         <div className="py-4">
             <UserCardComponent error={error} user={user} />

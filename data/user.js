@@ -1,6 +1,12 @@
 import { db } from '@/lib/db';
 import { PROFILE_MAP } from '@/lib/permissions';
 
+/**
+ * Get a user by email
+ * @param {string} email
+ * @returns {Promise<User>} User with allPermissions for their profile and permission sets
+ * @throws {Error} If the user is not found
+ */
 export const getUserByEmail = async (email) => {
     try {
         const existingUser = await db.user.findUnique({
@@ -15,6 +21,16 @@ export const getUserByEmail = async (email) => {
     }
 };
 
+/**
+ * GET METHODS
+ */
+
+/**
+ * Get a user by id
+ * @param {string} id
+ * @returns {Promise<User>} User with allPermissions for their profile and permission sets
+ * @throws {Error} If the user is not found
+ */
 export const getUserById = async (id) => {
     try {
         const existingUser = await db.user.findUnique({
@@ -29,6 +45,11 @@ export const getUserById = async (id) => {
     }
 };
 
+/**
+ * Get a user by id with allPermissions for their profile and permission sets
+ * @param {*} id
+ * @returns {Promise<User>} User with allPermissions for their profile and permission sets
+ */
 export const getUserByIdWithPermissions = async (id) => {
     try {
         const existingUser = await db.user.findUnique({
@@ -46,7 +67,7 @@ export const getUserByIdWithPermissions = async (id) => {
                 },
             },
         });
-                
+
         const allPermissions = [
             ...existingUser.profile.permissions.map((permission) => permission.name),
             ...existingUser.permissionSets.flatMap((set) =>
@@ -62,30 +83,11 @@ export const getUserByIdWithPermissions = async (id) => {
     }
 };
 
-export const createUser = async (data) => {
-    try {
-        const { name, email, hashedPassword, profile, employeeNumber } = data;
-        const user = await db.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-                employeeNumber: employeeNumber,
-                profile: {
-                    connect: {
-                        id: PROFILE_MAP[profile],
-                    },
-                },
-            },
-        });
-
-        return user;
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
-};
-
+/**
+ * Get all users
+ * @returns {Promise<User[]>} All users
+ * @throws {Error} If the users are not found
+ */
 export async function getUsers() {
     try {
         const users = await db.user.findMany({
@@ -105,6 +107,12 @@ export async function getUsers() {
     }
 }
 
+/**
+ * Get all permissions for a user
+ * @param {string} id
+ * @returns {Promise<string[]>} All permissions for the user
+ * @throws {Error} If the permissions are not found
+ */
 export async function getCombinedPermissionsForUser(id) {
     // 1. Fetch the user and include their profile, permission sets,
     //    and all nested permissions in a single query.
@@ -142,8 +150,61 @@ export async function getCombinedPermissionsForUser(id) {
     const allPermissions = [...profilePermissions, ...permissionSetPermissions];
 
     return allPermissions;
-
-    // const allPermissionsMap = new Set(allPermissions);
-
-    // return allPermissionsMap;
 }
+
+/**
+ * CREATE METHODS
+ */
+
+/**
+ * Create a user
+ * @param {Object} data
+ * @returns {Promise<User>} User created
+ * @throws {Error} If the user is not created
+ */
+export const createUser = async (data) => {
+    try {
+        const { name, email, hashedPassword, profile, employeeNumber } = data;
+        const user = await db.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword,
+                employeeNumber: employeeNumber,
+                profile: {
+                    connect: {
+                        id: PROFILE_MAP[profile],
+                    },
+                },
+            },
+        });
+
+        return user;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
+/**
+ * UPDATE METHODS
+ */
+
+export const updateUser = async (id, data) => {
+    try {
+        const { name, email, employeeNumber, profileId } = data;
+        const user = await db.user.update({
+            where: { id },
+            data: { name, email, employeeNumber, profileId },
+        });
+        return {
+            success: true,
+            user,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+        };
+    }
+};
