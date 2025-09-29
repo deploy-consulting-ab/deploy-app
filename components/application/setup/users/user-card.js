@@ -179,9 +179,9 @@ export function UserCardComponent({ user }) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 gap-1">
                         {Array.from(user.allPermissions).map((permission) => (
-                            <Badge key={permission} variant="outline" className="justify-start">
+                            <Badge key={permission} variant="outline" className="justify-start my-1">
                                 {permission}
                             </Badge>
                         ))}
