@@ -1,11 +1,16 @@
-import { Home, Calendar, Percent, ClipboardList, TrendingUp, Shield } from 'lucide-react';
+import { Home, Calendar, Percent, ClipboardList, TrendingUp, Shield, Users, UserCircle, Box, UserCheck, Settings } from 'lucide-react';
 import {
     HOME_ROUTE,
+    SETUP_ROUTE,
     HOLIDAYS_ROUTE,
     OCCUPANCY_ROUTE,
     ASSIGNMENTS_ROUTE,
     OPPORTUNITIES_ROUTE,
     ADMIN_ROUTE,
+    USERS_ROUTE,
+    PROFILES_ROUTE,
+    PERMISSION_SETS_ROUTE,
+    PERMISSIONS_ROUTE
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -58,11 +63,36 @@ export const MENU_ITEMS_MAP = {
 
 export const SETUP_MENU_ITEMS_MAP = {
     home: {
-        title: 'Home',
-        url: HOME_ROUTE,
-        icon: Home,
+        title: 'Setup',
+        url: SETUP_ROUTE,
+        icon: Settings,
         permission: VIEW_HOME_PERMISSION,
-    }
+    },
+    users: {
+        title: 'Users',
+        url: USERS_ROUTE,
+        icon: Users,
+        permission: VIEW_ADMIN_PERMISSION,
+    },
+    profiles: {
+        title: 'Profiles',
+        url: PROFILES_ROUTE,
+        icon: UserCircle,
+        permission: VIEW_ADMIN_PERMISSION,
+    },
+    permissionSets: {
+        title: 'Permission Sets',
+        url: PERMISSION_SETS_ROUTE,
+        icon: Box,
+        permission: VIEW_ADMIN_PERMISSION,
+    },
+    permissions: {
+        title: 'Permissions',
+        url: PERMISSIONS_ROUTE,
+        icon: UserCheck,
+        permission: VIEW_ADMIN_PERMISSION,
+    },
+    
     /**
      * User
      *  Create User
