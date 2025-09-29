@@ -29,38 +29,14 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-// Mock data - replace with real data later
-const mockUser = {
-    id: '1',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    employeeNumber: 'EMP001',
-    profile: 'Standard User',
-    permissionSets: ['Sales User', 'Support Agent', 'Knowledge User'],
-    permissions: [
-        'View All Data',
-        'Edit All Data',
-        'Manage Users',
-        'API Enabled',
-        'Create Reports',
-        'Export Reports',
-        'Modify All Data',
-        'Transfer Records',
-        'Manage Dashboards',
-        'Manage Public Reports',
-        'View Setup',
-        'Customize Application',
-    ],
-};
-
 const mockProfiles = ['Standard User', 'System Administrator', 'Sales Manager', 'Support Manager'];
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
     const form = useForm({
         defaultValues: {
-            employeeNumber: mockUser.employeeNumber,
-            profile: mockUser.profile,
+            employeeNumber: user.employeeNumber,
+            profile: user.profile.name,
         },
     });
 
@@ -75,8 +51,8 @@ export function UserCardComponent({ user }) {
             {/* User Details Card */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-2xl">{mockUser.name}</CardTitle>
-                    <CardDescription>{mockUser.email}</CardDescription>
+                    <CardTitle className="text-2xl">{user.name}</CardTitle>
+                    <CardDescription>{user.email}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <Form {...form}>
@@ -133,9 +109,9 @@ export function UserCardComponent({ user }) {
                             {/* Permission Sets */}
                             <div className="space-y-2">
                                 <h3 className="text-sm font-medium">Assigned Permission Sets</h3>
-                                {mockUser.permissionSets.length > 0 ? (
+                                {user.permissionSets.length > 0 ? (
                                     <div className="flex flex-wrap gap-2">
-                                        {mockUser.permissionSets.map((permSet) => (
+                                        {user.permissionSets.map((permSet) => (
                                             <Badge key={permSet} variant="secondary">
                                                 {permSet}
                                             </Badge>
@@ -179,7 +155,7 @@ export function UserCardComponent({ user }) {
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-1 gap-2">
-                        {mockUser.permissions.map((permission) => (
+                        {Array.from(user.allPermissions).map((permission) => (
                             <Badge key={permission} variant="outline" className="justify-start">
                                 {permission}
                             </Badge>

@@ -1,5 +1,5 @@
 import { UserCardComponent } from '@/components/application/setup/users/user-card';
-import { getUserById } from '@/data/user';
+import { getUserByIdWithPermissions } from '@/data/user';
 
 export default async function UserPage({ params }) {
     const { userId } = await params;
@@ -8,10 +8,12 @@ export default async function UserPage({ params }) {
     let error = null;
 
     try {
-        // user = await getUserById(userId);
+        user = await getUserByIdWithPermissions(userId);
     } catch (err) {
         error = err;
     }
+
+    console.log('#### user', user);
 
     return (
         <div className="py-4">

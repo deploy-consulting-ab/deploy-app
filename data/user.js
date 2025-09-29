@@ -29,6 +29,39 @@ export const getUserById = async (id) => {
     }
 };
 
+export const getUserByIdWithPermissions = async (id) => {
+    try {
+        const existingUser = await db.user.findUnique({
+            where: { id },
+            include: {
+                profile: {
+                    include: {
+                        permissions: true, // Get permissions from the profile
+                    },
+                },
+                permissionSets: {
+                    include: {
+                        permissions: true, // Get permissions from all permission sets
+                    },
+                },
+            },
+        });
+                
+        const allPermissions = [
+            ...existingUser.profile.permissions.map((permission) => permission.name),
+            ...existingUser.permissionSets.flatMap((set) =>
+                set.permissions.map((permission) => permission.name)
+            ),
+        ];
+
+        existingUser.allPermissions = new Set(allPermissions);
+        return existingUser;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 export const createUser = async (data) => {
     try {
         const { name, email, hashedPassword, profile, employeeNumber } = data;
