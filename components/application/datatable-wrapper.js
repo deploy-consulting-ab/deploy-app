@@ -39,6 +39,7 @@ export function DatatableWrapperComponent({
     defaultView = 'all',
     searchKey,
     filterKey,
+    actionButton,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [sorting, setSorting] = useState([]);
@@ -124,6 +125,7 @@ export function DatatableWrapperComponent({
                             </SelectContent>
                         </Select>
                     )}
+                    {actionButton}
                     {refreshAction && (
                         <Button
                             variant="ghost"

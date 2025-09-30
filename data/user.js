@@ -164,18 +164,14 @@ export async function getCombinedPermissionsForUser(id) {
  */
 export const createUser = async (data) => {
     try {
-        const { name, email, hashedPassword, profile, employeeNumber } = data;
+        const { name, email, hashedPassword, profileId, employeeNumber } = data;
         const user = await db.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
                 employeeNumber: employeeNumber,
-                profile: {
-                    connect: {
-                        id: PROFILE_MAP[profile],
-                    },
-                },
+                profileId: profileId
             },
         });
 

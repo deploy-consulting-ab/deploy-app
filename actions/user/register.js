@@ -16,7 +16,7 @@ export const register = async (values) => {
         return { error: 'Invalid fields' };
     }
 
-    const { email, password, name, profile, employeeNumber } = validatedFields.data;
+    const { email, password, name, profileId, employeeNumber } = validatedFields.data;
 
     const hashedPassword = await bcryptjs.hash(password, 10);
 
@@ -26,7 +26,7 @@ export const register = async (values) => {
         return { error: 'User already existing' };
     }
 
-    const createdUser = await createUser({ name, email, hashedPassword, profile, employeeNumber });
+    const createdUser = await createUser({ name, email, hashedPassword, profileId, employeeNumber });
 
     if (!createdUser) {
         return { error: 'Failed to create user' };

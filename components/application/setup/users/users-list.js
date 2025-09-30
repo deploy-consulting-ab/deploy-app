@@ -2,15 +2,25 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
 import { ADMIN_PROFILE, SALES_PROFILE, CONSULTANT_PROFILE, MANAGEMENT_PROFILE } from '@/lib/permissions';
+import { RegisterFormComponent } from '@/components/auth/register-form';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState(initialError);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleRefresh = async () => {
         let freshData = null;
@@ -140,6 +150,26 @@ export function UsersListComponent({ users, error: initialError }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
+    const actionButton = (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+                <Button size="sm">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    New User
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                    <DialogTitle>Create New User</DialogTitle>
+                    <DialogDescription>
+                        Fill in the details to create a new user account.
+                    </DialogDescription>
+                </DialogHeader>
+                <RegisterFormComponent />
+            </DialogContent>
+        </Dialog>
+    );
+
     return (
         <DatatableWrapperComponent
             data={usersData}
@@ -150,6 +180,7 @@ export function UsersListComponent({ users, error: initialError }) {
             defaultView="all"
             searchKey="name"
             filterKey="profile"
+            actionButton={actionButton}
         />
     );
 }
