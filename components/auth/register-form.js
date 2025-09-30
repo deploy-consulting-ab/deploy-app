@@ -161,7 +161,7 @@ export const RegisterFormComponent = () => {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="hover:cursor-pointer w-full">
                                             <SelectValue placeholder="Select a profile" />
                                         </SelectTrigger>
                                     </FormControl>

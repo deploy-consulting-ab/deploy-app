@@ -154,8 +154,7 @@ export function UsersListComponent({ users, error: initialError }) {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    New User
+                    <UserPlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
