@@ -172,7 +172,7 @@ export const createUser = async (data) => {
                 email,
                 password: hashedPassword,
                 employeeNumber: employeeNumber,
-                profileId: profileId
+                profileId: profileId,
             },
         });
 
@@ -190,18 +190,11 @@ export const createUser = async (data) => {
 export const updateUser = async (id, data) => {
     try {
         const { name, email, employeeNumber, profileId } = data;
-        const user = await db.user.update({
+        await db.user.update({
             where: { id },
             data: { name, email, employeeNumber, profileId },
         });
-        return {
-            success: true,
-            user,
-        };
     } catch (error) {
-        return {
-            success: false,
-            error: error.message,
-        };
+        throw error;
     }
 };
