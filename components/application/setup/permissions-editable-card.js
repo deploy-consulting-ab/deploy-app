@@ -1,11 +1,37 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { BadgeCheckIcon } from 'lucide-react';
 
 export function PermissionsEditableCardComponent({
     entityName,
     entityPermissions,
     totalPermissions,
 }) {
+    console.log('########## entityPermissions', entityPermissions);
+    console.log('########## totalPermissions', totalPermissions);
+
+    const permissions = [];
+
+    const entityPermissionsSet = new Set(entityPermissions.map((permission) => permission.name));
+
+    for (const permission of totalPermissions) {
+        if (entityPermissionsSet.has(permission.name)) {
+            permissions.push({
+                ...permission,
+                assigned: true,
+            });
+        } else {
+            permissions.push({
+                ...permission,
+                assigned: false,
+            });
+        }
+    }
+
+    permissions.sort((a, b) => (a.assigned ? -1 : 1));
+
+    console.log('########## permissions', permissions);
+
     return (
         <Card className="col-span-1">
             <CardHeader>
@@ -13,20 +39,27 @@ export function PermissionsEditableCardComponent({
                 <CardDescription>Permissions for {entityName}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Assigned Permissions</p>
                 <div className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2">
-                    {entityPermissions.map((permission) => (
-                        <Badge key={permission.id} variant="secondary" className="justify-start">
-                            {permission.name}
-                        </Badge>
-                    ))}
-                </div>
-                <p>Available Permissions</p>
-                <div className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2">
-                    {totalPermissions.map((permission) => (
-                        <Badge key={permission.id} variant="secondary" className="justify-start">
-                            {permission.name}
-                        </Badge>
+                    {permissions.map((permission) => (
+                        <div key={permission.id}>
+                            {permission.assigned ? (
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-green-600 text-white hover:cursor-pointer"
+                                >
+                                    <BadgeCheckIcon />
+                                    {permission.name}
+                                </Badge>
+                            ) : (
+                                <Badge
+                                    key={permission.id}
+                                    variant="outline"
+                                    className="justify-start hover:cursor-pointer"
+                                >
+                                    {permission.name}
+                                </Badge>
+                            )}
+                        </div>
                     ))}
                 </div>
             </CardContent>

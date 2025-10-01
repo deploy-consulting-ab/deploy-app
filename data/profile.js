@@ -32,7 +32,6 @@ export async function getProfileById(id) {
                 permissions: true,
             },
         });
-        console.log('########## profile', profile);
         return profile;
     } catch (error) {
         throw error;
