@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -136,7 +137,7 @@ export function UserCardComponent({ user }) {
                                             value={field.value}
                                         >
                                             <FormControl>
-                                                <SelectTrigger className="hover:cursor-pointer">
+                                                <SelectTrigger className="hover:cursor-pointer w-full">
                                                     <SelectValue placeholder="Select a profile" />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -149,6 +150,14 @@ export function UserCardComponent({ user }) {
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
+                                        {field.value && (
+                                            <Link
+                                                href={`/setup/profiles/${field.value}`}
+                                                className="text-sm text-blue-600 hover:text-blue-800 hover:underline mt-1 block"
+                                            >
+                                                View Profile Details
+                                            </Link>
+                                        )}
                                     </FormItem>
                                 )}
                             />

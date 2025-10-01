@@ -15,8 +15,8 @@ export function AllPermissionsCardComponent({ user }) {
                     {Array.from(user.allPermissions).map((permission) => (
                         <Badge
                             key={permission}
-                            variant="secondary"
-                            className="justify-start bg-green-700 text-white"
+                            variant="primary"
+                            className="justify-start bg-green-700 text-white text-sm"
                         >
                             {permission}
                         </Badge>
