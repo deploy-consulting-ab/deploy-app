@@ -144,7 +144,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             {/* User Details Card */}
-            <Card className="col-span-1 py-4">
+            <Card className="col-span-1 py-4 h-fit">
                 <CardHeader>
                     <CardTitle className="text-2xl">{profile.name}</CardTitle>
                     <CardDescription className="text-base">{profile.id}</CardDescription>
@@ -219,6 +219,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
                 successProp={permissionSuccess}
                 error={permissionError}
             />
+            {/** Add a datatable displaying all the users in the profile, add an action button to add a new user to the profile*/}
         </div>
     );
 }

@@ -11,7 +11,7 @@ import { BadgeCheckIcon } from 'lucide-react';
 import { populatePermissions } from '@/lib/utils';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export function PermissionsEditableCardComponent({
     entityName,
@@ -22,8 +22,22 @@ export function PermissionsEditableCardComponent({
     successProp,
 }) {
     const permissions = populatePermissions(entityPermissions, totalPermissions);
-
+    const [isScrollable, setIsScrollable] = useState(false);
+    const contentRef = useRef(null);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const checkScrollable = () => {
+            if (contentRef.current) {
+                const { scrollHeight, clientHeight } = contentRef.current;
+                setIsScrollable(scrollHeight > clientHeight);
+            }
+        };
+
+        checkScrollable();
+        window.addEventListener('resize', checkScrollable);
+        return () => window.removeEventListener('resize', checkScrollable);
+    }, [permissions]);
 
     useEffect(() => {
         let fadeOutTimer;
@@ -49,8 +63,12 @@ export function PermissionsEditableCardComponent({
                 <CardDescription>Permissions for {entityName}</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2">
-                    {permissions.map((permission) => (
+                <div className="relative">
+                    <div
+                        ref={contentRef}
+                        className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2"
+                    >
+                        {permissions.map((permission) => (
                         <div key={permission.id}>
                             {permission.assigned ? (
                                 <Badge
@@ -77,6 +95,10 @@ export function PermissionsEditableCardComponent({
                             )}
                         </div>
                     ))}
+                    </div>
+                    {isScrollable && (
+                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none dark:from-zinc-900/95" />
+                    )}
                 </div>
             </CardContent>
             <CardFooter>
