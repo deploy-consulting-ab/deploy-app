@@ -40,17 +40,30 @@ export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [isVisible, setIsVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
 
-    // Effect to auto-dismiss success message
+    // Effect to handle fade out animation
     useEffect(() => {
-        if (success) {
-            const timer = setTimeout(() => {
-                setSuccess('');
-            }, 3000); // Message will disappear after 3 seconds
+        let fadeOutTimer;
+        let removeTimer;
 
-            return () => clearTimeout(timer);
+        if (success) {
+            setIsVisible(true);
+            // Start fade out after 2 seconds
+            fadeOutTimer = setTimeout(() => {
+                setIsVisible(false);
+                // Remove message after animation completes (0.5s)
+                removeTimer = setTimeout(() => {
+                    setSuccess('');
+                }, 500);
+            }, 2000);
         }
+
+        return () => {
+            clearTimeout(fadeOutTimer);
+            clearTimeout(removeTimer);
+        };
     }, [success]);
 
     const form = useForm({
@@ -169,7 +182,13 @@ export function UserCardComponent({ user }) {
                 </CardContent>
                 <CardFooter>
                     <FormError message={error} />
-                    <FormSuccess message={success} />
+                    <div
+                        className={`transition-opacity duration-500 ease-in-out ${
+                            isVisible ? 'opacity-100' : 'opacity-0'
+                        }`}
+                    >
+                        <FormSuccess message={success} />
+                    </div>
                 </CardFooter>
             </Card>
 
