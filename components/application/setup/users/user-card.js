@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +41,18 @@ export function UserCardComponent({ user }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isPending, startTransition] = useTransition();
+
+    // Effect to auto-dismiss success message
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                setSuccess('');
+            }, 3000); // Message will disappear after 3 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
+
     const form = useForm({
         defaultValues: {
             employeeNumber: user.employeeNumber,
@@ -51,14 +63,21 @@ export function UserCardComponent({ user }) {
     const onSubmit = async (data) => {
         setSuccess('');
         setError('');
-        console.log('Form submitted:', data);
         startTransition(async () => {
             const response = await updateUserAction(user.id, data);
-            setSuccess(response.success);
-            setError(response.error);
-            setIsEditing(false);
+            
+            if (response.success) {
+                // Reset form with the submitted values
+                form.reset({
+                    employeeNumber: data.employeeNumber,
+                    profileId: data.profileId,
+                });
+                setSuccess(response.success);
+                setIsEditing(false);
+            } else {
+                setError(response.error);
+            }
         });
-        // TODO: Implement actual update logic
     };
 
     return (
