@@ -21,33 +21,24 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersAction } from '@/actions/database/user-actions';
-import { USERS_ROUTE } from '@/menus/routes';
+import { PROFILES_ROUTE } from '@/menus/routes';
 
-export function UsersListComponent({ users, error: initialError }) {
-    const [usersData, setUsersData] = useState(users);
+export function ProfilesListComponent({ profiles, error: initialError }) {
+    const [profilesData, setProfilesData] = useState(profiles);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleRefresh = async () => {
         let freshData = null;
         try {
-            freshData = await getUsersAction();
-            setUsersData(freshData);
+            // freshData = await getUsers();
+            setProfilesData(freshData);
             setError(null);
         } catch (err) {
             setError(err);
         }
         return freshData;
     };
-
-    const views = [
-        { value: 'all', label: 'All Users' },
-        { value: ADMIN_PROFILE, label: 'Admin Users' },
-        { value: SALES_PROFILE, label: 'Sales Users' },
-        { value: CONSULTANT_PROFILE, label: 'Consultant Users' },
-        { value: MANAGEMENT_PROFILE, label: 'Manager Users' },
-    ];
 
     const columns = [
         {
@@ -71,7 +62,7 @@ export function UsersListComponent({ users, error: initialError }) {
                 const id = row.original.id;
                 return (
                     <Link
-                        href={`${USERS_ROUTE}/${id}`}
+                        href={`${PROFILES_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
@@ -81,7 +72,7 @@ export function UsersListComponent({ users, error: initialError }) {
             },
         },
         {
-            accessorKey: 'email',
+            accessorKey: 'description',
             size: 200,
             minSize: 150,
             maxSize: 300, // Responsive size for account names
@@ -92,42 +83,19 @@ export function UsersListComponent({ users, error: initialError }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Email
+                        Description
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('email')}>
-                    {row.getValue('email')}
+                <div className="truncate" title={row.getValue('description')}>
+                    {row.getValue('description')}
                 </div>
             ),
         },
         {
-            accessorKey: 'employeeNumber',
-            size: 120,
-            minSize: 100,
-            maxSize: 150, // Responsive size for dates
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        size="large"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                    >
-                        Employee Number
-                        <ArrowUpDown />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('employeeNumber')}>
-                    {row.getValue('employeeNumber')}
-                </div>
-            ),
-        },
-        {
-            accessorKey: 'profileId',
+            accessorKey: 'id',
             size: 150,
             minSize: 120,
             maxSize: 200, // Responsive size for status
@@ -138,15 +106,15 @@ export function UsersListComponent({ users, error: initialError }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Profile
+                        Profile ID
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 return (
-                    <div className="truncate" title={row.getValue('profileId')}>
-                        {row.getValue('profileId')}
+                    <div className="truncate" title={row.getValue('id')}>
+                        {row.getValue('id')}
                     </div>
                 );
             },
@@ -166,26 +134,24 @@ export function UsersListComponent({ users, error: initialError }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Create New User</DialogTitle>
+                    <DialogTitle>Create New Profile</DialogTitle>
                     <DialogDescription>
-                        Fill in the details to create a new user account.
+                        Fill in the details to create a new profile.
                     </DialogDescription>
                 </DialogHeader>
-                <RegisterFormComponent />
+                {/* <RegisterFormComponent /> */}
             </DialogContent>
         </Dialog>
     );
 
     return (
         <DatatableWrapperComponent
-            data={usersData}
+            data={profilesData}
             columns={columns}
-            placeholder="Filter Users..."
+            placeholder="Filter Profiles..."
             refreshAction={handleRefresh}
-            views={views}
             defaultView="all"
             searchKey="name"
-            filterKey="profileId"
             actionButton={actionButton}
         />
     );

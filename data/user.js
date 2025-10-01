@@ -1,5 +1,4 @@
 import { db } from '@/lib/db';
-import { PROFILE_MAP } from '@/lib/permissions';
 
 /**
  * Get a user by email
@@ -165,15 +164,8 @@ export async function getCombinedPermissionsForUser(id) {
  */
 export const createUser = async (data) => {
     try {
-        const { name, email, hashedPassword, profileId, employeeNumber } = data;
         const user = await db.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-                employeeNumber: employeeNumber,
-                profileId: profileId,
-            },
+            data: data,
         });
 
         return user;
@@ -189,10 +181,9 @@ export const createUser = async (data) => {
 
 export const updateUser = async (id, data) => {
     try {
-        const { name, email, employeeNumber, profileId } = data;
         await db.user.update({
             where: { id },
-            data: { name, email, employeeNumber, profileId },
+            data: data,
         });
     } catch (error) {
         throw error;

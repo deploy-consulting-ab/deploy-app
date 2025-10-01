@@ -43,6 +43,10 @@ export function ErrorDisplayComponent({ error }) {
                 title = error.name;
                 message = error.message;
                 break;
+            case 'PrismaClientInitializationError':
+                title = error.name;
+                message = error.message;
+                break;
         }
     }
 

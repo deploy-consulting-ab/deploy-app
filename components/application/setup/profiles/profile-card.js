@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -21,22 +20,14 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { PROFILES } from '@/lib/permissions';
-import { updateUserAction } from '@/actions/database/user-actions';
+import { updateProfileAction } from '@/actions/database/profile-actions';
 import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
+// import { AllPermissionsCardComponent } from '@/components/application/setup/profiles/all-permissions-card';
 
-export function UserCardComponent({ user }) {
+export function ProfileCardComponent({ profile }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -68,8 +59,7 @@ export function UserCardComponent({ user }) {
 
     const form = useForm({
         defaultValues: {
-            employeeNumber: user.employeeNumber,
-            profileId: user.profileId,
+            description: profile.description,
         },
     });
 
@@ -77,13 +67,12 @@ export function UserCardComponent({ user }) {
         setSuccess('');
         setError('');
         startTransition(async () => {
-            const response = await updateUserAction(user.id, data);
-            
+            const response = await updateProfileAction(profile.id, data);
+
             if (response.success) {
                 // Reset form with the submitted values
                 form.reset({
-                    employeeNumber: data.employeeNumber,
-                    profileId: data.profileId,
+                    description: data.description,
                 });
                 setSuccess(response.success);
                 setIsEditing(false);
@@ -98,56 +87,26 @@ export function UserCardComponent({ user }) {
             {/* User Details Card */}
             <Card className="col-span-1 py-4">
                 <CardHeader>
-                    <CardTitle className="text-2xl">{user.name}</CardTitle>
-                    <CardDescription>{user.email}</CardDescription>
+                    <CardTitle className="text-2xl">{profile.name}</CardTitle>
+                    <CardDescription className="text-base">{profile.id}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            {/* Employee Number */}
+                            {/* Profile Description */}
                             <FormField
                                 control={form.control}
-                                name="employeeNumber"
+                                name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Employee Number</FormLabel>
+                                        <FormLabel>Profile Description</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
                                                 disabled={!isEditing}
-                                                placeholder="Enter employee number"
+                                                placeholder="Enter profile description"
                                             />
                                         </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Profile */}
-                            <FormField
-                                control={form.control}
-                                name="profileId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Profile</FormLabel>
-                                        <Select
-                                            disabled={!isEditing}
-                                            onValueChange={field.onChange}
-                                            value={field.value}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger className="hover:cursor-pointer">
-                                                    <SelectValue placeholder="Select a profile" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {PROFILES.map((profile) => (
-                                                    <SelectItem key={profile} value={profile}>
-                                                        {profile}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -174,7 +133,7 @@ export function UserCardComponent({ user }) {
                                     onClick={() => setIsEditing(true)}
                                     className="hover:cursor-pointer"
                                 >
-                                    Edit User
+                                    Edit Profile
                                 </Button>
                             )}
                         </form>
@@ -193,29 +152,7 @@ export function UserCardComponent({ user }) {
             </Card>
 
             {/* Permissions Card */}
-            <AllPermissionsCardComponent user={user} />
-
-            {/** Permission Sets Card */}
-            <Card className="col-span-2">
-                <CardHeader>
-                    <CardTitle>Permission Sets</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-2">
-                        {user.permissionSets.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
-                                {user.permissionSets.map((permissionSet) => (
-                                    <Badge key={permissionSet} variant="primary">
-                                        {permissionSet}
-                                    </Badge>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-sm text-gray-500">No permission sets assigned</p>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+            {/* <AllPermissionsCardComponent profile={profile} /> */}
         </div>
     );
 }

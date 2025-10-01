@@ -25,7 +25,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { register } from '@/actions/user/register';
+import { createUserAction } from '@/actions/database/user-actions';
 import { useState, useTransition } from 'react';
 
 export const RegisterFormComponent = () => {
@@ -51,7 +51,7 @@ export const RegisterFormComponent = () => {
         console.log('Form submitted:', values);
 
         startTransition(async () => {
-            const response = await register(values);
+            const response = await createUserAction(values);
             setSuccess(response.success);
             setError(response.error);
 
@@ -181,7 +181,7 @@ export const RegisterFormComponent = () => {
                 <FormError message={error} />
                 <FormSuccess message={success} />
                 <Button type="submit" className="w-full">
-                    Register
+                    Create User
                 </Button>
             </form>
         </Form>

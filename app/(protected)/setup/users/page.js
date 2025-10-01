@@ -1,7 +1,7 @@
 'use server';
 
 import { UsersListComponent } from '@/components/application/setup/users/users-list';
-import { getUsersAction } from '@/actions/user/get-users';
+import { getUsersAction } from '@/actions/database/user-actions';
 export default async function UsersPage() {
     let users = null;
     let error = null;

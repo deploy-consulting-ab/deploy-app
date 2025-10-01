@@ -37,3 +37,9 @@ export const UpdateUserSchema = z.object({
         required_error: 'Profile is required',
     }),
 });
+
+export const UpdateProfileSchema = z.object({
+    description: z.string().min(1, {
+        message: 'Description is required',
+    }),
+});
