@@ -9,6 +9,7 @@ export function ErrorDisplayComponent({ error }) {
 
     // Handle different error types
     if (error instanceof Error) {
+        console.log('errordisplay...', error.name);
         switch (error.name) {
             case 'NetworkError':
                 title = 'Connection Error';
@@ -37,6 +38,10 @@ export function ErrorDisplayComponent({ error }) {
                 message = error.message || 'Please check your input and try again.';
                 icon = AlertTriangle;
                 variant = 'warning';
+                break;
+            case 'PrismaClientValidationError':
+                title = error.name;
+                message = error.message;
                 break;
         }
     }

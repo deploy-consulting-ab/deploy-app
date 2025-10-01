@@ -95,6 +95,8 @@ export async function getUsers() {
                 id: true,
                 name: true,
                 email: true,
+                employeeNumber: true,
+                profileId: true,
             },
             orderBy: {
                 name: 'asc',
@@ -102,8 +104,7 @@ export async function getUsers() {
         });
         return users;
     } catch (error) {
-        console.error(error);
-        return [];
+        throw error;
     }
 }
 

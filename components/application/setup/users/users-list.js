@@ -6,7 +6,12 @@ import { ArrowUpDown, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { ADMIN_PROFILE, SALES_PROFILE, CONSULTANT_PROFILE, MANAGEMENT_PROFILE } from '@/lib/permissions';
+import {
+    ADMIN_PROFILE,
+    SALES_PROFILE,
+    CONSULTANT_PROFILE,
+    MANAGEMENT_PROFILE,
+} from '@/lib/permissions';
 import { RegisterFormComponent } from '@/components/auth/register-form';
 import {
     Dialog,
@@ -15,7 +20,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
@@ -97,31 +102,6 @@ export function UsersListComponent({ users, error: initialError }) {
             ),
         },
         {
-            accessorKey: 'profile',
-            size: 150,
-            minSize: 120,
-            maxSize: 200, // Responsive size for status
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        size="large"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                    >
-                        Profile
-                        <ArrowUpDown />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => {
-                return (
-                    <div className="truncate" title={row.getValue('profile')}>
-                        {row.getValue('profile')}
-                    </div>
-                );
-            },
-        },
-        {
             accessorKey: 'employeeNumber',
             size: 120,
             minSize: 100,
@@ -141,8 +121,33 @@ export function UsersListComponent({ users, error: initialError }) {
             cell: ({ row }) => (
                 <div className="truncate" title={row.getValue('employeeNumber')}>
                     {row.getValue('employeeNumber')}
-            </div>
+                </div>
             ),
+        },
+        {
+            accessorKey: 'profileId',
+            size: 150,
+            minSize: 120,
+            maxSize: 200, // Responsive size for status
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="large"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Profile
+                        <ArrowUpDown />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                return (
+                    <div className="truncate" title={row.getValue('profileId')}>
+                        {row.getValue('profileId')}
+                    </div>
+                );
+            },
         },
     ];
 
@@ -178,7 +183,7 @@ export function UsersListComponent({ users, error: initialError }) {
             views={views}
             defaultView="all"
             searchKey="name"
-            filterKey="profile"
+            filterKey="profileId"
             actionButton={actionButton}
         />
     );
