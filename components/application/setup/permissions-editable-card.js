@@ -1,36 +1,14 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BadgeCheckIcon } from 'lucide-react';
+import { populatePermissions } from '@/lib/utils';
 
 export function PermissionsEditableCardComponent({
     entityName,
     entityPermissions,
     totalPermissions,
 }) {
-    console.log('########## entityPermissions', entityPermissions);
-    console.log('########## totalPermissions', totalPermissions);
-
-    const permissions = [];
-
-    const entityPermissionsSet = new Set(entityPermissions.map((permission) => permission.name));
-
-    for (const permission of totalPermissions) {
-        if (entityPermissionsSet.has(permission.name)) {
-            permissions.push({
-                ...permission,
-                assigned: true,
-            });
-        } else {
-            permissions.push({
-                ...permission,
-                assigned: false,
-            });
-        }
-    }
-
-    permissions.sort((a, b) => (a.assigned ? -1 : 1));
-
-    console.log('########## permissions', permissions);
+    const permissions = populatePermissions(entityPermissions, totalPermissions);   
 
     return (
         <Card className="col-span-1">
