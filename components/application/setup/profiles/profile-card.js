@@ -35,27 +35,60 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [permissionError, setPermissionError] = useState('');
+    const [permissionSuccess, setPermissionSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
+    const [currentPermissions, setCurrentPermissions] = useState(profile.permissions);
 
     const handlePermissionClick = async (permissionId, isAssigned) => {
+        // Clear any existing success/error messages first
+        setPermissionSuccess('');
+        setPermissionError('');
+        
+        // Optimistically update the UI
+        if (isAssigned) {
+            setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+        } else {
+            const newPermission = totalPermissions.find((p) => p.id === permissionId);
+            if (newPermission) {
+                setCurrentPermissions((prev) => [...prev, newPermission]);
+            }
+        }
+
         startTransition(async () => {
-            setError('');
-            setSuccess('');
             try {
                 const response = isAssigned
                     ? await removePermissionFromProfileAction(profile.id, permissionId)
                     : await addPermissionToProfileAction(profile.id, permissionId);
 
                 if (response.success) {
-                    setSuccess(response.success);
-                    // Trigger a page refresh to update the permissions
-                    window.location.reload();
+                    setPermissionSuccess(response.success);
                 } else {
-                    setError(response.error);
+                    // Revert the optimistic update on error
+                    if (isAssigned) {
+                        const revertPermission = totalPermissions.find(
+                            (p) => p.id === permissionId
+                        );
+                        if (revertPermission) {
+                            setCurrentPermissions((prev) => [...prev, revertPermission]);
+                        }
+                    } else {
+                        setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+                    }
+                    setPermissionError(response.error);
                 }
             } catch (error) {
-                setError('Failed to update permission');
+                // Revert the optimistic update on error
+                if (isAssigned) {
+                    const revertPermission = totalPermissions.find((p) => p.id === permissionId);
+                    if (revertPermission) {
+                        setCurrentPermissions((prev) => [...prev, revertPermission]);
+                    }
+                } else {
+                    setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+                }
+                setPermissionError('Failed to update permission');
             }
         });
     };
@@ -67,14 +100,14 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
 
         if (success) {
             setIsVisible(true);
-            // Start fade out after 2 seconds
+            // Start fade out after 1 second
             fadeOutTimer = setTimeout(() => {
                 setIsVisible(false);
                 // Remove message after animation completes (0.5s)
                 removeTimer = setTimeout(() => {
                     setSuccess('');
                 }, 500);
-            }, 2000);
+            }, 1000);
         }
 
         return () => {
@@ -180,9 +213,11 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
             {/* Permissions Card */}
             <PermissionsEditableCardComponent
                 entityName="Profile"
-                entityPermissions={profile.permissions}
+                entityPermissions={currentPermissions}
                 totalPermissions={totalPermissions}
                 onPermissionClick={handlePermissionClick}
+                successProp={permissionSuccess}
+                error={permissionError}
             />
         </div>
     );

@@ -50,14 +50,14 @@ export function UserCardComponent({ user }) {
 
         if (success) {
             setIsVisible(true);
-            // Start fade out after 2 seconds
+            // Start fade out after 1 second
             fadeOutTimer = setTimeout(() => {
                 setIsVisible(false);
                 // Remove message after animation completes (0.5s)
                 removeTimer = setTimeout(() => {
                     setSuccess('');
                 }, 500);
-            }, 2000);
+            }, 1000);
         }
 
         return () => {
