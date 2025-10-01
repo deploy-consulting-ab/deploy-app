@@ -55,7 +55,7 @@ export function PermissionsEditableCardComponent({
                             {permission.assigned ? (
                                 <Badge
                                     variant="secondary"
-                                    className="bg-green-600 text-white hover:cursor-pointer"
+                                    className="bg-green-700 text-white hover:cursor-pointer"
                                     onClick={() =>
                                         onPermissionClick?.(permission.id, permission.assigned)
                                     }
