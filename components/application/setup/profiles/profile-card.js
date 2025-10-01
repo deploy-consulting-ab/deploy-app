@@ -20,7 +20,11 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { updateProfileAction } from '@/actions/database/profile-actions';
+import {
+    updateProfileAction,
+    addPermissionToProfileAction,
+    removePermissionFromProfileAction,
+} from '@/actions/database/profile-actions';
 import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
@@ -33,6 +37,28 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
+
+    const handlePermissionClick = async (permissionId, isAssigned) => {
+        startTransition(async () => {
+            setError('');
+            setSuccess('');
+            try {
+                const response = isAssigned
+                    ? await removePermissionFromProfileAction(profile.id, permissionId)
+                    : await addPermissionToProfileAction(profile.id, permissionId);
+
+                if (response.success) {
+                    setSuccess(response.success);
+                    // Trigger a page refresh to update the permissions
+                    window.location.reload();
+                } else {
+                    setError(response.error);
+                }
+            } catch (error) {
+                setError('Failed to update permission');
+            }
+        });
+    };
 
     // Effect to handle fade out animation
     useEffect(() => {
@@ -152,7 +178,12 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
             </Card>
 
             {/* Permissions Card */}
-            <PermissionsEditableCardComponent entityName="Profile" entityPermissions={profile.permissions} totalPermissions={totalPermissions} />
+            <PermissionsEditableCardComponent
+                entityName="Profile"
+                entityPermissions={profile.permissions}
+                totalPermissions={totalPermissions}
+                onPermissionClick={handlePermissionClick}
+            />
         </div>
     );
 }

@@ -7,6 +7,7 @@ export function PermissionsEditableCardComponent({
     entityName,
     entityPermissions,
     totalPermissions,
+    onPermissionClick,
 }) {
     const permissions = populatePermissions(entityPermissions, totalPermissions);   
 
@@ -24,6 +25,7 @@ export function PermissionsEditableCardComponent({
                                 <Badge
                                     variant="secondary"
                                     className="bg-green-600 text-white hover:cursor-pointer"
+                                    onClick={() => onPermissionClick?.(permission.id, permission.assigned)}
                                 >
                                     <BadgeCheckIcon />
                                     {permission.name}
@@ -33,6 +35,7 @@ export function PermissionsEditableCardComponent({
                                     key={permission.id}
                                     variant="outline"
                                     className="justify-start hover:cursor-pointer"
+                                    onClick={() => onPermissionClick?.(permission.id, permission.assigned)}
                                 >
                                     {permission.name}
                                 </Badge>

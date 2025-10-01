@@ -1,7 +1,12 @@
 'use server';
 import { getProfiles } from '@/data/profile';
 import { UpdateProfileSchema } from '@/schemas';
-import { updateProfile, getProfileById } from '@/data/profile';
+import {
+    updateProfile,
+    getProfileById,
+    addPermissionToProfile,
+    removePermissionFromProfile,
+} from '@/data/profile';
 
 /**
  * Get all profiles
@@ -54,5 +59,35 @@ export async function getProfileByIdAction(id) {
         return profile;
     } catch (error) {
         throw error;
+    }
+}
+
+/**
+ * Add a permission to a profile
+ * @param {string} profileId
+ * @param {string} permissionId
+ * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ */
+export async function addPermissionToProfileAction(profileId, permissionId) {
+    try {
+        await addPermissionToProfile(profileId, permissionId);
+        return { success: 'Permission added successfully' };
+    } catch (error) {
+        return { error: 'Failed to add permission' };
+    }
+}
+
+/**
+ * Remove a permission from a profile
+ * @param {string} profileId
+ * @param {string} permissionId
+ * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ */
+export async function removePermissionFromProfileAction(profileId, permissionId) {
+    try {
+        await removePermissionFromProfile(profileId, permissionId);
+        return { success: 'Permission removed successfully' };
+    } catch (error) {
+        return { error: 'Failed to remove permission' };
     }
 }

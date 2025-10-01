@@ -46,3 +46,53 @@ export async function updateProfile(id, data) {
         throw error;
     }
 }
+
+/**
+ * Add a permission to a profile
+ * @param {string} profileId
+ * @param {string} permissionId
+ * @returns {Promise<Profile>} The updated profile
+ */
+export async function addPermissionToProfile(profileId, permissionId) {
+    try {
+        const profile = await db.profile.update({
+            where: { id: profileId },
+            data: {
+                permissions: {
+                    connect: { id: permissionId }
+                }
+            },
+            include: {
+                permissions: true
+            }
+        });
+        return profile;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Remove a permission from a profile
+ * @param {string} profileId
+ * @param {string} permissionId
+ * @returns {Promise<Profile>} The updated profile
+ */
+export async function removePermissionFromProfile(profileId, permissionId) {
+    try {
+        const profile = await db.profile.update({
+            where: { id: profileId },
+            data: {
+                permissions: {
+                    disconnect: { id: permissionId }
+                }
+            },
+            include: {
+                permissions: true
+            }
+        });
+        return profile;
+    } catch (error) {
+        throw error;
+    }
+}
