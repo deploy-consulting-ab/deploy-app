@@ -2,22 +2,25 @@
 
 import { ProfileCardComponent } from '@/components/application/setup/profiles/profile-card';
 import { getProfileByIdAction } from '@/actions/database/profile-actions';
+import { getPermissionsAction } from '@/actions/database/permission-actions';
 
 export default async function ProfilePage({ params }) {
     const { profileId } = await params;
 
     let profile = null;
     let error = null;
+    let totalPermissions = null;
 
     try {
         profile = await getProfileByIdAction(profileId);
+        totalPermissions = await getPermissionsAction();
     } catch (err) {
         error = err;
     }
 
     return (
         <div className="py-4">
-            <ProfileCardComponent error={error} profile={profile} />
+            <ProfileCardComponent error={error} profile={profile} totalPermissions={totalPermissions} />
         </div>
     );
 }

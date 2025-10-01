@@ -25,9 +25,9 @@ import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-// import { AllPermissionsCardComponent } from '@/components/application/setup/profiles/all-permissions-card';
+import { PermissionsEditableCardComponent } from '@/components/application/setup/permissions-editable-card';
 
-export function ProfileCardComponent({ profile }) {
+export function ProfileCardComponent({ profile, totalPermissions }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -152,7 +152,7 @@ export function ProfileCardComponent({ profile }) {
             </Card>
 
             {/* Permissions Card */}
-            {/* <AllPermissionsCardComponent profile={profile} /> */}
+            <PermissionsEditableCardComponent entityName="Profile" entityPermissions={profile.permissions} totalPermissions={totalPermissions} />
         </div>
     );
 }

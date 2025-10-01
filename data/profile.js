@@ -28,7 +28,11 @@ export async function getProfileById(id) {
     try {
         const profile = await db.profile.findUnique({
             where: { id },
+            include: {
+                permissions: true,
+            },
         });
+        console.log('########## profile', profile);
         return profile;
     } catch (error) {
         throw error;
