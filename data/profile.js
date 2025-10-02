@@ -30,6 +30,7 @@ export async function getProfileById(id) {
             where: { id },
             include: {
                 permissions: true,
+                users: true,
             },
         });
         return profile;

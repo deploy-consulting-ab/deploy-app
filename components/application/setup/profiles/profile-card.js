@@ -31,6 +31,8 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { PermissionsEditableCardComponent } from '@/components/application/setup/permissions-editable-card';
 
+import { ProfileUsersListComponent } from '@/components/application/setup/profiles/profile-users-list';
+
 export function ProfileCardComponent({ profile, totalPermissions }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
@@ -220,6 +222,9 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
                 error={permissionError}
             />
             {/** Add a datatable displaying all the users in the profile, add an action button to add a new user to the profile*/}
+            <div className="col-span-2">
+                <ProfileUsersListComponent users={profile.users} profileId={profile.id} />
+            </div>
         </div>
-    );
+    );  
 }

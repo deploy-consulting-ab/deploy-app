@@ -2,11 +2,21 @@
 
 import { RegisterSchema } from '@/schemas';
 import bcryptjs from 'bcryptjs';
-import { createUser, getUserByEmail, getUserByIdWithPermissions } from '@/data/user';
+import {
+    createUser,
+    getUserByEmail,
+    getUserByIdWithPermissions,
+    getUsersForProfile,
+} from '@/data/user';
 import { getUsers } from '@/data/user';
 import { updateUser } from '@/data/user';
 import { UpdateUserSchema } from '@/schemas';
 
+/**
+ * Get all users
+ * @returns {Promise<User[]>} All users
+ * @throws {Error} If the users are not found
+ */
 export async function getUsersAction() {
     try {
         const users = await getUsers();
@@ -16,6 +26,27 @@ export async function getUsersAction() {
     }
 }
 
+/**
+ * Get all users for a profile
+ * @param {string} profileId
+ * @returns {Promise<User[]>} All users for the profile
+ * @throws {Error} If the users are not found
+ */
+export async function getUsersForProfileAction(profileId) {
+    try {
+        const users = await getUsersForProfile(profileId);
+        return users;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Create a user
+ * @param {Object} values
+ * @returns {Promise<User>} User created
+ * @throws {Error} If the user is not created
+ */
 export async function createUserAction(values) {
     /**
      * Since a hacker can get this server action ID and execute it from postman,
@@ -53,6 +84,13 @@ export async function createUserAction(values) {
     return { success: 'User registered!' };
 }
 
+/**
+ * Update a user
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<User>} User updated
+ * @throws {Error} If the user is not updated
+ */
 export async function updateUserAction(id, data) {
     try {
         const validatedFields = UpdateUserSchema.safeParse(data);
@@ -73,6 +111,12 @@ export async function updateUserAction(id, data) {
     }
 }
 
+/**
+ * Get a user by id with permissions
+ * @param {string} id
+ * @returns {Promise<User>} User with permissions
+ * @throws {Error} If the user is not found
+ */
 export async function getUserByIdWithPermissionsAction(id) {
     try {
         const user = await getUserByIdWithPermissions(id);

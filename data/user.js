@@ -153,6 +153,24 @@ export async function getCombinedPermissionsForUser(id) {
 }
 
 /**
+ * Get all users for a profile
+ * @param {string} profileId
+ * @returns {Promise<User[]>} All users for the profile
+ * @throws {Error} If the users are not found
+ */
+export async function getUsersForProfile(profileId) {
+    try {
+        const users = await db.user.findMany({
+            where: { profileId },
+        });
+        return users;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+/**
  * CREATE METHODS
  */
 
