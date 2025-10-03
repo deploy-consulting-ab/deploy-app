@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, UserCircle, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -23,6 +23,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toastRichSuccess } from '@/lib/toast-library';
 
 export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
@@ -32,6 +33,9 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const handleSuccess = () => {
         setIsDialogOpen(false);
         handleRefresh();
+        toastRichSuccess({
+            message: 'Profiles updated',
+        });
     };
 
     const handleRefresh = async () => {
@@ -54,6 +58,9 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         try {
             await deleteProfileAction(id);
             await doRefresh();
+            toastRichSuccess({
+                message: 'Profile deleted',
+            });
         } catch (err) {
             setError(err);
         }
@@ -168,7 +175,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <UserPlus className="h-4 w-4" />
+                    <UserCircle className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">

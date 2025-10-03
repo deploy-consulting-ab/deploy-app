@@ -1,19 +1,10 @@
-import { Geist, Geist_Mono, Inter } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/auth/form/theme-provider';
 import { Analytics } from '@vercel/analytics/next';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
-
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
-});
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -60,6 +51,7 @@ export default async function RootLayout({ children }) {
                     </ThemeProvider>
                 </SessionProvider>
                 <Analytics />
+                <Toaster />
             </body>
         </html>
     );
