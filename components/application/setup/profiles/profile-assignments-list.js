@@ -19,7 +19,7 @@ import { USERS_ROUTE } from '@/menus/routes';
 import { RelateUser } from '@/components/application/setup/users/relate-user';
 import { toastRichSuccess } from '@/lib/toast-library';
 
-export function ProfileUsersListComponent({ users, error: initialError, profileId }) {
+export function ProfileAssignmentsListComponent({ users, error: initialError, profileId }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
