@@ -71,7 +71,7 @@ export function RelateUser({ onUserSelect }) {
                 className="w-full"
             />
 
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className="max-h-[400px] overflow-y-auto pt-2">
                 {isLoading && (
                     <div className="h-full flex items-center justify-center">
                         <Spinner size="sm" />
@@ -89,7 +89,7 @@ export function RelateUser({ onUserSelect }) {
                         {users.map((user) => (
                             <Card
                                 key={user.id}
-                                className="p-2 hover:bg-accent cursor-pointer transition-colors"
+                                className="p-4 hover:bg-accent cursor-pointer transition-colors"
                                 onClick={() => handleUserSelect(user)}
                             >
                                 <div className="flex flex-col">
