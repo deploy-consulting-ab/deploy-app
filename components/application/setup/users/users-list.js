@@ -21,9 +21,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersAction } from '@/actions/database/user-actions';
+import { getUsersAction, deleteUserAction } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
-import { toastRichSuccess } from '@/lib/toast-library';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
@@ -48,6 +55,20 @@ export function UsersListComponent({ users, error: initialError }) {
         toastRichSuccess({
             message: 'User created',
         });
+    };
+
+    const deleteUser = async (id) => {
+        try {
+            await deleteUserAction(id);
+            await handleRefresh();
+            toastRichSuccess({
+                message: 'User deleted',
+            });
+        } catch (err) {
+            toastRichError({
+                message: err.message,
+            });
+        }
     };
 
     const views = [
@@ -157,6 +178,29 @@ export function UsersListComponent({ users, error: initialError }) {
                     <div className="truncate" title={row.getValue('profileId')}>
                         {row.getValue('profileId')}
                     </div>
+                );
+            },
+        },
+        {
+            id: 'actions',
+            enableSorting: false,
+            enableHiding: false,
+            maxSize: 10,
+            cell: ({ row }) => {
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
+                                Delete User
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 );
             },
         },

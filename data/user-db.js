@@ -15,8 +15,7 @@ export const getUserByEmail = async (email) => {
         });
         return existingUser;
     } catch (error) {
-        console.error(error);
-        return null;
+        throw error;
     }
 };
 
@@ -39,8 +38,7 @@ export const getUserById = async (id) => {
         });
         return existingUser;
     } catch (error) {
-        console.error(error);
-        return null;
+        throw error;
     }
 };
 
@@ -77,8 +75,7 @@ export const getUserByIdWithPermissions = async (id) => {
         existingUser.allPermissions = new Set(allPermissions);
         return existingUser;
     } catch (error) {
-        console.error(error);
-        return null;
+        throw error;
     }
 };
 
@@ -114,42 +111,46 @@ export async function getUsers() {
  * @throws {Error} If the permissions are not found
  */
 export async function getCombinedPermissionsForUser(id) {
-    // 1. Fetch the user and include their profile, permission sets,
-    //    and all nested permissions in a single query.
-    const userWithPermissions = await db.user.findUnique({
-        where: { id },
-        include: {
-            profile: {
-                include: {
-                    permissions: true, // Get permissions from the profile
+    try {
+        // 1. Fetch the user and include their profile, permission sets,
+        //    and all nested permissions in a single query.
+        const userWithPermissions = await db.user.findUnique({
+            where: { id },
+            include: {
+                profile: {
+                    include: {
+                        permissions: true, // Get permissions from the profile
+                    },
+                },
+                permissionSets: {
+                    include: {
+                        permissions: true, // Get permissions from all permission sets
+                    },
                 },
             },
-            permissionSets: {
-                include: {
-                    permissions: true, // Get permissions from all permission sets
-                },
-            },
-        },
-    });
+        });
 
-    if (!userWithPermissions) {
-        return []; // Return empty array if user not found
+        if (!userWithPermissions) {
+            return []; // Return empty array if user not found
+        }
+
+        // 2. Extract permissions from the user's profile
+        const profilePermissions = (userWithPermissions.profile?.permissions || []).map(
+            (permission) => permission.name
+        );
+
+        // 3. Extract permissions from all assigned permission sets flatMap is used to merge the permissions from multiple sets into one array
+        const permissionSetPermissions = userWithPermissions.permissionSets.flatMap((set) =>
+            set.permissions.map((permission) => permission.name)
+        );
+
+        // 4. Combine both lists
+        const allPermissions = [...profilePermissions, ...permissionSetPermissions];
+
+        return allPermissions;
+    } catch (error) {
+        throw error;
     }
-
-    // 2. Extract permissions from the user's profile
-    const profilePermissions = (userWithPermissions.profile?.permissions || []).map(
-        (permission) => permission.name
-    );
-
-    // 3. Extract permissions from all assigned permission sets flatMap is used to merge the permissions from multiple sets into one array
-    const permissionSetPermissions = userWithPermissions.permissionSets.flatMap((set) =>
-        set.permissions.map((permission) => permission.name)
-    );
-
-    // 4. Combine both lists
-    const allPermissions = [...profilePermissions, ...permissionSetPermissions];
-
-    return allPermissions;
 }
 
 /**
@@ -165,7 +166,6 @@ export async function getUsersForProfile(profileId) {
         });
         return users;
     } catch (error) {
-        console.error(error);
         throw error;
     }
 }
@@ -188,8 +188,7 @@ export const createUser = async (data) => {
 
         return user;
     } catch (error) {
-        console.error(error);
-        return false;
+        throw error;
     }
 };
 
@@ -207,3 +206,21 @@ export const updateUser = async (id, data) => {
         throw error;
     }
 };
+
+/**
+ * DELETE METHODS
+ */
+
+/**
+ * Delete a user
+ * @param {string} id
+ * @returns {Promise<User>} The deleted user
+ * @throws {Error} If the user is not deleted
+ */
+export async function deleteUser(id) {
+    try {
+        await db.user.delete({ where: { id } });
+    } catch (error) {
+        throw error;
+    }
+}

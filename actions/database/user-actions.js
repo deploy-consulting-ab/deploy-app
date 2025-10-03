@@ -7,6 +7,7 @@ import {
     getUserByEmail,
     getUserByIdWithPermissions,
     getUsersForProfile,
+    deleteUser,
 } from '@/data/user-db';
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
@@ -48,40 +49,44 @@ export async function getUsersForProfileAction(profileId) {
  * @throws {Error} If the user is not created
  */
 export async function createUserAction(values) {
-    /**
-     * Since a hacker can get this server action ID and execute it from postman,
-     * we need to add extra layer of protection and check that the sent stuff is valid
-     */
-    // Validate the input values against the schema.
-    const validatedFields = RegisterSchema.safeParse(values);
+    try {
+        /**
+         * Since a hacker can get this server action ID and execute it from postman,
+         * we need to add extra layer of protection and check that the sent stuff is valid
+         */
+        // Validate the input values against the schema.
+        const validatedFields = RegisterSchema.safeParse(values);
 
-    if (!validatedFields.success) {
-        return { error: 'Invalid fields' };
+        if (!validatedFields.success) {
+            return { error: 'Invalid fields' };
+        }
+
+        const { email, password, name, profileId, employeeNumber } = validatedFields.data;
+
+        const hashedPassword = await bcryptjs.hash(password, 10);
+
+        const existingUser = await getUserByEmail(email);
+
+        if (existingUser) {
+            throw new Error('User already existing');
+        }
+
+        const createdUser = await createUser({
+            name,
+            email,
+            password: hashedPassword,
+            profileId,
+            employeeNumber,
+        });
+
+        if (!createdUser) {
+            return { error: 'Failed to create user' };
+        }
+
+        return { success: 'User registered!' };
+    } catch (error) {
+        throw error;
     }
-
-    const { email, password, name, profileId, employeeNumber } = validatedFields.data;
-
-    const hashedPassword = await bcryptjs.hash(password, 10);
-
-    const existingUser = await getUserByEmail(email);
-
-    if (existingUser) {
-        return { error: 'User already existing' };
-    }
-
-    const createdUser = await createUser({
-        name,
-        email,
-        password: hashedPassword,
-        profileId,
-        employeeNumber,
-    });
-
-    if (!createdUser) {
-        return { error: 'Failed to create user' };
-    }
-
-    return { success: 'User registered!' };
 }
 
 /**
@@ -107,7 +112,7 @@ export async function updateUserAction(id, data) {
 
         return { success: 'User updated!' };
     } catch (error) {
-        return { error: error.message };
+        throw error;
     }
 }
 
@@ -121,6 +126,20 @@ export async function getUserByIdWithPermissionsAction(id) {
     try {
         const user = await getUserByIdWithPermissions(id);
         return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Delete a user
+ * @param {string} id
+ * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ */
+export async function deleteUserAction(id) {
+    try {
+        await deleteUser(id);
+        return { success: 'User deleted successfully' };
     } catch (error) {
         throw error;
     }
