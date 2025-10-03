@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getUserById, getCombinedPermissionsForUser } from '@/data/user';
+import { getUserById, getCombinedPermissionsForUser } from '@/data/user-db';
 import { ADMIN_PROFILE } from '@/lib/permissions';
 import { revalidatePath } from 'next/cache';
 

@@ -7,9 +7,9 @@ import {
     getUserByEmail,
     getUserByIdWithPermissions,
     getUsersForProfile,
-} from '@/data/user';
-import { getUsers } from '@/data/user';
-import { updateUser } from '@/data/user';
+} from '@/data/user-db';
+import { getUsers } from '@/data/user-db';
+import { updateUser } from '@/data/user-db';
 import { UpdateUserSchema } from '@/schemas';
 
 /**

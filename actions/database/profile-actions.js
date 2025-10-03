@@ -1,12 +1,13 @@
 'use server';
-import { getProfiles } from '@/data/profile';
+import { getProfiles } from '@/data/profile-db';
 import { UpdateProfileSchema } from '@/schemas';
 import {
     updateProfile,
     getProfileById,
     addPermissionToProfile,
     removePermissionFromProfile,
-} from '@/data/profile';
+    createProfile,
+} from '@/data/profile-db';
 
 /**
  * Get all profiles
@@ -89,5 +90,24 @@ export async function removePermissionFromProfileAction(profileId, permissionId)
         return { success: 'Permission removed successfully' };
     } catch (error) {
         return { error: 'Failed to remove permission' };
+    }
+}
+
+/**
+ * Create a profile
+ * @param {Object} data
+ * @returns {Promise<Profile>} The created profile
+ * @throws {Error} If the profile is not created
+ */
+export async function createProfileAction(data) {
+    const payload = {
+        ...data,
+        permissions: data.permissions.map((permission) => ({ id: permission.id })),
+    };
+    try {
+        const profile = await createProfile(payload);
+        return profile;
+    } catch (error) {
+        throw error;
     }
 }

@@ -54,7 +54,9 @@ export function DatatableWrapperComponent({
     }, [initialData, selectedView, filterKey]);
 
     const handleRefresh = async () => {
-        if (isRefreshing) return;
+        if (isRefreshing) {
+            return;
+        }
         setIsRefreshing(true);
         try {
             await refreshAction();

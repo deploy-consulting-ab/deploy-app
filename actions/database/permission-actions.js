@@ -1,5 +1,5 @@
 'use server';
-import { getPermissions } from '@/data/permissions';
+import { getPermissions } from '@/data/permissions-db';
 
 /**
  * Get all permissions

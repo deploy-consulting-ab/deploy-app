@@ -1,4 +1,4 @@
-import { getUsers } from '@/data/user';
+import { getUsers } from '@/data/user-db';
 import { ImpersonateUserClient } from './impersonate-user-client';
 
 // Server Component

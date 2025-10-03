@@ -39,6 +39,35 @@ export async function getProfileById(id) {
     }
 }
 
+/**
+ * Create a profile
+ * @param {Object} data
+ * @returns {Promise<Profile>} The created profile
+ * @throws {Error} If the profile is not created
+ */
+export async function createProfile(data) {
+    try {
+        const profile = await db.profile.create({
+            data: {
+                ...data,
+                permissions : {
+                    connect: data.permissions,
+                }
+            },
+        });
+        return profile;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update a profile
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<Profile>} The updated profile
+ * @throws {Error} If the profile is not updated
+ */
 export async function updateProfile(id, data) {
     try {
         const profile = await db.profile.update({ where: { id }, data });
@@ -60,12 +89,12 @@ export async function addPermissionToProfile(profileId, permissionId) {
             where: { id: profileId },
             data: {
                 permissions: {
-                    connect: { id: permissionId }
-                }
+                    connect: { id: permissionId },
+                },
             },
             include: {
-                permissions: true
-            }
+                permissions: true,
+            },
         });
         return profile;
     } catch (error) {
@@ -85,12 +114,12 @@ export async function removePermissionFromProfile(profileId, permissionId) {
             where: { id: profileId },
             data: {
                 permissions: {
-                    disconnect: { id: permissionId }
-                }
+                    disconnect: { id: permissionId },
+                },
             },
             include: {
-                permissions: true
-            }
+                permissions: true,
+            },
         });
         return profile;
     } catch (error) {

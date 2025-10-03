@@ -3,6 +3,7 @@
 import { RegisterWrapperComponent } from '@/components/application/setup/register-wrapper';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 import { useState, useEffect } from 'react';
+import { createProfileAction } from '@/actions/database/profile-actions';
 
 export function RegisterProfileComponent({ onSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);
@@ -26,7 +27,7 @@ export function RegisterProfileComponent({ onSuccess }) {
     const handleSubmit = async (data) => {
         try {
             console.log('#### data', data);
-            // await createProfileAction(data);
+            await createProfileAction(data);
             if (onSuccess) {
                 onSuccess();
             }

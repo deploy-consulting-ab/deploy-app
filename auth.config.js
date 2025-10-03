@@ -1,7 +1,7 @@
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import { LoginSchema } from '@/schemas';
-import { getUserByEmail } from '@/data/user';
+import { getUserByEmail } from '@/data/user-db';
 import bcryptjs from 'bcryptjs';
 
 const authObject = {

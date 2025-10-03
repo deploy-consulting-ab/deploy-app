@@ -16,6 +16,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { PROFILES_ROUTE } from '@/menus/routes';
+import { getProfilesAction } from '@/actions/database/profile-actions';
 
 export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
@@ -30,7 +31,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const handleRefresh = async () => {
         let freshData = null;
         try {
-            // freshData = await getUsers();
+            freshData = await getProfilesAction();
             setProfilesData(freshData);
             setError(null);
         } catch (err) {
