@@ -39,7 +39,26 @@ export async function getPermissionByIdAction(id) {
 export async function getPermissionAssignmentsByIdAction(id) {
     try {
         const permissionAssignments = await getPermissionAssignmentsById(id);
+
+        const allPermissionAssignments = [
+            ...permissionAssignments.profiles.map((profile) => {
+                return {
+                    ...profile,
+                    entityName: 'Profile',
+                };
+            }),
+            ...permissionAssignments.permissionSets.map((set) => {
+                return {
+                    ...set,
+                    entityName: 'Permission Set',
+                };
+            }),
+        ];
+
+        permissionAssignments.allPermissionAssignments = allPermissionAssignments;
+
         console.log('### permissionAssignments', permissionAssignments);
+
         return permissionAssignments;
     } catch (error) {
         console.log('### error', error);

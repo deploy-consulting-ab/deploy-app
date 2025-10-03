@@ -1,7 +1,21 @@
 'use client';
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+} from '@/components/ui/card';
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/form/form-error';
@@ -11,7 +25,6 @@ import { useForm } from 'react-hook-form';
 import { PermissionAssignmentsListComponent } from '@/components/application/setup/permissions/permission-assignments-list';
 
 export function PermissionCardComponent({ permission }) {
-
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -91,10 +104,13 @@ export function PermissionCardComponent({ permission }) {
                     </div>
                 </CardFooter>
             </Card>
-            
+
             {/** Add a datatable displaying all the users in the permission, add an action button to add a new user to the permission*/}
             <div className="col-span-2">
-                <PermissionAssignmentsListComponent profileAssignments={permission.profiles} permissionAssignments={permission.assignments} />
+                <PermissionAssignmentsListComponent
+                    allPermissionAssignments={permission.allPermissionAssignments}
+                    permissionId={permission.id}
+                />
             </div>
         </div>
     );

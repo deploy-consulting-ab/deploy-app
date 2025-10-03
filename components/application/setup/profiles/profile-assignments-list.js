@@ -132,25 +132,21 @@ export function ProfileAssignmentsListComponent({ users, error: initialError, pr
             size: 150,
             minSize: 120,
             maxSize: 200, // Responsive size for status
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        size="large"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                    >
-                        Profile
-                        <ArrowUpDown />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => {
-                return (
-                    <div className="truncate" title={row.getValue('profileId')}>
-                        {row.getValue('profileId')}
-                    </div>
-                );
-            },
+            header: ({ column }) => (
+                <Button
+                    variant="ghost"
+                    size="large"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                >
+                    Profile
+                    <ArrowUpDown />
+                </Button>
+            ),
+            cell: ({ row }) => (
+                <div className="truncate" title={row.getValue('profileId')}>
+                    {row.getValue('profileId')}
+                </div>
+            ),
         },
     ];
 
