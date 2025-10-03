@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RegisterWrapperSchema } from '@/schemas/register-wrapper';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -15,28 +14,37 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PermissionsEditableCardComponent } from './permissions-editable-card';
-import { useState, useTransition, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
 
-export function RegisterWrapperComponent({ title, description, onSubmit, totalPermissions }) {
-    const [isPending, startTransition] = useTransition();
+export function RegisterWrapperComponent({ namePlaceholder, descriptionPlaceholder, idPlaceholder, onSubmit, totalPermissions }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
     const [assignedPermissions, setAssignedPermissions] = useState({});
-    
-    const isLoading = isPending || isSubmitting;
 
-    const permissions = useMemo(() => 
-        totalPermissions.map(permission => ({
-            ...permission,
-            assigned: assignedPermissions[permission.id] || false
-        }))
-    , [totalPermissions, assignedPermissions]);
+    const permissions = useMemo(
+        () =>
+            totalPermissions
+                .map((permission) =>
+                    permission.name === VIEW_HOME_PERMISSION
+                        ? {
+                              ...permission,
+                              assigned: true,
+                          }
+                        : {
+                              ...permission,
+                              assigned: assignedPermissions[permission.id] || false,
+                          }
+                )
+                .sort((a, b) => (a.assigned ? -1 : 1)),
+        [totalPermissions, assignedPermissions]
+    );
 
     const handlePermissionClick = (permissionId, isAssigned) => {
-        setAssignedPermissions(prev => ({
+        setAssignedPermissions((prev) => ({
             ...prev,
-            [permissionId]: !isAssigned
+            [permissionId]: !isAssigned,
         }));
     };
 
@@ -84,8 +92,8 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isLoading}
-                                        placeholder="Enter name"
+                                        disabled={isSubmitting}
+                                        placeholder={namePlaceholder}
                                         {...field}
                                     />
                                 </FormControl>
@@ -101,8 +109,8 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                                 <FormLabel>Description</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isLoading}
-                                        placeholder="Enter description"
+                                        disabled={isSubmitting}
+                                        placeholder={descriptionPlaceholder}
                                         {...field}
                                     />
                                 </FormControl>
@@ -117,7 +125,11 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                             <FormItem>
                                 <FormLabel>ID</FormLabel>
                                 <FormControl>
-                                    <Input disabled={isPending} placeholder="Enter ID" {...field} />
+                                    <Input
+                                        disabled={isSubmitting}
+                                        placeholder={idPlaceholder}
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -133,15 +145,15 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                     />
 
                     <div className="flex gap-4">
-                        <Button type="submit" className="flex-1" disabled={isLoading}>
-                            {isLoading ? 'Creating...' : 'Create'}
+                        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                            {isSubmitting ? 'Creating...' : 'Create'}
                         </Button>
-                        <Button 
-                            type="button" 
-                            variant="outline" 
+                        <Button
+                            type="button"
+                            variant="outline"
                             className="flex-1"
                             onClick={resetForm}
-                            disabled={isLoading}
+                            disabled={isSubmitting}
                         >
                             Reset
                         </Button>

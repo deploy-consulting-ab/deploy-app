@@ -26,7 +26,6 @@ export function RegisterProfileComponent({ onSuccess }) {
 
     const handleSubmit = async (data) => {
         try {
-            console.log('#### data', data);
             await createProfileAction(data);
             if (onSuccess) {
                 onSuccess();
@@ -46,10 +45,11 @@ export function RegisterProfileComponent({ onSuccess }) {
 
     return (
         <RegisterWrapperComponent
-            title="Create New Profile"
-            description="Fill in the details to create a new profile"
             onSubmit={handleSubmit}
             totalPermissions={totalPermissions}
+            namePlaceholder="Deploy Consultant"
+            descriptionPlaceholder="Standard consultant access"
+            idPlaceholder="deploy_consultant"
         />
     );
 }
