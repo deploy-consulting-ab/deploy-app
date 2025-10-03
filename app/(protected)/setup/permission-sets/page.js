@@ -1,15 +1,18 @@
 import { getPermissionSetsAction } from '@/actions/database/permission-set-actions';
-import { PermissionSetList } from '@/components/application/setup/permission-sets/permission-set-list';
+import { PermissionSetListComponent } from '@/components/application/setup/permission-sets/permission-sets-list';
 
 export default async function PermissionSetsPage() {
-    const permissionSets = await getPermissionSetsAction();
+    let permissionSets = null;
+    let error = null;
+    try {
+        permissionSets = await getPermissionSetsAction();
+    } catch (err) {
+        error = err;
+    }
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Permission Sets</h1>
-            </div>
-            <PermissionSetList permissionSets={permissionSets} />
+        <div className="py-4">
+            <PermissionSetListComponent permissionSets={permissionSets} error={error} />
         </div>
     );
 }
