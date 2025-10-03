@@ -103,13 +103,8 @@ export async function updateUserAction(id, data) {
         if (!validatedFields.success) {
             return { error: 'Invalid fields' };
         }
-
         const validatedData = validatedFields.data;
-
-        console.log('validatedData', validatedData);
-
         await updateUser(id, validatedData);
-
         return { success: 'User updated!' };
     } catch (error) {
         throw error;

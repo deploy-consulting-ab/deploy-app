@@ -9,7 +9,6 @@ export function ErrorDisplayComponent({ error }) {
 
     // Handle different error types
     if (error instanceof Error) {
-        console.log('errordisplay...', error.name);
         switch (error.name) {
             case 'NetworkError':
                 title = 'Connection Error';
