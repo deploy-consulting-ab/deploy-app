@@ -16,8 +16,15 @@ import { Button } from '@/components/ui/button';
 import { PermissionsEditableCardComponent } from './permissions-editable-card';
 import { useState, useMemo } from 'react';
 import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
+import { FormError } from '@/components/auth/form/form-error';
 
-export function RegisterWrapperComponent({ namePlaceholder, descriptionPlaceholder, idPlaceholder, onSubmit, totalPermissions }) {
+export function RegisterWrapperComponent({
+    namePlaceholder,
+    descriptionPlaceholder,
+    idPlaceholder,
+    onSubmit,
+    totalPermissions,
+}) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
@@ -54,7 +61,10 @@ export function RegisterWrapperComponent({ namePlaceholder, descriptionPlacehold
         setIsSubmitting(true);
 
         try {
-            await onSubmit({ ...values, permissions: permissions.filter((p) => p.assigned) });
+            await onSubmit({
+                ...values,
+                permissions: permissions.filter((permission) => permission.assigned),
+            });
             setSuccess('Created successfully');
             resetForm();
         } catch (err) {
@@ -140,9 +150,10 @@ export function RegisterWrapperComponent({ namePlaceholder, descriptionPlacehold
                         entityName={form.watch('name') || 'New Entity'}
                         totalPermissions={permissions}
                         onPermissionClick={handlePermissionClick}
-                        error={error}
                         successProp={success}
                     />
+
+                    <FormError message={error} />
 
                     <div className="flex gap-4">
                         <Button

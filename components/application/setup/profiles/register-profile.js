@@ -8,8 +8,6 @@ import { createProfileAction } from '@/actions/database/profile-actions';
 export function RegisterProfileComponent({ fireSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);
 
-    const [error, setError] = useState('');
-
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
@@ -29,13 +27,9 @@ export function RegisterProfileComponent({ fireSuccess }) {
             await createProfileAction(data);
             fireSuccess();
         } catch (error) {
-            throw new Error(error.message);
+            throw new Error(error.message); // Throw an error here will be caught by the child RegisterWrapperComponent
         }
     };
-
-    if (error) {
-        return <div className="text-red-500">{error}</div>;
-    }
 
     if (!totalPermissions.length) {
         return <div>Loading permissions...</div>;
