@@ -7,7 +7,7 @@ import { ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getPermissionAssignmentsByIdAction } from '@/actions/database/permission-actions';
-import { PERMISSIONS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
+import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 
 export function PermissionAssignmentsListComponent({
     allPermissionAssignments,
@@ -31,6 +31,12 @@ export function PermissionAssignmentsListComponent({
         return freshData;
     };
 
+    const views = [
+        { value: 'all', label: 'All' },
+        { value: 'Profile', label: 'Profiles' },
+        { value: 'Permission Set', label: 'Permission Sets' },
+    ];
+
     const columns = [
         {
             accessorKey: 'name',
@@ -51,9 +57,11 @@ export function PermissionAssignmentsListComponent({
             },
             cell: ({ row }) => {
                 const id = row.original.id;
+                const entityName = row.original.entityName;
+                const route = entityName === 'Profile' ? PROFILES_ROUTE : PERMISSION_SETS_ROUTE;
                 return (
                     <Link
-                        href={`${PERMISSIONS_ROUTE}/${id}`}
+                        href={`${route}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
@@ -144,6 +152,9 @@ export function PermissionAssignmentsListComponent({
             placeholder="Filter Permission Assignments..."
             refreshAction={handleRefresh}
             searchKey="name"
+            defaultView="all"
+            filterKey="entityName"
+            views={views}
         />
     );
 }
