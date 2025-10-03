@@ -32,7 +32,8 @@ export function PermissionSetAssignmentsListComponent({
     const handleRefresh = async () => {
         let freshData = null;
         try {
-            freshData = await getPermissionSetByIdAction(permissionSetId);
+            const permissionSet = await getPermissionSetByIdAction(permissionSetId);
+            freshData = permissionSet.users;
             setUsersData(freshData);
             setError(null);
         } catch (err) {
@@ -129,27 +130,6 @@ export function PermissionSetAssignmentsListComponent({
             cell: ({ row }) => (
                 <div className="truncate" title={row.getValue('employeeNumber')}>
                     {row.getValue('employeeNumber')}
-                </div>
-            ),
-        },
-        {
-            accessorKey: 'permissionSetId',
-            size: 150,
-            minSize: 120,
-            maxSize: 200, // Responsive size for status
-            header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    size="large"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                >
-                    Permission Set
-                    <ArrowUpDown />
-                </Button>
-            ),
-            cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('permissionSetId')}>
-                    {row.getValue('permissionSetId')}
                 </div>
             ),
         },

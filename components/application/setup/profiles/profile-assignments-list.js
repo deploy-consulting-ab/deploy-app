@@ -138,7 +138,7 @@ export function ProfileAssignmentsListComponent({ users, error: initialError, pr
                     size="large"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
-                    Profile
+                    Profile ID
                     <ArrowUpDown />
                 </Button>
             ),
