@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { PermissionsEditableCardComponent } from './permissions-editable-card';
+import { PermissionsEditableCardComponent } from './permission-sets/permissions-editable-card';
 import { useState, useMemo } from 'react';
 import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
 import { FormError } from '@/components/auth/form/form-error';

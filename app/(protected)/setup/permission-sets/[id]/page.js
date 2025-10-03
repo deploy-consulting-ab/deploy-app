@@ -1,7 +1,7 @@
 import { getPermissionSetByIdAction } from '@/actions/database/permission-set-actions';
-import { PermissionSetForm } from '@/components/application/setup/permission-set-form';
-import { PermissionSetUsers } from '@/components/application/setup/permission-set-users';
-import { PermissionSetPermissions } from '@/components/application/setup/permission-set-permissions';
+import { PermissionSetForm } from '@/components/application/setup/permission-sets/permission-set-form';
+import { PermissionSetUsers } from '@/components/application/setup/permission-sets/permission-set-users';
+import { PermissionSetPermissions } from '@/components/application/setup/permission-sets/permission-set-permissions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default async function PermissionSetPage({ params }) {
