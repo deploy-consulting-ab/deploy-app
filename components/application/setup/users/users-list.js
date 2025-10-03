@@ -62,11 +62,11 @@ export function UsersListComponent({ users, error: initialError }) {
             await deleteUserAction(id);
             await handleRefresh();
             toastRichSuccess({
-                message: 'User deleted',
+                message: 'User deleted!',
             });
-        } catch (err) {
+        } catch (error) {
             toastRichError({
-                message: err.message,
+                message: error.message,
             });
         }
     };

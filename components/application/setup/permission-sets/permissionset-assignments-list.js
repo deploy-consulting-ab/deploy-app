@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus } from 'lucide-react';
+import { ArrowUpDown, UserPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -15,10 +15,19 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';
-import { addPermissionSetToUserAction } from '@/actions/database/user-actions';
+import {
+    addPermissionSetToUserAction,
+    removePermissionSetFromUserAction,
+} from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
 import { RelateUser } from '@/components/application/setup/users/relate-user';
 import { toastRichSuccess } from '@/lib/toast-library';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function PermissionSetAssignmentsListComponent({
     users,
@@ -30,6 +39,10 @@ export function PermissionSetAssignmentsListComponent({
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleRefresh = async () => {
+        doRefresh();
+    };
+
+    const doRefresh = async () => {
         let freshData = null;
         try {
             const permissionSet = await getPermissionSetByIdAction(permissionSetId);
@@ -40,6 +53,20 @@ export function PermissionSetAssignmentsListComponent({
             setError(err);
         }
         return freshData;
+    };
+
+    const removeAssignment = async (userId) => {
+        try {
+            await removePermissionSetFromUserAction(userId, permissionSetId);
+            await doRefresh();
+            toastRichSuccess({
+                message: 'User removed from permission set',
+            });
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
+        }
     };
 
     const handleUserSelect = async (user) => {
@@ -132,6 +159,30 @@ export function PermissionSetAssignmentsListComponent({
                     {row.getValue('employeeNumber')}
                 </div>
             ),
+        },
+
+        {
+            id: 'actions',
+            enableSorting: false,
+            enableHiding: false,
+            maxSize: 10,
+            cell: ({ row }) => {
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => removeAssignment(row.original.id)}>
+                                Remove User from Permission Set
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
         },
     ];
 

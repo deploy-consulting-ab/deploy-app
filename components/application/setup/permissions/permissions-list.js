@@ -26,7 +26,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { toastRichSuccess } from '@/lib/toast-library';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 
 export function PermissionsListComponent({ permissions, error: initialError }) {
     const [permissionsData, setPermissionsData] = useState(permissions);
@@ -62,10 +62,12 @@ export function PermissionsListComponent({ permissions, error: initialError }) {
             await deletePermissionAction(id);
             await doRefresh();
             toastRichSuccess({
-                message: 'Permission deleted',
+                message: 'Permission deleted!',
             });
-        } catch (err) {
-            setError(err);
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
         }
     };
 

@@ -11,6 +11,7 @@ import {
     searchUsers,
     updateUserProfile,
     addPermissionSetToUser,
+    removePermissionSetFromUser,
 } from '@/data/user-db';
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
@@ -192,6 +193,22 @@ export async function updateUserProfileAction(userId, profileId) {
 export async function addPermissionSetToUserAction(id, permissionSetId) {
     try {
         const user = await addPermissionSetToUser(id, permissionSetId);
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Remove a permission set from a user
+ * @param {string} id
+ * @param {string} permissionSetId
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export async function removePermissionSetFromUserAction(id, permissionSetId) {
+    try {
+        const user = await removePermissionSetFromUser(id, permissionSetId);
         return user;
     } catch (error) {
         throw error;

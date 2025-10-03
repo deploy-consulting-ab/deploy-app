@@ -23,7 +23,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { toastRichSuccess } from '@/lib/toast-library';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 
 export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
@@ -59,10 +59,12 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
             await deleteProfileAction(id);
             await doRefresh();
             toastRichSuccess({
-                message: 'Profile deleted',
+                message: 'Profile deleted!',
             });
-        } catch (err) {
-            setError(err);
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
         }
     };
 

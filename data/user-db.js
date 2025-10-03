@@ -278,10 +278,30 @@ export async function searchUsers(searchTerm) {
  */
 export async function addPermissionSetToUser(id, permissionSetId) {
     try {
-        await db.user.update({
+        const user = await db.user.update({
             where: { id },
             data: { permissionSets: { connect: { id: permissionSetId } } },
         });
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Remove a permission set from a user
+ * @param {string} id
+ * @param {string} permissionSetId
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export async function removePermissionSetFromUser(id, permissionSetId) {
+    try {
+        const user = await db.user.update({
+            where: { id },
+            data: { permissionSets: { disconnect: { id: permissionSetId } } },
+        });
+        return user;
     } catch (error) {
         throw error;
     }

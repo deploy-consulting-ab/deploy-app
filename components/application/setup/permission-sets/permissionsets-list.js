@@ -14,7 +14,7 @@ import {
     deletePermissionSetAction,
     getPermissionSetsAction,
 } from '@/actions/database/permissionset-actions';
-import { toastRichSuccess } from '@/lib/toast-library';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     Dialog,
@@ -62,10 +62,12 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
             await deletePermissionSetAction(id);
             await doRefresh();
             toastRichSuccess({
-                message: 'Permission Set deleted',
+                message: 'Permission Set assigned deleted!',
             });
-        } catch (err) {
-            setError(err);
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
         }
     };
 
