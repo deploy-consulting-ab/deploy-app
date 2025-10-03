@@ -185,7 +185,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                         Fill in the details to create a new profile.
                     </DialogDescription>
                 </DialogHeader>
-                <RegisterProfileComponent onSuccess={handleSuccess} />
+                <RegisterProfileComponent fireSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );

@@ -1,4 +1,4 @@
-import { RegisterFormComponent } from '@/components/auth/register-form';
+import { RegisterUserComponent } from '@/components/auth/register-user';
 import { ImpersonateUserContainer } from '@/components/application/impersonation/impersonate-user';
 
 // This is a server component by default (no 'use client' directive)
@@ -17,7 +17,7 @@ const AdminPage = async () => {
 
                     <section>
                         <h2 className="text-xl font-semibold mb-4">Register New User</h2>
-                        <RegisterFormComponent />
+                        <RegisterUserComponent />
                     </section>
                 </div>
             </div>

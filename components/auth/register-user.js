@@ -28,7 +28,7 @@ import {
 import { createUserAction } from '@/actions/database/user-actions';
 import { useState, useTransition } from 'react';
 
-export const RegisterFormComponent = () => {
+export const RegisterUserComponent = ({ fireSuccess }) => {
     const form = useForm({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
@@ -40,36 +40,33 @@ export const RegisterFormComponent = () => {
         },
     });
 
-    const [isPending, startTransition] = useTransition();
+    const [isSubmitting, startTransition] = useTransition();
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
 
-    const onSubmit = (values) => {
+    const handleSubmit = async (values) => {
         setSuccess('');
         setError('');
 
-        console.log('Form submitted:', values);
-
         startTransition(async () => {
-            const response = await createUserAction(values);
-            setSuccess(response.success);
-            setError(response.error);
-
-            if (response.success) {
-                form.reset({
-                    email: '',
-                    password: '',
-                    name: '',
-                    employeeNumber: '',
-                    profileId: CONSULTANT_PROFILE,
-                });
+            try {
+                await createUserAction(values);
+                fireSuccess();
+            } catch (err) {
+                setError(err.message);
             }
         });
     };
 
+    const resetForm = () => {
+        form.reset();
+        setError('');
+        setSuccess('');
+    };
+
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                 <div className="space-y-4">
                     <FormField
                         control={form.control}
@@ -79,7 +76,7 @@ export const RegisterFormComponent = () => {
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isPending}
+                                        disabled={isSubmitting}
                                         type="name"
                                         placeholder="John Doe"
                                         {...field}
@@ -99,7 +96,7 @@ export const RegisterFormComponent = () => {
                                 <FormControl>
                                     <Input
                                         type="email"
-                                        disabled={isPending}
+                                        disabled={isSubmitting}
                                         placeholder="john.doe@deployconsulting.se"
                                         {...field}
                                         className="input"
@@ -117,7 +114,7 @@ export const RegisterFormComponent = () => {
                                 <FormLabel>Employee Number</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isPending}
+                                        disabled={isSubmitting}
                                         type="text"
                                         placeholder="D000"
                                         {...field}
@@ -137,7 +134,7 @@ export const RegisterFormComponent = () => {
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isPending}
+                                        disabled={isSubmitting}
                                         type="password"
                                         placeholder="******"
                                         {...field}
@@ -156,7 +153,7 @@ export const RegisterFormComponent = () => {
                             <FormItem>
                                 <FormLabel>Profile</FormLabel>
                                 <Select
-                                    disabled={isPending}
+                                    disabled={isSubmitting}
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
                                 >
@@ -180,9 +177,20 @@ export const RegisterFormComponent = () => {
                 </div>
                 <FormError message={error} />
                 <FormSuccess message={success} />
-                <Button type="submit" className="w-full">
-                    Create User
-                </Button>
+                <div className="flex gap-4">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={resetForm}
+                        disabled={isSubmitting}
+                    >
+                        Reset
+                    </Button>
+                    <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                        {isSubmitting ? 'Creating...' : 'Create'}
+                    </Button>
+                </div>
             </form>
         </Form>
     );

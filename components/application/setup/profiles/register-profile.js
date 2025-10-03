@@ -5,7 +5,7 @@ import { getPermissionsAction } from '@/actions/database/permission-actions';
 import { useState, useEffect } from 'react';
 import { createProfileAction } from '@/actions/database/profile-actions';
 
-export function RegisterProfileComponent({ onSuccess }) {
+export function RegisterProfileComponent({ fireSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);
 
     const [error, setError] = useState('');
@@ -27,9 +27,7 @@ export function RegisterProfileComponent({ onSuccess }) {
     const handleSubmit = async (data) => {
         try {
             await createProfileAction(data);
-            if (onSuccess) {
-                onSuccess();
-            }
+            fireSuccess();
         } catch (error) {
             throw new Error(error.message);
         }
@@ -38,7 +36,7 @@ export function RegisterProfileComponent({ onSuccess }) {
     if (error) {
         return <div className="text-red-500">{error}</div>;
     }
-    
+
     if (!totalPermissions.length) {
         return <div>Loading permissions...</div>;
     }

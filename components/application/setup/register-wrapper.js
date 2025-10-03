@@ -145,9 +145,6 @@ export function RegisterWrapperComponent({ namePlaceholder, descriptionPlacehold
                     />
 
                     <div className="flex gap-4">
-                        <Button type="submit" className="flex-1" disabled={isSubmitting}>
-                            {isSubmitting ? 'Creating...' : 'Create'}
-                        </Button>
                         <Button
                             type="button"
                             variant="outline"
@@ -156,6 +153,9 @@ export function RegisterWrapperComponent({ namePlaceholder, descriptionPlacehold
                             disabled={isSubmitting}
                         >
                             Reset
+                        </Button>
+                        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                            {isSubmitting ? 'Creating...' : 'Create'}
                         </Button>
                     </div>
                 </form>

@@ -12,7 +12,7 @@ import {
     CONSULTANT_PROFILE,
     MANAGEMENT_PROFILE,
 } from '@/lib/permissions';
-import { RegisterFormComponent } from '@/components/auth/register-form';
+import { RegisterUserComponent } from '@/components/auth/register-user';
 import {
     Dialog,
     DialogContent,
@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import { getUsersAction } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
+import { toastRichSuccess } from '@/lib/toast-library';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
@@ -39,6 +40,14 @@ export function UsersListComponent({ users, error: initialError }) {
             setError(err);
         }
         return freshData;
+    };
+
+    const handleSuccess = () => {
+        setIsDialogOpen(false);
+        handleRefresh();
+        toastRichSuccess({
+            message: 'User created',
+        });
     };
 
     const views = [
@@ -166,12 +175,12 @@ export function UsersListComponent({ users, error: initialError }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Create New User</DialogTitle>
+                    <DialogTitle>Create new user</DialogTitle>
                     <DialogDescription>
                         Fill in the details to create a new user account.
                     </DialogDescription>
                 </DialogHeader>
-                <RegisterFormComponent />
+                <RegisterUserComponent fireSuccess={handleSuccess}/>
             </DialogContent>
         </Dialog>
     );
