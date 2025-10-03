@@ -11,7 +11,7 @@ import { BadgeCheckIcon } from 'lucide-react';
 import { populatePermissions } from '@/lib/utils';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 export function PermissionsEditableCardComponent({
     entityName,
@@ -21,7 +21,15 @@ export function PermissionsEditableCardComponent({
     error,
     successProp,
 }) {
-    const permissions = populatePermissions(entityPermissions, totalPermissions);
+    // useMemo to cache the result of a calculation between re-renders
+    const permissions = useMemo(() => {
+        return entityPermissions 
+            ? populatePermissions(entityPermissions, totalPermissions)
+            : totalPermissions;
+    }, [entityPermissions, totalPermissions]);
+
+    console.log('#### permissions.....', permissions);
+    
     const [isScrollable, setIsScrollable] = useState(false);
     const contentRef = useRef(null);
     const [isVisible, setIsVisible] = useState(true);

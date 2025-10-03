@@ -6,13 +6,7 @@ import { ArrowUpDown, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import {
-    ADMIN_PROFILE,
-    SALES_PROFILE,
-    CONSULTANT_PROFILE,
-    MANAGEMENT_PROFILE,
-} from '@/lib/permissions';
-import { RegisterFormComponent } from '@/components/auth/register-form';
+import { RegisterProfileComponent } from './register-profile';
 import {
     Dialog,
     DialogContent,
@@ -27,6 +21,11 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const handleSuccess = () => {
+        setIsDialogOpen(false);
+        handleRefresh();
+    };
 
     const handleRefresh = async () => {
         let freshData = null;
@@ -126,20 +125,20 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     }
 
     const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
             <DialogTrigger asChild>
                 <Button size="sm">
                     <UserPlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Create New Profile</DialogTitle>
                     <DialogDescription>
                         Fill in the details to create a new profile.
                     </DialogDescription>
                 </DialogHeader>
-                {/* <RegisterFormComponent /> */}
+                <RegisterProfileComponent onSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );
