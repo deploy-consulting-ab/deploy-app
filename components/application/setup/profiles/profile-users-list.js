@@ -6,7 +6,6 @@ import { ArrowUpDown, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 import {
     Dialog,
     DialogContent,
@@ -15,8 +14,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersForProfileAction } from '@/actions/database/user-actions';
+import { getUsersForProfileAction, updateUserProfileAction } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
+import { RelateUser } from '@/components/application/setup/users/relate-user';
+import { toastRichSuccess } from '@/lib/toast-library';
 
 export function ProfileUsersListComponent({ users, error: initialError, profileId }) {
     const [usersData, setUsersData] = useState(users);
@@ -33,6 +34,20 @@ export function ProfileUsersListComponent({ users, error: initialError, profileI
             setError(err);
         }
         return freshData;
+    };
+
+    const handleUserSelect = async (user) => {
+        try {
+            await updateUserProfileAction(user.id, profileId);
+            await handleRefresh();
+            setIsDialogOpen(false);
+            toastRichSuccess({
+                message: 'User related to profile',
+            });
+        } catch (error) {
+            console.error('Error relating user to profile:', error);
+            throw error;
+        }
     };
 
     const columns = [
@@ -152,12 +167,10 @@ export function ProfileUsersListComponent({ users, error: initialError, profileI
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Create New User</DialogTitle>
-                    <DialogDescription>
-                        Fill in the details to create a new user account.
-                    </DialogDescription>
+                    <DialogTitle>Relate user to profile</DialogTitle>
+                    <DialogDescription>Select a user to relate to the profile.</DialogDescription>
                 </DialogHeader>
-                <CreateUserComponent />
+                <RelateUser onUserSelect={handleUserSelect} />
             </DialogContent>
         </Dialog>
     );

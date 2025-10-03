@@ -208,6 +208,68 @@ export const updateUser = async (id, data) => {
 };
 
 /**
+ * Update a user's profile
+ * @param {string} userId - The ID of the user to update
+ * @param {string} profileId - The ID of the profile to assign
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export const updateUserProfile = async (userId, profileId) => {
+    try {
+        const updatedUser = await db.user.update({
+            where: { id: userId },
+            data: { profileId },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                employeeNumber: true,
+                profileId: true,
+            },
+        });
+        return updatedUser;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * SEARCH METHODS
+ */
+
+/**
+ * Search users by name or email
+ * @param {string} searchTerm
+ * @returns {Promise<User[]>} Users matching the search term
+ * @throws {Error} If the search fails
+ */
+export async function searchUsers(searchTerm) {
+    try {
+        const users = await db.user.findMany({
+            where: {
+                OR: [
+                    { name: { contains: searchTerm, mode: 'insensitive' } },
+                    { email: { contains: searchTerm, mode: 'insensitive' } },
+                ],
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                employeeNumber: true,
+                profileId: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+        return users;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * DELETE METHODS
  */
 

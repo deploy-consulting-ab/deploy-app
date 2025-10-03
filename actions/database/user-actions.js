@@ -8,6 +8,8 @@ import {
     getUserByIdWithPermissions,
     getUsersForProfile,
     deleteUser,
+    searchUsers,
+    updateUserProfile,
 } from '@/data/user-db';
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
@@ -102,7 +104,7 @@ export async function updateUserAction(id, data) {
 
         if (!validatedFields.success) {
             return { error: 'Invalid fields' };
-        }
+        }   
         const validatedData = validatedFields.data;
         await updateUser(id, validatedData);
         return { success: 'User updated!' };
@@ -135,6 +137,45 @@ export async function deleteUserAction(id) {
     try {
         await deleteUser(id);
         return { success: 'User deleted successfully' };
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Search users by name or email
+ * @param {string} searchTerm
+ * @returns {Promise<User[]>} Users matching the search term
+ * @throws {Error} If the search fails
+ */
+export async function searchUsersAction(searchTerm) {
+    try {
+        if (!searchTerm || searchTerm.trim() === '') {
+            return [];
+        }
+        const users = await searchUsers(searchTerm);
+        return users;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update a user's profile
+ * @param {string} userId - The ID of the user to update
+ * @param {string} profileId - The ID of the profile to assign
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export async function updateUserProfileAction(userId, profileId) {
+    try {
+        if (!userId || !profileId) {
+            throw new Error('User ID and Profile ID are required');
+        }
+
+        const updatedUser = await updateUserProfile(userId, profileId);
+        
+        return updatedUser;
     } catch (error) {
         throw error;
     }
