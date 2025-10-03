@@ -110,13 +110,6 @@ export function CreatePermissionComponent({ fireSuccess }) {
                         )}
                     />
 
-                    <PermissionsEditableCardComponent
-                        entityName={form.watch('name') || 'New Entity'}
-                        totalPermissions={permissions}
-                        onPermissionClick={handlePermissionClick}
-                        successProp={success}
-                    />
-
                     <FormError message={error} />
 
                     <div className="flex gap-4">
