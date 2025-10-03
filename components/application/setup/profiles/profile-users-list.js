@@ -6,7 +6,7 @@ import { ArrowUpDown, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { RegisterUserComponent } from '@/components/auth/register-user';
+import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 import {
     Dialog,
     DialogContent,
@@ -157,7 +157,7 @@ export function ProfileUsersListComponent({ users, error: initialError, profileI
                         Fill in the details to create a new user account.
                     </DialogDescription>
                 </DialogHeader>
-                <RegisterUserComponent />
+                <CreateUserComponent />
             </DialogContent>
         </Dialog>
     );

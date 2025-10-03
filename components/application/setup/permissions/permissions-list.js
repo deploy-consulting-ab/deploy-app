@@ -2,17 +2,11 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus } from 'lucide-react';
+import { ArrowUpDown, UserCheck, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import {
-    ADMIN_PROFILE,
-    SALES_PROFILE,
-    CONSULTANT_PROFILE,
-    MANAGEMENT_PROFILE,
-} from '@/lib/permissions';
-import { CreateUserComponent } from '@/components/application/setup/users/create-user';
+import { CreatePermissionComponent } from '@/components/application/setup/permissions/create-permission';
 import {
     Dialog,
     DialogContent,
@@ -21,27 +15,41 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersAction, deleteUserAction } from '@/actions/database/user-actions';
-import { USERS_ROUTE } from '@/menus/routes';
-import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
+import { PERMISSIONS_ROUTE } from '@/menus/routes';
+import {
+    getPermissionsAction,
+    deletePermissionAction,
+} from '@/actions/database/permission-actions';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+import { toastRichSuccess } from '@/lib/toast-library';
 
-export function UsersListComponent({ users, error: initialError }) {
-    const [usersData, setUsersData] = useState(users);
+export function PermissionsListComponent({ permissions, error: initialError }) {
+    const [permissionsData, setPermissionsData] = useState(permissions);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const handleSuccess = () => {
+        setIsDialogOpen(false);
+        handleRefresh();
+        toastRichSuccess({
+            message: 'Permissions updated',
+        });
+    };
+
     const handleRefresh = async () => {
+        await doRefresh();
+    };
+
+    const doRefresh = async () => {
         let freshData = null;
         try {
-            freshData = await getUsersAction();
-            setUsersData(freshData);
+            freshData = await getPermissionsAction();
+            setPermissionsData(freshData);
             setError(null);
         } catch (err) {
             setError(err);
@@ -49,40 +57,21 @@ export function UsersListComponent({ users, error: initialError }) {
         return freshData;
     };
 
-    const handleSuccess = () => {
-        setIsDialogOpen(false);
-        handleRefresh();
-        toastRichSuccess({
-            message: 'User created',
-        });
-    };
-
-    const deleteUser = async (id) => {
+    const deletePermission = async (id) => {
         try {
-            await deleteUserAction(id);
-            await handleRefresh();
+            await deletePermissionAction(id);
+            await doRefresh();
             toastRichSuccess({
-                message: 'User deleted',
+                message: 'Permission deleted',
             });
         } catch (err) {
-            toastRichError({
-                message: err.message,
-            });
+            setError(err);
         }
     };
-
-    const views = [
-        { value: 'all', label: 'All Users' },
-        { value: ADMIN_PROFILE, label: 'Admin Users' },
-        { value: SALES_PROFILE, label: 'Sales Users' },
-        { value: CONSULTANT_PROFILE, label: 'Consultant Users' },
-        { value: MANAGEMENT_PROFILE, label: 'Manager Users' },
-    ];
 
     const columns = [
         {
             accessorKey: 'name',
-            size: 150,
             minSize: 100,
             maxSize: 400,
             header: ({ column }) => {
@@ -101,7 +90,7 @@ export function UsersListComponent({ users, error: initialError }) {
                 const id = row.original.id;
                 return (
                     <Link
-                        href={`${USERS_ROUTE}/${id}`}
+                        href={`${PERMISSIONS_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
@@ -111,8 +100,7 @@ export function UsersListComponent({ users, error: initialError }) {
             },
         },
         {
-            accessorKey: 'email',
-            size: 200,
+            accessorKey: 'description',
             minSize: 150,
             maxSize: 300, // Responsive size for account names
             header: ({ column }) => {
@@ -122,43 +110,19 @@ export function UsersListComponent({ users, error: initialError }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Email
+                        Description
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('email')}>
-                    {row.getValue('email')}
+                <div className="truncate" title={row.getValue('description')}>
+                    {row.getValue('description')}
                 </div>
             ),
         },
         {
-            accessorKey: 'employeeNumber',
-            size: 120,
-            minSize: 100,
-            maxSize: 150, // Responsive size for dates
-            header: ({ column }) => {
-                return (
-                    <Button
-                        variant="ghost"
-                        size="large"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                    >
-                        Employee Number
-                        <ArrowUpDown />
-                    </Button>
-                );
-            },
-            cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('employeeNumber')}>
-                    {row.getValue('employeeNumber')}
-                </div>
-            ),
-        },
-        {
-            accessorKey: 'profileId',
-            size: 150,
+            accessorKey: 'id',
             minSize: 120,
             maxSize: 200, // Responsive size for status
             header: ({ column }) => {
@@ -168,15 +132,15 @@ export function UsersListComponent({ users, error: initialError }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Profile
+                        Permission ID
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 return (
-                    <div className="truncate" title={row.getValue('profileId')}>
-                        {row.getValue('profileId')}
+                    <div className="truncate" title={row.getValue('id')}>
+                        {row.getValue('id')}
                     </div>
                 );
             },
@@ -196,8 +160,8 @@ export function UsersListComponent({ users, error: initialError }) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
-                                Delete User
+                            <DropdownMenuItem onClick={() => deletePermission(row.original.id)}>
+                                Delete Permission
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -211,34 +175,32 @@ export function UsersListComponent({ users, error: initialError }) {
     }
 
     const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <UserPlus className="h-4 w-4" />
+                    <UserCheck className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>Create new user</DialogTitle>
+                    <DialogTitle>Create new permission</DialogTitle>
                     <DialogDescription>
-                        Fill in the details to create a new user account.
+                        Fill in the details to create a new permission.
                     </DialogDescription>
                 </DialogHeader>
-                <CreateUserComponent fireSuccess={handleSuccess}/>
+                <CreatePermissionComponent fireSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );
 
     return (
         <DatatableWrapperComponent
-            data={usersData}
+            data={permissionsData}
             columns={columns}
-            placeholder="Filter Users..."
+            placeholder="Filter Permissions..."
             refreshAction={handleRefresh}
-            views={views}
             defaultView="all"
             searchKey="name"
-            filterKey="profileId"
             actionButton={actionButton}
         />
     );

@@ -1,6 +1,6 @@
 'use server';
 
-import { RegisterSchema } from '@/schemas';
+import { CreateUserSchema } from '@/schemas';
 import bcryptjs from 'bcryptjs';
 import {
     createUser,
@@ -55,7 +55,7 @@ export async function createUserAction(values) {
          * we need to add extra layer of protection and check that the sent stuff is valid
          */
         // Validate the input values against the schema.
-        const validatedFields = RegisterSchema.safeParse(values);
+        const validatedFields = CreateUserSchema.safeParse(values);
 
         if (!validatedFields.success) {
             return { error: 'Invalid fields' };

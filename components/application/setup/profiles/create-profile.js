@@ -1,12 +1,13 @@
 'use client';
 
-import { RegisterWrapperComponent } from '@/components/application/setup/register-wrapper';
+import { AccessCreationWrapperComponent } from '@/components/application/setup/access-creation-wrapper';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 import { useState, useEffect } from 'react';
 import { createProfileAction } from '@/actions/database/profile-actions';
 
-export function RegisterProfileComponent({ fireSuccess }) {
+export function CreateProfileComponent({ fireSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchPermissions = async () => {
@@ -27,21 +28,18 @@ export function RegisterProfileComponent({ fireSuccess }) {
             await createProfileAction(data);
             fireSuccess();
         } catch (error) {
-            throw new Error(error.message); // Throw an error here will be caught by the child RegisterWrapperComponent
+            throw new Error(error.message); // Throw an error here will be caught by the child AccessCreationWrapperComponent
         }
     };
 
-    if (!totalPermissions.length) {
-        return <div>Loading permissions...</div>;
-    }
-
     return (
-        <RegisterWrapperComponent
+        <AccessCreationWrapperComponent
             onSubmit={handleSubmit}
             totalPermissions={totalPermissions}
             namePlaceholder="Deploy Consultant"
             descriptionPlaceholder="Standard consultant access"
             idPlaceholder="deploy_consultant"
+            permissionError={error}
         />
     );
 }

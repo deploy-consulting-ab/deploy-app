@@ -6,7 +6,7 @@ import { ArrowUpDown, UserCircle, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { RegisterProfileComponent } from '@/components/application/setup/profiles/register-profile';
+import { CreateProfileComponent } from '@/components/application/setup/profiles/create-profile';
 import {
     Dialog,
     DialogContent,
@@ -185,7 +185,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                         Fill in the details to create a new profile.
                     </DialogDescription>
                 </DialogHeader>
-                <RegisterProfileComponent fireSuccess={handleSuccess} />
+                <CreateProfileComponent fireSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );

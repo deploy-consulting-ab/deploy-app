@@ -1,7 +1,7 @@
 'use client';
 
 import { PROFILES, CONSULTANT_PROFILE } from '@/lib/permissions';
-import { RegisterSchema } from '@/schemas';
+import { CreateUserSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -28,9 +28,9 @@ import {
 import { createUserAction } from '@/actions/database/user-actions';
 import { useState, useTransition } from 'react';
 
-export const RegisterUserComponent = ({ fireSuccess }) => {
+export const CreateUserComponent = ({ fireSuccess }) => {
     const form = useForm({
-        resolver: zodResolver(RegisterSchema),
+        resolver: zodResolver(CreateUserSchema),
         defaultValues: {
             email: '',
             password: '',

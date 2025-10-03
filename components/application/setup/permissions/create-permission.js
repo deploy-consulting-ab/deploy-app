@@ -1,81 +1,45 @@
 'use client';
 
-import { RegisterWrapperSchema } from '@/schemas/register-wrapper';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { createPermissionAction } from '@/actions/database/permission-actions';
 import {
     Form,
-    FormControl,
     FormField,
     FormItem,
     FormLabel,
+    FormControl,
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { PermissionsEditableCardComponent } from './permissions-editable-card';
-import { useState, useMemo } from 'react';
-import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
+import { PermissionsEditableCardComponent } from '@/components/application/setup/permissions-editable-card';
 import { FormError } from '@/components/auth/form/form-error';
+import { useForm } from 'react-hook-form';
+import { CreatePermissionSchema } from '@/schemas';
 
-export function RegisterWrapperComponent({
-    namePlaceholder,
-    descriptionPlaceholder,
-    idPlaceholder,
-    onSubmit,
-    totalPermissions,
-}) {
+export function CreatePermissionComponent({ fireSuccess }) {
+    const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');
-    const [error, setError] = useState('');
-    const [assignedPermissions, setAssignedPermissions] = useState({});
 
-    const permissions = useMemo(
-        () =>
-            totalPermissions
-                .map((permission) =>
-                    permission.name === VIEW_HOME_PERMISSION
-                        ? {
-                              ...permission,
-                              assigned: true,
-                          }
-                        : {
-                              ...permission,
-                              assigned: assignedPermissions[permission.id] || false,
-                          }
-                )
-                .sort((a, b) => (a.assigned ? -1 : 1)),
-        [totalPermissions, assignedPermissions]
-    );
-
-    const handlePermissionClick = (permissionId, isAssigned) => {
-        setAssignedPermissions((prev) => ({
-            ...prev,
-            [permissionId]: !isAssigned,
-        }));
-    };
-
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (data) => {
         setSuccess('');
         setError('');
         setIsSubmitting(true);
 
         try {
-            await onSubmit({
-                ...values,
-                permissions: permissions.filter((permission) => permission.assigned),
-            });
-            setSuccess('Created successfully');
-            resetForm();
-        } catch (err) {
-            setError(err.message);
+            await createPermissionAction(data);
+            fireSuccess();
+        } catch (error) {
+            setError(error.message);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const form = useForm({
-        resolver: zodResolver(RegisterWrapperSchema),
+        resolver: zodResolver(CreatePermissionSchema),
         defaultValues: {
             name: '',
             description: '',
@@ -103,7 +67,7 @@ export function RegisterWrapperComponent({
                                 <FormControl>
                                     <Input
                                         disabled={isSubmitting}
-                                        placeholder={namePlaceholder}
+                                        placeholder="Home:View"
                                         {...field}
                                     />
                                 </FormControl>
@@ -120,7 +84,7 @@ export function RegisterWrapperComponent({
                                 <FormControl>
                                     <Input
                                         disabled={isSubmitting}
-                                        placeholder={descriptionPlaceholder}
+                                        placeholder="Access to view the home page"
                                         {...field}
                                     />
                                 </FormControl>
@@ -137,7 +101,7 @@ export function RegisterWrapperComponent({
                                 <FormControl>
                                     <Input
                                         disabled={isSubmitting}
-                                        placeholder={idPlaceholder}
+                                        placeholder="perm_home_view"
                                         {...field}
                                     />
                                 </FormControl>

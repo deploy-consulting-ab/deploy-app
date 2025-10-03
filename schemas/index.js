@@ -13,7 +13,7 @@ export const LoginSchema = z.object({
     }),
 });
 
-export const RegisterSchema = z.object({
+export const CreateUserSchema = z.object({
     email: z.email({ message: 'Email is required' }),
     password: z.string().min(6, {
         message: 'Minimum 6 characters required',
@@ -39,6 +39,18 @@ export const UpdateUserSchema = z.object({
 });
 
 export const UpdateProfileSchema = z.object({
+    description: z.string().min(1, {
+        message: 'Description is required',
+    }),
+});
+
+export const CreatePermissionSchema = z.object({
+    name: z.string().min(1, {
+        message: 'Name is required',
+    }),
+    id: z.string().min(1, {
+        message: 'ID is required',
+    }),
     description: z.string().min(1, {
         message: 'Description is required',
     }),
