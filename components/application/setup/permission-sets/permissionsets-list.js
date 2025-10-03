@@ -13,7 +13,7 @@ import {
 import {
     deletePermissionSetAction,
     getPermissionSetsAction,
-} from '@/actions/database/permission-set-actions';
+} from '@/actions/database/permissionset-actions';
 import { toastRichSuccess } from '@/lib/toast-library';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {

@@ -1,5 +1,5 @@
-import { getPermissionSetsAction } from '@/actions/database/permission-set-actions';
-import { PermissionSetListComponent } from '@/components/application/setup/permission-sets/permission-sets-list';
+import { getPermissionSetsAction } from '@/actions/database/permissionset-actions';
+import { PermissionSetListComponent } from '@/components/application/setup/permission-sets/permissionsets-list';
 
 export default async function PermissionSetsPage() {
     let permissionSets = null;

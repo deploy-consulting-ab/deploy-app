@@ -14,7 +14,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getPermissionSetByIdAction } from '@/actions/database/permission-set-actions';
+import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';
 import { addPermissionSetToUserAction } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
 import { RelateUser } from '@/components/application/setup/users/relate-user';

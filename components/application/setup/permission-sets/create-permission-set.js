@@ -3,7 +3,7 @@
 import { AccessCreationWrapperComponent } from '@/components/application/setup/access-creation-wrapper';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 import { useState, useEffect } from 'react';
-import { createPermissionSetAction } from '@/actions/database/permission-set-actions';
+import { createPermissionSetAction } from '@/actions/database/permissionset-actions';
 
 export function CreatePermissionSetComponent({ fireSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);

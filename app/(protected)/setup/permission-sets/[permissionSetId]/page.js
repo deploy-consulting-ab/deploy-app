@@ -1,7 +1,7 @@
 'use server';
 
-import { PermissionSetCardComponent } from '@/components/application/setup/permission-sets/permission-set-card';
-import { getPermissionSetByIdAction } from '@/actions/database/permission-set-actions';
+import { PermissionSetCardComponent } from '@/components/application/setup/permission-sets/permissionset-card';
+import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 
 export default async function PermissionSetPage({ params }) {
