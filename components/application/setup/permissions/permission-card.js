@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PermissionAssignmentsListComponent } from '@/components/application/setup/permissions/permission-assignments-list';
 
-export function PermissionCardComponent({ permission, permissionAssignments }) {
+export function PermissionCardComponent({ permission }) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
@@ -94,7 +94,7 @@ export function PermissionCardComponent({ permission, permissionAssignments }) {
             
             {/** Add a datatable displaying all the users in the permission, add an action button to add a new user to the permission*/}
             <div className="col-span-2">
-                <PermissionAssignmentsListComponent permissionAssignments={permissionAssignments} />
+                <PermissionAssignmentsListComponent profileAssignments={permission.profiles} permissionAssignments={permission.assignments} />
             </div>
         </div>
     );

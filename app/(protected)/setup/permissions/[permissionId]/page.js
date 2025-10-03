@@ -11,8 +11,8 @@ export default async function PermissionPage({ params }) {
 
     try {
         permission = await getPermissionAssignmentsByIdAction(permissionId);
-    } catch (err) {
-        error = err;
+    } catch (error) {
+        error = error;
     }
 
     return (

@@ -81,18 +81,10 @@ export async function getPermissionAssignmentsById(permissionId) {
             where: { id: permissionId },
             include: {
                 profiles: true,
-                permissionSets: true
-            }
+                permissionSets: true,
+            },
         });
-
-        if (!permission) {
-            throw new Error('Permission not found');
-        }
-
-        return {
-            profiles: permission.profiles,
-            permissionSets: permission.permissionSets
-        };
+        return permission;
     } catch (error) {
         throw error;
     }

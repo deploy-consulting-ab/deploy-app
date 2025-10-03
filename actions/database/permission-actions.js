@@ -42,6 +42,7 @@ export async function getPermissionAssignmentsByIdAction(id) {
         console.log('### permissionAssignments', permissionAssignments);
         return permissionAssignments;
     } catch (error) {
+        console.log('### error', error);
         throw error;
     }
 }
