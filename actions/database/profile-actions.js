@@ -7,6 +7,7 @@ import {
     addPermissionToProfile,
     removePermissionFromProfile,
     createProfile,
+    deleteProfile
 } from '@/data/profile-db';
 
 /**
@@ -109,5 +110,19 @@ export async function createProfileAction(data) {
         return profile;
     } catch (error) {
         throw error;
+    }
+}
+
+/**
+ * Delete a profile
+ * @param {string} id
+ * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ */
+export async function deleteProfileAction(id) {
+    try {
+        await deleteProfile(id);
+        return { success: 'Profile deleted successfully' };
+    } catch (error) {
+        return { error: 'Failed to delete profile' };
     }
 }

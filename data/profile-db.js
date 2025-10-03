@@ -1,10 +1,6 @@
 import { db } from '@/lib/db';
 
 /**
- * GET METHODS
- */
-
-/**
  * Get all profiles
  * @returns {Promise<Profile[]>} All profiles
  * @throws {Error} If the profiles are not found
@@ -71,6 +67,21 @@ export async function createProfile(data) {
 export async function updateProfile(id, data) {
     try {
         const profile = await db.profile.update({ where: { id }, data });
+        return profile;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Delete a profile
+ * @param {string} id
+ * @returns {Promise<Profile>} The deleted profile
+ * @throws {Error} If the profile is not deleted
+ */
+export async function deleteProfile(id) {
+    try {
+        const profile = await db.profile.delete({ where: { id } });
         return profile;
     } catch (error) {
         throw error;

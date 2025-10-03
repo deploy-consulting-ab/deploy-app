@@ -2,11 +2,11 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus } from 'lucide-react';
+import { ArrowUpDown, UserPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { RegisterProfileComponent } from './register-profile';
+import { RegisterProfileComponent } from '@/components/application/setup/profiles/register-profile';
 import {
     Dialog,
     DialogContent,
@@ -16,7 +16,13 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { PROFILES_ROUTE } from '@/menus/routes';
-import { getProfilesAction } from '@/actions/database/profile-actions';
+import { getProfilesAction, deleteProfileAction } from '@/actions/database/profile-actions';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
@@ -29,6 +35,10 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     };
 
     const handleRefresh = async () => {
+        await doRefresh();
+    };
+
+    const doRefresh = async () => {
         let freshData = null;
         try {
             freshData = await getProfilesAction();
@@ -40,10 +50,18 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         return freshData;
     };
 
+    const deleteProfile = async (id) => {
+        try {
+            await deleteProfileAction(id);
+            await doRefresh();
+        } catch (err) {
+            setError(err);
+        }
+    };
+
     const columns = [
         {
             accessorKey: 'name',
-            size: 150,
             minSize: 100,
             maxSize: 400,
             header: ({ column }) => {
@@ -73,7 +91,6 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         },
         {
             accessorKey: 'description',
-            size: 200,
             minSize: 150,
             maxSize: 300, // Responsive size for account names
             header: ({ column }) => {
@@ -96,7 +113,6 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         },
         {
             accessorKey: 'id',
-            size: 150,
             minSize: 120,
             maxSize: 200, // Responsive size for status
             header: ({ column }) => {
@@ -116,6 +132,29 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                     <div className="truncate" title={row.getValue('id')}>
                         {row.getValue('id')}
                     </div>
+                );
+            },
+        },
+        {
+            id: 'actions',
+            enableSorting: false,
+            enableHiding: false,
+            maxSize: 10,
+            cell: ({ row }) => {
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => deleteProfile(row.original.id)}>
+                                Delete Profile
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 );
             },
         },
