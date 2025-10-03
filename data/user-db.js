@@ -270,6 +270,24 @@ export async function searchUsers(searchTerm) {
 }
 
 /**
+ * Add a permission set to a user
+ * @param {string} id
+ * @param {string} permissionSetId
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export async function addPermissionSetToUser(id, permissionSetId) {
+    try {
+        await db.user.update({
+            where: { id },
+            data: { permissionSets: { connect: { id: permissionSetId } } },
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * DELETE METHODS
  */
 

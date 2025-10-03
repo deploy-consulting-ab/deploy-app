@@ -21,19 +21,19 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-    updateProfileAction,
-    addPermissionToProfileAction,
-    removePermissionFromProfileAction,
-} from '@/actions/database/profile-actions';
+    updatePermissionSetAction,
+    addPermissionToPermissionSetAction,
+    removePermissionFromPermissionSetAction,
+} from '@/actions/database/permission-set-actions';
 import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { PermissionsEditableCardComponent } from '@/components/application/setup/permissions/permissions-editable-card';
 
-import { ProfileAssignmentsListComponent } from '@/components/application/setup/profiles/profile-assignments-list';
+import { PermissionSetAssignmentsListComponent } from '@/components/application/setup/permission-sets/permission-set-assignments-list';
 
-export function ProfileCardComponent({ profile, totalPermissions }) {
+export function PermissionSetCardComponent({ permissionSet, totalPermissions }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -41,7 +41,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
     const [permissionSuccess, setPermissionSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
-    const [currentPermissions, setCurrentPermissions] = useState(profile.permissions);
+    const [currentPermissions, setCurrentPermissions] = useState(permissionSet.permissions);
 
     const handlePermissionClick = async (permissionId, isAssigned) => {
         // Clear any existing success/error messages first
@@ -61,8 +61,8 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
         startTransition(async () => {
             try {
                 const response = isAssigned
-                    ? await removePermissionFromProfileAction(profile.id, permissionId)
-                    : await addPermissionToProfileAction(profile.id, permissionId);
+                    ? await removePermissionFromPermissionSetAction(permissionSet.id, permissionId)
+                    : await addPermissionToPermissionSetAction(permissionSet.id, permissionId);
 
                 if (response.success) {
                     setPermissionSuccess(response.success);
@@ -120,7 +120,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
 
     const form = useForm({
         defaultValues: {
-            description: profile.description,
+            description: permissionSet.description,
         },
     });
 
@@ -128,7 +128,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
         setSuccess('');
         setError('');
         startTransition(async () => {
-            const response = await updateProfileAction(profile.id, data);
+            const response = await updatePermissionSetAction(permissionSet.id, data);
 
             if (response.success) {
                 // Reset form with the submitted values
@@ -148,8 +148,8 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
             {/* User Details Card */}
             <Card className="col-span-1 py-4 h-fit">
                 <CardHeader>
-                    <CardTitle className="text-2xl">{profile.name}</CardTitle>
-                    <CardDescription className="text-base">{profile.id}</CardDescription>
+                    <CardTitle className="text-2xl">{permissionSet.name}</CardTitle>
+                    <CardDescription className="text-base">{permissionSet.id}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <Form {...form}>
@@ -160,12 +160,12 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Profile Description</FormLabel>
+                                        <FormLabel>Permission Set Description</FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
                                                 disabled={!isEditing}
-                                                placeholder="Enter profile description"
+                                                placeholder="Enter permissionSet description"
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -194,7 +194,7 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
                                     onClick={() => setIsEditing(true)}
                                     className="hover:cursor-pointer"
                                 >
-                                    Edit Profile
+                                    Edit Permission Set
                                 </Button>
                             )}
                         </form>
@@ -214,16 +214,16 @@ export function ProfileCardComponent({ profile, totalPermissions }) {
 
             {/* Permissions Card */}
             <PermissionsEditableCardComponent
-                entityName="Profile"
+                entityName="Permission Set"
                 entityPermissions={currentPermissions}
                 totalPermissions={totalPermissions}
                 onPermissionClick={handlePermissionClick}
                 successProp={permissionSuccess}
                 error={permissionError}
             />
-            {/** Add a datatable displaying all the users in the profile, add an action button to add a new user to the profile*/}
+            {/** Add a datatable displaying all the users in the permissionSet, add an action button to add a new user to the permissionSet*/}
             <div className="col-span-2">
-                <ProfileAssignmentsListComponent users={profile.users} profileId={profile.id} />
+                <PermissionSetAssignmentsListComponent users={permissionSet.users} permissionSetId={permissionSet.id} />
             </div>
         </div>
     );  

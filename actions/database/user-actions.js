@@ -10,6 +10,7 @@ import {
     deleteUser,
     searchUsers,
     updateUserProfile,
+    addPermissionSetToUser,
 } from '@/data/user-db';
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
@@ -104,7 +105,7 @@ export async function updateUserAction(id, data) {
 
         if (!validatedFields.success) {
             return { error: 'Invalid fields' };
-        }   
+        }
         const validatedData = validatedFields.data;
         await updateUser(id, validatedData);
         return { success: 'User updated!' };
@@ -174,8 +175,24 @@ export async function updateUserProfileAction(userId, profileId) {
         }
 
         const updatedUser = await updateUserProfile(userId, profileId);
-        
+
         return updatedUser;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Add a permission set to a user
+ * @param {string} userId
+ * @param {string} permissionSetId
+ * @returns {Promise<User>} The updated user
+ * @throws {Error} If the update fails
+ */
+export async function addPermissionSetToUserAction(id, permissionSetId) {
+    try {
+        const user = await addPermissionSetToUser(id, permissionSetId);
+        return user;
     } catch (error) {
         throw error;
     }
