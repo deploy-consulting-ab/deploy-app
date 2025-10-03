@@ -1,18 +1,24 @@
 'use client';
 
 import { RegisterWrapperComponent } from '@/components/application/setup/register-wrapper';
-import { createProfileAction } from '@/actions/database/profile-actions';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 import { useState, useEffect } from 'react';
 
 export function RegisterProfileComponent({ onSuccess }) {
     const [totalPermissions, setTotalPermissions] = useState([]);
 
+    const [error, setError] = useState('');
+
     useEffect(() => {
         const fetchPermissions = async () => {
-            console.log('#### fetchPermissions');
-            const permissions = await getPermissionsAction();
-            setTotalPermissions(permissions);
+            try {
+                const permissions = await getPermissionsAction();
+                setTotalPermissions(permissions);
+                setError('');
+            } catch (err) {
+                setError('Failed to fetch permissions: ' + err.message);
+                setTotalPermissions([]);
+            }
         };
         fetchPermissions();
     }, []);
@@ -29,8 +35,12 @@ export function RegisterProfileComponent({ onSuccess }) {
         }
     };
 
+    if (error) {
+        return <div className="text-red-500">{error}</div>;
+    }
+    
     if (!totalPermissions.length) {
-        return <div>Loading...</div>;
+        return <div>Loading permissions...</div>;
     }
 
     return (

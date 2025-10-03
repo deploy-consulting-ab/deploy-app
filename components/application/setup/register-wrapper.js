@@ -19,9 +19,12 @@ import { useState, useTransition, useMemo } from 'react';
 
 export function RegisterWrapperComponent({ title, description, onSubmit, totalPermissions }) {
     const [isPending, startTransition] = useTransition();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
     const [assignedPermissions, setAssignedPermissions] = useState({});
+    
+    const isLoading = isPending || isSubmitting;
 
     const permissions = useMemo(() => 
         totalPermissions.map(permission => ({
@@ -37,20 +40,20 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
         }));
     };
 
-    const handleSubmit = (values) => {
+    const handleSubmit = async (values) => {
         setSuccess('');
         setError('');
+        setIsSubmitting(true);
 
-        startTransition(async () => {
-            try {
-                await onSubmit({ ...values, permissions: permissions.filter((p) => p.assigned) });
-                setSuccess('Created successfully');
-                form.reset();
-                setAssignedPermissions({});
-            } catch (err) {
-                setError(err.message);
-            }
-        });
+        try {
+            await onSubmit({ ...values, permissions: permissions.filter((p) => p.assigned) });
+            setSuccess('Created successfully');
+            resetForm();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const form = useForm({
@@ -61,6 +64,13 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
             id: '',
         },
     });
+
+    const resetForm = () => {
+        form.reset();
+        setAssignedPermissions({});
+        setError('');
+        setSuccess('');
+    };
 
     return (
         <div className="space-y-6">
@@ -74,7 +84,7 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                                 <FormLabel>Name</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isPending}
+                                        disabled={isLoading}
                                         placeholder="Enter name"
                                         {...field}
                                     />
@@ -91,7 +101,7 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                                 <FormLabel>Description</FormLabel>
                                 <FormControl>
                                     <Input
-                                        disabled={isPending}
+                                        disabled={isLoading}
                                         placeholder="Enter description"
                                         {...field}
                                     />
@@ -122,9 +132,20 @@ export function RegisterWrapperComponent({ title, description, onSubmit, totalPe
                         successProp={success}
                     />
 
-                    <Button type="submit" className="w-full" disabled={isPending}>
-                        Create
-                    </Button>
+                    <div className="flex gap-4">
+                        <Button type="submit" className="flex-1" disabled={isLoading}>
+                            {isLoading ? 'Creating...' : 'Create'}
+                        </Button>
+                        <Button 
+                            type="button" 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={resetForm}
+                            disabled={isLoading}
+                        >
+                            Reset
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </div>

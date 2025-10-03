@@ -11,7 +11,7 @@ import { BadgeCheckIcon } from 'lucide-react';
 import { populatePermissions } from '@/lib/utils';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export function PermissionsEditableCardComponent({
     entityName,
@@ -21,15 +21,10 @@ export function PermissionsEditableCardComponent({
     error,
     successProp,
 }) {
-    // useMemo to cache the result of a calculation between re-renders
-    const permissions = useMemo(() => {
-        return entityPermissions 
-            ? populatePermissions(entityPermissions, totalPermissions)
-            : totalPermissions;
-    }, [entityPermissions, totalPermissions]);
+    const permissions = entityPermissions
+        ? populatePermissions(entityPermissions, totalPermissions)
+        : totalPermissions;
 
-    console.log('#### permissions.....', permissions);
-    
     const [isScrollable, setIsScrollable] = useState(false);
     const contentRef = useRef(null);
     const [isVisible, setIsVisible] = useState(true);
@@ -52,7 +47,7 @@ export function PermissionsEditableCardComponent({
 
         if (successProp) {
             setIsVisible(true);
-            
+
             // Start fade out after 1 second
             fadeOutTimer = setTimeout(() => {
                 setIsVisible(false);
@@ -77,32 +72,32 @@ export function PermissionsEditableCardComponent({
                         className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2"
                     >
                         {permissions.map((permission) => (
-                        <div key={permission.id}>
-                            {permission.assigned ? (
-                                <Badge
-                                    variant="primary"
-                                    className="bg-green-700 text-white hover:cursor-pointer text-sm"
-                                    onClick={() =>
-                                        onPermissionClick?.(permission.id, permission.assigned)
-                                    }
-                                >
-                                    <BadgeCheckIcon />
-                                    {permission.name}
-                                </Badge>
-                            ) : (
-                                <Badge
-                                    key={permission.id}
-                                    variant="outline"
-                                    className="justify-start hover:cursor-pointer text-sm"
-                                    onClick={() =>
-                                        onPermissionClick?.(permission.id, permission.assigned)
-                                    }
-                                >
-                                    {permission.name}
-                                </Badge>
-                            )}
-                        </div>
-                    ))}
+                            <div key={permission.id}>
+                                {permission.assigned ? (
+                                    <Badge
+                                        variant="primary"
+                                        className="bg-green-700 text-white hover:cursor-pointer text-sm"
+                                        onClick={() =>
+                                            onPermissionClick?.(permission.id, permission.assigned)
+                                        }
+                                    >
+                                        <BadgeCheckIcon />
+                                        {permission.name}
+                                    </Badge>
+                                ) : (
+                                    <Badge
+                                        key={permission.id}
+                                        variant="outline"
+                                        className="justify-start hover:cursor-pointer text-sm"
+                                        onClick={() =>
+                                            onPermissionClick?.(permission.id, permission.assigned)
+                                        }
+                                    >
+                                        {permission.name}
+                                    </Badge>
+                                )}
+                            </div>
+                        ))}
                     </div>
                     {isScrollable && (
                         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none dark:from-zinc-900/95" />
