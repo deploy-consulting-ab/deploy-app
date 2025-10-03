@@ -1,5 +1,11 @@
 'use server';
-import { getPermissions, createPermission, deletePermission } from '@/data/permissions-db';
+import {
+    getPermissions,
+    createPermission,
+    deletePermission,
+    getPermissionById,
+    getPermissionAssignmentsById,
+} from '@/data/permissions-db';
 import { CreatePermissionSchema } from '@/schemas';
 /**
  * Get all permissions
@@ -10,6 +16,31 @@ export async function getPermissionsAction() {
     try {
         const permissions = await getPermissions();
         return permissions;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get a permission by id
+ * @param {string} id
+ * @returns {Promise<Permission>} The permission
+ * @throws {Error} If the permission is not found
+ */
+export async function getPermissionByIdAction(id) {
+    try {
+        const permission = await getPermissionById(id);
+        return permission;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getPermissionAssignmentsByIdAction(id) {
+    try {
+        const permissionAssignments = await getPermissionAssignmentsById(id);
+        console.log('### permissionAssignments', permissionAssignments);
+        return permissionAssignments;
     } catch (error) {
         throw error;
     }
