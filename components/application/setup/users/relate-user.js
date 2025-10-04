@@ -9,7 +9,7 @@ import { NoDataComponent } from '@/components/errors/no-data';
 import { Spinner } from '@/components/ui/spinner';
 import { FormError } from '@/components/auth/form/form-error';
 
-export function RelateUser({ onUserSelect }) {
+export function RelateUserComponent({ onUserSelect, placeholder }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +55,7 @@ export function RelateUser({ onUserSelect }) {
         <div className="flex flex-col gap-2">
             <Input
                 type="text"
-                placeholder="Search users by name or email..."
+                placeholder={placeholder}
                 value={searchTerm}
                 onChange={(e) => {
                     const query = e.target.value;

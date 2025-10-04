@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { getUsersForProfileAction, updateUserProfileAction } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
-import { RelateUser } from '@/components/application/setup/users/relate-user';
+import { RelateUserComponent } from '@/components/application/setup/users/relate-user';
 import { toastRichSuccess } from '@/lib/toast-library';
 
 export function ProfileAssignmentsListComponent({ users, profileId }) {
@@ -166,7 +166,7 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                     <DialogTitle>Relate user to profile</DialogTitle>
                     <DialogDescription>Select a user to relate to the profile.</DialogDescription>
                 </DialogHeader>
-                <RelateUser onUserSelect={handleUserSelect} />
+                <RelateUserComponent onUserSelect={handleUserSelect} placeholder="Search users by name or email..." />
             </DialogContent>
         </Dialog>
     );

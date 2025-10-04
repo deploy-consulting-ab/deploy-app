@@ -20,7 +20,7 @@ import {
     getUserByIdWithPermissionsAction,
 } from '@/actions/database/user-actions';
 import { PERMISSION_SETS_ROUTE } from '@/menus/routes';
-import { RelateUser } from '@/components/application/setup/users/relate-user';
+import { RelateUserComponent } from '@/components/application/setup/users/relate-user';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import {
     DropdownMenu,
@@ -67,16 +67,16 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
     /**
      * TO REFACTOR
      */
-    const handleUserSelect = async (user) => {
+    const handleUserSelect = async (permissionSet) => {
         try {
-            await addPermissionSetToUserAction(user.id, permissionSetId);
+            await addPermissionSetToUserAction(userId, permissionSet.id);
             await handleRefresh();
             setIsDialogOpen(false);
             toastRichSuccess({
-                message: 'User related to permission set',
+                message: 'Permission set related to user',
             });
         } catch (error) {
-            console.error('Error relating user to permission set:', error);
+            console.error('Error relating permission set to user:', error);
             throw error;
         }
     };
@@ -197,12 +197,12 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Relate user to permission set</DialogTitle>
+                    <DialogTitle>Relate permission set to user</DialogTitle>
                     <DialogDescription>
-                        Select a user to relate to the permission set.
+                        Select a permission set to relate to the user.
                     </DialogDescription>
                 </DialogHeader>
-                <RelateUser onUserSelect={handleUserSelect} />
+                <RelateUserComponent onUserSelect={handleUserSelect} placeholder="Search permission sets by name or description..." />
             </DialogContent>
         </Dialog>
     );
