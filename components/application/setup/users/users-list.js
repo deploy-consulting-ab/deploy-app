@@ -31,11 +31,14 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
+import { useImpersonation } from '@/hooks/use-impersonation';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const { startImpersonation } = useImpersonation();
 
     const handleRefresh = async () => {
         let freshData = null;
@@ -63,6 +66,19 @@ export function UsersListComponent({ users, error: initialError }) {
             await handleRefresh();
             toastRichSuccess({
                 message: 'User deleted!',
+            });
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
+        }
+    };
+
+    const handleImpersonation = async (id) => {
+        try {
+            await startImpersonation(id);
+            toastRichSuccess({
+                message: 'Viewing as user',
             });
         } catch (error) {
             toastRichError({
@@ -199,6 +215,9 @@ export function UsersListComponent({ users, error: initialError }) {
                             <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
                                 Delete User
                             </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleImpersonation(row.original.id)}>
+                                View As User
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
@@ -224,7 +243,7 @@ export function UsersListComponent({ users, error: initialError }) {
                         Fill in the details to create a new user account.
                     </DialogDescription>
                 </DialogHeader>
-                <CreateUserComponent fireSuccess={handleSuccess}/>
+                <CreateUserComponent fireSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );
