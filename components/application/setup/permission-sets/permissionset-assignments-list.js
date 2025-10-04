@@ -18,6 +18,7 @@ import { getPermissionSetByIdAction } from '@/actions/database/permissionset-act
 import {
     addPermissionSetToUserAction,
     removePermissionSetFromUserAction,
+    searchUsersAction,
 } from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
 import { RelateRecordComponent } from '@/components/application/setup/relate-record';
@@ -79,6 +80,14 @@ export function PermissionSetAssignmentsListComponent({
             });
         } catch (error) {
             console.error('Error relating user to permission set:', error);
+            throw error;
+        }
+    };
+
+    const handleSearch = async (query) => {
+        try {
+            return await searchUsersAction(query);
+        } catch (error) {
             throw error;
         }
     };
@@ -204,7 +213,12 @@ export function PermissionSetAssignmentsListComponent({
                         Select a user to relate to the permission set.
                     </DialogDescription>
                 </DialogHeader>
-                <RelateRecordComponent onUserSelect={handleUserSelect} placeholder="Search users by name or email..." />
+
+                <RelateRecordComponent
+                    onRecordSelect={handleUserSelect}
+                    placeholder="Search users by name or email..."
+                    onSearch={handleSearch}
+                />
             </DialogContent>
         </Dialog>
     );

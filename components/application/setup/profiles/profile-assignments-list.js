@@ -27,7 +27,6 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [searchResults, setSearchResults] = useState([]);
 
     const handleRefresh = async () => {
         let freshData = null;
@@ -57,8 +56,6 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
 
     const handleSearch = async (query) => {
         try {
-            const results = await searchUsersAction(query);
-            console.log('#### results', results);
             return await searchUsersAction(query);
         } catch (error) {
             throw error;
