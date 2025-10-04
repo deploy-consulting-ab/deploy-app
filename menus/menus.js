@@ -18,7 +18,7 @@ import {
     VIEW_OCCUPANCY_PERMISSION,
     VIEW_ASSIGNMENTS_PERMISSION,
     VIEW_OPPORTUNITIES_PERMISSION,
-    VIEW_ADMIN_PERMISSION,
+    VIEW_SETUP_PERMISSION,
 } from '@/lib/permissions';
 
 // Map of menu items with their required permissions and configurations
@@ -57,7 +57,7 @@ export const MENU_ITEMS_MAP = {
         title: 'Admin',
         url: ADMIN_ROUTE,
         icon: Shield,
-        permission: VIEW_ADMIN_PERMISSION,
+        permission: VIEW_SETUP_PERMISSION,
     },
 };
 
@@ -72,25 +72,25 @@ export const SETUP_MENU_ITEMS_MAP = {
         title: 'Users',
         url: USERS_ROUTE,
         icon: Users,
-        permission: VIEW_ADMIN_PERMISSION,
+        permission: VIEW_SETUP_PERMISSION,
     },
     profiles: {
         title: 'Profiles',
         url: PROFILES_ROUTE,
         icon: UserCircle,
-        permission: VIEW_ADMIN_PERMISSION,
+        permission: VIEW_SETUP_PERMISSION,
     },
     permissionSets: {
         title: 'Permission Sets',
         url: PERMISSION_SETS_ROUTE,
         icon: Box,
-        permission: VIEW_ADMIN_PERMISSION,
+        permission: VIEW_SETUP_PERMISSION,
     },
     permissions: {
         title: 'Permissions',
         url: PERMISSIONS_ROUTE,
         icon: UserCheck,
-        permission: VIEW_ADMIN_PERMISSION,
+        permission: VIEW_SETUP_PERMISSION,
     },
     
     /**

@@ -53,6 +53,8 @@ export default auth((req) => {
 
     const allPermissions = new Set(user?.permissions);
 
+    console.log('#### allPermissions', allPermissions);
+
     return handleLoggedInUsers(nextUrl, allPermissions);
 });
 
