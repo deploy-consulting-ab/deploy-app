@@ -36,6 +36,7 @@ import { useTransition } from 'react';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
+import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -205,26 +206,9 @@ export function UserCardComponent({ user }) {
             <AllPermissionsCardComponent user={user} />
 
             {/** Permission Sets Card */}
-            <Card className="col-span-2">
-                <CardHeader>
-                    <CardTitle>Permission Sets</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-2">
-                        {user.permissionSets.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
-                                {user.permissionSets.map((permissionSet) => (
-                                    <Badge key={permissionSet.id} variant="primary">
-                                        {permissionSet.name}
-                                    </Badge>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-sm text-gray-500">No permission sets assigned</p>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+            <div className="col-span-2">
+                <UserAssignmentsListComponent permissionSets={user.permissionSets} userId={user.id} />
+            </div>
         </div>
     );
 }

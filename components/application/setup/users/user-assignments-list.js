@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus } from 'lucide-react';
+import { ArrowUpDown, UserPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -14,21 +14,35 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersForProfileAction, updateUserProfileAction } from '@/actions/database/user-actions';
-import { USERS_ROUTE } from '@/menus/routes';
+import {
+    addPermissionSetToUserAction,
+    removePermissionSetFromUserAction,
+    getUserByIdWithPermissionsAction,
+} from '@/actions/database/user-actions';
+import { PERMISSION_SETS_ROUTE } from '@/menus/routes';
 import { RelateUser } from '@/components/application/setup/users/relate-user';
-import { toastRichSuccess } from '@/lib/toast-library';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-export function ProfileAssignmentsListComponent({ users, profileId }) {
-    const [usersData, setUsersData] = useState(users);
+export function UserAssignmentsListComponent({ permissionSets, userId }) {
+    const [permissionSetsData, setPermissionSetsData] = useState(permissionSets);
     const [error, setError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const handleRefresh = async () => {
+        doRefresh();
+    };
+
+    const doRefresh = async () => {
         let freshData = null;
         try {
-            freshData = await getUsersForProfileAction(profileId);
-            setUsersData(freshData);
+            const user = await getUserByIdWithPermissionsAction(userId);
+            setPermissionSetsData(user.permissionSets);
             setError(null);
         } catch (err) {
             setError(err);
@@ -36,16 +50,33 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
         return freshData;
     };
 
+    const removeAssignment = async (permissionSetId) => {
+        try {
+            await removePermissionSetFromUserAction(userId, permissionSetId);
+            await doRefresh();
+            toastRichSuccess({
+                message: 'Permission set removed from user',
+            });
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
+        }
+    };
+
+    /**
+     * TO REFACTOR
+     */
     const handleUserSelect = async (user) => {
         try {
-            await updateUserProfileAction(user.id, profileId);
+            await addPermissionSetToUserAction(user.id, permissionSetId);
             await handleRefresh();
             setIsDialogOpen(false);
             toastRichSuccess({
-                message: 'User related to profile',
+                message: 'User related to permission set',
             });
         } catch (error) {
-            console.error('Error relating user to profile:', error);
+            console.error('Error relating user to permission set:', error);
             throw error;
         }
     };
@@ -72,7 +103,7 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                 const id = row.original.id;
                 return (
                     <Link
-                        href={`${USERS_ROUTE}/${id}`}
+                        href={`${PERMISSION_SETS_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
@@ -82,7 +113,7 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
             },
         },
         {
-            accessorKey: 'email',
+            accessorKey: 'description',
             size: 200,
             minSize: 150,
             maxSize: 300, // Responsive size for account names
@@ -93,19 +124,19 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Email
+                        Description
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('email')}>
-                    {row.getValue('email')}
+                <div className="truncate" title={row.getValue('description')}>
+                    {row.getValue('description')}
                 </div>
             ),
         },
         {
-            accessorKey: 'employeeNumber',
+            accessorKey: 'id',
             size: 120,
             minSize: 100,
             maxSize: 150, // Responsive size for dates
@@ -116,37 +147,40 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                         size="large"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Employee Number
+                        Permission Set ID
                         <ArrowUpDown />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('employeeNumber')}>
-                    {row.getValue('employeeNumber')}
+                <div className="truncate" title={row.getValue('id')}>
+                    {row.getValue('id')}
                 </div>
             ),
         },
+
         {
-            accessorKey: 'profileId',
-            size: 150,
-            minSize: 120,
-            maxSize: 200, // Responsive size for status
-            header: ({ column }) => (
-                <Button
-                    variant="ghost"
-                    size="large"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                >
-                    Profile ID
-                    <ArrowUpDown />
-                </Button>
-            ),
-            cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('profileId')}>
-                    {row.getValue('profileId')}
-                </div>
-            ),
+            id: 'actions',
+            enableSorting: false,
+            enableHiding: false,
+            maxSize: 10,
+            cell: ({ row }) => {
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
+                                <MoreHorizontal />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => removeAssignment(row.original.id)}>
+                                Remove Permission Set from User
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
         },
     ];
 
@@ -163,8 +197,10 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Relate user to profile</DialogTitle>
-                    <DialogDescription>Select a user to relate to the profile.</DialogDescription>
+                    <DialogTitle>Relate user to permission set</DialogTitle>
+                    <DialogDescription>
+                        Select a user to relate to the permission set.
+                    </DialogDescription>
                 </DialogHeader>
                 <RelateUser onUserSelect={handleUserSelect} />
             </DialogContent>
@@ -173,9 +209,9 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
 
     return (
         <DatatableWrapperComponent
-            data={usersData}
+            data={permissionSetsData}
             columns={columns}
-            placeholder="Filter Users..."
+            placeholder="Filter Permission Sets..."
             refreshAction={handleRefresh}
             searchKey="name"
             actionButton={actionButton}
