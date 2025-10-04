@@ -52,13 +52,7 @@ export const MENU_ITEMS_MAP = {
         url: OPPORTUNITIES_ROUTE,
         icon: TrendingUp,
         permission: VIEW_OPPORTUNITIES_PERMISSION,
-    },
-    admin: {
-        title: 'Admin',
-        url: ADMIN_ROUTE,
-        icon: Shield,
-        permission: VIEW_SETUP_PERMISSION,
-    },
+    }
 };
 
 export const SETUP_MENU_ITEMS_MAP = {
