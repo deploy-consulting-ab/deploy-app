@@ -23,6 +23,7 @@ export function RelateRecordComponent({ onRecordSelect, placeholder, onSearch })
             }
 
             try {
+                console.log('#### query', query);
                 const results = await onSearch(query);
                 setRecords(results);
             } catch (error) {
@@ -98,6 +99,11 @@ export function RelateRecordComponent({ onRecordSelect, placeholder, onSearch })
                                     {record.email && (
                                         <span className="text-sm text-muted-foreground">
                                             {record.email}
+                                        </span>
+                                    )}
+                                    {record.description && (
+                                        <span className="text-sm text-muted-foreground">
+                                            {record.description}
                                         </span>
                                     )}
                                     {record.employeeNumber && (

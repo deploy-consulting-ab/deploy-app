@@ -19,6 +19,7 @@ import {
     removePermissionSetFromUserAction,
     getUserByIdWithPermissionsAction,
 } from '@/actions/database/user-actions';
+import { searchPermissionSetsAction } from '@/actions/database/permissionset-actions';
 import { PERMISSION_SETS_ROUTE } from '@/menus/routes';
 import { RelateRecordComponent } from '@/components/application/setup/relate-record';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
@@ -64,10 +65,7 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
         }
     };
 
-    /**
-     * TO REFACTOR
-     */
-    const handleUserSelect = async (permissionSet) => {
+    const handlePermissionSetSelect = async (permissionSet) => {
         try {
             await addPermissionSetToUserAction(userId, permissionSet.id);
             await handleRefresh();
@@ -77,6 +75,14 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
             });
         } catch (error) {
             console.error('Error relating permission set to user:', error);
+            throw error;
+        }
+    };
+
+    const handleSearch = async (query) => {
+        try {
+            return await searchPermissionSetsAction(query);
+        } catch (error) {
             throw error;
         }
     };
@@ -202,7 +208,11 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
                         Select a permission set to relate to the user.
                     </DialogDescription>
                 </DialogHeader>
-                <RelateRecordComponent onUserSelect={handleUserSelect} placeholder="Search permission sets by name or description..." />
+                <RelateRecordComponent
+                    onRecordSelect={handlePermissionSetSelect}
+                    placeholder="Search permission sets by name or description..."
+                    onSearch={handleSearch}
+                />
             </DialogContent>
         </Dialog>
     );

@@ -216,3 +216,20 @@ export async function removeUserFromPermissionSet(permissionSetId, userId) {
         throw error;
     }
 }
+
+/**
+ * Search permission sets by name or description
+ * @param {string} searchTerm
+ * @returns {Promise<PermissionSet[]>} Permission sets matching the search term
+ * @throws {Error} If the search fails
+ */
+export async function searchPermissionSets(searchTerm) {
+    try {
+        const permissionSets = await db.permissionSet.findMany({
+            where: { name: { contains: searchTerm, mode: 'insensitive' } },
+        });
+        return permissionSets;
+    } catch (error) {
+        throw error;
+    }
+}

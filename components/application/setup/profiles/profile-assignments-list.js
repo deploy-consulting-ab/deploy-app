@@ -57,6 +57,8 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
 
     const handleSearch = async (query) => {
         try {
+            const results = await searchUsersAction(query);
+            console.log('#### results', results);
             return await searchUsersAction(query);
         } catch (error) {
             throw error;

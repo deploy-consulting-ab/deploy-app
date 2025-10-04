@@ -9,7 +9,8 @@ import {
     removePermissionFromPermissionSet,
     addUserToPermissionSet,
     removeUserFromPermissionSet,
-} from '@/data/permission-set-db';
+    searchPermissionSets,
+} from '@/data/permissionset-db';
 import { UpdatePermissionSetSchema } from '@/schemas';
 
 /**
@@ -155,5 +156,20 @@ export async function removeUserFromPermissionSetAction(permissionSetId, userId)
         return { success: 'User removed successfully' };
     } catch (error) {
         return { error: 'Failed to remove user' };
+    }
+}
+
+/**
+ * Search permission sets by name or description
+ * @param {string} searchTerm
+ * @returns {Promise<PermissionSet[]>} Permission sets matching the search term
+ * @throws {Error} If the search fails
+ */
+export async function searchPermissionSetsAction(searchTerm) {
+    try {
+        const permissionSets = await searchPermissionSets(searchTerm);
+        return permissionSets;
+    } catch (error) {
+        throw error;
     }
 }
