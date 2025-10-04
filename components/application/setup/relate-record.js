@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { searchUsersAction } from '@/actions/database/user-actions';
 import { useState, useCallback, useMemo } from 'react';
 import debounce from 'lodash/debounce';
 import { Card } from '@/components/ui/card';
@@ -9,31 +8,31 @@ import { NoDataComponent } from '@/components/errors/no-data';
 import { Spinner } from '@/components/ui/spinner';
 import { FormError } from '@/components/auth/form/form-error';
 
-export function RelateUserComponent({ onUserSelect, placeholder }) {
+export function RelateRecordComponent({ onRecordSelect, placeholder, onSearch }) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [users, setUsers] = useState([]);
+    const [records, setRecords] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+
     const debouncedSearch = useCallback(
         async (query) => {
             if (!query) {
-                setUsers([]);
+                setRecords([]);
                 setIsLoading(false);
                 return;
             }
 
             try {
-                const results = await searchUsersAction(query);
-                setUsers(results);
+                const results = await onSearch(query);
+                setRecords(results);
             } catch (error) {
-                console.error('Error searching users:', error);
                 setError(error.message);
-                setUsers([]);
+                setRecords([]);
             } finally {
                 setIsLoading(false);
             }
         },
-        [setUsers, setIsLoading]
+        [setRecords, setIsLoading, onSearch]
     );
 
     const debouncedSearchWithDelay = useMemo(
@@ -41,12 +40,12 @@ export function RelateUserComponent({ onUserSelect, placeholder }) {
         [debouncedSearch]
     );
 
-    const handleUserSelect = async (user) => {
+    const handleRecordSelect = async (record) => {
         try {
-            await onUserSelect?.(user);
+            await onRecordSelect?.(record);
             setError('');
         } catch (error) {
-            console.error('Error selecting user:', error);
+            console.error('Error selecting record:', error);
             setError(error.message);
         }
     };
@@ -62,7 +61,7 @@ export function RelateUserComponent({ onUserSelect, placeholder }) {
                     setSearchTerm(query);
                     if (!query) {
                         debouncedSearchWithDelay.cancel();
-                        setUsers([]);
+                        setRecords([]);
                         return;
                     }
                     setIsLoading(true);
@@ -78,36 +77,41 @@ export function RelateUserComponent({ onUserSelect, placeholder }) {
                     </div>
                 )}
 
-                {!isLoading && users.length === 0 && searchTerm && (
+                {!isLoading && records.length === 0 && searchTerm && !error && (
                     <div className="h-full flex items-center justify-center pt-1">
-                        <NoDataComponent text="No users found, try again" />
+                        <NoDataComponent text="No records found, try again" />
                     </div>
                 )}
 
-                {!isLoading && users.length > 0 && (
+                {!isLoading && records.length > 0 && (
                     <div className="space-y-2">
-                        {users.map((user) => (
+                        {records.map((record) => (
                             <Card
-                                key={user.id}
+                                key={record.id}
                                 className="p-4 hover:bg-accent cursor-pointer transition-colors"
-                                onClick={() => handleUserSelect(user)}
+                                onClick={() => handleRecordSelect(record)}
                             >
                                 <div className="flex flex-col">
-                                    <span className="font-medium text-md">{user.name}</span>
-                                    <span className="text-sm text-muted-foreground">
-                                        {user.email}
-                                    </span>
-                                    {user.employeeNumber && (
+                                    {record.name && (
+                                        <span className="font-medium text-md">{record.name}</span>
+                                    )}
+                                    {record.email && (
                                         <span className="text-sm text-muted-foreground">
-                                            {user.employeeNumber}
+                                            {record.email}
+                                        </span>
+                                    )}
+                                    {record.employeeNumber && (
+                                        <span className="text-sm text-muted-foreground">
+                                            {record.employeeNumber}
                                         </span>
                                     )}
                                 </div>
                             </Card>
                         ))}
-                        {error && <FormError message={error} />}
                     </div>
                 )}
+
+                {error && <FormError message={error} />}
             </div>
         </div>
     );

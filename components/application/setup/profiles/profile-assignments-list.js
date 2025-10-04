@@ -14,15 +14,20 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { getUsersForProfileAction, updateUserProfileAction } from '@/actions/database/user-actions';
+import {
+    getUsersForProfileAction,
+    searchUsersAction,
+    updateUserProfileAction,
+} from '@/actions/database/user-actions';
 import { USERS_ROUTE } from '@/menus/routes';
-import { RelateUserComponent } from '@/components/application/setup/users/relate-user';
+import { RelateRecordComponent } from '@/components/application/setup/relate-record';
 import { toastRichSuccess } from '@/lib/toast-library';
 
 export function ProfileAssignmentsListComponent({ users, profileId }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
 
     const handleRefresh = async () => {
         let freshData = null;
@@ -46,6 +51,14 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
             });
         } catch (error) {
             console.error('Error relating user to profile:', error);
+            throw error;
+        }
+    };
+
+    const handleSearch = async (query) => {
+        try {
+            return await searchUsersAction(query);
+        } catch (error) {
             throw error;
         }
     };
@@ -166,7 +179,11 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                     <DialogTitle>Relate user to profile</DialogTitle>
                     <DialogDescription>Select a user to relate to the profile.</DialogDescription>
                 </DialogHeader>
-                <RelateUserComponent onUserSelect={handleUserSelect} placeholder="Search users by name or email..." />
+                <RelateRecordComponent
+                    onRecordSelect={handleUserSelect}
+                    placeholder="Search users by name or email..."
+                    onSearch={handleSearch}
+                />
             </DialogContent>
         </Dialog>
     );

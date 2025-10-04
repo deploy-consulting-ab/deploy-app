@@ -20,7 +20,7 @@ import {
     getUserByIdWithPermissionsAction,
 } from '@/actions/database/user-actions';
 import { PERMISSION_SETS_ROUTE } from '@/menus/routes';
-import { RelateUserComponent } from '@/components/application/setup/users/relate-user';
+import { RelateRecordComponent } from '@/components/application/setup/relate-record';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import {
     DropdownMenu,
@@ -202,7 +202,7 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
                         Select a permission set to relate to the user.
                     </DialogDescription>
                 </DialogHeader>
-                <RelateUserComponent onUserSelect={handleUserSelect} placeholder="Search permission sets by name or description..." />
+                <RelateRecordComponent onUserSelect={handleUserSelect} placeholder="Search permission sets by name or description..." />
             </DialogContent>
         </Dialog>
     );
