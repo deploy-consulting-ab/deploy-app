@@ -214,8 +214,8 @@ export function UserCardComponent({ user }) {
                         {user.permissionSets.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
                                 {user.permissionSets.map((permissionSet) => (
-                                    <Badge key={permissionSet} variant="primary">
-                                        {permissionSet}
+                                    <Badge key={permissionSet.id} variant="primary">
+                                        {permissionSet.name}
                                     </Badge>
                                 ))}
                             </div>

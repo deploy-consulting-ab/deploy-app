@@ -10,6 +10,7 @@ export default async function UserPage({ params }) {
 
     try {
         user = await getUserByIdWithPermissionsAction(userId);
+        console.log('#### user', user);
     } catch (err) {
         error = err;
     }
