@@ -9,6 +9,15 @@ import {
     CardContent,
     CardFooter,
 } from '@/components/ui/card';
+import { Spinner } from '@/components/ui/spinner';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import {
     Form,
     FormField,
@@ -43,6 +52,8 @@ export function UserCardComponent({ user }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
     // Effect to handle fade out animation
@@ -97,6 +108,7 @@ export function UserCardComponent({ user }) {
 
     const deleteUser = async (id) => {
         try {
+            setIsDeleting(true);
             await deleteUserAction(id);
             toastRichSuccess({
                 message: 'User deleted!',
@@ -106,6 +118,8 @@ export function UserCardComponent({ user }) {
             toastRichError({
                 message: error.message,
             });
+            setIsDeleting(false);
+            setShowDeleteDialog(false);
         }
     };
 
@@ -117,9 +131,39 @@ export function UserCardComponent({ user }) {
                         <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
                             Edit User
                         </Button>
-                        <Button variant="destructive" onClick={() => deleteUser(user.id)} key="delete">
+                        <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
                             Delete User
                         </Button>
+                        
+                        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Delete User</DialogTitle>
+                                    <DialogDescription>
+                                        Are you sure you want to delete {user.name}? This action cannot be undone.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter>
+                                    <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button 
+                                        variant="destructive" 
+                                        onClick={() => deleteUser(user.id)}
+                                        disabled={isDeleting}
+                                    >
+                                        {isDeleting ? (
+                                            <div className="flex items-center gap-2">
+                                                <Spinner size="sm" variant="white" />
+                                                <span>Deleting...</span>
+                                            </div>
+                                        ) : (
+                                            "Delete"
+                                        )}
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </RecordCardHeader>
             </div>
