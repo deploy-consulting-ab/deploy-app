@@ -20,7 +20,7 @@ export function AllPermissionsCardComponent({ user }) {
         return () => window.removeEventListener('resize', checkScrollable);
     }, [user.allPermissions]);
     return (
-        <Card className="col-span-1">
+        <Card className="col-span-1 py-6">
             <CardHeader>
                 <CardTitle>All Permissions</CardTitle>
                 <CardDescription>

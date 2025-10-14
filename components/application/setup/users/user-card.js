@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -38,6 +37,7 @@ import { FormSuccess } from '@/components/auth/form/form-success';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 import { RecordCardHeader } from '@/components/ui/record-card-header';
+import { Label } from '@/components/ui/label';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -96,33 +96,22 @@ export function UserCardComponent({ user }) {
         });
     };
 
-    const actions = [
-        <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
-            Edit User
-        </Button>,
-        <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
-            Delete User
-        </Button>,
-    ];
-
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
                 <RecordCardHeader title={user.name} description={user.email}>
-                    <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
-                        Edit User
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
-                        Delete User
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
+                            Edit User
+                        </Button>
+                        <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
+                            Delete User
+                        </Button>
+                    </div>
                 </RecordCardHeader>
             </div>
             {/* User Details Card */}
-            <Card className="col-span-1 py-4">
-                <CardHeader>
-                    <CardTitle className="text-2xl">{user.name}</CardTitle>
-                    <CardDescription>{user.email}</CardDescription>
-                </CardHeader>
+            <Card className="col-span-1 py-6">
                 <CardContent className="space-y-6">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -226,12 +215,7 @@ export function UserCardComponent({ user }) {
             <AllPermissionsCardComponent user={user} />
 
             {/** Permission Sets Card */}
-            <div className="col-span-2">
-                <UserAssignmentsListComponent
-                    permissionSets={user.permissionSets}
-                    userId={user.id}
-                />
-            </div>
+            <UserAssignmentsListComponent permissionSets={user.permissionSets} userId={user.id} />
         </div>
     );
 }

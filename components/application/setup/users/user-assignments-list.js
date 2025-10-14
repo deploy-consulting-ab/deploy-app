@@ -218,13 +218,15 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
     );
 
     return (
-        <DatatableWrapperComponent
-            data={permissionSetsData}
-            columns={columns}
-            placeholder="Filter Permission Sets..."
-            refreshAction={handleRefresh}
-            searchKey="name"
-            actionButton={actionButton}
-        />
+        <div className="col-span-2">
+            <DatatableWrapperComponent
+                data={permissionSetsData}
+                columns={columns}
+                placeholder="Filter Permission Sets..."
+                refreshAction={handleRefresh}
+                searchKey="name"
+                actionButton={actionButton}
+            />
+        </div>
     );
 }
