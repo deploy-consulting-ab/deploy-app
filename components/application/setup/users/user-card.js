@@ -6,9 +6,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
     Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
     CardContent,
     CardFooter,
 } from '@/components/ui/card';
@@ -37,7 +34,9 @@ import { FormSuccess } from '@/components/auth/form/form-success';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 import { RecordCardHeader } from '@/components/ui/record-card-header';
-import { Label } from '@/components/ui/label';
+import { deleteUserAction } from '@/actions/database/user-actions';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
+import { useRouter } from 'next/navigation';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -45,7 +44,7 @@ export function UserCardComponent({ user }) {
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
-
+    const router = useRouter();
     // Effect to handle fade out animation
     useEffect(() => {
         let fadeOutTimer;
@@ -96,6 +95,20 @@ export function UserCardComponent({ user }) {
         });
     };
 
+    const deleteUser = async (id) => {
+        try {
+            await deleteUserAction(id);
+            toastRichSuccess({
+                message: 'User deleted!',
+            });
+            router.push('/setup/users');
+        } catch (error) {
+            toastRichError({
+                message: error.message,
+            });
+        }
+    };
+
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
@@ -104,7 +117,7 @@ export function UserCardComponent({ user }) {
                         <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
                             Edit User
                         </Button>
-                        <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
+                        <Button variant="destructive" onClick={() => deleteUser(user.id)} key="delete">
                             Delete User
                         </Button>
                     </div>
@@ -173,7 +186,7 @@ export function UserCardComponent({ user }) {
                             />
 
                             {/* Action Buttons */}
-                            {isEditing ? (
+                            {isEditing && (
                                 <div className="flex gap-2">
                                     <Button type="submit" className="hover:cursor-pointer">
                                         Save Changes
@@ -187,14 +200,6 @@ export function UserCardComponent({ user }) {
                                         Cancel
                                     </Button>
                                 </div>
-                            ) : (
-                                <Button
-                                    type="button"
-                                    onClick={() => setIsEditing(true)}
-                                    className="hover:cursor-pointer"
-                                >
-                                    Edit User
-                                </Button>
                             )}
                         </form>
                     </Form>
