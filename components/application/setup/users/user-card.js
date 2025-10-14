@@ -42,7 +42,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
-import { RecordCardHeader } from '@/components/ui/record-card-header';
+import { RecordCardHeaderComponent } from '@/components/ui/record-card-header';
 import { deleteUserAction } from '@/actions/database/user-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { useRouter } from 'next/navigation';
@@ -126,7 +126,7 @@ export function UserCardComponent({ user }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
-                <RecordCardHeader title={user.name} description={user.email}>
+                <RecordCardHeaderComponent title={user.name} description={user.email}>
                     <div className="flex gap-2">
                         <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
                             Edit User
@@ -165,7 +165,7 @@ export function UserCardComponent({ user }) {
                             </DialogContent>
                         </Dialog>
                     </div>
-                </RecordCardHeader>
+                </RecordCardHeaderComponent>
             </div>
             {/* User Details Card */}
             <Card className="col-span-1 py-6">

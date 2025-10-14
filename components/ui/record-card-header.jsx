@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Card, CardHeader, CardAction, CardTitle, CardDescription } from '@/components/ui/card';
 
-export function RecordCardHeader({ title, description, children }) {
+export function RecordCardHeaderComponent({ title, description, children }) {
     return (
         <Card>
             <CardHeader>
