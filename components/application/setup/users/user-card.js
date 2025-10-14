@@ -37,6 +37,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
+import { RecordCardHeader } from '@/components/ui/record-card-header';
 
 export function UserCardComponent({ user }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -80,7 +81,7 @@ export function UserCardComponent({ user }) {
         setError('');
         startTransition(async () => {
             const response = await updateUserAction(user.id, data);
-            
+
             if (response.success) {
                 // Reset form with the submitted values
                 form.reset({
@@ -95,8 +96,27 @@ export function UserCardComponent({ user }) {
         });
     };
 
+    const actions = [
+        <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
+            Edit User
+        </Button>,
+        <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
+            Delete User
+        </Button>,
+    ];
+
     return (
         <div className="grid grid-cols-2 gap-6">
+            <div className="col-span-2">
+                <RecordCardHeader title={user.name} description={user.email}>
+                    <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
+                        Edit User
+                    </Button>
+                    <Button variant="outline" onClick={() => setIsEditing(true)} key="delete">
+                        Delete User
+                    </Button>
+                </RecordCardHeader>
+            </div>
             {/* User Details Card */}
             <Card className="col-span-1 py-4">
                 <CardHeader>
@@ -207,7 +227,10 @@ export function UserCardComponent({ user }) {
 
             {/** Permission Sets Card */}
             <div className="col-span-2">
-                <UserAssignmentsListComponent permissionSets={user.permissionSets} userId={user.id} />
+                <UserAssignmentsListComponent
+                    permissionSets={user.permissionSets}
+                    userId={user.id}
+                />
             </div>
         </div>
     );
