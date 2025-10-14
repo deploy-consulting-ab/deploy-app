@@ -19,12 +19,23 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
 
         holidays.totalHolidays = 30; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
-        holidays.recentHolidayPeriods = holidays.holidayPeriods.slice(0, 3);
-        holidays.nextResetDate = calculateNextResetDate(new Date());
+        
+        // Format dates as ISO strings before sending to client
+        holidays.recentHolidayPeriods = holidays.holidayPeriods
+            .slice(0, 3)
+            .map(period => ({
+                ...period,
+                fromDate: period.fromDate.toISOString().split('T')[0],
+                toDate: period.toDate.toISOString().split('T')[0]
+            }));
+            
+        holidays.nextResetDate = calculateNextResetDate(new Date()).toISOString().split('T')[0];
+        
+        // Convert all holiday range dates to ISO strings
         holidays.allHolidaysRange = [];
-
         for (const holiday of holidays.holidayPeriods) {
-            holidays.allHolidaysRange.push(...generateDateRange(holiday.fromDate, holiday.toDate));
+            const range = generateDateRange(holiday.fromDate, holiday.toDate);
+            holidays.allHolidaysRange.push(...range.map(date => date.toISOString()));
         }
 
         return holidays;

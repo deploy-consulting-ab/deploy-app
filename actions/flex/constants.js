@@ -132,32 +132,7 @@ export const SWEDISH_BANK_HOLIDAYS = new Set([
     '2030-12-31',
 ]);
 
-/**
- * Helper function to format a date to ISO string date part only.
- * This ensures consistent string representation of dates for Set comparison.
- *
- * @param {Date} date - Date object to format
- * @returns {string} ISO date string (YYYY-MM-DD)
- */
-const formatDateKey = (date) => {
-    return date.toISOString().split('T')[0];
-};
-
-/**
- * Checks if a given date is a Swedish bank holiday.
- * This function provides O(1) lookup time using a pre-calculated Set of holiday dates.
- * The current implementation covers holidays from 2024 to 2030.
- *
- * @param {Date} date - The date to check
- * @returns {boolean} True if the date is a Swedish bank holiday
- * @example
- * // Check if Christmas 2024 is a holiday
- * isSwedishBankHoliday(new Date('2024-12-25')) // Returns true
- *
- * // Check if a regular weekday is a holiday
- * isSwedishBankHoliday(new Date('2024-03-12')) // Returns false
- */
-export const isSwedishBankHoliday = (date) => {
-    const dateKey = formatDateKey(date);
-    return SWEDISH_BANK_HOLIDAYS.has(dateKey);
-};
+export const MONTHS = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
