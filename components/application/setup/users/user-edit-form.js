@@ -10,6 +10,7 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -18,16 +19,15 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { PROFILES } from '@/lib/permissions';
-import { updateUserAction } from '@/actions/database/user-actions';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-export function UserEditForm({ user, onEditingChange, onUserUpdate, formRef }) {
+export function UserEditForm({ user, onEditingChange, onSubmit }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
-    const [isPending, startTransition] = useTransition();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm({
         defaultValues: {
@@ -59,43 +59,27 @@ export function UserEditForm({ user, onEditingChange, onUserUpdate, formRef }) {
         };
     }, [success]);
 
-    const onSubmit = async (data) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const data = form.getValues();
         setSuccess('');
         setError('');
-        startTransition(async () => {
-            const response = await updateUserAction(user.id, data);
-
-            if (response.success) {
-                const updatedUser = {
-                    ...user,
-                    employeeNumber: data.employeeNumber,
-                    profileId: data.profileId,
-                };
-                // Reset form with the submitted values
-                form.reset({
-                    employeeNumber: data.employeeNumber,
-                    profileId: data.profileId,
-                });
-                setSuccess(response.success);
-                onUserUpdate(updatedUser);
-                onEditingChange(false);
-            } else {
-                setError(response.error);
-            }
-        });
+        setIsSubmitting(true);
+        try {
+            await onSubmit(data);
+            form.reset(data);
+            setSuccess('User updated successfully');
+        } catch (err) {
+            setError(err.message || 'An error occurred while updating the user');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
-
-    // Expose form methods to parent through ref
-    if (formRef) {
-        formRef.current = {
-            submit: form.handleSubmit(onSubmit),
-        };
-    }
 
     return (
         <>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Employee Number */}
                     <FormField
                         control={form.control}
@@ -142,6 +126,18 @@ export function UserEditForm({ user, onEditingChange, onUserUpdate, formRef }) {
                             </FormItem>
                         )}
                     />
+                    <div className="flex justify-end gap-4 mt-6">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => onEditingChange(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? 'Saving...' : 'Save'}
+                        </Button>
+                    </div>
                 </form>
             </Form>
             <div className="mt-4">

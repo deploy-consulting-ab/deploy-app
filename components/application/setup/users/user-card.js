@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
@@ -15,7 +15,7 @@ import {
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/ui/record-card-header';
-import { deleteUserAction } from '@/actions/database/user-actions';
+import { deleteUserAction, updateUserAction } from '@/actions/database/user-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { useRouter } from 'next/navigation';
 import { UserEditForm } from '@/components/application/setup/users/user-edit-form';
@@ -26,11 +26,22 @@ export function UserCardComponent({ user: initialUser }) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const formRef = useRef();
     const router = useRouter();
 
-    const handleUserUpdate = (updatedUser) => {
-        setUser(updatedUser);
+    const handleSubmit = async (data) => {
+        const response = await updateUserAction(user.id, data);
+        if (response.success) {
+            const updatedUser = {
+                ...user,
+                employeeNumber: data.employeeNumber,
+                profileId: data.profileId,
+            };
+            setUser(updatedUser);
+            toastRichSuccess({
+                message: 'User updated!',
+            });
+            setShowEditDialog(false);
+        }
     };
 
     const deleteUser = async (id) => {
@@ -79,20 +90,8 @@ export function UserCardComponent({ user: initialUser }) {
                                 <UserEditForm
                                     user={user}
                                     onEditingChange={setShowEditDialog}
-                                    onUserUpdate={handleUserUpdate}
-                                    formRef={formRef}
+                                    onSubmit={handleSubmit}
                                 />
-                                <DialogFooter>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setShowEditDialog(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button type="submit" onClick={() => formRef.current?.submit()}>
-                                        Save
-                                    </Button>
-                                </DialogFooter>
                             </DialogContent>
                         </Dialog>
 
