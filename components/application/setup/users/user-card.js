@@ -1,11 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import {
     Dialog,
@@ -21,13 +18,15 @@ import { RecordCardHeaderComponent } from '@/components/ui/record-card-header';
 import { deleteUserAction } from '@/actions/database/user-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { useRouter } from 'next/navigation';
-import { UserEditForm } from './user-edit-form';
+import { UserEditForm } from '@/components/application/setup/users/user-edit-form';
+import Link from 'next/link';
 
 export function UserCardComponent({ user: initialUser }) {
     const [user, setUser] = useState(initialUser);
-    const [isEditing, setIsEditing] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showEditDialog, setShowEditDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const formRef = useRef();
     const router = useRouter();
 
     const handleUserUpdate = (updatedUser) => {
@@ -56,27 +55,65 @@ export function UserCardComponent({ user: initialUser }) {
             <div className="col-span-2">
                 <RecordCardHeaderComponent title={user.name} description={user.email}>
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => setIsEditing(true)} key="edit">
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowEditDialog(true)}
+                            key="edit"
+                        >
                             Edit User
                         </Button>
-                        <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
+                        <Button
+                            variant="destructive"
+                            onClick={() => setShowDeleteDialog(true)}
+                            key="delete"
+                        >
                             Delete User
                         </Button>
-                        
+
+                        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit User</DialogTitle>
+                                    <DialogDescription>Edit the user details.</DialogDescription>
+                                </DialogHeader>
+                                <UserEditForm
+                                    user={user}
+                                    onEditingChange={setShowEditDialog}
+                                    onUserUpdate={handleUserUpdate}
+                                    formRef={formRef}
+                                />
+                                <DialogFooter>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setShowEditDialog(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" onClick={() => formRef.current?.submit()}>
+                                        Save
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+
                         <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                             <DialogContent>
                                 <DialogHeader>
                                     <DialogTitle>Delete User</DialogTitle>
                                     <DialogDescription>
-                                        Are you sure you want to delete {user.name}? This action cannot be undone.
+                                        Are you sure you want to delete {user.name}? This action
+                                        cannot be undone.
                                     </DialogDescription>
                                 </DialogHeader>
                                 <DialogFooter>
-                                    <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setShowDeleteDialog(false)}
+                                    >
                                         Cancel
                                     </Button>
-                                    <Button 
-                                        variant="destructive" 
+                                    <Button
+                                        variant="destructive"
                                         onClick={() => deleteUser(user.id)}
                                         disabled={isDeleting}
                                     >
@@ -86,7 +123,7 @@ export function UserCardComponent({ user: initialUser }) {
                                                 <span>Deleting...</span>
                                             </div>
                                         ) : (
-                                            "Delete"
+                                            'Delete'
                                         )}
                                     </Button>
                                 </DialogFooter>
@@ -98,24 +135,21 @@ export function UserCardComponent({ user: initialUser }) {
             {/* User Details Card */}
             <Card className="col-span-1 py-6">
                 <CardContent className="space-y-6">
-                    {isEditing ? (
-                        <UserEditForm 
-                            user={user} 
-                            onEditingChange={setIsEditing}
-                            onUserUpdate={handleUserUpdate}
-                        />
-                    ) : (
-                        <div className="space-y-4">
-                            <div>
-                                <h3 className="text-sm font-medium">Employee Number</h3>
-                                <p className="text-sm text-gray-500">{user.employeeNumber}</p>
-                            </div>
-                            <div>
-                                <h3 className="text-sm font-medium">Profile</h3>
-                                <p className="text-sm text-gray-500">{user.profileId}</p>
-                            </div>
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="text-sm font-medium">Employee Number</h3>
+                            <p className="text-sm text-gray-500">{user.employeeNumber}</p>
                         </div>
-                    )}
+                        <div>
+                            <h3 className="text-sm font-medium">Profile</h3>
+                            <Link
+                                href={`/setup/profiles/${user.profileId}`}
+                                className="text-sm text-blue-600 hover:text-blue-800 hover:underline mt-1 block"
+                            >
+                                {user.profileId}
+                            </Link>
+                        </div>
+                    </div>
                 </CardContent>
             </Card>
 

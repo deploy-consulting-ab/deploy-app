@@ -1,8 +1,6 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import {
     Form,
     FormField,
@@ -25,7 +23,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState, useTransition, useEffect } from 'react';
 
-export function UserEditForm({ user, onEditingChange, onUserUpdate }) {
+export function UserEditForm({ user, onEditingChange, onUserUpdate, formRef }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
@@ -87,6 +85,13 @@ export function UserEditForm({ user, onEditingChange, onUserUpdate }) {
         });
     };
 
+    // Expose form methods to parent through ref
+    if (formRef) {
+        formRef.current = {
+            submit: form.handleSubmit(onSubmit),
+        };
+    }
+
     return (
         <>
             <Form {...form}>
@@ -134,32 +139,9 @@ export function UserEditForm({ user, onEditingChange, onUserUpdate }) {
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
-                                {field.value && (
-                                    <Link
-                                        href={`/setup/profiles/${field.value}`}
-                                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline mt-1 block"
-                                    >
-                                        View Profile Details
-                                    </Link>
-                                )}
                             </FormItem>
                         )}
                     />
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                        <Button type="submit" className="hover:cursor-pointer">
-                            Save Changes
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="hover:cursor-pointer"
-                            onClick={() => onEditingChange(false)}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
                 </form>
             </Form>
             <div className="mt-4">
