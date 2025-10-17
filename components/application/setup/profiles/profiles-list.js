@@ -51,7 +51,6 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const deleteProfile = async (id) => {

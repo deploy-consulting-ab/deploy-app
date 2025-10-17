@@ -20,11 +20,12 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
+import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
     const handleAssignmentClick = (id) => {
-        router.push(`/home/assignments/${id}`);
+        router.push(`${ASSIGNMENTS_ROUTE}/${id}`);
     };
 
     const [assignmentData, setAssignmentData] = useState(assignments);
@@ -59,7 +60,6 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const views = [
@@ -91,7 +91,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
 
                 return (
                     <Link
-                        href={`/home/assignments/${id}`}
+                        href={`${ASSIGNMENTS_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')} // Show full text on hover
                     >

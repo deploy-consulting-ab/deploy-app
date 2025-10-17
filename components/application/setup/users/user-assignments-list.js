@@ -48,7 +48,6 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const removeAssignment = async (permissionSetId) => {

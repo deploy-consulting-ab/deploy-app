@@ -37,7 +37,6 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const handleUserSelect = async (user) => {

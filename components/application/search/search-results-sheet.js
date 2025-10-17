@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import Link from 'next/link';
 import { ClipboardList, TrendingUp } from 'lucide-react';
+import { OPPORTUNITIES_ROUTE, ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 function SearchResultsTable({ data, onNavigate }) {
     const columns = [
@@ -31,8 +32,8 @@ function SearchResultsTable({ data, onNavigate }) {
 
                 const href =
                     type === 'Opportunity'
-                        ? `/home/opportunities/${id}`
-                        : `/home/assignments/${id}`;
+                        ? `${OPPORTUNITIES_ROUTE}/${id}`
+                        : `${ASSIGNMENTS_ROUTE}/${id}`;
 
                 return (
                     <Link

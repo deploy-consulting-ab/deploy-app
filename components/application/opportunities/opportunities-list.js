@@ -20,6 +20,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { getOpportunityStageColor } from '@/lib/utils';
 import Link from 'next/link';
+import { OPPORTUNITIES_ROUTE } from '@/menus/routes'; 
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
     const router = useRouter();
@@ -36,11 +37,10 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const handleOpportunityClick = (id) => {
-        router.push(`/home/opportunities/${id}`);
+        router.push(`${OPPORTUNITIES_ROUTE}/${id}`);
     };
 
     const views = [
@@ -74,7 +74,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                 const id = row.original.id;
                 return (
                     <Link
-                        href={`/home/opportunities/${id}`}
+                        href={`${OPPORTUNITIES_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >

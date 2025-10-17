@@ -54,7 +54,6 @@ export function PermissionsListComponent({ permissions, error: initialError }) {
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const deletePermission = async (id) => {

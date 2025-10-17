@@ -49,7 +49,6 @@ export function UsersListComponent({ users, error: initialError }) {
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const handleSuccess = () => {

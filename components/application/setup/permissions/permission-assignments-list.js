@@ -28,7 +28,6 @@ export function PermissionAssignmentsListComponent({
         } catch (err) {
             setError(err);
         }
-        return freshData;
     };
 
     const views = [
