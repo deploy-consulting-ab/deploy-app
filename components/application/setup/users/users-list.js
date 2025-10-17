@@ -225,10 +225,6 @@ export function UsersListComponent({ users, error: initialError }) {
         },
     ];
 
-    if (error) {
-        return <ErrorDisplayComponent error={error} />;
-    }
-
     const actionButton = (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -247,6 +243,10 @@ export function UsersListComponent({ users, error: initialError }) {
             </DialogContent>
         </Dialog>
     );
+
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
+    }
 
     return (
         <DatatableWrapperComponent
