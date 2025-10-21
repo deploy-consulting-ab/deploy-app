@@ -8,6 +8,7 @@ import { useRef, useEffect, useState } from 'react';
 export function AllPermissionsCardComponent({ user }) {
     const [isScrollable, setIsScrollable] = useState(false);
     const contentRef = useRef(null);
+
     useEffect(() => {
         const checkScrollable = () => {
             if (contentRef.current) {
@@ -21,6 +22,7 @@ export function AllPermissionsCardComponent({ user }) {
         window.addEventListener('resize', checkScrollable);
         return () => window.removeEventListener('resize', checkScrollable);
     }, [user.allPermissions]);
+
     return (
         <Card className="col-span-1 py-6">
             <CardHeader>
