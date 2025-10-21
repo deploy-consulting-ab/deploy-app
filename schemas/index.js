@@ -46,6 +46,12 @@ export const UpdateProfileSchema = z.object({
 });
 
 export const UpdatePermissionSetSchema = z.object({
+    name: z.string().min(1, {
+        message: 'Name is required',
+    }),
+    id: z.string().min(1, {
+        message: 'ID is required',
+    }),
     description: z.string().min(1, {
         message: 'Description is required',
     }),

@@ -11,7 +11,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { deletePermissionSetAction, updatePermissionSetAction } from '@/actions/database/permissionset-actions';
+import {
+    deletePermissionSetAction,
+    updatePermissionSetAction,
+} from '@/actions/database/permissionset-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { useRouter } from 'next/navigation';
 import { PermissionSetEditForm } from '@/components/application/setup/permission-sets/permissionset-edit-form';
@@ -26,7 +29,13 @@ export function PermissionSetCardActionsComponent({ permissionSet }) {
     const handleSubmit = async (data) => {
         try {
             await updatePermissionSetAction(permissionSet.id, data);
-            router.refresh(); // This will trigger a server-side rerender
+
+            // Id the ID changes, redirect to the new permission set page
+            if (data.id !== permissionSet.id) {
+                router.push(`${PERMISSION_SETS_ROUTE}/${data.id}`);
+            } else {
+                router.refresh(); // This will trigger a server-side rerender
+            }
             toastRichSuccess({
                 message: 'Permission Set updated!',
             });
@@ -89,8 +98,8 @@ export function PermissionSetCardActionsComponent({ permissionSet }) {
                     <DialogHeader>
                         <DialogTitle>Delete Permission Set</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete {permissionSet.name}? This action cannot be
-                            undone.
+                            Are you sure you want to delete {permissionSet.name}? This action cannot
+                            be undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

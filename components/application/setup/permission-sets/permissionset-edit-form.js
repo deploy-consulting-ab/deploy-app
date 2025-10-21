@@ -24,6 +24,8 @@ export function PermissionSetEditForm({ permissionSet, onSubmit, onEditingChange
     const form = useForm({
         defaultValues: {
             description: permissionSet.description,
+            name: permissionSet.name,
+            id: permissionSet.id,
         },
     });
 
@@ -71,6 +73,34 @@ export function PermissionSetEditForm({ permissionSet, onSubmit, onEditingChange
         <>
             <Form {...form}>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Permission Set Name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Permission Set ID</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField
                         control={form.control}
                         name="description"

@@ -78,9 +78,7 @@ export async function updatePermissionSet(id, data) {
     try {
         const permissionSet = await db.permissionSet.update({
             where: { id },
-            data: {
-                description: data.description,
-            },
+            data: data,
             include: {
                 permissions: true,
                 users: true,

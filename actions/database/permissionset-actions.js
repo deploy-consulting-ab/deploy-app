@@ -77,9 +77,8 @@ export async function updatePermissionSetAction(id, data) {
             throw new Error('Invalid fields');
         }
 
-        const { description } = validatedFields.data;
-
-        return await updatePermissionSet(id, { description });
+        const payload = validatedFields.data;
+        return await updatePermissionSet(id, payload);
     } catch (error) {
         throw error;
     }
