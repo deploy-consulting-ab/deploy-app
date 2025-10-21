@@ -16,8 +16,7 @@ import { CreateSystemPermissionSchema } from '@/schemas';
  */
 export async function getSystemPermissionsAction() {
     try {
-        const permissions = await getSystemPermissions();
-        return permissions;
+        return await getSystemPermissions();
     } catch (error) {
         throw error;
     }
@@ -31,8 +30,7 @@ export async function getSystemPermissionsAction() {
  */
 export async function getSystemPermissionByIdAction(id) {
     try {
-        const permission = await getSystemPermissionById(id);
-        return permission;
+        return await getSystemPermissionById(id);
     } catch (error) {
         throw error;
     }
@@ -89,7 +87,6 @@ export async function createSystemPermissionAction(data) {
  */
 export async function deleteSystemPermissionAction(id) {
     try {
-        await deleteSystemPermission(id);
         return await deleteSystemPermission(id);
     } catch (error) {
         throw error;
@@ -103,8 +100,7 @@ export async function deleteSystemPermissionAction(id) {
  */
 export async function getTotalSystemPermissionsCountAction() {
     try {
-        const totalPermissionsCount = await getTotalSystemPermissionsCount();
-        return totalPermissionsCount;
+        return await getTotalSystemPermissionsCount();
     } catch (error) {
         throw error;
     }
@@ -119,8 +115,7 @@ export async function getTotalSystemPermissionsCountAction() {
  */
 export async function updateSystemPermissionAction(id, data) {
     try {
-        const permission = await updateSystemPermission(id, data);
-        return permission;
+        return await updateSystemPermission(id, data);
     } catch (error) {
         throw error;
     }
