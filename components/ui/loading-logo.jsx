@@ -4,7 +4,7 @@ import './loading-logo.css';
 
 const LoadingLogo = ({ className = '' }) => {
   return (
-    <div className="flex items-center justify-center w-full min-h-[200px]">
+    <div className="flex items-center justify-center w-full h-screen">
       <svg
         id="Layer_2"
         data-name="Layer 2"
