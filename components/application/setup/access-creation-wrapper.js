@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { PermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/permissions-editable-card';
+import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
 import { useState, useMemo } from 'react';
 import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
 import { FormError } from '@/components/auth/form/form-error';
@@ -150,7 +150,7 @@ export function AccessCreationWrapperComponent({
                     {permissionError ? (
                         <FormError message={permissionError} />
                     ) : (
-                        <PermissionsEditableCardComponent
+                        <SystemPermissionsEditableCardComponent
                             entityName={form.watch('name') || 'New Entity'}
                             totalPermissions={permissions}
                             onPermissionClick={handlePermissionClick}

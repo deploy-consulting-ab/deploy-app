@@ -13,7 +13,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useEffect, useState, useRef } from 'react';
 
-export function PermissionsEditableCardComponent({
+export function SystemPermissionsEditableCardComponent({
     entityName,
     entityPermissions,
     totalPermissions,

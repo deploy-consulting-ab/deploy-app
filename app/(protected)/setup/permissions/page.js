@@ -1,6 +1,6 @@
 'use server';
 
-import { PermissionsListComponent } from '@/components/application/setup/system-permissions/permissions-list';
+import { SystemPermissionsListComponent } from '@/components/application/setup/system-permissions/system-permissions-list';
 import { getPermissionsAction } from '@/actions/database/permission-actions';
 export default async function PermissionsPage() {
     let permissions = null;
@@ -13,7 +13,7 @@ export default async function PermissionsPage() {
 
     return (
         <div className="py-4">
-            <PermissionsListComponent permissions={permissions} error={error} />
+            <SystemPermissionsListComponent permissions={permissions} error={error} />
         </div>
     );
 }

@@ -29,7 +29,7 @@ import { useTransition } from 'react';
 
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { PermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/permissions-editable-card';
+import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
 
 import { PermissionSetAssignmentsListComponent } from '@/components/application/setup/permission-sets/permissionset-assignments-list';
 
@@ -213,7 +213,7 @@ export function PermissionSetCardComponent({ permissionSet, totalPermissions }) 
             </Card>
 
             {/* Permissions Card */}
-            <PermissionsEditableCardComponent
+            <SystemPermissionsEditableCardComponent
                 entityName="Permission Set"
                 entityPermissions={currentPermissions}
                 totalPermissions={totalPermissions}

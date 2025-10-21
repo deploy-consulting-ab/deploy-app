@@ -9,7 +9,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getPermissionAssignmentsByIdAction } from '@/actions/database/permission-actions';
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 
-export function PermissionAssignmentsListComponent({
+export function SystemPermissionAssignmentsListComponent({
     allPermissionAssignments,
     error: initialError,
 

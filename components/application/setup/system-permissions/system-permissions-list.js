@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 
-export function PermissionsListComponent({ permissions, error: initialError }) {
+export function SystemPermissionsListComponent({ permissions, error: initialError }) {
     const [permissionsData, setPermissionsData] = useState(permissions);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);

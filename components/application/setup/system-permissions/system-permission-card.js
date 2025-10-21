@@ -22,9 +22,9 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { PermissionAssignmentsListComponent } from '@/components/application/setup/system-permissions/permission-assignments-list';
+import { SystemPermissionAssignmentsListComponent } from '@/components/application/setup/system-permissions/system-permission-assignments-list';
 
-export function PermissionCardComponent({ permission }) {
+export function SystemPermissionCardComponent({ permission }) {
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -107,7 +107,7 @@ export function PermissionCardComponent({ permission }) {
 
             {/** Add a datatable displaying all the users in the permission, add an action button to add a new user to the permission*/}
             <div className="col-span-2">
-                <PermissionAssignmentsListComponent
+                <SystemPermissionAssignmentsListComponent
                     allPermissionAssignments={permission.allPermissionAssignments}
                     permissionId={permission.id}
                 />

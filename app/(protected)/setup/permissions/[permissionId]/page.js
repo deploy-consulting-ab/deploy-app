@@ -1,6 +1,6 @@
 'use server';
 
-import { PermissionCardComponent } from '@/components/application/setup/system-permissions/permission-card';
+import { SystemPermissionCardComponent } from '@/components/application/setup/system-permissions/system-permission-card';
 import { getPermissionAssignmentsByIdAction } from '@/actions/database/permission-actions';
 
 export default async function PermissionPage({ params }) {
@@ -17,7 +17,7 @@ export default async function PermissionPage({ params }) {
 
     return (
         <div className="py-4">
-            <PermissionCardComponent error={error} permission={permission} />
+            <SystemPermissionCardComponent error={error} permission={permission} />
         </div>
     );
 }
