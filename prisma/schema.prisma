@@ -48,6 +48,7 @@ model User {
     profileId       String          @default("deploy_consultant")
     permissionSets  PermissionSet[] 
     accounts        Account[]
+    isActive        Boolean         @default(true)
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt

@@ -93,6 +93,7 @@ export async function getUsers() {
                 email: true,
                 employeeNumber: true,
                 profileId: true,
+                isActive: true,
             },
             orderBy: {
                 name: 'asc',
