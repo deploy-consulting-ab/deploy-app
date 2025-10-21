@@ -23,6 +23,8 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
 
     const form = useForm({
         defaultValues: {
+            name: permission.name,
+            id: permission.id,
             description: permission.description,
         },
     });
@@ -70,6 +72,34 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
         <>
             <Form {...form}>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Permission Name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Enter permission name" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Permission ID</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Enter permission id" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <FormField
                         control={form.control}
                         name="description"

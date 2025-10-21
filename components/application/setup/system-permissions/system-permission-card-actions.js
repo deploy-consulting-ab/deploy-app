@@ -24,13 +24,19 @@ export function SystemPermissionCardActionsComponent({ permission }) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (data) => {
         try {
             await updateSystemPermissionAction(permission.id, data);
-            router.refresh(); // This will trigger a server-side rerender
+
+            // Id the ID changes, redirect to the new permission page
+            if (data.id !== permission.id) {
+                router.push(`${SYSTEM_PERMISSIONS_ROUTE}/${data.id}`);
+            } else {
+                router.refresh(); // This will trigger a server-side rerender
+            }
+
             toastRichSuccess({
                 message: 'System Permission updated!',
             });

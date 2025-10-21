@@ -63,7 +63,11 @@ export async function updateSystemPermission(id, data) {
     try {
         const permission = await db.permission.update({
             where: { id },
-            data,
+            data: data,
+            include: {
+                profiles: true,
+                permissionSets: true,
+            },
         });
         return permission;
     } catch (error) {

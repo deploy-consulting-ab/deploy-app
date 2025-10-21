@@ -8,7 +8,7 @@ import {
     getSystemPermissionAssignmentsById,
     getTotalSystemPermissionsCount,
 } from '@/data/system-permissions-db';
-import { CreateSystemPermissionSchema } from '@/schemas';
+import { CreateSystemPermissionSchema, UpdateSystemPermissionSchema } from '@/schemas';
 /**
  * Get all permissions
  * @returns {Promise<Permission[]>} All permissions
@@ -115,7 +115,14 @@ export async function getTotalSystemPermissionsCountAction() {
  */
 export async function updateSystemPermissionAction(id, data) {
     try {
-        return await updateSystemPermission(id, data);
+        const validatedFields = UpdateSystemPermissionSchema.safeParse(data);
+
+        if (!validatedFields.success) {
+            throw new Error('Invalid fields');
+        }
+
+        const payload = validatedFields.data;
+        return await updateSystemPermission(id, payload);
     } catch (error) {
         throw error;
     }
