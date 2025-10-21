@@ -5,6 +5,7 @@ import {
     deletePermission,
     getPermissionById,
     getPermissionAssignmentsById,
+    getTotalPermissionsCount,
 } from '@/data/permissions-db';
 import { CreatePermissionSchema } from '@/schemas';
 /**
@@ -92,5 +93,19 @@ export async function deletePermissionAction(id) {
         return { success: 'Permission deleted successfully' };
     } catch (error) {
         return { error: 'Failed to delete permission' };
+    }
+}
+
+/**
+ * Get the total number of permissions
+ * @returns {Promise<number>} The total number of permissions
+ * @throws {Error} If the total number of permissions is not found
+ */
+export async function getTotalPermissionsCountAction() {
+    try {
+        const totalPermissionsCount = await getTotalPermissionsCount();
+        return totalPermissionsCount;
+    } catch (error) {
+        throw error;
     }
 }

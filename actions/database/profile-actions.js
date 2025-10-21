@@ -7,7 +7,8 @@ import {
     addPermissionToProfile,
     removePermissionFromProfile,
     createProfile,
-    deleteProfile
+    deleteProfile,
+    getTotalProfilesCount
 } from '@/data/profile-db';
 
 /**
@@ -124,5 +125,19 @@ export async function deleteProfileAction(id) {
         return { success: 'Profile deleted successfully' };
     } catch (error) {
         return { error: 'Failed to delete profile' };
+    }
+}
+
+/**
+ * Get the total number of profiles
+ * @returns {Promise<number>} The total number of profiles
+ * @throws {Error} If the total number of profiles is not found
+ */
+export async function getTotalProfilesCountAction() {
+    try {
+        const totalProfilesCount = await getTotalProfilesCount();
+        return totalProfilesCount;
+    } catch (error) {
+        throw error;
     }
 }

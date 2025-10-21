@@ -233,3 +233,17 @@ export async function searchPermissionSets(searchTerm) {
         throw error;
     }
 }
+
+/**
+ * Get the total number of permission sets
+ * @returns {Promise<number>} The total number of permission sets
+ * @throws {Error} If the total number of permission sets is not found
+ */
+export async function getTotalPermissionSetsCount() {
+    try {
+        const totalPermissionSetsCount = await db.permissionSet.count();
+        return totalPermissionSetsCount;
+    } catch (error) {
+        throw error;
+    }
+}

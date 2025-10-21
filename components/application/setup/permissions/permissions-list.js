@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserCheck, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, ShieldPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -179,7 +179,7 @@ export function PermissionsListComponent({ permissions, error: initialError }) {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <UserCheck className="h-4 w-4" />
+                    <ShieldPlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">

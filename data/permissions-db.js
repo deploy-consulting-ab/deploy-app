@@ -89,3 +89,17 @@ export async function getPermissionAssignmentsById(permissionId) {
         throw error;
     }
 }
+
+/**
+ * Get the total number of permissions
+ * @returns {Promise<number>} The total number of permissions
+ * @throws {Error} If the total number of permissions is not found
+ */
+export async function getTotalPermissionsCount() {
+    try {
+        const totalPermissionsCount = await db.permission.count();
+        return totalPermissionsCount;
+    } catch (error) {
+        throw error;
+    }
+}

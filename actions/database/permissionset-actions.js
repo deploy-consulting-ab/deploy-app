@@ -10,6 +10,7 @@ import {
     addUserToPermissionSet,
     removeUserFromPermissionSet,
     searchPermissionSets,
+    getTotalPermissionSetsCount,
 } from '@/data/permissionset-db';
 import { UpdatePermissionSetSchema } from '@/schemas';
 
@@ -169,6 +170,20 @@ export async function searchPermissionSetsAction(searchTerm) {
     try {
         const permissionSets = await searchPermissionSets(searchTerm);
         return permissionSets;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get the total number of permission sets
+ * @returns {Promise<number>} The total number of permission sets
+ * @throws {Error} If the total number of permission sets is not found
+ */
+export async function getTotalPermissionSetsCountAction() {
+    try {
+        const totalPermissionSetsCount = await getTotalPermissionSetsCount();
+        return totalPermissionSetsCount;
     } catch (error) {
         throw error;
     }

@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, CirclePlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -197,7 +197,7 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
                 <Button size="sm">
-                    <UserPlus className="h-4 w-4" />
+                    <CirclePlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">

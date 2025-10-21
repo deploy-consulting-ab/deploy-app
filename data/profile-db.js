@@ -46,9 +46,9 @@ export async function createProfile(data) {
         const profile = await db.profile.create({
             data: {
                 ...data,
-                permissions : {
+                permissions: {
                     connect: data.permissions,
-                }
+                },
             },
         });
         return profile;
@@ -133,6 +133,20 @@ export async function removePermissionFromProfile(profileId, permissionId) {
             },
         });
         return profile;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get the total number of profiles
+ * @returns {Promise<number>} The total number of profiles
+ * @throws {Error} If the total number of profiles is not found
+ */
+export async function getTotalProfilesCount() {
+    try {
+        const totalProfilesCount = await db.profile.count();
+        return totalProfilesCount;
     } catch (error) {
         throw error;
     }

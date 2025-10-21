@@ -81,9 +81,9 @@ export const SETUP_MENU_ITEMS_MAP = {
         permission: VIEW_SETUP_PERMISSION,
     },
     permissions: {
-        title: 'Permissions',
+        title: 'System Permissions',
         url: PERMISSIONS_ROUTE,
-        icon: UserCheck,
+        icon: Shield,
         permission: VIEW_SETUP_PERMISSION,
     },
     
