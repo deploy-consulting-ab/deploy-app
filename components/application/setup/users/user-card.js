@@ -28,7 +28,7 @@ export async function UserCardComponent({ user }) {
                             <h3 className="text-sm font-medium">Profile</h3>
                             <Link
                                 href={`/setup/profiles/${user.profileId}`}
-                                className="text-sm text-blue-600 hover:text-blue-800 hover:underline mt-1 block"
+                                className="text-sm dark:text-deploy-ocean text-deploy-blue hover:underline mt-1 block"
                             >
                                 {user.profileId}
                             </Link>
