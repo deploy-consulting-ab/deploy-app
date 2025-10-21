@@ -1,6 +1,6 @@
 'use server';
 
-import { PermissionCardComponent } from '@/components/application/setup/permissions/permission-card';
+import { PermissionCardComponent } from '@/components/application/setup/system-permissions/permission-card';
 import { getPermissionAssignmentsByIdAction } from '@/actions/database/permission-actions';
 
 export default async function PermissionPage({ params }) {

@@ -6,7 +6,7 @@ import { ArrowUpDown, ShieldPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { CreatePermissionComponent } from '@/components/application/setup/permissions/create-permission';
+import { CreatePermissionComponent } from '@/components/application/setup/system-permissions/create-permission';
 import {
     Dialog,
     DialogContent,

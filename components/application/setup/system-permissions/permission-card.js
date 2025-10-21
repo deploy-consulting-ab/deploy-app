@@ -22,7 +22,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { PermissionAssignmentsListComponent } from '@/components/application/setup/permissions/permission-assignments-list';
+import { PermissionAssignmentsListComponent } from '@/components/application/setup/system-permissions/permission-assignments-list';
 
 export function PermissionCardComponent({ permission }) {
     const [isEditing, setIsEditing] = useState(false);
