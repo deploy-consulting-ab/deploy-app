@@ -1,5 +1,5 @@
-import { LoadingSkeleton } from '@/components/application/loading-skeleton';
+import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 
 export default function Loading() {
-    return <LoadingSkeleton />;
+    return <LoadingLogo />;
 }

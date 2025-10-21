@@ -1,4 +1,4 @@
-import LoadingLogo from '@/components/ui/loading-logo';
+import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 
 export default function Loading() {
   return <LoadingLogo />;

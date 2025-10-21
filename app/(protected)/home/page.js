@@ -33,10 +33,6 @@ const refreshActions = {
 };
 
 export default async function HomePage() {
-
-
-    await new Promise((resolve) => setTimeout(resolve, 6000));
-
     const session = await auth();
     const { employeeNumber, profileId } = session.user;
 
