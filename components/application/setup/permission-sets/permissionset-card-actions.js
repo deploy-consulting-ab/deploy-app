@@ -69,7 +69,7 @@ export function PermissionSetCardActionsComponent({ permissionSet }) {
                 variant="outline"
                 className="hover:cursor-pointer"
             >
-                Edit Permission Set
+                Edit
             </Button>
 
             <Button
@@ -77,7 +77,7 @@ export function PermissionSetCardActionsComponent({ permissionSet }) {
                 className="hover:cursor-pointer"
                 onClick={() => setShowDeleteDialog(true)}
             >
-                Delete Permission Set
+                Delete
             </Button>
 
             <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
