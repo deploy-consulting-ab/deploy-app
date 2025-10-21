@@ -66,21 +66,20 @@ export async function createPermissionSetAction(data) {
  * Update a permission set
  * @param {string} id
  * @param {Object} data
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The updated permission set
+ * @throws {Error} If the permission set is not updated
  */
 export async function updatePermissionSetAction(id, data) {
     try {
         const validatedFields = UpdatePermissionSetSchema.safeParse(data);
 
         if (!validatedFields.success) {
-            return { error: 'Invalid fields' };
+            throw new Error('Invalid fields');
         }
 
         const { description } = validatedFields.data;
 
-        await updatePermissionSet(id, { description });
-
-        return { success: 'Permission Set updated!' };
+        return await updatePermissionSet(id, { description });
     } catch (error) {
         throw error;
     }
@@ -89,14 +88,14 @@ export async function updatePermissionSetAction(id, data) {
 /**
  * Delete a permission set
  * @param {string} id
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The deleted permission set
+ * @throws {Error} If the permission set is not deleted
  */
 export async function deletePermissionSetAction(id) {
     try {
-        await deletePermissionSet(id);
-        return { success: 'Permission Set deleted successfully' };
+        return await deletePermissionSet(id);
     } catch (error) {
-        return { error: 'Failed to delete permission set' };
+        throw error;
     }
 }
 
@@ -104,14 +103,14 @@ export async function deletePermissionSetAction(id) {
  * Add a permission to a permission set
  * @param {string} permissionSetId
  * @param {string} permissionId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The updated permission set
+ * @throws {Error} If the permission is not added
  */
 export async function addPermissionToPermissionSetAction(permissionSetId, permissionId) {
     try {
-        await addPermissionToPermissionSet(permissionSetId, permissionId);
-        return { success: 'Permission added successfully' };
+        return await addPermissionToPermissionSet(permissionSetId, permissionId);
     } catch (error) {
-        return { error: 'Failed to add permission' };
+        throw error;
     }
 }
 
@@ -119,14 +118,14 @@ export async function addPermissionToPermissionSetAction(permissionSetId, permis
  * Remove a permission from a permission set
  * @param {string} permissionSetId
  * @param {string} permissionId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The updated permission set
+ * @throws {Error} If the permission is not removed
  */
 export async function removePermissionFromPermissionSetAction(permissionSetId, permissionId) {
     try {
-        await removePermissionFromPermissionSet(permissionSetId, permissionId);
-        return { success: 'Permission removed successfully' };
+        return await removePermissionFromPermissionSet(permissionSetId, permissionId);
     } catch (error) {
-        return { error: 'Failed to remove permission' };
+        throw error;
     }
 }
 
@@ -134,14 +133,14 @@ export async function removePermissionFromPermissionSetAction(permissionSetId, p
  * Add a user to a permission set
  * @param {string} permissionSetId
  * @param {string} userId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The updated permission set
+ * @throws {Error} If the user is not added
  */
 export async function addUserToPermissionSetAction(permissionSetId, userId) {
     try {
-        await addUserToPermissionSet(permissionSetId, userId);
-        return { success: 'User added successfully' };
+        return await addUserToPermissionSet(permissionSetId, userId);
     } catch (error) {
-        return { error: 'Failed to add user' };
+        throw error;
     }
 }
 
@@ -149,14 +148,14 @@ export async function addUserToPermissionSetAction(permissionSetId, userId) {
  * Remove a user from a permission set
  * @param {string} permissionSetId
  * @param {string} userId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<PermissionSet>} The updated permission set
+ * @throws {Error} If the user is not removed
  */
 export async function removeUserFromPermissionSetAction(permissionSetId, userId) {
     try {
-        await removeUserFromPermissionSet(permissionSetId, userId);
-        return { success: 'User removed successfully' };
+        return await removeUserFromPermissionSet(permissionSetId, userId);
     } catch (error) {
-        return { error: 'Failed to remove user' };
+        throw error;
     }
 }
 

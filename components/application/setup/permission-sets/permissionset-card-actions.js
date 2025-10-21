@@ -24,13 +24,15 @@ export function PermissionSetCardActionsComponent({ permissionSet }) {
     const router = useRouter();
 
     const handleSubmit = async (data) => {
-        const response = await updatePermissionSetAction(permissionSet.id, data);
-        if (response.success) {
+        try {
+            await updatePermissionSetAction(permissionSet.id, data);
             router.refresh(); // This will trigger a server-side rerender
             toastRichSuccess({
                 message: 'Permission Set updated!',
             });
             setShowEditDialog(false);
+        } catch (error) {
+            throw error;
         }
     };
 
