@@ -3,6 +3,14 @@ import Google from 'next-auth/providers/google';
 import { LoginSchema } from '@/schemas';
 import { getUserByEmail } from '@/data/user-db';
 import bcryptjs from 'bcryptjs';
+import { CredentialsSignin } from 'next-auth';
+
+class CustomCredentialsSigninError extends CredentialsSignin {
+    constructor(message) {
+        super();
+        this.message = message;
+    }
+}
 
 const authObject = {
     providers: [
@@ -15,9 +23,19 @@ const authObject = {
 
                     const user = await getUserByEmail(email);
 
-                    // No user, or user does not have a password (Google auth)
-                    if (!user || !user.password) {
-                        return null;
+                    // No user
+                    if (!user) {
+                        throw new CustomCredentialsSigninError("User not found");
+                    }
+
+                    // Inactive user
+                    if (!user.isActive) {
+                        throw new CustomCredentialsSigninError("User is inactive");
+                    }
+
+                    // User does not have password (Google auth)
+                    if (!user.password) {
+                        throw new CustomCredentialsSigninError("Please login with Google");
                     }
 
                     const passwordMatch = await bcryptjs.compare(password, user.password);
@@ -25,9 +43,11 @@ const authObject = {
                     if (passwordMatch) {
                         return user;
                     }
+
+                    throw new CustomCredentialsSigninError("Invalid password");
                 }
 
-                return null;
+                throw new CustomCredentialsSigninError("Invalid credentials");
             },
         }),
         Google({

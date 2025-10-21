@@ -18,13 +18,15 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth;
     const user = req.auth?.user;
 
+    console.log('user', user);
+
     const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
     const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
     const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
     // API auth routes
     if (isApiAuthRoute) {
-        return NextResponse.next(); // No action -> Allow access
+        return NextResponse.next();
     }
 
     // Auth routes
@@ -32,12 +34,11 @@ export default auth((req) => {
         if (isLoggedIn) {
             return Response.redirect(new URL(HOME_ROUTE, nextUrl));
         }
-        // Allow access
         return NextResponse.next();
     }
 
-    // Not public and not logged in? -> Redirect to login
-    if (!isPublicRoute && !isLoggedIn) {
+    // Check if user is not logged in or not active
+    if (!isPublicRoute && (!isLoggedIn || !user?.isActive)) {
         let callbackUrl = nextUrl.pathname;
 
         if (nextUrl.search) {

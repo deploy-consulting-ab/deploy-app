@@ -16,7 +16,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 const existingUser = await getUserByEmail(user.email);
 
-                if (!existingUser) {
+                // Add isActive check
+                if (!existingUser || !existingUser.isActive) {
                     return false;
                 }
 
@@ -25,7 +26,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             const existingUser = await getUserById(user.id);
 
-            if (!existingUser) {
+            // Add isActive check
+            if (!existingUser || !existingUser.isActive) {
                 return false;
             }
 
@@ -52,6 +54,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.profileId = token.profileId;
             }
 
+            if (token.isActive) {
+                session.user.isActive = token.isActive;
+            }
+
             // Add impersonation data if present
             if (token.impersonating) {
                 session.user.impersonating = true;
@@ -64,6 +70,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.permissions = token.impersonatedUser.permissions;
                 session.user.image = token.impersonatedUser.image;
+                session.user.isActive = token.impersonatedUser.isActive;
             }
             return session;
         },
@@ -91,6 +98,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.employeeNumber = user.employeeNumber;
                 token.sub = user.id;
                 token.profileId = user.profileId;
+                token.isActive = user.isActive;
             }
             return token;
         },

@@ -38,6 +38,7 @@ export async function startImpersonation(userId) {
                 employeeNumber: targetUser.employeeNumber,
                 permissions: targetPermissions,
                 image: targetUser.image,
+                isActive: targetUser.isActive,
             },
             originalUser: {
                 id: session.user.sessionId,
@@ -47,6 +48,7 @@ export async function startImpersonation(userId) {
                 employeeNumber: session.user.employeeNumber,
                 permissions: session.user.permissions,
                 image: session.user.image,
+                isActive: session.user.isActive,
             }
         };
 
