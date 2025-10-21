@@ -49,7 +49,7 @@ export async function getUsersForProfileAction(profileId) {
 /**
  * Create a user
  * @param {Object} values
- * @returns {Promise<User>} User created
+ * @returns {Promise<User>} The created user
  * @throws {Error} If the user is not created
  */
 export async function createUserAction(values) {
@@ -62,7 +62,7 @@ export async function createUserAction(values) {
         const validatedFields = CreateUserSchema.safeParse(values);
 
         if (!validatedFields.success) {
-            return { error: 'Invalid fields' };
+            throw new Error('Invalid fields');
         }
 
         const { email, password, name, profileId, employeeNumber } = validatedFields.data;
@@ -84,10 +84,10 @@ export async function createUserAction(values) {
         });
 
         if (!createdUser) {
-            return { error: 'Failed to create user' };
+            throw new Error('Failed to create user');
         }
 
-        return { success: 'User registered!' };
+        return createdUser;
     } catch (error) {
         throw error;
     }
@@ -97,7 +97,7 @@ export async function createUserAction(values) {
  * Update a user
  * @param {string} id
  * @param {Object} data
- * @returns {Promise<User>} User updated
+ * @returns {Promise<User>} The updated user
  * @throws {Error} If the user is not updated
  */
 export async function updateUserAction(id, data) {
@@ -105,11 +105,10 @@ export async function updateUserAction(id, data) {
         const validatedFields = UpdateUserSchema.safeParse(data);
 
         if (!validatedFields.success) {
-            return { error: 'Invalid fields' };
+            throw new Error('Invalid fields');
         }
         const validatedData = validatedFields.data;
-        await updateUser(id, validatedData);
-        return { success: 'User updated!' };
+        return await updateUser(id, validatedData);
     } catch (error) {
         throw error;
     }
@@ -133,12 +132,12 @@ export async function getUserByIdWithPermissionsAction(id) {
 /**
  * Delete a user
  * @param {string} id
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<User>} The deleted user
+ * @throws {Error} If the user is not deleted
  */
 export async function deleteUserAction(id) {
     try {
-        await deleteUser(id);
-        return { success: 'User deleted successfully' };
+        return await deleteUser(id);
     } catch (error) {
         throw error;
     }

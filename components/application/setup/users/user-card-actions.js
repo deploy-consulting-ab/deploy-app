@@ -26,13 +26,15 @@ export function UserCardActionsComponent({ user }) {
     const { startImpersonation } = useImpersonation();
 
     const handleSubmit = async (data) => {
-        const response = await updateUserAction(user.id, data);
-        if (response.success) {
+        try {
+            await updateUserAction(user.id, data);
             router.refresh(); // This will trigger a server-side rerender
             toastRichSuccess({
                 message: 'User updated!',
             });
             setShowEditDialog(false);
+        } catch (error) {
+            throw error;
         }
     };
 
@@ -80,7 +82,7 @@ export function UserCardActionsComponent({ user }) {
             >
                 View As
             </Button>
-            
+
             <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
                 Delete User
             </Button>
