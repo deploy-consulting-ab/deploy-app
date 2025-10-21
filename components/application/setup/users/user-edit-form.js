@@ -22,6 +22,7 @@ import { PROFILES } from '@/lib/permissions';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState, useEffect } from 'react';
+import { Switch } from '@/components/ui/switch';
 
 export function UserEditForm({ user, onEditingChange, onSubmit }) {
     const [error, setError] = useState('');
@@ -33,6 +34,7 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
         defaultValues: {
             employeeNumber: user.employeeNumber,
             profileId: user.profileId,
+            isActive: user.isActive,
         },
     });
 
@@ -88,10 +90,7 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                             <FormItem>
                                 <FormLabel>Employee Number</FormLabel>
                                 <FormControl>
-                                    <Input
-                                        {...field}
-                                        placeholder="Enter employee number"
-                                    />
+                                    <Input {...field} placeholder="Enter employee number" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -105,10 +104,7 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Profile</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                >
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger className="hover:cursor-pointer w-full">
                                             <SelectValue placeholder="Select a profile" />
@@ -126,6 +122,25 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                             </FormItem>
                         )}
                     />
+
+                    {/** Is Active */}
+                    <FormField
+                        control={form.control}
+                        name="isActive"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Is Active</FormLabel>
+                                <FormControl>
+                                    <Switch 
+                                        checked={field.value} 
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <div className="flex justify-end gap-4 mt-6">
                         <Button
                             type="button"

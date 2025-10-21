@@ -36,6 +36,7 @@ export const UpdateUserSchema = z.object({
     profileId: z.enum(PROFILES, {
         required_error: 'Profile is required',
     }),
+    isActive: z.boolean().default(true),
 });
 
 export const UpdateProfileSchema = z.object({

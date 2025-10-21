@@ -5,7 +5,8 @@ import { AllPermissionsCardComponent } from '@/components/application/setup/user
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import Link from 'next/link';
-import { UserCardActions } from './user-card-actions';
+import { UserCardActions } from '@/components/application/setup/users/user-card-actions';
+import { Switch } from '@/components/ui/switch';
 
 export async function UserCardComponent({ user }) {
     return (
@@ -31,6 +32,10 @@ export async function UserCardComponent({ user }) {
                             >
                                 {user.profileId}
                             </Link>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium pb-2">Is Active</h3>
+                            <Switch checked={user.isActive} />
                         </div>
                     </div>
                 </CardContent>
