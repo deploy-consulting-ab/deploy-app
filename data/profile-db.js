@@ -66,7 +66,14 @@ export async function createProfile(data) {
  */
 export async function updateProfile(id, data) {
     try {
-        const profile = await db.profile.update({ where: { id }, data });
+        const profile = await db.profile.update({
+            where: { id },
+            data: data,
+            include: {
+                permissions: true,
+                users: true,
+            },
+        });
         return profile;
     } catch (error) {
         throw error;

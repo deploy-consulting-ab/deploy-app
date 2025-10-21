@@ -39,9 +39,8 @@ export async function updateProfileAction(id, data) {
             throw new Error('Invalid fields');
         }
 
-        const { description } = validatedFields.data;
-
-        return await updateProfile(id, { description });
+        const payload = validatedFields.data;
+        return await updateProfile(id, payload);
     } catch (error) {
         throw error;
     }

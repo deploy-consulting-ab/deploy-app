@@ -26,7 +26,14 @@ export function ProfileCardActionsComponent({ profile }) {
     const handleSubmit = async (data) => {
         try {
             await updateProfileAction(profile.id, data);
-            router.refresh(); // This will trigger a server-side rerender
+
+            // Id the ID changes, redirect to the new profile page
+            if (data.id !== profile.id) {
+                router.push(`${PROFILES_ROUTE}/${data.id}`);
+            } else {
+                router.refresh();
+            }
+
             toastRichSuccess({
                 message: 'Profile updated!',
             });
@@ -60,7 +67,7 @@ export function ProfileCardActionsComponent({ profile }) {
                 variant="outline"
                 className="hover:cursor-pointer"
             >
-                Edit Profile
+                Edit
             </Button>
 
             <Button
@@ -68,7 +75,7 @@ export function ProfileCardActionsComponent({ profile }) {
                 className="hover:cursor-pointer"
                 onClick={() => setShowDeleteDialog(true)}
             >
-                Delete Profile
+                Delete
             </Button>
 
             <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>

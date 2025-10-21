@@ -24,6 +24,8 @@ export function ProfileEditForm({ profile, onEditingChange, onSubmit }) {
     const form = useForm({
         defaultValues: {
             description: profile.description,
+            name: profile.name,
+            id: profile.id,
         },
     });
 
@@ -70,6 +72,32 @@ export function ProfileEditForm({ profile, onEditingChange, onSubmit }) {
         <>
             <Form {...form}>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Profile Name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Enter profile name" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Profile ID</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Enter profile id" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="description"
