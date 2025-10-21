@@ -19,7 +19,7 @@ export function SystemPermissionsEditableCardComponent({
     totalPermissions,
     onPermissionClick,
     error,
-    successProp,
+    success,
 }) {
     const permissions = entityPermissions
         ? populatePermissions(entityPermissions, totalPermissions)
@@ -45,7 +45,7 @@ export function SystemPermissionsEditableCardComponent({
     useEffect(() => {
         let fadeOutTimer;
 
-        if (successProp) {
+        if (success) {
             setIsVisible(true);
 
             // Start fade out after 1 second
@@ -57,7 +57,7 @@ export function SystemPermissionsEditableCardComponent({
         return () => {
             clearTimeout(fadeOutTimer);
         };
-    }, [successProp]);
+    }, [success]);
 
     return (
         <Card className="col-span-1">
@@ -111,7 +111,7 @@ export function SystemPermissionsEditableCardComponent({
                         isVisible ? 'opacity-100' : 'opacity-0'
                     }`}
                 >
-                    <FormSuccess message={successProp} />
+                    <FormSuccess message={success} />
                 </div>
             </CardFooter>
         </Card>

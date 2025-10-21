@@ -18,8 +18,7 @@ import {
  */
 export async function getProfilesAction() {
     try {
-        const profiles = await getProfiles();
-        return profiles;
+        return await getProfiles();
     } catch (error) {
         throw error;
     }
@@ -37,7 +36,7 @@ export async function updateProfileAction(id, data) {
         const validatedFields = UpdateProfileSchema.safeParse(data);
 
         if (!validatedFields.success) {
-            return { error: 'Invalid fields' };
+            throw new Error('Invalid fields');
         }
 
         const { description } = validatedFields.data;
@@ -56,8 +55,7 @@ export async function updateProfileAction(id, data) {
  */
 export async function getProfileByIdAction(id) {
     try {
-        const profile = await getProfileById(id);
-        return profile;
+        return await getProfileById(id);
     } catch (error) {
         throw error;
     }
@@ -67,14 +65,14 @@ export async function getProfileByIdAction(id) {
  * Add a permission to a profile
  * @param {string} profileId
  * @param {string} permissionId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<Profile>} The updated profile
+ * @throws {Error} If the permission is not added
  */
 export async function addPermissionToProfileAction(profileId, permissionId) {
     try {
-        await addPermissionToProfile(profileId, permissionId);
-        return { success: 'Permission added successfully' };
+        return await addPermissionToProfile(profileId, permissionId);
     } catch (error) {
-        return { error: 'Failed to add permission' };
+        throw error;
     }
 }
 
@@ -82,14 +80,14 @@ export async function addPermissionToProfileAction(profileId, permissionId) {
  * Remove a permission from a profile
  * @param {string} profileId
  * @param {string} permissionId
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<Profile>} The updated profile
+ * @throws {Error} If the permission is not removed
  */
 export async function removePermissionFromProfileAction(profileId, permissionId) {
     try {
-        await removePermissionFromProfile(profileId, permissionId);
-        return { success: 'Permission removed successfully' };
+        return await removePermissionFromProfile(profileId, permissionId);
     } catch (error) {
-        return { error: 'Failed to remove permission' };
+        throw error;
     }
 }
 
@@ -105,8 +103,7 @@ export async function createProfileAction(data) {
         permissions: data.permissions.map((permission) => ({ id: permission.id })),
     };
     try {
-        const profile = await createProfile(payload);
-        return profile;
+        return await createProfile(payload);
     } catch (error) {
         throw error;
     }
@@ -115,14 +112,14 @@ export async function createProfileAction(data) {
 /**
  * Delete a profile
  * @param {string} id
- * @returns {Promise<{ success: string } | { error: string }>} Success or error message
+ * @returns {Promise<Profile>} The deleted profile
+ * @throws {Error} If the profile is not deleted
  */
 export async function deleteProfileAction(id) {
     try {
-        await deleteProfile(id);
-        return { success: 'Profile deleted successfully' };
+        return await deleteProfile(id);
     } catch (error) {
-        return { error: 'Failed to delete profile' };
+        throw error;
     }
 }
 
@@ -133,8 +130,7 @@ export async function deleteProfileAction(id) {
  */
 export async function getTotalProfilesCountAction() {
     try {
-        const totalProfilesCount = await getTotalProfilesCount();
-        return totalProfilesCount;
+        return await getTotalProfilesCount();
     } catch (error) {
         throw error;
     }

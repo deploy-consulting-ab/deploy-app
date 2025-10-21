@@ -154,7 +154,7 @@ export function AccessCreationWrapperComponent({
                             entityName={form.watch('name') || 'New Entity'}
                             totalPermissions={permissions}
                             onPermissionClick={handlePermissionClick}
-                            successProp={success}
+                            success={success}
                         />
                     )}
 

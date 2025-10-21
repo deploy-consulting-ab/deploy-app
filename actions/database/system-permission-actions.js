@@ -74,11 +74,10 @@ export async function createSystemPermissionAction(data) {
     try {
         const validatedFields = CreateSystemPermissionSchema.safeParse(data);
         if (!validatedFields.success) {
-            return { error: 'Invalid fields' };
+            throw new Error('Invalid fields');
         }
         const validatedData = validatedFields.data;
-        const permission = await createSystemPermission(validatedData);
-        return permission;
+        return await createSystemPermission(validatedData);
     } catch (error) {
         throw error;
     }
@@ -91,9 +90,9 @@ export async function createSystemPermissionAction(data) {
 export async function deleteSystemPermissionAction(id) {
     try {
         await deleteSystemPermission(id);
-        return { success: 'Permission deleted successfully' };
+        return await deleteSystemPermission(id);
     } catch (error) {
-        return { error: 'Failed to delete permission' };
+        throw error;
     }
 }
 

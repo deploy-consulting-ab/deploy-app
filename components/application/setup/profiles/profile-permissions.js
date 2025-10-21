@@ -17,7 +17,7 @@ export function ProfilePermissions({ profile, totalPermissions }) {
     const handlePermissionClick = async (permissionId, isAssigned) => {
         setPermissionSuccess('');
         setPermissionError('');
-        
+
         // Optimistically update the UI
         if (isAssigned) {
             setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
@@ -30,26 +30,11 @@ export function ProfilePermissions({ profile, totalPermissions }) {
 
         startTransition(async () => {
             try {
-                const response = isAssigned
+                isAssigned
                     ? await removePermissionFromProfileAction(profile.id, permissionId)
                     : await addPermissionToProfileAction(profile.id, permissionId);
 
-                if (response.success) {
-                    setPermissionSuccess(response.success);
-                } else {
-                    // Revert the optimistic update on error
-                    if (isAssigned) {
-                        const revertPermission = totalPermissions.find(
-                            (p) => p.id === permissionId
-                        );
-                        if (revertPermission) {
-                            setCurrentPermissions((prev) => [...prev, revertPermission]);
-                        }
-                    } else {
-                        setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
-                    }
-                    setPermissionError(response.error);
-                }
+                setPermissionSuccess('Permission updated successfully');
             } catch (error) {
                 // Revert the optimistic update on error
                 if (isAssigned) {
@@ -60,7 +45,7 @@ export function ProfilePermissions({ profile, totalPermissions }) {
                 } else {
                     setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
                 }
-                setPermissionError('Failed to update permission');
+                setPermissionError(error.message);
             }
         });
     };
@@ -71,7 +56,7 @@ export function ProfilePermissions({ profile, totalPermissions }) {
             entityPermissions={currentPermissions}
             totalPermissions={totalPermissions}
             onPermissionClick={handlePermissionClick}
-            successProp={permissionSuccess}
+            success={permissionSuccess}
             error={permissionError}
         />
     );

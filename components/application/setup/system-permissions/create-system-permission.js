@@ -31,7 +31,7 @@ export function CreateSystemPermissionComponent({ fireSuccess }) {
             await createSystemPermissionAction(data);
             fireSuccess();
         } catch (error) {
-            setError(error.message);
+            throw error;
         } finally {
             setIsSubmitting(false);
         }
