@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
     USERS_ROUTE,
     PROFILES_ROUTE,
-    PERMISSIONS_ROUTE,
+    SYSTEM_PERMISSIONS_ROUTE,
     PERMISSION_SETS_ROUTE,
 } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
@@ -85,7 +85,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                 </Link>
 
                 {/* System Permissions Card */}
-                <Link href={PERMISSIONS_ROUTE} className="block">
+                <Link href={SYSTEM_PERMISSIONS_ROUTE} className="block">
                     <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
                         <CardHeader className="space-y-1">
                             <div className="flex items-center space-x-2">

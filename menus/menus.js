@@ -1,4 +1,4 @@
-import { Home, Calendar, Percent, ClipboardList, TrendingUp, Shield, Users, UserCircle, Box, UserCheck, Settings } from 'lucide-react';
+import { Home, Calendar, Percent, ClipboardList, TrendingUp, Shield, Users, UserCircle, Box, Settings } from 'lucide-react';
 import {
     HOME_ROUTE,
     SETUP_ROUTE,
@@ -6,11 +6,10 @@ import {
     OCCUPANCY_ROUTE,
     ASSIGNMENTS_ROUTE,
     OPPORTUNITIES_ROUTE,
-    ADMIN_ROUTE,
     USERS_ROUTE,
     PROFILES_ROUTE,
     PERMISSION_SETS_ROUTE,
-    PERMISSIONS_ROUTE
+    SYSTEM_PERMISSIONS_ROUTE
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -82,7 +81,7 @@ export const SETUP_MENU_ITEMS_MAP = {
     },
     permissions: {
         title: 'System Permissions',
-        url: PERMISSIONS_ROUTE,
+        url: SYSTEM_PERMISSIONS_ROUTE,
         icon: Shield,
         permission: VIEW_SETUP_PERMISSION,
     },

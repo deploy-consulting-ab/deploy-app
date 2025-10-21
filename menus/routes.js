@@ -31,13 +31,12 @@ export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
-export const ADMIN_ROUTE = `${HOME_ROUTE}/admin`;
 
 export const SETUP_ROUTE = `/setup`;
 export const USERS_ROUTE = `${SETUP_ROUTE}/users`;
 export const PROFILES_ROUTE = `${SETUP_ROUTE}/profiles`;
 export const PERMISSION_SETS_ROUTE = `${SETUP_ROUTE}/permission-sets`;
-export const PERMISSIONS_ROUTE = `${SETUP_ROUTE}/permissions`;
+export const SYSTEM_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/system-permissions`;
 
 export const PROTECTED_ROUTES = [
     { path : HOLIDAYS_ROUTE, permission : VIEW_HOLIDAYS_PERMISSION },
@@ -47,8 +46,7 @@ export const PROTECTED_ROUTES = [
     { path : USERS_ROUTE, permission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_USERS_PERMISSION
     { path : PROFILES_ROUTE, permission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PROFILES_PERMISSION
     { path : PERMISSION_SETS_ROUTE, permission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PERMISSION_SETS_PERMISSION
-    { path : PERMISSIONS_ROUTE, permission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PERMISSIONS_PERMISSION
-    { path : ADMIN_ROUTE, permission : VIEW_SETUP_PERMISSION },
+    { path : SYSTEM_PERMISSIONS_ROUTE, permission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_SYSTEM_PERMISSIONS_PERMISSION
     { path : SETUP_ROUTE, permission : VIEW_SETUP_PERMISSION },
     { path : HOME_ROUTE, permission : VIEW_HOME_PERMISSION },
 ]

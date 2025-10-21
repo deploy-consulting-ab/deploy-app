@@ -180,7 +180,7 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => removeAssignment(row.original.id)}>
-                                Remove Permission Set
+                                Remove Assignment
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

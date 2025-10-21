@@ -1,7 +1,8 @@
-import * as React from 'react';
+'use server';
+
 import { Card, CardHeader, CardAction, CardTitle, CardDescription } from '@/components/ui/card';
 
-export function RecordCardHeaderComponent({ title, description, children }) {
+export async function RecordCardHeaderComponent({ title, description, children }) {
     return (
         <Card>
             <CardHeader>

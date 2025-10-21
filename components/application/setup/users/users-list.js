@@ -22,7 +22,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { getUsersAction, deleteUserAction } from '@/actions/database/user-actions';
-import { USERS_ROUTE } from '@/menus/routes';
+import { HOME_ROUTE, USERS_ROUTE } from '@/menus/routes';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import {
     DropdownMenu,
@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { useImpersonation } from '@/hooks/use-impersonation';
+import { useRouter } from 'next/navigation';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
@@ -39,7 +40,7 @@ export function UsersListComponent({ users, error: initialError }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const { startImpersonation } = useImpersonation();
-
+    const router = useRouter();
     const handleRefresh = async () => {
         let freshData = null;
         try {
@@ -73,12 +74,13 @@ export function UsersListComponent({ users, error: initialError }) {
         }
     };
 
-    const handleImpersonation = async (id) => {
+    const handleImpersonation = async (id, name) => {
         try {
             await startImpersonation(id);
             toastRichSuccess({
-                message: 'Viewing as user',
+                message: `Viewing as ${name}`,
             });
+            router.push(HOME_ROUTE);
         } catch (error) {
             toastRichError({
                 message: error.message,
@@ -214,7 +216,7 @@ export function UsersListComponent({ users, error: initialError }) {
                             <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
                                 Delete User
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleImpersonation(row.original.id)}>
+                            <DropdownMenuItem onClick={() => handleImpersonation(row.original.id, row.original.name)}>
                                 View As User
                             </DropdownMenuItem>
                         </DropdownMenuContent>

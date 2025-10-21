@@ -15,7 +15,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { PERMISSIONS_ROUTE } from '@/menus/routes';
+import { SYSTEM_PERMISSIONS_ROUTE } from '@/menus/routes';
 import {
     getPermissionsAction,
     deletePermissionAction,
@@ -91,7 +91,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
                 const id = row.original.id;
                 return (
                     <Link
-                        href={`${PERMISSIONS_ROUTE}/${id}`}
+                        href={`${SYSTEM_PERMISSIONS_ROUTE}/${id}`}
                         className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
                         title={row.getValue('name')}
                     >
