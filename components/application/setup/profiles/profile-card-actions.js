@@ -24,13 +24,15 @@ export function ProfileCardActionsComponent({ profile }) {
     const router = useRouter();
 
     const handleSubmit = async (data) => {
-        const response = await updateProfileAction(profile.id, data);
-        if (response.success) {
+        try {
+            await updateProfileAction(profile.id, data);
             router.refresh(); // This will trigger a server-side rerender
             toastRichSuccess({
                 message: 'Profile updated!',
             });
             setShowEditDialog(false);
+        } catch (error) {
+            throw error;
         }
     };
 

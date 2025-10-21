@@ -8,7 +8,7 @@ import {
     removePermissionFromProfile,
     createProfile,
     deleteProfile,
-    getTotalProfilesCount
+    getTotalProfilesCount,
 } from '@/data/profile-db';
 
 /**
@@ -42,9 +42,7 @@ export async function updateProfileAction(id, data) {
 
         const { description } = validatedFields.data;
 
-        await updateProfile(id, { description });
-
-        return { success: 'Profile updated!' };
+        return await updateProfile(id, { description });
     } catch (error) {
         throw error;
     }
