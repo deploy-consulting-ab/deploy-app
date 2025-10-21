@@ -11,39 +11,37 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { deleteUserAction, updateUserAction } from '@/actions/database/user-actions';
+import { deleteProfileAction, updateProfileAction } from '@/actions/database/profile-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { useRouter } from 'next/navigation';
-import { UserEditForm } from '@/components/application/setup/users/user-edit-form';
-import { HOME_ROUTE, USERS_ROUTE } from '@/menus/routes';
-import { useImpersonation } from '@/hooks/use-impersonation';
+import { ProfileEditForm } from '@/components/application/setup/profiles/profile-edit-form';
+import { PROFILES_ROUTE } from '@/menus/routes';
 
-export function UserCardActionsComponent({ user }) {
+export function ProfileCardActionsComponent({ profile }) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
-    const { startImpersonation } = useImpersonation();
 
     const handleSubmit = async (data) => {
-        const response = await updateUserAction(user.id, data);
+        const response = await updateProfileAction(profile.id, data);
         if (response.success) {
             router.refresh(); // This will trigger a server-side rerender
             toastRichSuccess({
-                message: 'User updated!',
+                message: 'Profile updated!',
             });
             setShowEditDialog(false);
         }
     };
 
-    const deleteUser = async (id) => {
+    const deleteProfile = async (id) => {
         try {
             setIsDeleting(true);
-            await deleteUserAction(id);
+            await deleteProfileAction(id);
             toastRichSuccess({
-                message: 'User deleted!',
+                message: 'Profile deleted!',
             });
-            router.push(USERS_ROUTE);
+            router.push(PROFILES_ROUTE);
         } catch (error) {
             toastRichError({
                 message: error.message,
@@ -53,48 +51,33 @@ export function UserCardActionsComponent({ user }) {
         }
     };
 
-    const handleImpersonation = async (id, name) => {
-        try {
-            await startImpersonation(id);
-            toastRichSuccess({
-                message: `Viewing as ${name}`,
-            });
-            router.push(HOME_ROUTE);
-        } catch (error) {
-            toastRichError({
-                message: error.message,
-            });
-        }
-    };
-
     return (
-        <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowEditDialog(true)} key="edit">
-                Edit User
+        <div className="flex items-center gap-2">
+            <Button
+                onClick={() => setShowEditDialog(true)}
+                variant="outline"
+                className="hover:cursor-pointer"
+            >
+                Edit Profile
             </Button>
 
             <Button
-                variant="outline"
-                onClick={() => handleImpersonation(user.id, user.name)}
-                key="impersonate"
+                variant="destructive"
+                className="hover:cursor-pointer"
+                onClick={() => setShowDeleteDialog(true)}
             >
-                View As
-            </Button>
-            
-            <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
-                Delete User
+                Delete Profile
             </Button>
 
             <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>Edit the user details.</DialogDescription>
+                        <DialogTitle>Edit Profile</DialogTitle>
                     </DialogHeader>
-                    <UserEditForm
-                        user={user}
-                        onEditingChange={setShowEditDialog}
+                    <ProfileEditForm
+                        profile={profile}
                         onSubmit={handleSubmit}
+                        onEditingChange={setShowEditDialog}
                     />
                 </DialogContent>
             </Dialog>
@@ -102,9 +85,9 @@ export function UserCardActionsComponent({ user }) {
             <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete User</DialogTitle>
+                        <DialogTitle>Delete Profile</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete {user.name}? This action cannot be
+                            Are you sure you want to delete {profile.name}? This action cannot be
                             undone.
                         </DialogDescription>
                     </DialogHeader>
@@ -114,7 +97,7 @@ export function UserCardActionsComponent({ user }) {
                         </Button>
                         <Button
                             variant="destructive"
-                            onClick={() => deleteUser(user.id)}
+                            onClick={() => deleteProfile(profile.id)}
                             disabled={isDeleting}
                         >
                             {isDeleting ? (

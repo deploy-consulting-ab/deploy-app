@@ -23,7 +23,6 @@ export function RelateRecordComponent({ onRecordSelect, placeholder, onSearch })
             }
 
             try {
-                console.log('#### query', query);
                 const results = await onSearch(query);
                 setRecords(results);
             } catch (error) {

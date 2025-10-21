@@ -1,230 +1,47 @@
-'use client';
+'use server';
 
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-} from '@/components/ui/card';
-import {
-    Form,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormControl,
-    FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-    updateProfileAction,
-    addPermissionToProfileAction,
-    removePermissionFromProfileAction,
-} from '@/actions/database/profile-actions';
-import { useTransition } from 'react';
-
-import { FormError } from '@/components/auth/form/form-error';
-import { FormSuccess } from '@/components/auth/form/form-success';
-import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
-
+import { Card, CardContent } from '@/components/ui/card';
+import { ProfilePermissions } from '@/components/application/setup/profiles/profile-permissions';
 import { ProfileAssignmentsListComponent } from '@/components/application/setup/profiles/profile-assignments-list';
+import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
+import { ProfileCardActionsComponent } from '@/components/application/setup/profiles/profile-card-actions';
 
-export function ProfileCardComponent({ profile, totalPermissions }) {
-    const [isEditing, setIsEditing] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [permissionError, setPermissionError] = useState('');
-    const [permissionSuccess, setPermissionSuccess] = useState('');
-    const [isVisible, setIsVisible] = useState(false);
-    const [isPending, startTransition] = useTransition();
-    const [currentPermissions, setCurrentPermissions] = useState(profile.permissions);
-
-    const handlePermissionClick = async (permissionId, isAssigned) => {
-        // Clear any existing success/error messages first
-        setPermissionSuccess('');
-        setPermissionError('');
-        
-        // Optimistically update the UI
-        if (isAssigned) {
-            setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
-        } else {
-            const newPermission = totalPermissions.find((p) => p.id === permissionId);
-            if (newPermission) {
-                setCurrentPermissions((prev) => [...prev, newPermission]);
-            }
-        }
-
-        startTransition(async () => {
-            try {
-                const response = isAssigned
-                    ? await removePermissionFromProfileAction(profile.id, permissionId)
-                    : await addPermissionToProfileAction(profile.id, permissionId);
-
-                if (response.success) {
-                    setPermissionSuccess(response.success);
-                } else {
-                    // Revert the optimistic update on error
-                    if (isAssigned) {
-                        const revertPermission = totalPermissions.find(
-                            (p) => p.id === permissionId
-                        );
-                        if (revertPermission) {
-                            setCurrentPermissions((prev) => [...prev, revertPermission]);
-                        }
-                    } else {
-                        setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
-                    }
-                    setPermissionError(response.error);
-                }
-            } catch (error) {
-                // Revert the optimistic update on error
-                if (isAssigned) {
-                    const revertPermission = totalPermissions.find((p) => p.id === permissionId);
-                    if (revertPermission) {
-                        setCurrentPermissions((prev) => [...prev, revertPermission]);
-                    }
-                } else {
-                    setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
-                }
-                setPermissionError('Failed to update permission');
-            }
-        });
-    };
-
-    // Effect to handle fade out animation
-    useEffect(() => {
-        let fadeOutTimer;
-        let removeTimer;
-
-        if (success) {
-            setIsVisible(true);
-            // Start fade out after 1 second
-            fadeOutTimer = setTimeout(() => {
-                setIsVisible(false);
-                // Remove message after animation completes (0.5s)
-                removeTimer = setTimeout(() => {
-                    setSuccess('');
-                }, 500);
-            }, 1000);
-        }
-
-        return () => {
-            clearTimeout(fadeOutTimer);
-            clearTimeout(removeTimer);
-        };
-    }, [success]);
-
-    const form = useForm({
-        defaultValues: {
-            description: profile.description,
-        },
-    });
-
-    const onSubmit = async (data) => {
-        setSuccess('');
-        setError('');
-        startTransition(async () => {
-            const response = await updateProfileAction(profile.id, data);
-
-            if (response.success) {
-                // Reset form with the submitted values
-                form.reset({
-                    description: data.description,
-                });
-                setSuccess(response.success);
-                setIsEditing(false);
-            } else {
-                setError(response.error);
-            }
-        });
-    };
-
+export async function ProfileCardComponent({ profile, totalPermissions }) {
     return (
         <div className="grid grid-cols-2 gap-6">
-            {/* User Details Card */}
-            <Card className="col-span-1 py-4 h-fit">
-                <CardHeader>
-                    <CardTitle className="text-2xl">{profile.name}</CardTitle>
-                    <CardDescription className="text-base">{profile.id}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                            {/* Profile Description */}
-                            <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Profile Description</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                disabled={!isEditing}
-                                                placeholder="Enter profile description"
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+            <div className="col-span-2">
+                <RecordCardHeaderComponent title={profile.name} description={profile.id}>
+                    <ProfileCardActionsComponent profile={profile} />
+                </RecordCardHeaderComponent>
+            </div>
 
-                            {/* Action Buttons */}
-                            {isEditing ? (
-                                <div className="flex gap-2">
-                                    <Button type="submit" className="hover:cursor-pointer">
-                                        Save Changes
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="hover:cursor-pointer"
-                                        onClick={() => setIsEditing(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </div>
-                            ) : (
-                                <Button
-                                    type="button"
-                                    onClick={() => setIsEditing(true)}
-                                    className="hover:cursor-pointer"
-                                >
-                                    Edit Profile
-                                </Button>
-                            )}
-                        </form>
-                    </Form>
-                </CardContent>
-                <CardFooter>
-                    <FormError message={error} />
-                    <div
-                        className={`transition-opacity duration-500 ease-in-out ${
-                            isVisible ? 'opacity-100' : 'opacity-0'
-                        }`}
-                    >
-                        <FormSuccess message={success} />
+            {/* Profile Details Card */}
+            <Card className="col-span-1 py-6">
+                <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="text-sm font-medium">Profile Name</h3>
+                            <p className="text-sm text-gray-500">{profile.name}</p>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium">Profile ID</h3>
+                            <p className="text-sm text-gray-500">{profile.id}</p>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium">Profile Description</h3>
+                            <p className="text-sm text-gray-500">{profile.description}</p>
+                        </div>
                     </div>
-                </CardFooter>
+                </CardContent>
             </Card>
 
             {/* Permissions Card */}
-            <SystemPermissionsEditableCardComponent
-                entityName="Profile"
-                entityPermissions={currentPermissions}
-                totalPermissions={totalPermissions}
-                onPermissionClick={handlePermissionClick}
-                successProp={permissionSuccess}
-                error={permissionError}
-            />
-            {/** Add a datatable displaying all the users in the profile, add an action button to add a new user to the profile*/}
+            <ProfilePermissions profile={profile} totalPermissions={totalPermissions} />
+
+            {/* Users in Profile List */}
             <div className="col-span-2">
                 <ProfileAssignmentsListComponent users={profile.users} profileId={profile.id} />
             </div>
         </div>
-    );  
+    );
 }

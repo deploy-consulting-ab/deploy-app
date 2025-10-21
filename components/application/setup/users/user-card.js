@@ -5,7 +5,7 @@ import { AllPermissionsCardComponent } from '@/components/application/setup/user
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import Link from 'next/link';
-import { UserCardActions } from '@/components/application/setup/users/user-card-actions';
+import { UserCardActionsComponent } from '@/components/application/setup/users/user-card-actions';
 import { Switch } from '@/components/ui/switch';
 
 export async function UserCardComponent({ user }) {
@@ -13,7 +13,7 @@ export async function UserCardComponent({ user }) {
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
                 <RecordCardHeaderComponent title={user.name} description={user.email}>
-                    <UserCardActions user={user} />
+                    <UserCardActionsComponent user={user} />
                 </RecordCardHeaderComponent>
             </div>
             {/* User Details Card */}
