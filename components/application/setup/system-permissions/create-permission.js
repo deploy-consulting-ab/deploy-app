@@ -17,7 +17,7 @@ import { FormError } from '@/components/auth/form/form-error';
 import { useForm } from 'react-hook-form';
 import { CreatePermissionSchema } from '@/schemas';
 
-export function CreatePermissionComponent({ fireSuccess }) {
+export function CreateSystemPermissionComponent({ fireSuccess }) {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');

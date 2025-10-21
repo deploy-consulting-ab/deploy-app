@@ -6,7 +6,7 @@ import { ArrowUpDown, ShieldPlus, MoreHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
-import { CreatePermissionComponent } from '@/components/application/setup/system-permissions/create-permission';
+import { CreateSystemPermissionComponent } from '@/components/application/setup/system-permissions/create-permission';
 import {
     Dialog,
     DialogContent,
@@ -184,12 +184,12 @@ export function PermissionsListComponent({ permissions, error: initialError }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>Create new permission</DialogTitle>
+                    <DialogTitle>Create new system permission</DialogTitle>
                     <DialogDescription>
-                        Fill in the details to create a new permission.
+                        Fill in the details to create a new system permission.
                     </DialogDescription>
                 </DialogHeader>
-                <CreatePermissionComponent fireSuccess={handleSuccess} />
+                <CreateSystemPermissionComponent fireSuccess={handleSuccess} />
             </DialogContent>
         </Dialog>
     );
