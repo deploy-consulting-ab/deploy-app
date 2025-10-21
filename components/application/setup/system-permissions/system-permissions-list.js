@@ -17,9 +17,9 @@ import {
 } from '@/components/ui/dialog';
 import { SYSTEM_PERMISSIONS_ROUTE } from '@/menus/routes';
 import {
-    getPermissionsAction,
-    deletePermissionAction,
-} from '@/actions/database/permission-actions';
+    getSystemPermissionsAction,
+    deleteSystemPermissionAction,
+} from '@/actions/database/system-permission-actions';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -48,7 +48,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
     const doRefresh = async () => {
         let freshData = null;
         try {
-            freshData = await getPermissionsAction();
+            freshData = await getSystemPermissionsAction();
             setPermissionsData(freshData);
             setError(null);
         } catch (err) {
@@ -56,9 +56,9 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
         }
     };
 
-    const deletePermission = async (id) => {
+    const deleteSystemPermission = async (id) => {
         try {
-            await deletePermissionAction(id);
+            await deleteSystemPermissionAction(id);
             await doRefresh();
             toastRichSuccess({
                 message: 'Permission deleted!',
@@ -161,7 +161,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deletePermission(row.original.id)}>
+                            <DropdownMenuItem onClick={() => deleteSystemPermission(row.original.id)}>
                                 Delete Permission
                             </DropdownMenuItem>
                         </DropdownMenuContent>

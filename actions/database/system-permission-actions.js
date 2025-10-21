@@ -1,21 +1,22 @@
 'use server';
 import {
-    getPermissions,
-    createPermission,
-    deletePermission,
-    getPermissionById,
-    getPermissionAssignmentsById,
-    getTotalPermissionsCount,
-} from '@/data/permissions-db';
-import { CreatePermissionSchema } from '@/schemas';
+    getSystemPermissions,
+    createSystemPermission,
+    updateSystemPermission,
+    deleteSystemPermission,
+    getSystemPermissionById,
+    getSystemPermissionAssignmentsById,
+    getTotalSystemPermissionsCount,
+} from '@/data/system-permissions-db';
+import { CreateSystemPermissionSchema } from '@/schemas';
 /**
  * Get all permissions
  * @returns {Promise<Permission[]>} All permissions
  * @throws {Error} If the permissions are not found
  */
-export async function getPermissionsAction() {
+export async function getSystemPermissionsAction() {
     try {
-        const permissions = await getPermissions();
+        const permissions = await getSystemPermissions();
         return permissions;
     } catch (error) {
         throw error;
@@ -28,18 +29,18 @@ export async function getPermissionsAction() {
  * @returns {Promise<Permission>} The permission
  * @throws {Error} If the permission is not found
  */
-export async function getPermissionByIdAction(id) {
+export async function getSystemPermissionByIdAction(id) {
     try {
-        const permission = await getPermissionById(id);
+        const permission = await getSystemPermissionById(id);
         return permission;
     } catch (error) {
         throw error;
     }
 }
 
-export async function getPermissionAssignmentsByIdAction(id) {
+export async function getSystemPermissionAssignmentsByIdAction(id) {
     try {
-        const permissionAssignments = await getPermissionAssignmentsById(id);
+        const permissionAssignments = await getSystemPermissionAssignmentsById(id);
 
         const allPermissionAssignments = [
             ...permissionAssignments.profiles.map((profile) => {
@@ -69,14 +70,14 @@ export async function getPermissionAssignmentsByIdAction(id) {
  * @returns {Promise<Permission>} The created permission
  * @throws {Error} If the permission is not created
  */
-export async function createPermissionAction(data) {
+export async function createSystemPermissionAction(data) {
     try {
-        const validatedFields = CreatePermissionSchema.safeParse(data);
+        const validatedFields = CreateSystemPermissionSchema.safeParse(data);
         if (!validatedFields.success) {
             return { error: 'Invalid fields' };
         }
         const validatedData = validatedFields.data;
-        const permission = await createPermission(validatedData);
+        const permission = await createSystemPermission(validatedData);
         return permission;
     } catch (error) {
         throw error;
@@ -87,9 +88,9 @@ export async function createPermissionAction(data) {
  * @param {string} id
  * @returns {Promise<{ success: string } | { error: string }>} Success or error message
  */
-export async function deletePermissionAction(id) {
+export async function deleteSystemPermissionAction(id) {
     try {
-        await deletePermission(id);
+        await deleteSystemPermission(id);
         return { success: 'Permission deleted successfully' };
     } catch (error) {
         return { error: 'Failed to delete permission' };
@@ -101,10 +102,26 @@ export async function deletePermissionAction(id) {
  * @returns {Promise<number>} The total number of permissions
  * @throws {Error} If the total number of permissions is not found
  */
-export async function getTotalPermissionsCountAction() {
+export async function getTotalSystemPermissionsCountAction() {
     try {
-        const totalPermissionsCount = await getTotalPermissionsCount();
+        const totalPermissionsCount = await getTotalSystemPermissionsCount();
         return totalPermissionsCount;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update a permission
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<Permission>} The updated permission
+ * @throws {Error} If the permission is not updated
+ */
+export async function updateSystemPermissionAction(id, data) {
+    try {
+        const permission = await updateSystemPermission(id, data);
+        return permission;
     } catch (error) {
         throw error;
     }

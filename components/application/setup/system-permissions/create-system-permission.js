@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { createPermissionAction } from '@/actions/database/permission-actions';
+import { createSystemPermissionAction } from '@/actions/database/system-permission-actions';
 import {
     Form,
     FormField,
@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/form/form-error';
 import { useForm } from 'react-hook-form';
-import { CreatePermissionSchema } from '@/schemas';
+import { CreateSystemPermissionSchema } from '@/schemas';
 
 export function CreateSystemPermissionComponent({ fireSuccess }) {
     const [error, setError] = useState('');
@@ -28,7 +28,7 @@ export function CreateSystemPermissionComponent({ fireSuccess }) {
         setIsSubmitting(true);
 
         try {
-            await createPermissionAction(data);
+            await createSystemPermissionAction(data);
             fireSuccess();
         } catch (error) {
             setError(error.message);
@@ -38,7 +38,7 @@ export function CreateSystemPermissionComponent({ fireSuccess }) {
     };
 
     const form = useForm({
-        resolver: zodResolver(CreatePermissionSchema),
+        resolver: zodResolver(CreateSystemPermissionSchema),
         defaultValues: {
             name: '',
             description: '',

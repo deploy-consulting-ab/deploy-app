@@ -2,7 +2,7 @@
 
 import { ProfileCardComponent } from '@/components/application/setup/profiles/profile-card';
 import { getProfileByIdAction } from '@/actions/database/profile-actions';
-import { getPermissionsAction } from '@/actions/database/permission-actions';
+import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 
 export default async function ProfilePage({ params }) {
     const { profileId } = await params;
@@ -13,7 +13,7 @@ export default async function ProfilePage({ params }) {
 
     try {
         profile = await getProfileByIdAction(profileId);
-        totalPermissions = await getPermissionsAction();
+        totalPermissions = await getSystemPermissionsAction();
     } catch (err) {
         error = err;
     }

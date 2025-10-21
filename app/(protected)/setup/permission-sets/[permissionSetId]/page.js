@@ -2,7 +2,7 @@
 
 import { PermissionSetCardComponent } from '@/components/application/setup/permission-sets/permissionset-card';
 import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';
-import { getPermissionsAction } from '@/actions/database/permission-actions';
+import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 
 export default async function PermissionSetPage({ params }) {
     const { permissionSetId } = await params;
@@ -13,7 +13,7 @@ export default async function PermissionSetPage({ params }) {
 
     try {
         permissionSet = await getPermissionSetByIdAction(permissionSetId);
-        totalPermissions = await getPermissionsAction();
+        totalPermissions = await getSystemPermissionsAction();
     } catch (err) {
         error = err;
     }

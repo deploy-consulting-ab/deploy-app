@@ -1,7 +1,7 @@
 'use client';
 
 import { AccessCreationWrapperComponent } from '@/components/application/setup/access-creation-wrapper';
-import { getPermissionsAction } from '@/actions/database/permission-actions';
+import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 import { useState, useEffect } from 'react';
 import { createPermissionSetAction } from '@/actions/database/permissionset-actions';
 
@@ -12,7 +12,7 @@ export function CreatePermissionSetComponent({ fireSuccess }) {
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
-                const permissions = await getPermissionsAction();
+                const permissions = await getSystemPermissionsAction();
                 setTotalPermissions(permissions);
                 setError('');
             } catch (err) {

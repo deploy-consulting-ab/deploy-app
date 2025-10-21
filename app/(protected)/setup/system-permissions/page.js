@@ -1,12 +1,12 @@
 'use server';
 
 import { SystemPermissionsListComponent } from '@/components/application/setup/system-permissions/system-permissions-list';
-import { getPermissionsAction } from '@/actions/database/permission-actions';
+import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 export default async function PermissionsPage() {
     let permissions = null;
     let error = null;
     try {
-        permissions = await getPermissionsAction();
+        permissions = await getSystemPermissionsAction();
     } catch (err) {
         error = err;
     }

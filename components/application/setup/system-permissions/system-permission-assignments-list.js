@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { getPermissionAssignmentsByIdAction } from '@/actions/database/permission-actions';
+import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 
 export function SystemPermissionAssignmentsListComponent({
@@ -21,7 +21,7 @@ export function SystemPermissionAssignmentsListComponent({
     const handleRefresh = async () => {
         let freshData = null;
         try {
-            const permission = await getPermissionAssignmentsByIdAction(permissionId);
+            const permission = await getSystemPermissionAssignmentsByIdAction(permissionId);
             freshData = permission.allPermissionAssignments;
             setPermissionData(freshData);
             setError(null);

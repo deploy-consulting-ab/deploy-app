@@ -9,7 +9,7 @@ import { db } from '@/lib/db';
  * @returns {Promise<Permission[]>} All permissions
  * @throws {Error} If the permissions are not found
  */
-export async function getPermissions() {
+export async function getSystemPermissions() {
     try {
         const permissions = await db.permission.findMany();
         return permissions;
@@ -24,7 +24,7 @@ export async function getPermissions() {
  * @returns {Promise<Permission>} The permission
  * @throws {Error} If the permission is not found
  */
-export async function getPermissionById(id) {
+export async function getSystemPermissionById(id) {
     try {
         const permission = await db.permission.findUnique({
             where: { id },
@@ -41,9 +41,28 @@ export async function getPermissionById(id) {
  * @returns {Promise<Permission>} The created permission
  * @throws {Error} If the permission is not created
  */
-export async function createPermission(data) {
+export async function createSystemPermission(data) {
     try {
         const permission = await db.permission.create({
+            data,
+        });
+        return permission;
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update a permission
+ * @param {string} id
+ * @param {Object} data
+ * @returns {Promise<Permission>} The updated permission
+ * @throws {Error} If the permission is not updated
+ */
+export async function updateSystemPermission(id, data) {
+    try {
+        const permission = await db.permission.update({
+            where: { id },
             data,
         });
         return permission;
@@ -58,7 +77,7 @@ export async function createPermission(data) {
  * @returns {Promise<Permission>} The deleted permission
  * @throws {Error} If the permission is not deleted
  */
-export async function deletePermission(id) {
+export async function deleteSystemPermission(id) {
     try {
         const permission = await db.permission.delete({
             where: { id },
@@ -75,7 +94,7 @@ export async function deletePermission(id) {
  * @returns {Promise<{profiles: Profile[], permissionSets: PermissionSet[]}>} The profiles and permission sets that use this permission
  * @throws {Error} If the permission assignments are not found
  */
-export async function getPermissionAssignmentsById(permissionId) {
+export async function getSystemPermissionAssignmentsById(permissionId) {
     try {
         const permission = await db.permission.findUnique({
             where: { id: permissionId },
@@ -95,7 +114,7 @@ export async function getPermissionAssignmentsById(permissionId) {
  * @returns {Promise<number>} The total number of permissions
  * @throws {Error} If the total number of permissions is not found
  */
-export async function getTotalPermissionsCount() {
+export async function getTotalSystemPermissionsCount() {
     try {
         const totalPermissionsCount = await db.permission.count();
         return totalPermissionsCount;
