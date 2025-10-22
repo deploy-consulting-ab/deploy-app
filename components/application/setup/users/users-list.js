@@ -33,6 +33,7 @@ import {
 import { MoreHorizontal } from 'lucide-react';
 import { useImpersonation } from '@/hooks/use-impersonation';
 import { useRouter } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
@@ -194,6 +195,32 @@ export function UsersListComponent({ users, error: initialError }) {
                 return (
                     <div className="truncate" title={row.getValue('profileId')}>
                         {row.getValue('profileId')}
+                    </div>
+                );
+            },
+        },
+        {
+            accessorKey: 'isActive',
+            size: 120,
+            minSize: 100,
+            maxSize: 150, // Responsive size for dates
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="large"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Active
+                        <ArrowUpDown />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                const isActive = row.original.isActive;
+                return (
+                    <div className="flex items-start gap-3">
+                        <Checkbox id="toggle" checked={isActive} disabled={!isActive} />
                     </div>
                 );
             },

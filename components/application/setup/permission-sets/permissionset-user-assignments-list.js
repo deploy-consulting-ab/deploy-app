@@ -29,6 +29,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export function PermissionSetAssignmentsListComponent({
     users,
@@ -166,6 +167,32 @@ export function PermissionSetAssignmentsListComponent({
                     {row.getValue('employeeNumber')}
                 </div>
             ),
+        },
+        {
+            accessorKey: 'isActive',
+            size: 120,
+            minSize: 100,
+            maxSize: 150, // Responsive size for dates
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="large"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Active
+                        <ArrowUpDown />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                const isActive = row.original.isActive;
+                return (
+                    <div className="flex items-start gap-3">
+                        <Checkbox id="toggle" checked={isActive} disabled={!isActive} />
+                    </div>
+                );
+            },
         },
 
         {

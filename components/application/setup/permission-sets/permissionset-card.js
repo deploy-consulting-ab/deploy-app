@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { PermissionSetPermissions } from '@/components/application/setup/permission-sets/permissionset-permissions';
-import { PermissionSetAssignmentsListComponent } from '@/components/application/setup/permission-sets/permissionset-assignments-list';
+import { PermissionSetAssignmentsListComponent } from '@/components/application/setup/permission-sets/permissionset-user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { PermissionSetCardActionsComponent } from '@/components/application/setup/permission-sets/permissionset-card-actions';
 

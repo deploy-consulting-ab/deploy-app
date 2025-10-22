@@ -129,7 +129,7 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                         name="isActive"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Is Active</FormLabel>
+                                <FormLabel>Active</FormLabel>
                                 <FormControl>
                                     <Switch 
                                         checked={field.value} 

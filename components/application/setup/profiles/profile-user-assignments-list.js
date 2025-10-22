@@ -22,8 +22,9 @@ import {
 import { USERS_ROUTE } from '@/menus/routes';
 import { RelateRecordComponent } from '@/components/application/setup/relate-record';
 import { toastRichSuccess } from '@/lib/toast-library';
+import { Checkbox } from '@/components/ui/checkbox';
 
-export function ProfileAssignmentsListComponent({ users, profileId }) {
+export function ProfileUserAssignmentsListComponent({ users, profileId }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -158,6 +159,32 @@ export function ProfileAssignmentsListComponent({ users, profileId }) {
                     {row.getValue('profileId')}
                 </div>
             ),
+        },
+        {
+            accessorKey: 'isActive',
+            size: 120,
+            minSize: 100,
+            maxSize: 150, // Responsive size for dates
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="large"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Active
+                        <ArrowUpDown />
+                    </Button>
+                );
+            },
+            cell: ({ row }) => {
+                const isActive = row.original.isActive;
+                return (
+                    <div className="flex items-start gap-3">
+                        <Checkbox id="toggle" checked={isActive} disabled={!isActive} />
+                    </div>
+                );
+            },
         },
     ];
 

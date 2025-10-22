@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ProfilePermissions } from '@/components/application/setup/profiles/profile-permissions';
-import { ProfileAssignmentsListComponent } from '@/components/application/setup/profiles/profile-assignments-list';
+import { ProfileUserAssignmentsListComponent } from '@/components/application/setup/profiles/profile-user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { ProfileCardActionsComponent } from '@/components/application/setup/profiles/profile-card-actions';
 
@@ -40,7 +40,7 @@ export async function ProfileCardComponent({ profile, totalSystemPermissions }) 
 
             {/* Users in Profile List */}
             <div className="col-span-2">
-                <ProfileAssignmentsListComponent users={profile.users} profileId={profile.id} />
+                <ProfileUserAssignmentsListComponent users={profile.users} profileId={profile.id} />
             </div>
         </div>
     );

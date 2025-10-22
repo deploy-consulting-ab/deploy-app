@@ -97,9 +97,14 @@ export async function getUsers() {
                 profileId: true,
                 isActive: true,
             },
-            orderBy: {
-                name: 'asc',
-            },
+            orderBy: [
+                {
+                    isActive: 'desc',
+                },
+                {
+                    name: 'desc',
+                },
+            ],
         });
         return users;
     } catch (error) {
@@ -150,7 +155,10 @@ export async function getCombinedSystemPermissionsForUser(id) {
         );
 
         // 4. Combine both lists
-        const allSystemPermissions = [...profileSystemPermissions, ...permissionSetSystemPermissions];
+        const allSystemPermissions = [
+            ...profileSystemPermissions,
+            ...permissionSetSystemPermissions,
+        ];
 
         return allSystemPermissions;
     } catch (error) {

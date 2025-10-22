@@ -6,7 +6,7 @@ import { UserAssignmentsListComponent } from '@/components/application/setup/use
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import Link from 'next/link';
 import { UserCardActionsComponent } from '@/components/application/setup/users/user-card-actions';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export async function UserCardComponent({ user }) {
     return (
@@ -34,8 +34,8 @@ export async function UserCardComponent({ user }) {
                             </Link>
                         </div>
                         <div>
-                            <h3 className="text-sm font-medium pb-2">Is Active</h3>
-                            <Switch checked={user.isActive} />
+                            <h3 className="text-sm font-medium pb-2">Active</h3>
+                            <Checkbox id="toggle" checked={user.isActive} disabled={true} />
                         </div>
                     </div>
                 </CardContent>
