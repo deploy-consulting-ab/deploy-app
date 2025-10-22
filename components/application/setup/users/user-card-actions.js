@@ -75,14 +75,15 @@ export function UserCardActionsComponent({ user }) {
                 Edit User
             </Button>
 
-            <Button
-                variant="outline"
-                onClick={() => handleImpersonation(user.id, user.name)}
-                key="impersonate"
-            >
-                View As
-            </Button>
-
+            {user.isActive && (
+                <Button
+                    variant="outline"
+                    onClick={() => handleImpersonation(user.id, user.name)}
+                    key="impersonate"
+                >
+                    View As
+                </Button>
+            )}
             <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
                 Delete User
             </Button>

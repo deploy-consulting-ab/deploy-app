@@ -204,6 +204,7 @@ export function UsersListComponent({ users, error: initialError }) {
             enableHiding: false,
             maxSize: 10,
             cell: ({ row }) => {
+                const user = row.original;
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -216,9 +217,13 @@ export function UsersListComponent({ users, error: initialError }) {
                             <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
                                 Delete User
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleImpersonation(row.original.id, row.original.name)}>
-                                View As User
-                            </DropdownMenuItem>
+                            {user.isActive && (
+                                <DropdownMenuItem
+                                    onClick={() => handleImpersonation(user.id, user.name)}
+                                >
+                                    View As
+                                </DropdownMenuItem>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
