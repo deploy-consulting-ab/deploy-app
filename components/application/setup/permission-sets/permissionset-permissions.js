@@ -19,10 +19,12 @@ export function PermissionSetPermissions({ permissionSet, totalSystemPermissions
 
     const systemPermissions = useMemo(
         () =>
-            totalSystemPermissions.map((systemPermission) => ({
-                ...systemPermission,
-                assigned: currentSystemPermissions.some((p) => p.id === systemPermission.id),
-            })),
+            totalSystemPermissions
+                .map((systemPermission) => ({
+                    ...systemPermission,
+                    assigned: currentSystemPermissions.some((p) => p.id === systemPermission.id),
+                }))
+                .sort((a, b) => (b.assigned ? 1 : -1)),
         [totalSystemPermissions, currentSystemPermissions]
     );
 
