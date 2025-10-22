@@ -4,8 +4,8 @@ import { UpdateProfileSchema } from '@/schemas';
 import {
     updateProfile,
     getProfileById,
-    addPermissionToProfile,
-    removePermissionFromProfile,
+    addSystemPermissionToProfile,
+    removeSystemPermissionFromProfile,
     createProfile,
     deleteProfile,
     getTotalProfilesCount,
@@ -61,30 +61,30 @@ export async function getProfileByIdAction(id) {
 }
 
 /**
- * Add a permission to a profile
+ * Add a system permission to a profile
  * @param {string} profileId
- * @param {string} permissionId
+ * @param {string} systemPermissionId
  * @returns {Promise<Profile>} The updated profile
  * @throws {Error} If the permission is not added
  */
-export async function addPermissionToProfileAction(profileId, permissionId) {
+export async function addSystemPermissionToProfileAction(profileId, systemPermissionId) {
     try {
-        return await addPermissionToProfile(profileId, permissionId);
+        return await addSystemPermissionToProfile(profileId, systemPermissionId);
     } catch (error) {
         throw error;
     }
 }
 
 /**
- * Remove a permission from a profile
+ * Remove a system permission from a profile
  * @param {string} profileId
- * @param {string} permissionId
+ * @param {string} systemPermissionId
  * @returns {Promise<Profile>} The updated profile
  * @throws {Error} If the permission is not removed
  */
-export async function removePermissionFromProfileAction(profileId, permissionId) {
+export async function removeSystemPermissionFromProfileAction(profileId, systemPermissionId) {
     try {
-        return await removePermissionFromProfile(profileId, permissionId);
+        return await removeSystemPermissionFromProfile(profileId, systemPermissionId);
     } catch (error) {
         throw error;
     }
@@ -99,7 +99,9 @@ export async function removePermissionFromProfileAction(profileId, permissionId)
 export async function createProfileAction(data) {
     const payload = {
         ...data,
-        permissions: data.permissions.map((permission) => ({ id: permission.id })),
+        systemPermissions: data.systemPermissions.map((systemPermission) => ({
+            id: systemPermission.id,
+        })),
     };
     try {
         return await createProfile(payload);

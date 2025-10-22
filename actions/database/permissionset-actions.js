@@ -21,8 +21,7 @@ import { UpdatePermissionSetSchema } from '@/schemas';
  */
 export async function getPermissionSetsAction() {
     try {
-        const permissionSets = await getPermissionSets();
-        return permissionSets;
+        return await getPermissionSets();
     } catch (error) {
         throw error;
     }
@@ -36,8 +35,7 @@ export async function getPermissionSetsAction() {
  */
 export async function getPermissionSetByIdAction(id) {
     try {
-        const permissionSet = await getPermissionSetById(id);
-        return permissionSet;
+        return await getPermissionSetById(id);
     } catch (error) {
         throw error;
     }
@@ -52,11 +50,12 @@ export async function getPermissionSetByIdAction(id) {
 export async function createPermissionSetAction(data) {
     const payload = {
         ...data,
-        permissions: data.permissions.map((permission) => ({ id: permission.id })),
+        systemPermissions: data.systemPermissions.map((systemPermission) => ({
+            id: systemPermission.id,
+        })),
     };
     try {
-        const permissionSet = await createPermissionSet(payload);
-        return permissionSet;
+        return await createPermissionSet(payload);
     } catch (error) {
         throw error;
     }
@@ -77,8 +76,7 @@ export async function updatePermissionSetAction(id, data) {
             throw new Error('Invalid fields');
         }
 
-        const payload = validatedFields.data;
-        return await updatePermissionSet(id, payload);
+        return await updatePermissionSet(id, validatedFields.data);
     } catch (error) {
         throw error;
     }
@@ -166,8 +164,7 @@ export async function removeUserFromPermissionSetAction(permissionSetId, userId)
  */
 export async function searchPermissionSetsAction(searchTerm) {
     try {
-        const permissionSets = await searchPermissionSets(searchTerm);
-        return permissionSets;
+        return await searchPermissionSets(searchTerm);
     } catch (error) {
         throw error;
     }
@@ -180,8 +177,7 @@ export async function searchPermissionSetsAction(searchTerm) {
  */
 export async function getTotalPermissionSetsCountAction() {
     try {
-        const totalPermissionSetsCount = await getTotalPermissionSetsCount();
-        return totalPermissionSetsCount;
+        return await getTotalPermissionSetsCount();
     } catch (error) {
         throw error;
     }

@@ -10,20 +10,22 @@ import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/sys
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 
 export function SystemPermissionAssignmentsListComponent({
-    allPermissionAssignments,
+    allSystemPermissionAssignments,
     error: initialError,
-
-    permissionId,
+    systemPermissionId,
 }) {
-    const [permissionData, setPermissionData] = useState(allPermissionAssignments);
+    const [systemPermissionAssignmentsData, setSystemPermissionAssignmentsData] = useState(
+        allSystemPermissionAssignments
+    );
     const [error, setError] = useState(initialError);
 
     const handleRefresh = async () => {
         let freshData = null;
         try {
-            const permission = await getSystemPermissionAssignmentsByIdAction(permissionId);
-            freshData = permission.allPermissionAssignments;
-            setPermissionData(freshData);
+            const systemPermissionAssignments =
+                await getSystemPermissionAssignmentsByIdAction(systemPermissionId);
+            freshData = systemPermissionAssignments.allSystemPermissionAssignments;
+            setSystemPermissionAssignmentsData(freshData);
             setError(null);
         } catch (err) {
             setError(err);
@@ -146,9 +148,9 @@ export function SystemPermissionAssignmentsListComponent({
 
     return (
         <DatatableWrapperComponent
-            data={permissionData}
+            data={systemPermissionAssignmentsData}
             columns={columns}
-            placeholder="Filter Permission Assignments..."
+            placeholder="Filter System Permission Assignments..."
             refreshAction={handleRefresh}
             searchKey="name"
             defaultView="all"

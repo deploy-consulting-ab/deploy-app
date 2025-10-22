@@ -6,18 +6,18 @@ import { useState, useEffect } from 'react';
 import { createPermissionSetAction } from '@/actions/database/permissionset-actions';
 
 export function CreatePermissionSetComponent({ fireSuccess }) {
-    const [totalPermissions, setTotalPermissions] = useState([]);
+    const [totalSystemPermissions, setTotalSystemPermissions] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchPermissions = async () => {
             try {
-                const permissions = await getSystemPermissionsAction();
-                setTotalPermissions(permissions);
+                const systemPermissions = await getSystemPermissionsAction();
+                setTotalSystemPermissions(systemPermissions);
                 setError('');
             } catch (err) {
                 setError('Failed to fetch permissions: ' + err.message);
-                setTotalPermissions([]);
+                setTotalSystemPermissions([]);
             }
         };
         fetchPermissions();
@@ -35,7 +35,7 @@ export function CreatePermissionSetComponent({ fireSuccess }) {
     return (
         <AccessCreationWrapperComponent
             onSubmit={handleSubmit}
-            totalPermissions={totalPermissions}
+            totalSystemPermissions={totalSystemPermissions}
             namePlaceholder="Deploy Admin Permission"
             descriptionPlaceholder="Access to view setup area"
             idPlaceholder="perm_set_setup_view"

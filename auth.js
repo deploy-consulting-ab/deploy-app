@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
-import { getUserById, getUserByEmail, getCombinedPermissionsForUser } from '@/data/user-db';
+import { getUserById, getUserByEmail, getCombinedSystemPermissionsForUser } from '@/data/user-db';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
@@ -46,8 +46,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.employeeNumber = token.employeeNumber;
             }
 
-            if (token.permissions) {
-                session.user.permissions = token.permissions;
+            if (token.systemPermissions) {
+                session.user.systemPermissions = token.systemPermissions;
             }
 
             if (token.profileId) {
@@ -68,7 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.email = token.impersonatedUser.email;
                 session.user.profileId = token.impersonatedUser.profileId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
-                session.user.permissions = token.impersonatedUser.permissions;
+                session.user.systemPermissions = token.impersonatedUser.systemPermissions;
                 session.user.image = token.impersonatedUser.image;
                 session.user.isActive = token.impersonatedUser.isActive;
             }
@@ -92,9 +92,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
             // Only populated on sign in
             if (user) {
-                const permissions = await getCombinedPermissionsForUser(user.id);
-
-                token.permissions = permissions;
+                const systemPermissions = await getCombinedSystemPermissionsForUser(user.id);
+                
+                token.systemPermissions = systemPermissions;
                 token.employeeNumber = user.employeeNumber;
                 token.sub = user.id;
                 token.profileId = user.profileId;

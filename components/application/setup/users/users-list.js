@@ -11,7 +11,7 @@ import {
     SALES_PROFILE,
     CONSULTANT_PROFILE,
     MANAGEMENT_PROFILE,
-} from '@/lib/permissions';
+} from '@/lib/system-permissions';
 import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 import {
     Dialog,

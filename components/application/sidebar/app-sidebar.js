@@ -25,8 +25,8 @@ export function AppSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
 
-    const permissionsSet = new Set(user?.permissions);    
-    const menuItems = getMenuForProfile(user?.profileId, permissionsSet);
+    const systemPermissionsSet = new Set(user?.systemPermissions);    
+    const menuItems = getMenuForProfile(user?.profileId, systemPermissionsSet);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {

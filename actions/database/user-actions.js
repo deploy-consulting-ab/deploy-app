@@ -5,7 +5,7 @@ import bcryptjs from 'bcryptjs';
 import {
     createUser,
     getUserByEmail,
-    getUserByIdWithPermissions,
+    getUserByIdWithSystemPermissions,
     getUsersForProfile,
     deleteUser,
     searchUsers,
@@ -24,8 +24,7 @@ import { UpdateUserSchema } from '@/schemas';
  */
 export async function getUsersAction() {
     try {
-        const users = await getUsers();
-        return users;
+        return await getUsers();
     } catch (error) {
         throw error;
     }
@@ -39,8 +38,7 @@ export async function getUsersAction() {
  */
 export async function getUsersForProfileAction(profileId) {
     try {
-        const users = await getUsersForProfile(profileId);
-        return users;
+        return await getUsersForProfile(profileId);
     } catch (error) {
         throw error;
     }
@@ -107,8 +105,7 @@ export async function updateUserAction(id, data) {
         if (!validatedFields.success) {
             throw new Error('Invalid fields');
         }
-        const validatedData = validatedFields.data;
-        return await updateUser(id, validatedData);
+        return await updateUser(id, validatedFields.data);
     } catch (error) {
         throw error;
     }
@@ -120,10 +117,9 @@ export async function updateUserAction(id, data) {
  * @returns {Promise<User>} User with permissions
  * @throws {Error} If the user is not found
  */
-export async function getUserByIdWithPermissionsAction(id) {
+export async function getUserByIdWithSystemPermissionsAction(id) {
     try {
-        const user = await getUserByIdWithPermissions(id);
-        return user;
+        return await getUserByIdWithSystemPermissions(id);
     } catch (error) {
         throw error;
     }
@@ -154,8 +150,7 @@ export async function searchUsersAction(searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];
         }
-        const users = await searchUsers(searchTerm);
-        return users;
+        return await searchUsers(searchTerm);
     } catch (error) {
         throw error;
     }
@@ -174,9 +169,7 @@ export async function updateUserProfileAction(userId, profileId) {
             throw new Error('User ID and Profile ID are required');
         }
 
-        const updatedUser = await updateUserProfile(userId, profileId);
-
-        return updatedUser;
+        return await updateUserProfile(userId, profileId);
     } catch (error) {
         throw error;
     }
@@ -191,8 +184,7 @@ export async function updateUserProfileAction(userId, profileId) {
  */
 export async function addPermissionSetToUserAction(id, permissionSetId) {
     try {
-        const user = await addPermissionSetToUser(id, permissionSetId);
-        return user;
+        return await addPermissionSetToUser(id, permissionSetId);
     } catch (error) {
         throw error;
     }
@@ -207,8 +199,7 @@ export async function addPermissionSetToUserAction(id, permissionSetId) {
  */
 export async function removePermissionSetFromUserAction(id, permissionSetId) {
     try {
-        const user = await removePermissionSetFromUser(id, permissionSetId);
-        return user;
+        return await removePermissionSetFromUser(id, permissionSetId);
     } catch (error) {
         throw error;
     }

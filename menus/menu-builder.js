@@ -5,15 +5,15 @@ const menuCache = new Map();
 const setupMenuCache = new Map();
 
 /**
- * Generates a menu based on user permissions
- * @param {Object} permissions - Object containing user permissions
+ * Generates a menu based on user system permissions
+ * @param {Object} systemPermissions - Object containing user system permissions
  * @returns {Array} Array of menu items the user has access to
  */
-export function buildMenu(permissions) {
+export function buildMenu(systemPermissions) {
     const menu = [];
     
     for (const [key, menuItem] of Object.entries(MENU_ITEMS_MAP)) {
-        if (permissions.has(menuItem.permission)) {
+        if (systemPermissions.has(menuItem.systemPermission)) {
             menu.push({
                 title: menuItem.title,
                 url: menuItem.url,
@@ -26,15 +26,15 @@ export function buildMenu(permissions) {
 }
 
 /**
- * Generates a menu based on user permissions
- * @param {Object} permissions - Object containing user permissions
+ * Generates a menu based on user system permissions
+ * @param {Object} systemPermissions - Object containing user system permissions
  * @returns {Array} Array of menu items the user has access to
  */
-export function buildSetupMenu(permissions) {
+export function buildSetupMenu(systemPermissions) {
     const menu = [];
     
     for (const [key, menuItem] of Object.entries(SETUP_MENU_ITEMS_MAP)) {
-        if (permissions.has(menuItem.permission)) {
+        if (systemPermissions.has(menuItem.systemPermission)) {
             menu.push({
                 title: menuItem.title,
                 url: menuItem.url,
@@ -48,12 +48,12 @@ export function buildSetupMenu(permissions) {
 /**
  * Gets or generates a menu for a user profile, using caching
  * @param {string} userProfile - The profile of the user
- * @param {Object} userPermissions - The permissions configuration object
+ * @param {Object} userSystemPermissions - The system permissions configuration object
  * @returns {Array} Array of menu items for the user
  */
-export function getMenuForProfile(userProfile, userPermissions) {
-    // If no profile or permissions, return empty menu
-    if (!userPermissions) {
+export function getMenuForProfile(userProfile, userSystemPermissions) {
+    // If no profile or system permissions, return empty menu
+    if (!userSystemPermissions) {
         return [];
     }
 
@@ -62,8 +62,8 @@ export function getMenuForProfile(userProfile, userPermissions) {
         return menuCache.get(userProfile);
     }
 
-    // Generate menu based on profile permissions
-    const menu = buildMenu(userPermissions);
+    // Generate menu based on profile system permissions
+    const menu = buildMenu(userSystemPermissions);
 
     // Cache the generated menu
     menuCache.set(userProfile, menu);
@@ -74,12 +74,12 @@ export function getMenuForProfile(userProfile, userPermissions) {
 /**
  * Gets or generates a menu for a user profile, using caching
  * @param {string} userProfile - The profile of the user
- * @param {Object} userPermissions - The permissions configuration object
+ * @param {Object} userSystemPermissions - The system permissions configuration object
  * @returns {Array} Array of menu items for the user
  */
-export function getSetupMenuForProfile(userProfile, userPermissions) {
-    // If no profile or permissions, return empty menu
-    if (!userPermissions) {
+export function getSetupMenuForProfile(userProfile, userSystemPermissions) {
+    // If no profile or system permissions, return empty menu
+    if (!userSystemPermissions) {
         return [];
     }
 
@@ -88,8 +88,8 @@ export function getSetupMenuForProfile(userProfile, userPermissions) {
         return setupMenuCache.get(userProfile);
     }
 
-    // Generate menu based on profile permissions
-    const menu = buildSetupMenu(userPermissions);
+    // Generate menu based on profile system permissions
+    const menu = buildSetupMenu(userSystemPermissions);
 
     // Cache the generated menu
     setupMenuCache.set(userProfile, menu);
@@ -99,7 +99,7 @@ export function getSetupMenuForProfile(userProfile, userPermissions) {
 
 /**
  * Clears the menu cache
- * Useful when permissions change and menus need to be regenerated
+ * Useful when system permissions change and menus need to be regenerated
  */
 export function clearMenuCache() {
     menuCache.clear();

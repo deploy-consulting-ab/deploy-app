@@ -6,12 +6,12 @@ import { db } from '@/lib/db';
 
 /**
  * Get all permissions
- * @returns {Promise<Permission[]>} All permissions
+ * @returns {Promise<SystemPermission[]>} All permissions
  * @throws {Error} If the permissions are not found
  */
 export async function getSystemPermissions() {
     try {
-        const permissions = await db.permission.findMany();
+        const permissions = await db.systemPermission.findMany();
         return permissions;
     } catch (error) {
         throw error;
@@ -21,12 +21,12 @@ export async function getSystemPermissions() {
 /**
  * Get a permission by id
  * @param {string} id
- * @returns {Promise<Permission>} The permission
+ * @returns {Promise<SystemPermission>} The permission
  * @throws {Error} If the permission is not found
  */
 export async function getSystemPermissionById(id) {
     try {
-        const permission = await db.permission.findUnique({
+        const permission = await db.systemPermission.findUnique({
             where: { id },
         });
         return permission;
@@ -38,12 +38,12 @@ export async function getSystemPermissionById(id) {
 /**
  * Create a permission
  * @param {Object} data
- * @returns {Promise<Permission>} The created permission
+ * @returns {Promise<SystemPermission>} The created permission
  * @throws {Error} If the permission is not created
  */
 export async function createSystemPermission(data) {
     try {
-        const permission = await db.permission.create({
+        const permission = await db.systemPermission.create({
             data,
         });
         return permission;
@@ -56,17 +56,29 @@ export async function createSystemPermission(data) {
  * Update a permission
  * @param {string} id
  * @param {Object} data
- * @returns {Promise<Permission>} The updated permission
+ * @returns {Promise<SystemPermission>} The updated permission
  * @throws {Error} If the permission is not updated
  */
 export async function updateSystemPermission(id, data) {
     try {
-        const permission = await db.permission.update({
+        const permission = await db.systemPermission.update({
             where: { id },
             data: data,
             include: {
-                profiles: true,
-                permissionSets: true,
+                profiles: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true
+                    }
+                },
+                permissionSets: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true
+                    }
+                },
             },
         });
         return permission;
@@ -78,12 +90,12 @@ export async function updateSystemPermission(id, data) {
 /**
  * Delete a permission
  * @param {string} id
- * @returns {Promise<Permission>} The deleted permission
+ * @returns {Promise<SystemPermission>} The deleted permission
  * @throws {Error} If the permission is not deleted
  */
 export async function deleteSystemPermission(id) {
     try {
-        const permission = await db.permission.delete({
+        const permission = await db.systemPermission.delete({
             where: { id },
         });
         return permission;
@@ -100,11 +112,23 @@ export async function deleteSystemPermission(id) {
  */
 export async function getSystemPermissionAssignmentsById(permissionId) {
     try {
-        const permission = await db.permission.findUnique({
+        const permission = await db.systemPermission.findUnique({
             where: { id: permissionId },
             include: {
-                profiles: true,
-                permissionSets: true,
+                profiles: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true
+                    }
+                },
+                permissionSets: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true
+                    }
+                },
             },
         });
         return permission;
@@ -120,7 +144,7 @@ export async function getSystemPermissionAssignmentsById(permissionId) {
  */
 export async function getTotalSystemPermissionsCount() {
     try {
-        const totalPermissionsCount = await db.permission.count();
+        const totalPermissionsCount = await db.systemPermission.count();
         return totalPermissionsCount;
     } catch (error) {
         throw error;

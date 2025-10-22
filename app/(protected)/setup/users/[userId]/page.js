@@ -1,7 +1,7 @@
 'use server';
 
 import { UserCardComponent } from '@/components/application/setup/users/user-card';
-import { getUserByIdWithPermissionsAction } from '@/actions/database/user-actions';
+import { getUserByIdWithSystemPermissionsAction } from '@/actions/database/user-actions';
 export default async function UserPage({ params }) {
     const { userId } = await params;
 
@@ -9,7 +9,7 @@ export default async function UserPage({ params }) {
     let error = null;
 
     try {
-        user = await getUserByIdWithPermissionsAction(userId);
+        user = await getUserByIdWithSystemPermissionsAction(userId);
     } catch (err) {
         error = err;
     }

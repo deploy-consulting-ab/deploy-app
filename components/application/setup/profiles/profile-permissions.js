@@ -3,47 +3,47 @@
 import { useState } from 'react';
 import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
 import {
-    addPermissionToProfileAction,
-    removePermissionFromProfileAction,
+    addSystemPermissionToProfileAction,
+    removeSystemPermissionFromProfileAction,
 } from '@/actions/database/profile-actions';
 import { useTransition } from 'react';
 
-export function ProfilePermissions({ profile, totalPermissions }) {
+export function ProfilePermissions({ profile, totalSystemPermissions }) {
     const [permissionError, setPermissionError] = useState('');
     const [permissionSuccess, setPermissionSuccess] = useState('');
     const [isPending, startTransition] = useTransition();
-    const [currentPermissions, setCurrentPermissions] = useState(profile.permissions);
+    const [currentSystemPermissions, setCurrentSystemPermissions] = useState(profile.systemPermissions);
 
-    const handlePermissionClick = async (permissionId, isAssigned) => {
+    const handleSystemPermissionClick = async (systemPermissionId, isAssigned) => {
         setPermissionSuccess('');
         setPermissionError('');
 
         // Optimistically update the UI
         if (isAssigned) {
-            setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+            setCurrentSystemPermissions((prev) => prev.filter((p) => p.id !== systemPermissionId));
         } else {
-            const newPermission = totalPermissions.find((p) => p.id === permissionId);
-            if (newPermission) {
-                setCurrentPermissions((prev) => [...prev, newPermission]);
+            const newSystemPermission = totalSystemPermissions.find((p) => p.id === systemPermissionId);
+            if (newSystemPermission) {
+                setCurrentSystemPermissions((prev) => [...prev, newSystemPermission]);
             }
         }
 
         startTransition(async () => {
             try {
                 isAssigned
-                    ? await removePermissionFromProfileAction(profile.id, permissionId)
-                    : await addPermissionToProfileAction(profile.id, permissionId);
+                    ? await removeSystemPermissionFromProfileAction(profile.id, systemPermissionId)
+                    : await addSystemPermissionToProfileAction(profile.id, systemPermissionId);
 
-                setPermissionSuccess('Permission updated successfully');
+                setPermissionSuccess('System permission added successfully');
             } catch (error) {
                 // Revert the optimistic update on error
                 if (isAssigned) {
-                    const revertPermission = totalPermissions.find((p) => p.id === permissionId);
-                    if (revertPermission) {
-                        setCurrentPermissions((prev) => [...prev, revertPermission]);
+                    const revertSystemPermission = totalSystemPermissions.find((p) => p.id === systemPermissionId);
+                    if (revertSystemPermission) {
+                        setCurrentSystemPermissions((prev) => [...prev, revertSystemPermission]);
                     }
                 } else {
-                    setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+                    setCurrentSystemPermissions((prev) => prev.filter((p) => p.id !== systemPermissionId));
                 }
                 setPermissionError(error.message);
             }
@@ -53,9 +53,9 @@ export function ProfilePermissions({ profile, totalPermissions }) {
     return (
         <SystemPermissionsEditableCardComponent
             entityName="Profile"
-            entityPermissions={currentPermissions}
-            totalPermissions={totalPermissions}
-            onPermissionClick={handlePermissionClick}
+            currentSystemPermissions={currentSystemPermissions}
+            totalSystemPermissions={totalSystemPermissions}
+            onSystemPermissionClick={handleSystemPermissionClick}
             success={permissionSuccess}
             error={permissionError}
         />

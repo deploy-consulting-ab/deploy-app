@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import { SystemPermissionEditForm } from '@/components/application/setup/system-permissions/system-permission-edit-form';
 import { SYSTEM_PERMISSIONS_ROUTE } from '@/menus/routes';
 
-export function SystemPermissionCardActionsComponent({ permission }) {
+export function SystemPermissionCardActionsComponent({ systemPermission }) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -28,10 +28,10 @@ export function SystemPermissionCardActionsComponent({ permission }) {
 
     const handleSubmit = async (data) => {
         try {
-            await updateSystemPermissionAction(permission.id, data);
+            await updateSystemPermissionAction(systemPermission.id, data);
 
-            // Id the ID changes, redirect to the new permission page
-            if (data.id !== permission.id) {
+            // Id the ID changes, redirect to the new system permission page
+            if (data.id !== systemPermission.id) {
                 router.push(`${SYSTEM_PERMISSIONS_ROUTE}/${data.id}`);
             } else {
                 router.refresh(); // This will trigger a server-side rerender
@@ -87,7 +87,7 @@ export function SystemPermissionCardActionsComponent({ permission }) {
                         <DialogTitle>Edit System Permission</DialogTitle>
                     </DialogHeader>
                     <SystemPermissionEditForm
-                        permission={permission}
+                        systemPermission={systemPermission}
                         onSubmit={handleSubmit}
                         onEditingChange={setShowEditDialog}
                     />
@@ -99,7 +99,7 @@ export function SystemPermissionCardActionsComponent({ permission }) {
                     <DialogHeader>
                         <DialogTitle>Delete System Permission</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete {permission.name}? This action cannot be
+                            Are you sure you want to delete {systemPermission.name}? This action cannot be
                             undone.
                         </DialogDescription>
                     </DialogHeader>
@@ -109,7 +109,7 @@ export function SystemPermissionCardActionsComponent({ permission }) {
                         </Button>
                         <Button
                             variant="destructive"
-                            onClick={() => deleteSystemPermission(permission.id)}
+                            onClick={() => deleteSystemPermission(systemPermission.id)}
                             disabled={isDeleting}
                         >
                             {isDeleting ? (

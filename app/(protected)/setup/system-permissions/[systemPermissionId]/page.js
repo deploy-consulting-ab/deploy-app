@@ -3,21 +3,21 @@
 import { SystemPermissionCardComponent } from '@/components/application/setup/system-permissions/system-permission-card';
 import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
 
-export default async function PermissionPage({ params }) {
-    const { permissionId } = await params;
+export default async function SystemPermissionPage({ params }) {
+    const { systemPermissionId } = await params;
 
-    let permission = null;
+    let systemPermission = null;
     let error = null;
 
     try {
-        permission = await getSystemPermissionAssignmentsByIdAction(permissionId);
+        systemPermission = await getSystemPermissionAssignmentsByIdAction(systemPermissionId);
     } catch (error) {
         error = error;
     }
 
     return (
         <div className="py-4">
-            <SystemPermissionCardComponent error={error} permission={permission} />
+            <SystemPermissionCardComponent error={error} systemPermission={systemPermission} />
         </div>
     );
 }

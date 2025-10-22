@@ -8,44 +8,44 @@ import {
 } from '@/actions/database/permissionset-actions';
 import { useTransition } from 'react';
 
-export function PermissionSetPermissions({ permissionSet, totalPermissions }) {
-    const [permissionError, setPermissionError] = useState('');
-    const [permissionSuccess, setPermissionSuccess] = useState('');
+export function PermissionSetPermissions({ permissionSet, totalSystemPermissions }) {
+    const [systemPermissionError, setSystemPermissionError] = useState('');
+    const [systemPermissionSuccess, setSystemPermissionSuccess] = useState('');
     const [isPending, startTransition] = useTransition();
-    const [currentPermissions, setCurrentPermissions] = useState(permissionSet.permissions);
+    const [currentSystemPermissions, setCurrentSystemPermissions] = useState(permissionSet.systemPermissions);
 
-    const handlePermissionClick = async (permissionId, isAssigned) => {
-        setPermissionSuccess('');
-        setPermissionError('');
+    const handleSystemPermissionClick = async (systemPermissionId, isAssigned) => {
+        setSystemPermissionSuccess('');
+        setSystemPermissionError('');
 
         // Optimistically update the UI
         if (isAssigned) {
-            setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+            setCurrentSystemPermissions((prev) => prev.filter((p) => p.id !== systemPermissionId));
         } else {
-            const newPermission = totalPermissions.find((p) => p.id === permissionId);
-            if (newPermission) {
-                setCurrentPermissions((prev) => [...prev, newPermission]);
+            const newSystemPermission = totalSystemPermissions.find((p) => p.id === systemPermissionId);
+            if (newSystemPermission) {
+                setCurrentSystemPermissions((prev) => [...prev, newSystemPermission]);
             }
         }
 
         startTransition(async () => {
             try {
                 isAssigned
-                    ? await removePermissionFromPermissionSetAction(permissionSet.id, permissionId)
-                    : await addPermissionToPermissionSetAction(permissionSet.id, permissionId);
+                    ? await removePermissionFromPermissionSetAction(permissionSet.id, systemPermissionId)
+                    : await addPermissionToPermissionSetAction(permissionSet.id, systemPermissionId);
 
-                setPermissionSuccess('Permission updated successfully');
+                setSystemPermissionSuccess('System Permission added successfully');
             } catch (error) {
                 // Revert the optimistic update on error
                 if (isAssigned) {
-                    const revertPermission = totalPermissions.find((p) => p.id === permissionId);
-                    if (revertPermission) {
-                        setCurrentPermissions((prev) => [...prev, revertPermission]);
+                    const revertSystemPermission = totalSystemPermissions.find((p) => p.id === systemPermissionId);
+                    if (revertSystemPermission) {
+                        setCurrentSystemPermissions((prev) => [...prev, revertSystemPermission]);
                     }
                 } else {
-                    setCurrentPermissions((prev) => prev.filter((p) => p.id !== permissionId));
+                    setCurrentSystemPermissions((prev) => prev.filter((p) => p.id !== systemPermissionId));
                 }
-                setPermissionError(error.message);
+                setSystemPermissionError(error.message);
             }
         });
     };
@@ -53,11 +53,11 @@ export function PermissionSetPermissions({ permissionSet, totalPermissions }) {
     return (
         <SystemPermissionsEditableCardComponent
             entityName="Permission Set"
-            entityPermissions={currentPermissions}
-            totalPermissions={totalPermissions}
-            onPermissionClick={handlePermissionClick}
-            successProp={permissionSuccess}
-            error={permissionError}
+            currentSystemPermissions={currentSystemPermissions}
+            totalSystemPermissions={totalSystemPermissions}
+            onSystemPermissionClick={handleSystemPermissionClick}
+            success={systemPermissionSuccess}
+            error={systemPermissionError}
         />
     );
 }

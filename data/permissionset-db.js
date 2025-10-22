@@ -9,7 +9,7 @@ export async function getPermissionSets() {
     try {
         const permissionSets = await db.permissionSet.findMany({
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -30,7 +30,7 @@ export async function getPermissionSetById(id) {
         const permissionSet = await db.permissionSet.findUnique({
             where: { id },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -52,12 +52,12 @@ export async function createPermissionSet(data) {
             data: {
                 name: data.name,
                 description: data.description,
-                permissions: {
-                    connect: data.permissions || [],
+                systemPermissions: {
+                    connect: data.systemPermissions || [],
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -80,7 +80,7 @@ export async function updatePermissionSet(id, data) {
             where: { id },
             data: data,
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -119,12 +119,12 @@ export async function addPermissionToPermissionSet(permissionSetId, permissionId
         const permissionSet = await db.permissionSet.update({
             where: { id: permissionSetId },
             data: {
-                permissions: {
+                systemPermissions: {
                     connect: { id: permissionId },
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -146,12 +146,12 @@ export async function removePermissionFromPermissionSet(permissionSetId, permiss
         const permissionSet = await db.permissionSet.update({
             where: { id: permissionSetId },
             data: {
-                permissions: {
+                systemPermissions: {
                     disconnect: { id: permissionId },
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -178,7 +178,7 @@ export async function addUserToPermissionSet(permissionSetId, userId) {
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -205,7 +205,7 @@ export async function removeUserFromPermissionSet(permissionSetId, userId) {
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });

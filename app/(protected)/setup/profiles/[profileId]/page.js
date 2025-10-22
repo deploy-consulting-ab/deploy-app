@@ -9,18 +9,18 @@ export default async function ProfilePage({ params }) {
 
     let profile = null;
     let error = null;
-    let totalPermissions = null;
+    let totalSystemPermissions = null;
 
     try {
         profile = await getProfileByIdAction(profileId);
-        totalPermissions = await getSystemPermissionsAction();
+        totalSystemPermissions = await getSystemPermissionsAction();
     } catch (err) {
         error = err;
     }
 
     return (
         <div className="py-4">
-            <ProfileCardComponent error={error} profile={profile} totalPermissions={totalPermissions} />
+            <ProfileCardComponent error={error} profile={profile} totalSystemPermissions={totalSystemPermissions} />
         </div>
     );
 }

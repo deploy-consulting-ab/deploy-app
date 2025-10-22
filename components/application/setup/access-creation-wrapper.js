@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
 import { useState, useMemo } from 'react';
-import { VIEW_HOME_PERMISSION } from '@/lib/permissions';
+import { VIEW_HOME_PERMISSION } from '@/lib/system-permissions';
 import { FormError } from '@/components/auth/form/form-error';
 
 export function AccessCreationWrapperComponent({
@@ -23,36 +23,34 @@ export function AccessCreationWrapperComponent({
     descriptionPlaceholder,
     idPlaceholder,
     onSubmit,
-    totalPermissions,
+    totalSystemPermissions,
     permissionError,
 }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
-    const [assignedPermissions, setAssignedPermissions] = useState({});
+    const [assignedSystemPermissions, setAssignedSystemPermissions] = useState({});
 
-    const permissions = useMemo(
+    const systemPermissions = useMemo(
         () =>
-            totalPermissions
-                .map((permission) =>
-                    permission.name === VIEW_HOME_PERMISSION
-                        ? {
-                              ...permission,
-                              assigned: true,
-                          }
-                        : {
-                              ...permission,
-                              assigned: assignedPermissions[permission.id] || false,
-                          }
-                )
-                .sort((a, b) => (a.assigned ? -1 : 1)),
-        [totalPermissions, assignedPermissions]
+            totalSystemPermissions.map((systemPermission) =>
+                systemPermission.name === VIEW_HOME_PERMISSION
+                    ? {
+                          ...systemPermission,
+                          assigned: true,
+                      }
+                    : {
+                          ...systemPermission,
+                          assigned: assignedSystemPermissions[systemPermission.id] || false,
+                      }
+            ),
+        [totalSystemPermissions, assignedSystemPermissions]
     );
 
-    const handlePermissionClick = (permissionId, isAssigned) => {
-        setAssignedPermissions((prev) => ({
+    const handleSystemPermissionClick = (systemPermissionId, isAssigned) => {
+        setAssignedSystemPermissions((prev) => ({
             ...prev,
-            [permissionId]: !isAssigned,
+            [systemPermissionId]: !isAssigned,
         }));
     };
 
@@ -64,7 +62,9 @@ export function AccessCreationWrapperComponent({
         try {
             await onSubmit({
                 ...values,
-                permissions: permissions.filter((permission) => permission.assigned),
+                systemPermissions: systemPermissions.filter(
+                    (systemPermission) => systemPermission.assigned
+                ),
             });
             setSuccess('Created successfully');
             resetForm();
@@ -86,7 +86,7 @@ export function AccessCreationWrapperComponent({
 
     const resetForm = () => {
         form.reset();
-        setAssignedPermissions({});
+        setAssignedSystemPermissions({});
         setError('');
         setSuccess('');
     };
@@ -152,8 +152,8 @@ export function AccessCreationWrapperComponent({
                     ) : (
                         <SystemPermissionsEditableCardComponent
                             entityName={form.watch('name') || 'New Entity'}
-                            totalPermissions={permissions}
-                            onPermissionClick={handlePermissionClick}
+                            totalSystemPermissions={systemPermissions}
+                            onSystemPermissionClick={handleSystemPermissionClick}
                             success={success}
                         />
                     )}

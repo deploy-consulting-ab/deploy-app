@@ -78,7 +78,6 @@ export function PermissionSetAssignmentsListComponent({
                 message: 'User related to permission set',
             });
         } catch (error) {
-            console.error('Error relating user to permission set:', error);
             throw error;
         }
     };

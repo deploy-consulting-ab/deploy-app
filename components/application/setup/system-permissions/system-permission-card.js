@@ -5,12 +5,12 @@ import { SystemPermissionAssignmentsListComponent } from '@/components/applicati
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { SystemPermissionCardActionsComponent } from '@/components/application/setup/system-permissions/system-permission-card-actions';
 
-export async function SystemPermissionCardComponent({ permission }) {
+export async function SystemPermissionCardComponent({ systemPermission }) {
     return (
         <div className="grid grid-cols-1 gap-6">
             <div className="col-span-1">
-                <RecordCardHeaderComponent title={permission.name} description={permission.id}>
-                    <SystemPermissionCardActionsComponent permission={permission} />
+                <RecordCardHeaderComponent title={systemPermission.name} description={systemPermission.id}>
+                    <SystemPermissionCardActionsComponent systemPermission={systemPermission} />
                 </RecordCardHeaderComponent>
             </div>
 
@@ -20,15 +20,15 @@ export async function SystemPermissionCardComponent({ permission }) {
                     <div className="space-y-4">
                         <div>
                             <h3 className="text-sm font-medium">Permission Name</h3>
-                            <p className="text-sm text-gray-500">{permission.name}</p>
+                            <p className="text-sm text-gray-500">{systemPermission.name}</p>
                         </div>
                         <div>
                             <h3 className="text-sm font-medium">Permission ID</h3>
-                            <p className="text-sm text-gray-500">{permission.id}</p>
+                            <p className="text-sm text-gray-500">{systemPermission.id}</p>
                         </div>
                         <div>
                             <h3 className="text-sm font-medium">Permission Description</h3>
-                            <p className="text-sm text-gray-500">{permission.description}</p>
+                            <p className="text-sm text-gray-500">{systemPermission.description}</p>
                         </div>
                     </div>
                 </CardContent>
@@ -37,8 +37,8 @@ export async function SystemPermissionCardComponent({ permission }) {
             {/* Assignments List */}
             <div className="col-span-1">
                 <SystemPermissionAssignmentsListComponent
-                    allPermissionAssignments={permission.allPermissionAssignments}
-                    permissionId={permission.id}
+                    allSystemPermissionAssignments={systemPermission.allSystemPermissionAssignments}
+                    systemPermissionId={systemPermission.id}
                 />
             </div>
         </div>

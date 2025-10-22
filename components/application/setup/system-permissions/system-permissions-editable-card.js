@@ -8,22 +8,22 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BadgeCheckIcon } from 'lucide-react';
-import { populatePermissions } from '@/lib/utils';
+import { populateSystemPermissions } from '@/lib/utils';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useEffect, useState, useRef } from 'react';
 
 export function SystemPermissionsEditableCardComponent({
     entityName,
-    entityPermissions,
-    totalPermissions,
-    onPermissionClick,
+    currentSystemPermissions,
+    totalSystemPermissions,
+    onSystemPermissionClick,
     error,
     success,
 }) {
-    const permissions = entityPermissions
-        ? populatePermissions(entityPermissions, totalPermissions)
-        : totalPermissions;
+    const systemPermissions = currentSystemPermissions
+        ? populateSystemPermissions(currentSystemPermissions, totalSystemPermissions)
+        : totalSystemPermissions;
 
     const [isScrollable, setIsScrollable] = useState(false);
     const contentRef = useRef(null);
@@ -40,7 +40,7 @@ export function SystemPermissionsEditableCardComponent({
         checkScrollable();
         window.addEventListener('resize', checkScrollable);
         return () => window.removeEventListener('resize', checkScrollable);
-    }, [permissions]);
+    }, [systemPermissions]);
 
     useEffect(() => {
         let fadeOutTimer;
@@ -71,29 +71,35 @@ export function SystemPermissionsEditableCardComponent({
                         ref={contentRef}
                         className="flex flex-wrap gap-x-2 gap-y-2 max-h-[200px] overflow-y-auto pr-2"
                     >
-                        {permissions.map((permission) => (
-                            <div key={permission.id}>
-                                {permission.assigned ? (
+                        {systemPermissions.map((systemPermission) => (
+                            <div key={systemPermission.id}>
+                                {systemPermission.assigned ? (
                                     <Badge
                                         variant="primary"
                                         className="bg-green-700 text-white hover:cursor-pointer text-sm"
                                         onClick={() =>
-                                            onPermissionClick?.(permission.id, permission.assigned)
+                                            onSystemPermissionClick?.(
+                                                systemPermission.id,
+                                                systemPermission.assigned
+                                            )
                                         }
                                     >
                                         <BadgeCheckIcon />
-                                        {permission.name}
+                                        {systemPermission.name}
                                     </Badge>
                                 ) : (
                                     <Badge
-                                        key={permission.id}
+                                        key={systemPermission.id}
                                         variant="outline"
                                         className="justify-start hover:cursor-pointer text-sm"
                                         onClick={() =>
-                                            onPermissionClick?.(permission.id, permission.assigned)
+                                            onSystemPermissionClick?.(
+                                                systemPermission.id,
+                                                systemPermission.assigned
+                                            )
                                         }
                                     >
-                                        {permission.name}
+                                        {systemPermission.name}
                                     </Badge>
                                 )}
                             </div>

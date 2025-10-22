@@ -1,8 +1,8 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getUserById, getCombinedPermissionsForUser } from '@/data/user-db';
-import { ADMIN_PROFILE } from '@/lib/permissions';
+import { getUserById, getCombinedSystemPermissionsForUser } from '@/data/user-db';
+import { ADMIN_PROFILE } from '@/lib/system-permissions';
 import { revalidatePath } from 'next/cache';
 
 export async function startImpersonation(userId) {
@@ -18,14 +18,14 @@ export async function startImpersonation(userId) {
             return { error: 'User ID is required' };
         }
 
-        // Get the target user and their permissions
+        // Get the target user and their system permissions
         const targetUser = await getUserById(userId);
         
         if (!targetUser) {
             return { error: 'User not found' };
         }
 
-        const targetPermissions = await getCombinedPermissionsForUser(userId);
+        const targetSystemPermissions = await getCombinedSystemPermissionsForUser(userId);
 
         // Store the current session data for later restoration
         const impersonationData = {
@@ -36,7 +36,7 @@ export async function startImpersonation(userId) {
                 email: targetUser.email,
                 profileId: targetUser.profileId,
                 employeeNumber: targetUser.employeeNumber,
-                permissions: targetPermissions,
+                systemPermissions: targetSystemPermissions,
                 image: targetUser.image,
                 isActive: targetUser.isActive,
             },
@@ -46,7 +46,7 @@ export async function startImpersonation(userId) {
                 email: session.user.email,
                 profileId: session.user.profileId,
                 employeeNumber: session.user.employeeNumber,
-                permissions: session.user.permissions,
+                systemPermissions: session.user.systemPermissions,
                 image: session.user.image,
                 isActive: session.user.isActive,
             }

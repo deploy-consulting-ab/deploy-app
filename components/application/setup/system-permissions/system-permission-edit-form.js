@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 
-export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit }) {
+export function SystemPermissionEditForm({ systemPermission, onEditingChange, onSubmit }) {
     const [error, setError] = useState();
     const [success, setSuccess] = useState('');
     const [isVisible, setIsVisible] = useState(false);
@@ -23,9 +23,9 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
 
     const form = useForm({
         defaultValues: {
-            name: permission.name,
-            id: permission.id,
-            description: permission.description,
+            name: systemPermission.name,
+            id: systemPermission.id,
+            description: systemPermission.description,
         },
     });
 
@@ -77,9 +77,9 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Permission Name</FormLabel>
+                                <FormLabel>System Permission Name</FormLabel>
                                 <FormControl>
-                                    <Input {...field} placeholder="Enter permission name" />
+                                    <Input {...field} placeholder="Enter system permission name" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -91,9 +91,9 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
                         name="id"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Permission ID</FormLabel>
+                                <FormLabel>System Permission ID</FormLabel>
                                 <FormControl>
-                                    <Input {...field} placeholder="Enter permission id" />
+                                    <Input {...field} placeholder="Enter system permission id" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -105,9 +105,9 @@ export function SystemPermissionEditForm({ permission, onEditingChange, onSubmit
                         name="description"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Permission Description</FormLabel>
+                                <FormLabel>System Permission Description</FormLabel>
                                 <FormControl>
-                                    <Input {...field} placeholder="Enter permission description" />
+                                    <Input {...field} placeholder="Enter system permission description" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

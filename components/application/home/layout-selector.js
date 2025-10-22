@@ -5,7 +5,7 @@ import {
     CONSULTANT_PROFILE,
     SALES_PROFILE,
     MANAGEMENT_PROFILE,
-} from '@/lib/permissions';
+} from '@/lib/system-permissions';
 
 const LAYOUT_MAP = {
     [ADMIN_PROFILE]: AdminLayout,

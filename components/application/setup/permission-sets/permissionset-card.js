@@ -6,7 +6,7 @@ import { PermissionSetAssignmentsListComponent } from '@/components/application/
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { PermissionSetCardActionsComponent } from '@/components/application/setup/permission-sets/permissionset-card-actions';
 
-export async function PermissionSetCardComponent({ permissionSet, totalPermissions }) {
+export async function PermissionSetCardComponent({ permissionSet, totalSystemPermissions }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
@@ -36,7 +36,7 @@ export async function PermissionSetCardComponent({ permissionSet, totalPermissio
             </Card>
 
             {/* Permissions Card */}
-            <PermissionSetPermissions permissionSet={permissionSet} totalPermissions={totalPermissions} />
+            <PermissionSetPermissions permissionSet={permissionSet} totalSystemPermissions={totalSystemPermissions} />
 
             {/* Users List */}
             <div className="col-span-2">

@@ -47,28 +47,30 @@ export const getUserById = async (id) => {
  * @param {*} id
  * @returns {Promise<User>} User with allPermissions for their profile and permission sets
  */
-export const getUserByIdWithPermissions = async (id) => {
+export const getUserByIdWithSystemPermissions = async (id) => {
     try {
         const existingUser = await db.user.findUnique({
             where: { id },
             include: {
                 profile: {
                     include: {
-                        permissions: true, // Get permissions from the profile
+                        systemPermissions: true, // Get system permissions from the profile
                     },
                 },
                 permissionSets: {
                     include: {
-                        permissions: true, // Get permissions from all permission sets
+                        systemPermissions: true, // Get system permissions from all permission sets
                     },
                 },
             },
         });
 
         const allPermissions = [
-            ...existingUser.profile.permissions.map((permission) => permission.name),
+            ...existingUser.profile.systemPermissions.map(
+                (systemPermission) => systemPermission.name
+            ),
             ...existingUser.permissionSets.flatMap((set) =>
-                set.permissions.map((permission) => permission.name)
+                set.systemPermissions.map((systemPermission) => systemPermission.name)
             ),
         ];
 
@@ -106,49 +108,51 @@ export async function getUsers() {
 }
 
 /**
- * Get all permissions for a user
+ * Get all system permissions for a user
  * @param {string} id
- * @returns {Promise<string[]>} All permissions for the user
- * @throws {Error} If the permissions are not found
+ * @returns {Promise<string[]>} All system permissions for the user
+ * @throws {Error} If the system permissions are not found
  */
-export async function getCombinedPermissionsForUser(id) {
+export async function getCombinedSystemPermissionsForUser(id) {
     try {
         // 1. Fetch the user and include their profile, permission sets,
-        //    and all nested permissions in a single query.
+        //    and all nested system permissions in a single query.
         const userWithPermissions = await db.user.findUnique({
             where: { id },
             include: {
                 profile: {
                     include: {
-                        permissions: true, // Get permissions from the profile
+                        systemPermissions: true, // Get system permissions from the profile
                     },
                 },
                 permissionSets: {
                     include: {
-                        permissions: true, // Get permissions from all permission sets
+                        systemPermissions: true, // Get system permissions from all permission sets
                     },
                 },
             },
         });
 
+        console.log('userWithPermissions', userWithPermissions);
+
         if (!userWithPermissions) {
             return []; // Return empty array if user not found
         }
 
-        // 2. Extract permissions from the user's profile
-        const profilePermissions = (userWithPermissions.profile?.permissions || []).map(
-            (permission) => permission.name
+        // 2. Extract system permissions from the user's profile
+        const profileSystemPermissions = (userWithPermissions.profile?.systemPermissions || []).map(
+            (systemPermission) => systemPermission.name
         );
 
-        // 3. Extract permissions from all assigned permission sets flatMap is used to merge the permissions from multiple sets into one array
-        const permissionSetPermissions = userWithPermissions.permissionSets.flatMap((set) =>
-            set.permissions.map((permission) => permission.name)
+        // 3. Extract system permissions from all assigned permission sets flatMap is used to merge the system permissions from multiple sets into one array
+        const permissionSetSystemPermissions = userWithPermissions.permissionSets.flatMap((set) =>
+            set.systemPermissions.map((systemPermission) => systemPermission.name)
         );
 
         // 4. Combine both lists
-        const allPermissions = [...profilePermissions, ...permissionSetPermissions];
+        const allSystemPermissions = [...profileSystemPermissions, ...permissionSetSystemPermissions];
 
-        return allPermissions;
+        return allSystemPermissions;
     } catch (error) {
         throw error;
     }

@@ -18,7 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { PROFILES } from '@/lib/permissions';
+import { PROFILES } from '@/lib/system-permissions';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState, useEffect } from 'react';

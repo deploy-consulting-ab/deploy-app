@@ -6,21 +6,21 @@ import { useState, useEffect } from 'react';
 import { createProfileAction } from '@/actions/database/profile-actions';
 
 export function CreateProfileComponent({ fireSuccess }) {
-    const [totalPermissions, setTotalPermissions] = useState([]);
+    const [totalSystemPermissions, setTotalSystemPermissions] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchPermissions = async () => {
+        const fetchSystemPermissions = async () => {
             try {
-                const permissions = await getSystemPermissionsAction();
-                setTotalPermissions(permissions);
+                const systemPermissions = await getSystemPermissionsAction();
+                setTotalSystemPermissions(systemPermissions);
                 setError('');
             } catch (err) {
-                setError('Failed to fetch permissions: ' + err.message);
-                setTotalPermissions([]);
+                setError('Failed to fetch system permissions: ' + err.message);
+                setTotalSystemPermissions([]);
             }
         };
-        fetchPermissions();
+        fetchSystemPermissions();
     }, []);
 
     const handleSubmit = async (data) => {
@@ -35,7 +35,7 @@ export function CreateProfileComponent({ fireSuccess }) {
     return (
         <AccessCreationWrapperComponent
             onSubmit={handleSubmit}
-            totalPermissions={totalPermissions}
+            totalSystemPermissions={totalSystemPermissions}
             namePlaceholder="Deploy Consultant"
             descriptionPlaceholder="Standard consultant access"
             idPlaceholder="deploy_consultant"

@@ -4,7 +4,7 @@
  */
 
 import * as z from 'zod';
-import { PROFILES } from '@/lib/permissions';
+import { PROFILES } from '@/lib/system-permissions';
 
 export const LoginSchema = z.object({
     email: z.email({ message: 'Email is required' }),

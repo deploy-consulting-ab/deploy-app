@@ -23,7 +23,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                 <h1 className="text-4xl font-bold">Setup & Configuration</h1>
                 <p className="text-muted-foreground text-lg">
                     Welcome to the setup area. Here you can manage your organization&apos;s users,
-                    profiles, and permissions. Use the cards below to navigate to different
+                    profiles, and system permissions. Use the cards below to navigate to different
                     configuration sections.
                 </p>
             </div>
@@ -96,7 +96,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.totalPermissions}</div>
+                            <div className="text-3xl font-bold pb-2">{metrics.totalSystemPermissions}</div>
                             <CardDescription>Total system permissions</CardDescription>
                         </CardContent>
                     </Card>

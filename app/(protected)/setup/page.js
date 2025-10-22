@@ -22,7 +22,7 @@ export default async function SetupPage() {
             activeUsers: activeUsersCount,
             totalUsers: totalUsersCount,
             totalProfiles: totalProfilesCount,
-            totalPermissions: totalPermissionsCount,
+            totalSystemPermissions: totalPermissionsCount,
             totalPermissionSets: totalPermissionSetsCount,
         };
     } catch (err) {

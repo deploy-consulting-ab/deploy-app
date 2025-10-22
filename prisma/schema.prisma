@@ -9,26 +9,26 @@ datasource db {
 generator client {
     provider = "prisma-client-js"
 }
-// Base container for permissions
+// Base container for system permissions
 model Profile {
     id          String       @id @default(cuid())
     name        String       @unique
     description String?
-    permissions Permission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
+    systemPermissions SystemPermission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
     users       User[]
 }
 
-// Collections of permissions
+// Collections of system permissions
 model PermissionSet {
     id          String       @id @default(cuid())
     name        String       @unique
     description String?
-    permissions Permission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
+    systemPermissions SystemPermission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
     users       User[] // Many-to-many relationship with users
 }
 
-// Individual permissions. i.e. Home:View, Holidays:View, Assignments:View, Lead:Create, etc
-model Permission {
+// System permissions. i.e. Home:View, Holidays:View, Assignments:View, Lead:Create, etc
+model SystemPermission {
     id             String          @id @default(cuid())
     name           String          @unique
     description    String?

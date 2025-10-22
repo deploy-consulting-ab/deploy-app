@@ -9,11 +9,11 @@ export default async function PermissionSetPage({ params }) {
 
     let permissionSet = null;
     let error = null;
-    let totalPermissions = null;
+    let totalSystemPermissions = null;
 
     try {
         permissionSet = await getPermissionSetByIdAction(permissionSetId);
-        totalPermissions = await getSystemPermissionsAction();
+        totalSystemPermissions = await getSystemPermissionsAction();
     } catch (err) {
         error = err;
     }
@@ -23,7 +23,7 @@ export default async function PermissionSetPage({ params }) {
             <PermissionSetCardComponent
                 error={error}
                 permissionSet={permissionSet}
-                totalPermissions={totalPermissions}
+                totalSystemPermissions={totalSystemPermissions}
             />
         </div>
     );

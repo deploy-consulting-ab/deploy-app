@@ -25,7 +25,7 @@ export async function getProfileById(id) {
         const profile = await db.profile.findUnique({
             where: { id },
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -46,8 +46,8 @@ export async function createProfile(data) {
         const profile = await db.profile.create({
             data: {
                 ...data,
-                permissions: {
-                    connect: data.permissions,
+                systemPermissions: {
+                    connect: data.systemPermissions,
                 },
             },
         });
@@ -70,7 +70,7 @@ export async function updateProfile(id, data) {
             where: { id },
             data: data,
             include: {
-                permissions: true,
+                systemPermissions: true,
                 users: true,
             },
         });
@@ -96,22 +96,22 @@ export async function deleteProfile(id) {
 }
 
 /**
- * Add a permission to a profile
+ * Add a system permission to a profile
  * @param {string} profileId
- * @param {string} permissionId
+ * @param {string} systemPermissionId
  * @returns {Promise<Profile>} The updated profile
  */
-export async function addPermissionToProfile(profileId, permissionId) {
+export async function addSystemPermissionToProfile(profileId, systemPermissionId) {
     try {
         const profile = await db.profile.update({
             where: { id: profileId },
             data: {
-                permissions: {
-                    connect: { id: permissionId },
+                systemPermissions: {
+                    connect: { id: systemPermissionId },
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
             },
         });
         return profile;
@@ -121,22 +121,22 @@ export async function addPermissionToProfile(profileId, permissionId) {
 }
 
 /**
- * Remove a permission from a profile
+ * Remove a system permission from a profile
  * @param {string} profileId
- * @param {string} permissionId
+ * @param {string} systemPermissionId
  * @returns {Promise<Profile>} The updated profile
  */
-export async function removePermissionFromProfile(profileId, permissionId) {
+export async function removeSystemPermissionFromProfile(profileId, systemPermissionId) {
     try {
         const profile = await db.profile.update({
             where: { id: profileId },
             data: {
-                permissions: {
-                    disconnect: { id: permissionId },
+                systemPermissions: {
+                    disconnect: { id: systemPermissionId },
                 },
             },
             include: {
-                permissions: true,
+                systemPermissions: true,
             },
         });
         return profile;

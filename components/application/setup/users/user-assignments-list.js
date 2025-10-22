@@ -17,7 +17,7 @@ import {
 import {
     addPermissionSetToUserAction,
     removePermissionSetFromUserAction,
-    getUserByIdWithPermissionsAction,
+    getUserByIdWithSystemPermissionsAction,
 } from '@/actions/database/user-actions';
 import { searchPermissionSetsAction } from '@/actions/database/permissionset-actions';
 import { PERMISSION_SETS_ROUTE } from '@/menus/routes';
@@ -42,7 +42,7 @@ export function UserAssignmentsListComponent({ permissionSets, userId }) {
     const doRefresh = async () => {
         let freshData = null;
         try {
-            const user = await getUserByIdWithPermissionsAction(userId);
+            const user = await getUserByIdWithSystemPermissionsAction(userId);
             setPermissionSetsData(user.permissionSets);
             setError(null);
         } catch (err) {

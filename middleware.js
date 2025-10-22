@@ -50,11 +50,11 @@ export default auth((req) => {
         );
     }
 
-    const allPermissions = new Set(user?.permissions);
-    return handleLoggedInUsers(nextUrl, allPermissions);
+    const allSystemPermissions = new Set(user?.systemPermissions);
+    return handleLoggedInUsers(nextUrl, allSystemPermissions);
 });
 
-const handleLoggedInUsers = (nextUrl, allPermissions) => {
+const handleLoggedInUsers = (nextUrl, allSystemPermissions) => {
     const pathname = nextUrl.pathname;
 
     if (!pathname) {
@@ -64,7 +64,7 @@ const handleLoggedInUsers = (nextUrl, allPermissions) => {
     const protectedRoute = PROTECTED_ROUTES.find(route => pathname.includes(route.path));
 
     if (protectedRoute) {
-        if (allPermissions.has(protectedRoute.permission)) {
+        if (allSystemPermissions.has(protectedRoute.systemPermission)) {
             return NextResponse.next();
         }
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
