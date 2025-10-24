@@ -10,6 +10,12 @@ export function ErrorDisplayComponent({ error }) {
     // Handle different error types
     if (error instanceof Error) {
         switch (error.name) {
+            case 'Error':
+                title = 'Error';
+                message = error.message;
+                icon = AlertCircle;
+                variant = 'error';
+                break;
             case 'NetworkError':
                 title = 'Connection Error';
                 message =

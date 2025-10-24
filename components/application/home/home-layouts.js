@@ -6,72 +6,22 @@ import { SalesHomeComponent } from '@/components/application/home/layouts.js/sal
 import { ManagementHomeComponent } from '@/components/application/home/layouts.js/management-home';
 import { AdminHomeComponent } from '@/components/application/home/layouts.js/admin-home';
 
-export async function ConsultantHomeLayout({
-    holidays,
-    occupancyRates,
-    errors,
-    refreshActions,
-    links,
-}) {
-    return (
-        <ConsultantHomeComponent
-            holidays={holidays}
-            occupancyRates={occupancyRates}
-            errors={errors}
-            refreshActions={refreshActions}
-            links={links}
-        />
-    );
+export async function ConsultantHomeLayout({ profileId, employeeNumber }) {
+    return <ConsultantHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }
 
-export async function SalesHomeLayout({ holidays, errors, refreshActions, links }) {
-    return (
-        <SalesHomeComponent
-            holidays={holidays}
-            errors={errors}
-            refreshActions={refreshActions}
-            links={links}
-        />
-    );
+export async function SalesHomeLayout({ profileId, employeeNumber }) {
+    return <SalesHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }
 
-export async function SubcontractorHomeLayout({ holidays, errors, refreshActions }) {
-    return (
-        <SubcontractorHomeComponent
-            holidays={holidays}
-            errors={errors}
-            refreshActions={refreshActions}
-        />
-    );
+export async function SubcontractorHomeLayout({ profileId, employeeNumber }) {
+    return <SubcontractorHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }
 
-export async function ManagementHomeLayout({
-    holidays,
-    occupancyRates,
-    errors,
-    refreshActions,
-    links,
-}) {
-    return (
-        <ManagementHomeComponent
-            holidays={holidays}
-            occupancyRates={occupancyRates}
-            errors={errors}
-            refreshActions={refreshActions}
-            links={links}
-        />
-    );
+export async function ManagementHomeLayout({ profileId, employeeNumber }) {
+    return <ManagementHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }
 
-export async function AdminHomeLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
-    // Admin sees everything plus has admin-specific quick links
-    return (
-        <AdminHomeComponent
-            holidays={holidays}
-            occupancyRates={occupancyRates}
-            errors={errors}
-            refreshActions={refreshActions}
-            links={links}
-        />
-    );
+export async function AdminHomeLayout({ profileId, employeeNumber }) {
+    return <AdminHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }

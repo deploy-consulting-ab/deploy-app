@@ -17,14 +17,14 @@ import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
-import { NoDataComponent } from '@/components/errors/no-data';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 export function HolidaysCardComponent({
     holidays: initialHolidays,
-    error: initialError,
     isNavigationDisabled,
     refreshAction,
+    error: initialError,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -38,22 +38,15 @@ export function HolidaysCardComponent({
         setHolidays(initialHolidays);
     }, [initialHolidays]);
 
-    useEffect(() => {
-        setError(initialError);
-    }, [initialError]);
-
     const handleRefresh = async () => {
         if (isRefreshing) return;
         setIsRefreshing(true);
         try {
             const newData = await refreshAction();
-            if (newData) {
-                setHolidays(newData);
-                setError(null);
-            }
-        } catch (err) {
-            console.error('Error refreshing holidays:', err);
-            setError(err);
+            setHolidays(newData);
+            setError('');
+        } catch (error) {
+            setError(error);
         } finally {
             setIsRefreshing(false);
         }
@@ -66,12 +59,12 @@ export function HolidaysCardComponent({
         }
     };
 
-    if (error) {
-        return <ErrorDisplayComponent error={error} />;
-    }
-
     if (!holidays) {
         return <NoDataComponent text="No holidays data found" />;
+    }
+
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
     }
 
     const progressPercentage = (holidays.currentFiscalUsedHolidays / holidays.totalHolidays) * 100;

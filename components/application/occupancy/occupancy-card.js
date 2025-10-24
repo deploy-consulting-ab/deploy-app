@@ -20,24 +20,20 @@ import { NoDataComponent } from '@/components/errors/no-data';
 
 export function OccupancyCardComponent({
     occupancy,
+    error: initialError,
     refreshAction,
     isNavigationDisabled,
-    error: initialError,
 }) {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [occupancyData, setOccupancyData] = useState(occupancy);
     const [error, setError] = useState(initialError);
 
-    if (error) {
-        return (
-            <div>
-                <ErrorDisplayComponent error={error} />
-            </div>
-        );
-    }
-
     if (!occupancyData) {
         return <NoDataComponent text="No occupancy data found" />;
+    }
+
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
     }
 
     const handleRefresh = async () => {
