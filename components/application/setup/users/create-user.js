@@ -1,6 +1,6 @@
 'use client';
 
-import { PROFILES, CONSULTANT_PROFILE } from '@/lib/system-permissions';
+import { PROFILES, CONSULTANT_PROFILE } from '@/lib/rba-constants';
 import { CreateUserSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

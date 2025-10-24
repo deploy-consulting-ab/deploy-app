@@ -1,17 +1,25 @@
-import { ConsultantLayout, SalesLayout, ManagementLayout, AdminLayout } from './home-layouts';
+import {
+    ConsultantLayout,
+    SalesLayout,
+    ManagementLayout,
+    AdminLayout,
+    SubcontractorLayout,
+} from '@/components/application/home/home-layouts';
 
 import {
     ADMIN_PROFILE,
     CONSULTANT_PROFILE,
     SALES_PROFILE,
     MANAGEMENT_PROFILE,
-} from '@/lib/system-permissions';
+    SUBCONTRACTOR_PROFILE,
+} from '@/lib/rba-constants';
 
 const LAYOUT_MAP = {
     [ADMIN_PROFILE]: AdminLayout,
     [MANAGEMENT_PROFILE]: ManagementLayout,
     [CONSULTANT_PROFILE]: ConsultantLayout,
     [SALES_PROFILE]: SalesLayout,
+    [SUBCONTRACTOR_PROFILE]: SubcontractorLayout,
 };
 
 export function getLayoutForProfile(profileId) {
@@ -19,9 +27,7 @@ export function getLayoutForProfile(profileId) {
 }
 
 export function getRequiredDataForProfile(profileId) {
-    const dataRequirements = {
-        holidays: true, // All profiles see holidays
-    };
+    const dataRequirements = {}; // Add data requirements shared by all profiles
 
     switch (profileId) {
         case ADMIN_PROFILE:
@@ -43,6 +49,12 @@ export function getRequiredDataForProfile(profileId) {
                 holidays: true,
             };
         case SALES_PROFILE:
+            return {
+                ...dataRequirements,
+                occupancyRates: false,
+                holidays: true,
+            };
+        case SUBCONTRACTOR_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: false,

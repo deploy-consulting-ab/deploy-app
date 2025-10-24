@@ -45,6 +45,21 @@ export function SalesLayout({ holidays, errors, refreshActions, links }) {
     );
 }
 
+export function SubcontractorLayout({ holidays, errors, refreshActions }) {
+    return (
+        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+            <div className="grid gap-4 grid-cols-1">
+                <HolidaysCardComponent
+                    holidays={holidays}
+                    error={errors.holidays}
+                    isNavigationDisabled={false}
+                    refreshAction={refreshActions.holidays}
+                />
+            </div>
+        </div>
+    );
+}
+
 export function ManagementLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
     return (
         <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">

@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SystemPermissionsEditableCardComponent } from '@/components/application/setup/system-permissions/system-permissions-editable-card';
 import { useState, useMemo } from 'react';
-import { VIEW_HOME_PERMISSION } from '@/lib/system-permissions';
+import { VIEW_HOME_PERMISSION } from '@/lib/rba-constants';
 import { FormError } from '@/components/auth/form/form-error';
 
 export function AccessCreationWrapperComponent({

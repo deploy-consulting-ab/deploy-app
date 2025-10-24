@@ -8,7 +8,7 @@ import { ModeToggleComponent } from '@/components/application/mode-toggle';
 import { LogoutButtonComponent } from '@/components/application/logout-button';
 import { GlobalSearch } from '@/components/application/search/global-search';
 import { SetupButtonComponent } from '@/components/application/setup-button';
-import { VIEW_SETUP_PERMISSION } from '@/lib/system-permissions';
+import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
 
 export async function AppHeaderComponent() {
     const session = await auth();

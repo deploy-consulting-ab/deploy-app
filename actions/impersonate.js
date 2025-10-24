@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth';
 import { getUserById, getCombinedSystemPermissionsForUser } from '@/data/user-db';
-import { ADMIN_PROFILE } from '@/lib/system-permissions';
+import { ADMIN_PROFILE } from '@/lib/rba-constants';
 import { revalidatePath } from 'next/cache';
 
 export async function startImpersonation(userId) {

@@ -29,7 +29,7 @@ import {
     VIEW_ASSIGNMENTS_PERMISSION,
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
-} from '@/lib/system-permissions';
+} from '@/lib/rba-constants';
 
 // Map of menu items with their required permissions and configurations
 export const MENU_ITEMS_MAP = {

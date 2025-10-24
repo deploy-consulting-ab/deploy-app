@@ -5,7 +5,7 @@ import {
     VIEW_ASSIGNMENTS_PERMISSION,
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
-} from '@/lib/system-permissions';
+} from '@/lib/rba-constants';
 
 export const LOGIN_ROUTE = '/auth/login';
 export const HOME_ROUTE = '/home';

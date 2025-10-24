@@ -5,7 +5,7 @@ import {
     getAssignmentsByEmployeeNumberAndProjectName,
 } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
-import { VIEW_OPPORTUNITIES_PERMISSION, VIEW_ASSIGNMENTS_PERMISSION } from '@/lib/system-permissions';
+import { VIEW_OPPORTUNITIES_PERMISSION, VIEW_ASSIGNMENTS_PERMISSION } from '@/lib/rba-constants';
 
 export async function globalSearch(query, limit = 3, employeeNumber) {
     if (!query) {
