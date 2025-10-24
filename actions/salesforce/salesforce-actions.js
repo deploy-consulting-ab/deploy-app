@@ -11,6 +11,7 @@ import {
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getOpportunityByIdQuery,
+    getSubcontractorAssignmentsMetricsQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -161,7 +162,6 @@ export async function getRecentOccupancyRate(employeeNumber, dates) {
             })),
         };
     } catch (error) {
-        console.error('## Error when getting recent occupancy rate', error);
         throw error;
     }
 }
@@ -181,6 +181,43 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
             date: occupancyRate.Date__c,
             rate: occupancyRate.OccupancyRate__c,
         }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getSubcontractorAssignmentsMetrics(employeeNumber) {
+    try {
+        const result = await queryData(getSubcontractorAssignmentsMetricsQuery(employeeNumber));
+
+        const map = new Map();
+        map.set('Total', 0);
+        map.set('Ongoing', 0);
+        map.set('Completed', 0);
+        map.set('Not Started', 0);
+
+        const assignmentsMetrics = [];
+
+        for (const assignment of result) {
+            if (map.has(assignment.Status__c)) {
+                map.set(
+                    assignment.Status__c,
+                    map.get(assignment.Status__c) + assignment.assignmentsMetrics
+                );
+                map.set('Total', map.get('Total') + assignment.assignmentsMetrics);
+            }
+        }
+
+        for (const [status, count] of map.entries()) {
+            assignmentsMetrics.push({
+                status: status,
+                count: count,
+            });
+        }
+
+        console.log('## Assignments Metrics', assignmentsMetrics);
+
+        return assignmentsMetrics;
     } catch (error) {
         throw error;
     }

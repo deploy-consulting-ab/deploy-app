@@ -32,49 +32,54 @@ export async function SetupHomeComponent({ metrics, error }) {
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Total Users Card */}
-                <MetricsCardComponent
-                    metric={metrics.totalUsers}
-                    linkRoute={USERS_ROUTE}
-                    title="Total Users"
-                    IconComponent={<Users className="h-4 w-4 text-primary" />}
-                    description="Total users in the system"
-                />
+                <Link href={USERS_ROUTE} className="block">
+                    <MetricsCardComponent
+                        metric={metrics.totalUsers}
+                        title="Total Users"
+                        IconComponent={<Users className="h-4 w-4 text-primary" />}
+                        description="Total users in the system"
+                    />
+                </Link>
 
                 {/* Active Users Card */}
-                <MetricsCardComponent
-                    metric={metrics.activeUsers}
-                    linkRoute={USERS_ROUTE}
-                    title="Active Users"
-                    IconComponent={<UserCheck className="h-4 w-4 text-primary" />}
-                    description="Total active users in the system"
-                />
+                <Link href={USERS_ROUTE} className="block">
+                    <MetricsCardComponent
+                        metric={metrics.activeUsers}
+                        title="Active Users"
+                        IconComponent={<UserCheck className="h-4 w-4 text-primary" />}
+                        description="Total active users in the system"
+                    />
+                </Link>
 
                 {/* Profiles Card */}
-                <MetricsCardComponent
-                    metric={metrics.totalProfiles}
-                    linkRoute={PROFILES_ROUTE}
-                    title="Profiles"
-                    IconComponent={<UserCircle className="h-4 w-4 text-primary" />}
-                    description="Total user profiles in the system"
-                />
+                <Link href={PROFILES_ROUTE} className="block">
+                    <MetricsCardComponent
+                        metric={metrics.totalProfiles}
+                        title="Profiles"
+                        IconComponent={<UserCircle className="h-4 w-4 text-primary" />}
+                        description="Total user profiles in the system"
+                    />
+                </Link>
 
                 {/* System Permissions Card */}
-                <MetricsCardComponent
-                    metric={metrics.totalSystemPermissions}
-                    linkRoute={SYSTEM_PERMISSIONS_ROUTE}
-                    title="System Permissions"
-                    IconComponent={<Shield className="h-4 w-4 text-primary" />}
-                    description="Total system permissions in the system"
-                />
+                <Link href={SYSTEM_PERMISSIONS_ROUTE} className="block">
+                    <MetricsCardComponent
+                        metric={metrics.totalSystemPermissions}
+                        title="System Permissions"
+                        IconComponent={<Shield className="h-4 w-4 text-primary" />}
+                        description="Total system permissions in the system"
+                    />
+                </Link>
 
                 {/* Permission Sets Card */}
-                <MetricsCardComponent
-                    metric={metrics.totalPermissionSets}
-                    linkRoute={PERMISSION_SETS_ROUTE}
-                    title="Permission Sets"
-                    IconComponent={<Box className="h-4 w-4 text-primary" />}
-                    description="Total permission sets in the system"
-                />
+                <Link href={PERMISSION_SETS_ROUTE} className="block">
+                    <MetricsCardComponent
+                        metric={metrics.totalPermissionSets}
+                        title="Permission Sets"
+                        IconComponent={<Box className="h-4 w-4 text-primary" />}
+                        description="Total permission sets in the system"
+                    />
+                </Link>
             </div>
         </div>
     );

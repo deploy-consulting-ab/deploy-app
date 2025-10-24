@@ -49,6 +49,17 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
             ORDER BY Date__c ASC`;
 };
 
+const getSubcontractorAssignmentsMetricsQuery = (employeeNumber) => {
+    return `SELECT Project__r.Status__c, StartDate__c, COUNT(Id) assignmentsMetrics
+            FROM Assignment__c
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
+            AND ProjectType__c = 'External Project'
+            AND ProjectStatus__c != 'Draft'
+            AND ProjectStatus__c != 'Cancelled'
+            GROUP BY Project__r.Status__c, StartDate__c
+            ORDER BY StartDate__c DESC`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -59,4 +70,5 @@ export {
     getOpportunitiesByNameQuery,
     getOpportunityByIdQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
+    getSubcontractorAssignmentsMetricsQuery,
 };
