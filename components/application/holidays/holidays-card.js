@@ -18,6 +18,7 @@ import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useRouter } from 'next/navigation';
 import { NoDataComponent } from '@/components/errors/no-data';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function HolidaysCardComponent({
     holidays: initialHolidays,
@@ -66,6 +67,10 @@ export function HolidaysCardComponent({
     };
 
     if (error) {
+        return <ErrorDisplayComponent error={error} />;
+    }
+
+    if (!holidays) {
         return <NoDataComponent text="No holidays data found" />;
     }
 

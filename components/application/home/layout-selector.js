@@ -58,7 +58,7 @@ export function getHomeRequiredDataForProfile(profileId) {
             return {
                 ...dataRequirements,
                 occupancyRates: false,
-                holidays: true,
+                holidays: false,
             };
         default:
             return dataRequirements;
