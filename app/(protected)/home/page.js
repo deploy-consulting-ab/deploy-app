@@ -7,8 +7,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
 import { formatDateToISOString } from '@/lib/utils';
 import {
-    getLayoutForProfile,
-    getRequiredDataForProfile,
+    getHomeLayoutForProfile,
+    getHomeRequiredDataForProfile,
 } from '@/components/application/home/layout-selector';
 
 async function refreshHolidays() {
@@ -37,7 +37,7 @@ export default async function HomePage() {
     const { employeeNumber, profileId } = session.user;
 
     // Determine what data this profile needs
-    const dataRequirements = getRequiredDataForProfile(profileId);
+    const dataRequirements = getHomeRequiredDataForProfile(profileId);
 
     // Initialize data and errors
     let loading = true;
@@ -80,7 +80,7 @@ export default async function HomePage() {
     }
 
     // Get the appropriate layout component for this profile
-    const LayoutComponent = getLayoutForProfile(profileId);
+    const LayoutComponent = getHomeLayoutForProfile(profileId);
 
     // Render the layout with the fetched data
     return (

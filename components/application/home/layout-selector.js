@@ -1,9 +1,9 @@
 import {
-    ConsultantLayout,
-    SalesLayout,
-    ManagementLayout,
-    AdminLayout,
-    SubcontractorLayout,
+    ConsultantHomeLayout,
+    SalesHomeLayout,
+    ManagementHomeLayout,
+    AdminHomeLayout,
+    SubcontractorHomeLayout,
 } from '@/components/application/home/home-layouts';
 
 import {
@@ -14,19 +14,19 @@ import {
     SUBCONTRACTOR_PROFILE,
 } from '@/lib/rba-constants';
 
-const LAYOUT_MAP = {
-    [ADMIN_PROFILE]: AdminLayout,
-    [MANAGEMENT_PROFILE]: ManagementLayout,
-    [CONSULTANT_PROFILE]: ConsultantLayout,
-    [SALES_PROFILE]: SalesLayout,
-    [SUBCONTRACTOR_PROFILE]: SubcontractorLayout,
+const HOME_LAYOUT_MAP = {
+    [ADMIN_PROFILE]: AdminHomeLayout,
+    [MANAGEMENT_PROFILE]: ManagementHomeLayout,
+    [CONSULTANT_PROFILE]: ConsultantHomeLayout,
+    [SALES_PROFILE]: SalesHomeLayout,
+    [SUBCONTRACTOR_PROFILE]: SubcontractorHomeLayout,
 };
 
-export function getLayoutForProfile(profileId) {
-    return LAYOUT_MAP[profileId] || ConsultantLayout; // Default to consultant layout
+export function getHomeLayoutForProfile(profileId) {
+    return HOME_LAYOUT_MAP[profileId] || ConsultantHomeLayout; // Default to consultant layout
 }
 
-export function getRequiredDataForProfile(profileId) {
+export function getHomeRequiredDataForProfile(profileId) {
     const dataRequirements = {}; // Add data requirements shared by all profiles
 
     switch (profileId) {
