@@ -9,7 +9,7 @@ import { formatDateToISOString } from '@/lib/utils';
 import {
     getHomeLayoutForProfile,
     getHomeRequiredDataForProfile,
-} from '@/components/application/home/layout-selector';
+} from '@/components/application/home/home-layout-selector';
 
 async function refreshHolidays() {
     'use server';
