@@ -1,108 +1,77 @@
-'use client';
+'use server';
 
-import { HolidaysCardComponent } from '@/components/application/holidays/holidays-card';
-import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
-import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
+import { SubcontractorHomeComponent } from '@/components/application/home/layouts.js/subcontractor-home';
+import { ConsultantHomeComponent } from '@/components/application/home/layouts.js/consultant-home';
+import { SalesHomeComponent } from '@/components/application/home/layouts.js/sales-home';
+import { ManagementHomeComponent } from '@/components/application/home/layouts.js/management-home';
+import { AdminHomeComponent } from '@/components/application/home/layouts.js/admin-home';
 
-export function ConsultantHomeLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
+export async function ConsultantHomeLayout({
+    holidays,
+    occupancyRates,
+    errors,
+    refreshActions,
+    links,
+}) {
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshActions.holidays}
-                />
-                <OccupancyCardComponent
-                    occupancy={occupancyRates}
-                    error={errors.occupancyRates}
-                    refreshAction={refreshActions.occupancy}
-                />
-            </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={links} title="Quick Access" />
-            </div>
-        </div>
+        <ConsultantHomeComponent
+            holidays={holidays}
+            occupancyRates={occupancyRates}
+            errors={errors}
+            refreshActions={refreshActions}
+            links={links}
+        />
     );
 }
 
-export function SalesHomeLayout({ holidays, errors, refreshActions, links }) {
+export async function SalesHomeLayout({ holidays, errors, refreshActions, links }) {
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshActions.holidays}
-                />
-            </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={links} title="Quick Access" />
-            </div>
-        </div>
+        <SalesHomeComponent
+            holidays={holidays}
+            errors={errors}
+            refreshActions={refreshActions}
+            links={links}
+        />
     );
 }
 
-export function SubcontractorHomeLayout({ holidays, errors, refreshActions }) {
+export async function SubcontractorHomeLayout({ holidays, errors, refreshActions }) {
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshActions.holidays}
-                />
-            </div>
-        </div>
+        <SubcontractorHomeComponent
+            holidays={holidays}
+            errors={errors}
+            refreshActions={refreshActions}
+        />
     );
 }
 
-export function ManagementHomeLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
+export async function ManagementHomeLayout({
+    holidays,
+    occupancyRates,
+    errors,
+    refreshActions,
+    links,
+}) {
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshActions.holidays}
-                />
-                <OccupancyCardComponent
-                    occupancy={occupancyRates}
-                    error={errors.occupancyRates}
-                    refreshAction={refreshActions.occupancy}
-                />
-            </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={links} title="Quick Access" />
-            </div>
-        </div>
+        <ManagementHomeComponent
+            holidays={holidays}
+            occupancyRates={occupancyRates}
+            errors={errors}
+            refreshActions={refreshActions}
+            links={links}
+        />
     );
 }
 
-export function AdminHomeLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
+export async function AdminHomeLayout({ holidays, occupancyRates, errors, refreshActions, links }) {
     // Admin sees everything plus has admin-specific quick links
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
-                    holidays={holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshActions.holidays}
-                />
-                <OccupancyCardComponent
-                    occupancy={occupancyRates}
-                    error={errors.occupancyRates}
-                    refreshAction={refreshActions.occupancy}
-                />
-            </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={links} title="Quick Access" />
-            </div>
-        </div>
+        <AdminHomeComponent
+            holidays={holidays}
+            occupancyRates={occupancyRates}
+            errors={errors}
+            refreshActions={refreshActions}
+            links={links}
+        />
     );
 }

@@ -10,6 +10,7 @@ import {
     PERMISSION_SETS_ROUTE,
 } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { MetricsCardComponent } from '@/components/application/metrics-card';
 
 export async function SetupHomeComponent({ metrics, error }) {
     if (error) {
@@ -31,94 +32,49 @@ export async function SetupHomeComponent({ metrics, error }) {
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Total Users Card */}
-                <Link href={USERS_ROUTE} className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
-                        <CardHeader className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <Users className="h-4 w-4 text-primary" />
-                                </div>
-                                <CardTitle className="text-xl">Total Users</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.totalUsers}</div>
-                            <CardDescription>Total users in the system</CardDescription>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <MetricsCardComponent
+                    metric={metrics.totalUsers}
+                    linkRoute={USERS_ROUTE}
+                    title="Total Users"
+                    IconComponent={<Users className="h-4 w-4 text-primary" />}
+                    description="Total users in the system"
+                />
 
                 {/* Active Users Card */}
-                <Link href={USERS_ROUTE} className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
-                        <CardHeader className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <UserCheck className="h-4 w-4 text-primary" />
-                                </div>
-                                <CardTitle className="text-xl">Active Users</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.activeUsers}</div>
-                            <CardDescription>Total active users in the system</CardDescription>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <MetricsCardComponent
+                    metric={metrics.activeUsers}
+                    linkRoute={USERS_ROUTE}
+                    title="Active Users"
+                    IconComponent={<UserCheck className="h-4 w-4 text-primary" />}
+                    description="Total active users in the system"
+                />
 
                 {/* Profiles Card */}
-                <Link href={PROFILES_ROUTE} className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
-                        <CardHeader className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <UserCircle className="h-4 w-4 text-primary" />
-                                </div>
-                                <CardTitle className="text-xl">Profiles</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.totalProfiles}</div>
-                            <CardDescription>User profiles configured</CardDescription>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <MetricsCardComponent
+                    metric={metrics.totalProfiles}
+                    linkRoute={PROFILES_ROUTE}
+                    title="Profiles"
+                    IconComponent={<UserCircle className="h-4 w-4 text-primary" />}
+                    description="Total user profiles in the system"
+                />
 
                 {/* System Permissions Card */}
-                <Link href={SYSTEM_PERMISSIONS_ROUTE} className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
-                        <CardHeader className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <Shield className="h-4 w-4 text-primary" />
-                                </div>
-                                <CardTitle className="text-xl">System Permissions</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.totalSystemPermissions}</div>
-                            <CardDescription>Total system permissions</CardDescription>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <MetricsCardComponent
+                    metric={metrics.totalSystemPermissions}
+                    linkRoute={SYSTEM_PERMISSIONS_ROUTE}
+                    title="System Permissions"
+                    IconComponent={<Shield className="h-4 w-4 text-primary" />}
+                    description="Total system permissions in the system"
+                />
 
                 {/* Permission Sets Card */}
-                <Link href={PERMISSION_SETS_ROUTE} className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer">
-                        <CardHeader className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <Box className="h-4 w-4 text-primary" />
-                                </div>
-                                <CardTitle className="text-xl">Permission Sets</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold pb-2">{metrics.totalPermissionSets}</div>
-                            <CardDescription>Total permission sets in the system</CardDescription>
-                        </CardContent>
-                    </Card>
-                </Link>
+                <MetricsCardComponent
+                    metric={metrics.totalPermissionSets}
+                    linkRoute={PERMISSION_SETS_ROUTE}
+                    title="Permission Sets"
+                    IconComponent={<Box className="h-4 w-4 text-primary" />}
+                    description="Total permission sets in the system"
+                />
             </div>
         </div>
     );
