@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
@@ -20,22 +20,36 @@ import {
 import { useRouter } from 'next/navigation';
 import { getOpportunityStageColor } from '@/lib/utils';
 import Link from 'next/link';
-import { OPPORTUNITIES_ROUTE } from '@/menus/routes'; 
+import { OPPORTUNITIES_ROUTE } from '@/menus/routes';
 
 export function OpportunitiesListComponent({ opportunities, error: initialError }) {
     const router = useRouter();
 
-    const [opportunitiesData, setOpportunities] = useState(opportunities);
+    const [opportunitiesData, setOpportunitiesData] = useState(opportunities);
     const [error, setError] = useState(initialError);
 
+    const [isMobile, setIsMobile] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [view, setView] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
     const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
+
         let freshData = null;
         try {
             freshData = await getOpportunities();
-            setOpportunities(freshData);
+            setOpportunitiesData(freshData);
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -43,7 +57,7 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         router.push(`${OPPORTUNITIES_ROUTE}/${id}`);
     };
 
-    const views = [
+    const opportunityViews = [
         { value: 'all', label: 'All Opportunities' },
         { value: 'Qualification', label: 'Qualification' },
         { value: 'Discovery', label: 'Discovery' },
@@ -192,12 +206,6 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         },
     ];
 
-    const [isMobile, setIsMobile] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedView, setSelectedView] = useState('all');
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
-
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // 768px is typical md breakpoint
@@ -211,16 +219,29 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
     // Reset to first page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedView]);
+    }, [searchQuery, view]);
 
     const filteredOpportunities = opportunitiesData
-        .filter((opp) => selectedView === 'all' || opp.stage === selectedView)
+        .filter((opp) => view === 'all' || opp.stage === view)
         .filter(
             (opp) =>
                 searchQuery === '' ||
                 opp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 opp.accountName.toLowerCase().includes(searchQuery.toLowerCase())
         );
+
+    const handleFilterOpportunities = (value) => {
+        let filteredData = null;
+
+        if (value === 'all') {
+            filteredData = opportunities;
+        } else {
+            filteredData = opportunities.filter((opp) => opp.stage === value);
+        }
+
+        setOpportunitiesData(filteredData);
+        setView(value);
+    };
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
@@ -244,12 +265,12 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full text-sm"
                     />
-                    <Select value={selectedView} onValueChange={setSelectedView}>
+                    <Select value={view} onValueChange={handleFilterOpportunities}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Filter by stage" />
                         </SelectTrigger>
                         <SelectContent>
-                            {views.map((view) => (
+                            {opportunityViews.map((view) => (
                                 <SelectItem key={view.value} value={view.value}>
                                     {view.label}
                                 </SelectItem>
@@ -296,16 +317,47 @@ export function OpportunitiesListComponent({ opportunities, error: initialError 
         );
     }
 
+    const refreshOpportunities = (
+        <Button
+            key="refresh-opportunities"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const viewByOpportunities = (
+        <Select value={view} onValueChange={handleFilterOpportunities} key="view-by-opportunities">
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+                {opportunityViews.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                        {view.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    const actions = [refreshOpportunities];
+    const views = [viewByOpportunities];
+
     return (
         <DatatableWrapperComponent
             data={opportunitiesData}
             columns={columns}
             placeholder="Filter Opportunities..."
-            refreshAction={handleRefresh}
             views={views}
-            defaultView="all"
+            view={view}
             searchKey="name"
-            filterKey="stage"
+            actions={actions}
         />
     );
 }
