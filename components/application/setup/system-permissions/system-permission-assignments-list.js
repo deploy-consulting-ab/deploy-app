@@ -3,11 +3,18 @@
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from '@/components/ui/select';
 
 export function SystemPermissionAssignmentsListComponent({
     allSystemPermissionAssignments,
@@ -18,8 +25,14 @@ export function SystemPermissionAssignmentsListComponent({
         allSystemPermissionAssignments
     );
     const [error, setError] = useState(initialError);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [view, setView] = useState('all');
 
     const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
         let freshData = null;
         try {
             const systemPermissionAssignments =
@@ -29,10 +42,39 @@ export function SystemPermissionAssignmentsListComponent({
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
-    const views = [
+    const handleFilterSystemPermissionAssignments = (value) => {
+        let filteredData = null;
+        if (value === 'all') {
+            filteredData = allSystemPermissionAssignments;
+        } else {
+            filteredData = allSystemPermissionAssignments.filter(
+                (item) => item.entityName === value
+            );
+        }
+        setSystemPermissionAssignmentsData(filteredData);
+        setView(value);
+    };
+
+    const refreshSystemPermissionAssignments = (
+        <Button
+            key="refresh-system-permission-assignments"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const viewBySystemPermissionAssignmentsViews = [
         { value: 'all', label: 'All' },
         { value: 'Profile', label: 'Profiles' },
         { value: 'Permission Set', label: 'Permission Sets' },
@@ -146,16 +188,37 @@ export function SystemPermissionAssignmentsListComponent({
         return <ErrorDisplayComponent error={error} />;
     }
 
+    const viewBySystemPermissionAssignments = (
+        <Select
+            value={view}
+            onValueChange={handleFilterSystemPermissionAssignments}
+            key="view-by-system-permission-assignments"
+        >
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+                {viewBySystemPermissionAssignmentsViews.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                        {view.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    const actions = [refreshSystemPermissionAssignments];
+    const views = [viewBySystemPermissionAssignments];
+
     return (
         <DatatableWrapperComponent
             data={systemPermissionAssignmentsData}
             columns={columns}
             placeholder="Filter System Permission Assignments..."
-            refreshAction={handleRefresh}
             searchKey="name"
-            defaultView="all"
-            filterKey="entityName"
+            actions={actions}
             views={views}
+            view={view}
         />
     );
 }
