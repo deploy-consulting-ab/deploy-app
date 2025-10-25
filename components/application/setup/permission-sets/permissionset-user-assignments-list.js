@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, CirclePlus, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, CirclePlus, MoreHorizontal, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -39,20 +39,25 @@ export function PermissionSetAssignmentsListComponent({
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleRefresh = async () => {
         doRefresh();
     };
 
     const doRefresh = async () => {
-        let freshData = null;
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
         try {
             const permissionSet = await getPermissionSetByIdAction(permissionSetId);
-            freshData = permissionSet.users;
-            setUsersData(freshData);
+            setUsersData(permissionSet.users);
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -224,8 +229,12 @@ export function PermissionSetAssignmentsListComponent({
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    const relateUserToPermissionSetButton = (
+        <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            key="relate-user-to-permission-set"
+        >
             <DialogTrigger asChild>
                 <Button size="sm">
                     <CirclePlus className="h-4 w-4" />
@@ -248,14 +257,29 @@ export function PermissionSetAssignmentsListComponent({
         </Dialog>
     );
 
+    const refreshUserAssignments = (
+        <Button
+            key="refresh-user-assignments"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [relateUserToPermissionSetButton, refreshUserAssignments];
+
     return (
         <DatatableWrapperComponent
             data={usersData}
             columns={columns}
             placeholder="Filter Users..."
-            refreshAction={handleRefresh}
             searchKey="name"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }
