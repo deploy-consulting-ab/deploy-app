@@ -49,8 +49,13 @@ export function DatatableWrapperComponent({
     const [selectedView, setSelectedView] = useState(defaultView);
 
     const filteredData = useMemo(() => {
-        if (selectedView === 'all') return initialData;
-        return initialData.filter((item) => item[filterKey] === selectedView);
+        if (selectedView === 'all') {
+            return initialData;
+        }
+
+        return initialData.filter(
+            (item) => item[filterKey].toLowerCase() === selectedView.toLowerCase()
+        );
     }, [initialData, selectedView, filterKey]);
 
     const handleRefresh = async () => {

@@ -4,7 +4,7 @@ import { DatatableWrapperComponent } from '@/components/application/datatable-wr
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { useState, useMemo, useEffect } from 'react';
@@ -24,6 +24,7 @@ import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 export function AssignmentListComponent({ assignments, employeeNumber, error: initialError }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const handleAssignmentClick = (id) => {
         router.push(`${ASSIGNMENTS_ROUTE}/${id}`);
     };
@@ -32,7 +33,9 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
     const [error, setError] = useState(initialError);
     const [isMobile, setIsMobile] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedView, setSelectedView] = useState('all');
+    const [selectedView, setSelectedView] = useState(
+        searchParams.get('view') || 'all'
+    );
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
@@ -64,9 +67,9 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
 
     const views = [
         { value: 'all', label: 'All Assignments' },
-        { value: 'Not Started', label: 'Not Started' },
-        { value: 'Ongoing', label: 'Ongoing' },
-        { value: 'Completed', label: 'Completed' },
+        { value: 'not started', label: 'Not Started' },
+        { value: 'ongoing', label: 'Ongoing' },
+        { value: 'completed', label: 'Completed' },
     ];
 
     const columns = [
@@ -294,7 +297,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
             placeholder="Filter assignments..."
             refreshAction={handleRefresh}
             views={views}
-            defaultView="all"
+            defaultView={selectedView}
             searchKey="projectName"
             filterKey="projectStatus"
         />

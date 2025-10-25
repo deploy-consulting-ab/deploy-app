@@ -191,7 +191,7 @@ export async function getSubcontractorAssignmentsMetrics(employeeNumber) {
         const result = await queryData(getSubcontractorAssignmentsMetricsQuery(employeeNumber));
 
         const map = new Map();
-        map.set('Total', 0);
+        map.set('All', 0);
         map.set('Ongoing', 0);
         map.set('Completed', 0);
         map.set('Not Started', 0);
@@ -204,7 +204,7 @@ export async function getSubcontractorAssignmentsMetrics(employeeNumber) {
                     assignment.Status__c,
                     map.get(assignment.Status__c) + assignment.assignmentsMetrics
                 );
-                map.set('Total', map.get('Total') + assignment.assignmentsMetrics);
+                map.set('All', map.get('All') + assignment.assignmentsMetrics);
             }
         }
 

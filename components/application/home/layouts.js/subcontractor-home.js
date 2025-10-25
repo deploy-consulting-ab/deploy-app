@@ -25,7 +25,7 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
         <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             {subcontractorAssignmentsMetrics.map((assignment) => (
                 <Link
-                    href={`${ASSIGNMENTS_ROUTE}?status=${assignment.status}`}
+                    href={`${ASSIGNMENTS_ROUTE}?view=${assignment.status.toLowerCase()}`}
                     key={assignment.status}
                     className="block"
                 >
