@@ -14,7 +14,7 @@ export async function globalSearch(query, limit = 3, employeeNumber) {
 
     const session = await auth();
     const { user } = session;
-    const permissionsSet = new Set(user?.permissions);
+    const permissionsSet = new Set(user?.systemPermissions);
 
     try {
         // Only fetch data that the user has permission to see
