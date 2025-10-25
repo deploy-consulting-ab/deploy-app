@@ -191,23 +191,6 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         },
     ];
 
-    // Filter assignments based on search and view
-    const filteredAssignments = useMemo(() => {
-        return (
-            assignmentData
-                ?.filter(
-                    (assignment) =>
-                        selectedView === 'all' || assignment.projectStatus === selectedView
-                )
-                ?.filter(
-                    (assignment) =>
-                        searchQuery === '' ||
-                        assignment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase())
-                ) || []
-        );
-    }, [assignmentData, selectedView, searchQuery]);
-
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
@@ -216,11 +199,29 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         return <NoDataComponent text="No assignments found" />;
     }
 
+    // Implement lazy loading for mobile view
     if (isMobile) {
+        // Filter assignments based on search and view
+        const filteredAssignments = () => {
+            return (
+                assignmentData
+                    ?.filter(
+                        (assignment) =>
+                            selectedView === 'all' || assignment.projectStatus === selectedView
+                    )
+                    ?.filter(
+                        (assignment) =>
+                            searchQuery === '' ||
+                            assignment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+                    ) || []
+            );
+        };
+
         // Calculate pagination
-        const totalPages = Math.ceil(filteredAssignments.length / itemsPerPage);
+        const totalPages = Math.ceil(filteredAssignments().length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginatedAssignments = filteredAssignments.slice(
+        const paginatedAssignments = filteredAssignments().slice(
             startIndex,
             startIndex + itemsPerPage
         );
