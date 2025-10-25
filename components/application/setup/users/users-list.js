@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserPlus } from 'lucide-react';
+import { ArrowUpDown, RefreshCw, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -34,15 +34,30 @@ import { MoreHorizontal } from 'lucide-react';
 import { useImpersonation } from '@/hooks/use-impersonation';
 import { useRouter } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from '@/components/ui/select';
 
 export function UsersListComponent({ users, error: initialError }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [view, setView] = useState('all');
 
     const { startImpersonation } = useImpersonation();
     const router = useRouter();
+
     const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
+
         let freshData = null;
         try {
             freshData = await getUsersAction();
@@ -50,7 +65,24 @@ export function UsersListComponent({ users, error: initialError }) {
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
+    };
+
+    const handleFilterProfiles = (value) => {
+        let filteredData = null;
+
+        if (value === 'all') {
+            filteredData = users;
+        } else {
+            filteredData = users.filter(
+                (item) => item['profileId'].toLowerCase() === value.toLowerCase()
+            );
+        }
+
+        setUsersData(filteredData);
+        setView(value);
     };
 
     const handleSuccess = () => {
@@ -89,7 +121,7 @@ export function UsersListComponent({ users, error: initialError }) {
         }
     };
 
-    const views = [
+    const profileViews = [
         { value: 'all', label: 'All Users' },
         { value: ADMIN_PROFILE, label: 'Admin Users' },
         { value: SALES_PROFILE, label: 'Sales Users' },
@@ -258,8 +290,8 @@ export function UsersListComponent({ users, error: initialError }) {
         },
     ];
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    const createUserAction = (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} key="create-user">
             <DialogTrigger asChild>
                 <Button size="sm">
                     <UserPlus className="h-4 w-4" />
@@ -277,6 +309,38 @@ export function UsersListComponent({ users, error: initialError }) {
         </Dialog>
     );
 
+    const refreshUsers = (
+        <Button
+            key="refresh-users"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const viewByProfiles = (
+        <Select value={view} onValueChange={handleFilterProfiles} key="view-by-profiles">
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+                {profileViews.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                        {view.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    const actions = [createUserAction, refreshUsers];
+    const views = [viewByProfiles];
+
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
@@ -286,12 +350,10 @@ export function UsersListComponent({ users, error: initialError }) {
             data={usersData}
             columns={columns}
             placeholder="Filter Users..."
-            refreshAction={handleRefresh}
             views={views}
-            defaultView="all"
+            view={view}
             searchKey="name"
-            filterKey="profileId"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
     flexRender,
     getCoreRowModel,
@@ -9,8 +9,6 @@ import {
     getSortedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
-import { RefreshCw } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -22,68 +20,22 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-
 export function DatatableWrapperComponent({
-    data: initialData,
+    data,
     columns,
     placeholder,
-    refreshAction,
-    views = [],
-    defaultView = 'all',
     searchKey,
-    filterKey,
-    actionButton,
+    ...props
 }) {
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const [sorting, setSorting] = useState([]);
-    const [columnFilters, setColumnFilters] = useState([]);
-    const [columnVisibility, setColumnVisibility] = useState({});
-    const [rowSelection, setRowSelection] = useState({});
-    const [selectedView, setSelectedView] = useState(defaultView);
-
-    const filteredData = useMemo(() => {
-        if (selectedView === 'all') {
-            return initialData;
-        }
-
-        return initialData.filter(
-            (item) => item[filterKey].toLowerCase() === selectedView.toLowerCase()
-        );
-    }, [initialData, selectedView, filterKey]);
-
-    const handleRefresh = async () => {
-        if (isRefreshing) {
-            return;
-        }
-        setIsRefreshing(true);
-        try {
-            await refreshAction();
-            setSelectedView('all');
-        } catch (error) {
-            console.error('Error refreshing data:', error);
-        } finally {
-            setIsRefreshing(false);
-        }
-    };
-
     const table = useReactTable({
-        data: filteredData,
+        data,
         columns,
         onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
         enableColumnResizing: true,
         columnResizeMode: 'onChange',
         defaultColumn: {
@@ -93,9 +45,6 @@ export function DatatableWrapperComponent({
         },
         state: {
             sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
         },
     });
 
@@ -113,40 +62,8 @@ export function DatatableWrapperComponent({
                     />
                 </div>
                 <div className="flex items-center gap-2">
-                    {views.length > 0 && (
-                        <Select
-                            value={selectedView}
-                            onValueChange={(value) => {
-                                setSelectedView(value);
-                            }}
-                        >
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Select view" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {views.map((view) => (
-                                    <SelectItem key={view.value} value={view.value}>
-                                        {view.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                    {actionButton}
-                    {refreshAction && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleRefresh}
-                            disabled={isRefreshing}
-                            className={`md:hover:cursor-pointer ${
-                                isRefreshing ? 'animate-spin' : ''
-                            }`}
-                        >
-                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                            <span className="sr-only">Refresh data</span>
-                        </Button>
-                    )}
+                    {props.views && props.views.map((view) => view)}
+                    {props.actions && props.actions.map((action) => action)}
                 </div>
             </div>
             <div className="overflow-x-auto rounded-md border">
