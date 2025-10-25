@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, ShieldPlus, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, ShieldPlus, MoreHorizontal, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -32,6 +32,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
     const [permissionsData, setPermissionsData] = useState(permissions);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleSuccess = () => {
         setIsDialogOpen(false);
@@ -46,6 +47,10 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
     };
 
     const doRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
         let freshData = null;
         try {
             freshData = await getSystemPermissionsAction();
@@ -53,6 +58,8 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -174,9 +181,10 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
+    
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
+    const createSystemPermissionButton = (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-system-permission">
             <DialogTrigger asChild>
                 <Button size="sm">
                     <ShieldPlus className="h-4 w-4" />
@@ -194,15 +202,29 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
         </Dialog>
     );
 
+    const refreshSystemPermissions = (
+        <Button
+            key="refresh-system-permissions"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [createSystemPermissionButton, refreshSystemPermissions];
+
     return (
         <DatatableWrapperComponent
             data={permissionsData}
             columns={columns}
             placeholder="Filter Permissions..."
-            refreshAction={handleRefresh}
-            defaultView="all"
             searchKey="name"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }
