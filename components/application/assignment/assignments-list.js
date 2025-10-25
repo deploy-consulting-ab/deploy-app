@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
@@ -33,10 +33,10 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
     const [error, setError] = useState(initialError);
     const [isMobile, setIsMobile] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedView, setSelectedView] = useState(
-        searchParams.get('view') || 'all'
-    );
+    const [view, setView] = useState(searchParams.get('view') || 'all');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
     const itemsPerPage = 5;
 
     useEffect(() => {
@@ -52,9 +52,14 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
     // Reset to first page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedView]);
+    }, [searchQuery, view]);
 
     const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
+
         let freshData = null;
         try {
             freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
@@ -62,16 +67,32 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
-    const views = [
+    const projectViews = [
         { value: 'all', label: 'All Assignments' },
         { value: 'not started', label: 'Not Started' },
         { value: 'ongoing', label: 'Ongoing' },
         { value: 'completed', label: 'Completed' },
     ];
 
+    const handleFilterAssignment = (value) => {
+        let filteredData = null;
+
+        if (value === 'all') {
+            filteredData = assignments;
+        } else {
+            filteredData = assignments.filter(
+                (item) => item['projectStatus'].toLowerCase() === value.toLowerCase()
+            );
+        }
+
+        setAssignmentData(filteredData);
+        setView(value);
+    };
     const columns = [
         {
             accessorKey: 'name',
@@ -207,11 +228,8 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         // Filter assignments based on search and view
         const filteredAssignments = () => {
             return (
-                assignmentData
-                    ?.filter(
-                        (assignment) =>
-                            selectedView === 'all' || assignment.projectStatus === selectedView
-                    )
+                assignments
+                    ?.filter((assignment) => view === 'all' || assignment.projectStatus.toLowerCase() === view.toLowerCase())
                     ?.filter(
                         (assignment) =>
                             searchQuery === '' ||
@@ -238,12 +256,16 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full text-sm"
                     />
-                    <Select value={selectedView} onValueChange={setSelectedView}>
+                    <Select
+                        value={view}
+                        onValueChange={handleFilterAssignment}
+                        key="view-by-projects"
+                    >
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Filter by status" />
                         </SelectTrigger>
                         <SelectContent>
-                            {views.map((view) => (
+                            {projectViews.map((view) => (
                                 <SelectItem key={view.value} value={view.value}>
                                     {view.label}
                                 </SelectItem>
@@ -290,16 +312,46 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         );
     }
 
+    const refreshAssignments = (
+        <Button
+            key="refresh-assignments"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const viewByProjects = (
+        <Select value={view} onValueChange={handleFilterAssignment} key="view-by-projects">
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+                {projectViews.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                        {view.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    const actions = [refreshAssignments];
+    const views = [viewByProjects];
+
     return (
         <DatatableWrapperComponent
             data={assignmentData}
             columns={columns}
-            placeholder="Filter assignments..."
-            refreshAction={handleRefresh}
+            placeholder="Filter Assignments..."
             views={views}
-            defaultView={selectedView}
+            view={view}
             searchKey="projectName"
-            filterKey="projectStatus"
+            actions={actions}
         />
     );
 }
