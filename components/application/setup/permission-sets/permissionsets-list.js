@@ -2,8 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpDown, MoreHorizontal, Box } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Box, RefreshCw, PermissionSetPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from '@/components/ui/select';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -32,6 +39,7 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
     const [permissionSetsData, setPermissionSetsData] = useState(permissionSets);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleSuccess = () => {
         setIsDialogOpen(false);
@@ -46,6 +54,11 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
     };
 
     const doRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
+
         let freshData = null;
         try {
             freshData = await getPermissionSetsAction();
@@ -53,6 +66,8 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -175,8 +190,8 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
+    const createPermissionSetButton = (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-permission-set">
             <DialogTrigger asChild>
                 <Button size="sm">
                     <Box className="h-4 w-4" />
@@ -194,15 +209,29 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
         </Dialog>
     );
 
+    const refreshPermissionSets = (
+        <Button
+            key="refresh-permission-sets"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [createPermissionSetButton, refreshPermissionSets];
+
     return (
         <DatatableWrapperComponent
             data={permissionSetsData}
             columns={columns}
             placeholder="Filter Permission Sets..."
-            refreshAction={handleRefresh}
-            defaultView="all"
             searchKey="name"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }
