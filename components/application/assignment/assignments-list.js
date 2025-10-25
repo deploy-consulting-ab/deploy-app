@@ -7,7 +7,7 @@ import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentCardPhoneComponent } from '@/components/application/assignment/assignment-card-phone';
