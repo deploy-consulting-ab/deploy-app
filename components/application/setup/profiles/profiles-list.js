@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, UserCircle, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, UserCircle, MoreHorizontal, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -29,6 +29,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const [profilesData, setProfilesData] = useState(profiles);
     const [error, setError] = useState(initialError);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleSuccess = () => {
         setIsDialogOpen(false);
@@ -43,6 +44,10 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     };
 
     const doRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
         let freshData = null;
         try {
             freshData = await getProfilesAction();
@@ -50,6 +55,8 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -172,8 +179,8 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg">
+    const createProfileButton = (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-profile">
             <DialogTrigger asChild>
                 <Button size="sm">
                     <UserCircle className="h-4 w-4" />
@@ -191,15 +198,29 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
         </Dialog>
     );
 
+    const refreshProfiles = (
+        <Button
+            key="refresh-profiles"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [createProfileButton, refreshProfiles];
+
     return (
         <DatatableWrapperComponent
             data={profilesData}
             columns={columns}
             placeholder="Filter Profiles..."
-            refreshAction={handleRefresh}
-            defaultView="all"
             searchKey="name"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }
