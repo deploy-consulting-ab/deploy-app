@@ -338,12 +338,12 @@ export function UsersListComponent({ users, error: initialError }) {
         </Select>
     );
 
-    const actions = [createUserAction, refreshUsers];
-    const views = [viewByProfiles];
-
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
+
+    const actions = [createUserAction, refreshUsers];
+    const views = [viewByProfiles];
 
     return (
         <DatatableWrapperComponent

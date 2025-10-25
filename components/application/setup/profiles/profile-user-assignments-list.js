@@ -2,7 +2,7 @@
 
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, CirclePlus } from 'lucide-react';
+import { ArrowUpDown, CirclePlus, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import Link from 'next/link';
@@ -28,8 +28,13 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
     const [usersData, setUsersData] = useState(users);
     const [error, setError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
         let freshData = null;
         try {
             freshData = await getUsersForProfileAction(profileId);
@@ -37,6 +42,8 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             setError(null);
         } catch (err) {
             setError(err);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -192,8 +199,12 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const actionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    const createProfileUserAssignmentButton = (
+        <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            key="create-profile-user-assignment"
+        >
             <DialogTrigger asChild>
                 <Button size="sm">
                     <CirclePlus className="h-4 w-4" />
@@ -213,14 +224,29 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
         </Dialog>
     );
 
+    const refreshProfileUserAssignments = (
+        <Button
+            key="refresh-profile-user-assignments"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [createProfileUserAssignmentButton, refreshProfileUserAssignments];
+
     return (
         <DatatableWrapperComponent
             data={usersData}
             columns={columns}
             placeholder="Filter Users..."
-            refreshAction={handleRefresh}
             searchKey="name"
-            actionButton={actionButton}
+            actions={actions}
         />
     );
 }
