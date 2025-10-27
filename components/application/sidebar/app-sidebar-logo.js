@@ -18,7 +18,10 @@ export function AppSidebarLogoComponent() {
     return (
         <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2">
+                <SidebarMenuButton
+                    asChild
+                    className="data-[slot=sidebar-menu-button]:!p-1.5 mt-2 hover:bg-transparent"
+                >
                     <Link href={HOME_ROUTE}>
                         {state === 'collapsed' ? (
                             <div className="flex aspect-square size-25 items-center justify-center">
@@ -26,7 +29,7 @@ export function AppSidebarLogoComponent() {
                             </div>
                         ) : (
                             <div className="flex aspect-square size-36 items-center justify-center">
-                                <DeployLogo className="h-10 w-auto z-[99] relative" />
+                                <DeployLogo className="h-full w-auto z-[99] relative" />
                             </div>
                         )}
                     </Link>
