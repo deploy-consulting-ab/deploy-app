@@ -17,7 +17,7 @@ export async function AppHeaderComponent() {
     return (
         <>
             <ImpersonationBannerComponent />
-            <header className="flex h-16 shrink-0 items-center border-b px-4">
+            <header className="dark:[background:var(--haberdashery-gradient)] flex h-16 shrink-0 items-center border-b dark:border-b-0 px-4">
                 {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
                 <div className="flex items-center gap-4 min-w-fit">
                     <SidebarTrigger className="-ml-1" />

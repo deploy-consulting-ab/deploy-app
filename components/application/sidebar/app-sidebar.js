@@ -47,7 +47,7 @@ export function AppSidebarComponent({ user }) {
     };
 
     return (
-        <Sidebar variant="sidebar" collapsible="icon">
+        <Sidebar variant="sidebar" collapsible="icon" className="dark:[background:var(--haberdashery-gradient)]">
             <SidebarHeader>
                 <AppSidebarLogoComponent />
             </SidebarHeader>

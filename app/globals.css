@@ -176,6 +176,9 @@
   /* --- Over Capacity (Problematic) --- */
   /* 120%+: Fully saturated - over capacity */
   --occupancy-color-critical-high: oklch(0.5474 0.0839 var(--deploy-chart));
+
+   /* -- Haberdashery Gradient */
+   --haberdashery-gradient: linear-gradient(to bottom, #1a2634, #0d1117);
 }
 
 /* Custom input focus */
