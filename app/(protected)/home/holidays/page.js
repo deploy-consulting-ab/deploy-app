@@ -11,7 +11,7 @@ async function refreshHolidayData() {
     'use server';
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
-    const data = await getAbsenceApplications(employeeNumber, { cache: 'no-store' });
+    const data = await getAbsenceApplications(employeeNumber);
     return data;
 }
 

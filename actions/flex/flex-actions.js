@@ -4,7 +4,7 @@ import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
 import { calculateHolidays, calculateNextResetDate, generateDateRange } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 
-export async function getAbsenceApplications(employeeNumber, options = { cache: 'force-cache' }) {
+export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
     try {
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
