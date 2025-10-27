@@ -1,7 +1,6 @@
-'use client';
+'use server';
+
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
     Sidebar,
     SidebarHeader,
@@ -9,43 +8,13 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
     SidebarFooter,
     SidebarRail,
-    useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
-import { getMenuForLocation } from '@/menus/menu-builder';
-import { SETUP_ROUTE, HOME_ROUTE } from '@/menus/routes';
+import { AppSidebarMenusComponent } from '@/components/application/sidebar/app-sidebar-menus';
 
-export function AppSidebarComponent({ user, location }) {
-    const { isMobile, setOpenMobile } = useSidebar();
-    const pathname = usePathname();
-    const systemPermissionsSet = new Set(user?.systemPermissions);
-    const menuItems = getMenuForLocation(location, user?.profileId, systemPermissionsSet);
-
-    // Function to handle menu item clicks
-    const handleMenuClick = () => {
-        if (isMobile) {
-            setOpenMobile(false);
-        }
-    };
-
-    // Function to check if a menu item is active
-    const isMenuActive = (menuUrl) => {
-        // For setup and home page, only match exact /setup or /home path
-        if (menuUrl === SETUP_ROUTE) {
-            return pathname === SETUP_ROUTE;
-        } else if (menuUrl === HOME_ROUTE) {
-            return pathname === HOME_ROUTE;
-        }
-        // For other pages, check if the pathname starts with the menu URL
-        // This ensures that sub-pages also highlight their parent menu item
-        return pathname.startsWith(menuUrl);
-    };
-
+export async function AppSidebarComponent({ user, location }) {
     return (
         <Sidebar
             variant="default"
@@ -59,18 +28,7 @@ export function AppSidebarComponent({ user, location }) {
                 <SidebarGroup>
                     <SidebarGroupLabel>Tilde</SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu>
-                            {menuItems.map((menu) => (
-                                <SidebarMenuItem key={menu.title}>
-                                    <SidebarMenuButton asChild isActive={isMenuActive(menu.url)}>
-                                        <Link href={menu.url} onClick={handleMenuClick}>
-                                            <menu.icon />
-                                            <span>{menu.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
+                        <AppSidebarMenusComponent user={user} location={location} />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
