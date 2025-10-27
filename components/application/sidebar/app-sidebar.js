@@ -17,14 +17,14 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
-import { getMenuForProfile } from '@/menus/menu-builder';
-import { HOME_ROUTE } from '@/menus/routes';
+import { getMenuForLocation } from '@/menus/menu-builder';
+import { SETUP_ROUTE, HOME_ROUTE } from '@/menus/routes';
 
-export function AppSidebarComponent({ user }) {
+export function AppSidebarComponent({ user, location }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
     const systemPermissionsSet = new Set(user?.systemPermissions);
-    const menuItems = getMenuForProfile(user?.profileId, systemPermissionsSet);
+    const menuItems = getMenuForLocation(location, user?.profileId, systemPermissionsSet);
 
     // Function to handle menu item clicks
     const handleMenuClick = () => {
@@ -35,8 +35,10 @@ export function AppSidebarComponent({ user }) {
 
     // Function to check if a menu item is active
     const isMenuActive = (menuUrl) => {
-        // For home page, only match exact /home path
-        if (menuUrl === HOME_ROUTE) {
+        // For setup and home page, only match exact /setup or /home path
+        if (menuUrl === SETUP_ROUTE) {
+            return pathname === SETUP_ROUTE;
+        } else if (menuUrl === HOME_ROUTE) {
             return pathname === HOME_ROUTE;
         }
         // For other pages, check if the pathname starts with the menu URL

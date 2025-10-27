@@ -11,7 +11,7 @@ const setupMenuCache = new Map();
  */
 export function buildMenu(systemPermissions) {
     const menu = [];
-    
+
     for (const [key, menuItem] of Object.entries(MENU_ITEMS_MAP)) {
         if (systemPermissions.has(menuItem.systemPermission)) {
             menu.push({
@@ -21,7 +21,7 @@ export function buildMenu(systemPermissions) {
             });
         }
     }
-    
+
     return menu;
 }
 
@@ -32,7 +32,7 @@ export function buildMenu(systemPermissions) {
  */
 export function buildSetupMenu(systemPermissions) {
     const menu = [];
-    
+
     for (const [key, menuItem] of Object.entries(SETUP_MENU_ITEMS_MAP)) {
         if (systemPermissions.has(menuItem.systemPermission)) {
             menu.push({
@@ -45,6 +45,20 @@ export function buildSetupMenu(systemPermissions) {
     return menu;
 }
 
+/**
+ * Gets menu for a given location
+ * @param {string} location - The location of the menu
+ * @param {string} userProfile - The profile of the user
+ * @param {Object} userSystemPermissions - The system permissions configuration object
+ * @returns {Array} Array of menu items for the location
+ */
+export function getMenuForLocation(location, userProfile, userSystemPermissions) {
+    if (location === 'setup') {
+        return getSetupMenuForProfile(userProfile, userSystemPermissions);
+    } else {
+        return getMenuForProfile(userProfile, userSystemPermissions);
+    }
+}
 /**
  * Gets or generates a menu for a user profile, using caching
  * @param {string} userProfile - The profile of the user

@@ -1,5 +1,5 @@
-import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
-import { SetupSidebarComponent } from '@/components/application/setup/setup-sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { AppSidebarComponent } from '@/components/application/sidebar/app-sidebar';
 import { auth } from '@/auth';
 import { SetupHeaderComponent } from '@/components/application/setup/setup-header';
 
@@ -13,7 +13,7 @@ export default async function HomeLayout({ children }) {
                 '--sidebar-width-mobile': '14rem',
             }}
         >
-            <SetupSidebarComponent user={user} />
+            <AppSidebarComponent user={user} location="setup" />
             <SidebarInset>
                 <SetupHeaderComponent />
                 <main>
