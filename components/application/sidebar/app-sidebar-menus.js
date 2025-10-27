@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebar } from '@/components/ui/sidebar';
 import { getMenuForLocation } from '@/menus/menu-builder';
+import { cn } from '@/lib/utils';
 
 export function AppSidebarMenusComponent({ user, location }) {
     const { isMobile, setOpenMobile } = useSidebar();
@@ -41,7 +42,15 @@ export function AppSidebarMenusComponent({ user, location }) {
         <SidebarMenu>
             {sidebarMenuItems.map((menu) => (
                 <SidebarMenuItem key={menu.title}>
-                    <SidebarMenuButton asChild isActive={isMenuActive(menu.url)}>
+                    <SidebarMenuButton
+                        variant="default"
+                        asChild
+                        isActive={isMenuActive(menu.url)}
+                        className={cn(
+                            'hover:bg-accent/50',
+                            isMenuActive(menu.url) && 'dark:!bg-accent/50'
+                        )}
+                    >
                         <Link href={menu.url} onClick={handleMenuClick}>
                             <menu.icon />
                             <span>{menu.title}</span>
