@@ -19,13 +19,13 @@ import {
 import { AppSidebarUserComponent } from '@/components/application/sidebar/app-sidebar-user';
 import { getSetupMenuForProfile } from '@/menus/menu-builder';
 import { SETUP_ROUTE } from '@/menus/routes';
-
+import { useTheme } from 'next-themes';
 
 export function SetupSidebarComponent({ user }) {
     const { isMobile, setOpenMobile } = useSidebar();
     const pathname = usePathname();
-
-    const systemPermissionsSet = new Set(user?.systemPermissions);    
+    const { theme } = useTheme();
+    const systemPermissionsSet = new Set(user?.systemPermissions);
     const menuItems = getSetupMenuForProfile(user?.profileId, systemPermissionsSet);
 
     // Function to handle menu item clicks
@@ -46,8 +46,14 @@ export function SetupSidebarComponent({ user }) {
         return pathname.startsWith(menuUrl);
     };
 
+    const sidebarVariant = theme === 'dark' ? 'borderless' : 'default';
+
     return (
-        <Sidebar variant="sidebar" collapsible="icon" className="dark:[background:var(--haberdashery-gradient)]">
+        <Sidebar
+            variant={sidebarVariant}
+            collapsible="icon"
+            className="dark:[background:var(--haberdashery-gradient)]"
+        >
             <SidebarHeader>
                 <AppSidebarLogoComponent />
             </SidebarHeader>
