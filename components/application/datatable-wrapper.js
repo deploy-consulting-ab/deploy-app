@@ -19,14 +19,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { NoDataComponent } from '@/components/errors/no-data';
 
-export function DatatableWrapperComponent({
-    data,
-    columns,
-    placeholder,
-    searchKey,
-    ...props
-}) {
+export function DatatableWrapperComponent({ data, columns, placeholder, searchKey, ...props }) {
     const [sorting, setSorting] = useState([]);
     const table = useReactTable({
         data,
@@ -67,68 +62,75 @@ export function DatatableWrapperComponent({
                 </div>
             </div>
             <div className="overflow-x-auto rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead
-                                            key={header.id}
-                                            style={{
-                                                position: 'relative',
-                                                width: header.getSize(),
-                                            }}
-                                        >
-                                            {header.isPlaceholder ? null : (
-                                                <>
-                                                    {flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                                    <div
-                                                        onMouseDown={header.getResizeHandler()}
-                                                        onTouchStart={header.getResizeHandler()}
-                                                        className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none bg-neutral-200 opacity-0 hover:opacity-100 ${
-                                                            header.column.getIsResizing()
-                                                                ? 'opacity-100 bg-blue-500'
-                                                                : ''
-                                                        }`}
-                                                    />
-                                                </>
-                                            )}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && 'selected'}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
+                {!data || data.length === 0 ? (
+                    <NoDataComponent text="No data found" />
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead
+                                                key={header.id}
+                                                style={{
+                                                    position: 'relative',
+                                                    width: header.getSize(),
+                                                }}
+                                            >
+                                                {header.isPlaceholder ? null : (
+                                                    <>
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                        <div
+                                                            onMouseDown={header.getResizeHandler()}
+                                                            onTouchStart={header.getResizeHandler()}
+                                                            className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none bg-neutral-200 opacity-0 hover:opacity-100 ${
+                                                                header.column.getIsResizing()
+                                                                    ? 'opacity-100 bg-blue-500'
+                                                                    : ''
+                                                            }`}
+                                                        />
+                                                    </>
+                                                )}
+                                            </TableHead>
+                                        );
+                                    })}
                                 </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && 'selected'}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <Button

@@ -195,10 +195,6 @@ export function AssignmentsListDesktopComponent({ assignments, employeeNumber, e
         return <ErrorDisplayComponent error={error} />;
     }
 
-    if (!assignmentData || assignmentData.length === 0) {
-        return <NoDataComponent text="No assignments found" />;
-    }
-
     const refreshAssignments = (
         <Button
             key="refresh-assignments"
