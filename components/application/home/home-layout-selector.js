@@ -35,30 +35,35 @@ export function getHomeRequiredDataForProfile(profileId) {
                 ...dataRequirements,
                 occupancyRates: true,
                 holidays: true,
+                assignmentsMetrics: true,
             };
         case MANAGEMENT_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: true,
                 holidays: true,
+                assignmentsMetrics: false,
             };
         case CONSULTANT_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: true,
                 holidays: true,
+                assignmentsMetrics: false,
             };
         case SALES_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: false,
                 holidays: true,
+                assignmentsMetrics: false,
             };
         case SUBCONTRACTOR_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: false,
                 holidays: false,
+                assignmentsMetrics: false,
             };
         default:
             return dataRequirements;

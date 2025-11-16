@@ -6,9 +6,10 @@ import { UsefulLinksComponent } from '@/components/application/useful-links/usef
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
-import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentsMetrics, getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
 import { formatDateToISOString } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { AssignmentsMetricsComponent } from '@/components/application/assignment/assignments-metrics';
 
 export async function AdminHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors
@@ -17,11 +18,13 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
     const data = {
         holidays: null,
         occupancyRates: null,
+        assignmentsMetrics: null,
     };
 
     const errors = {
         holidays: null,
         occupancyRates: null,
+        assignmentsMetrics: null,
     };
 
     async function refreshHolidays() {
@@ -67,6 +70,14 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
         }
     }
 
+    if (dataRequirements.assignmentsMetrics) {
+        try {
+            data.assignmentsMetrics = await getAssignmentsMetrics(employeeNumber);
+        } catch (error) {
+            errors.assignmentsMetrics = error;
+        }
+    }
+
     loading = false;
 
     if (loading) {
@@ -79,7 +90,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
 
     return (
         <div className="h-full grid grid-rows-[auto_1fr] gap-4 py-4">
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 mb-4">
                 <HolidaysCardComponent
                     holidays={data.holidays}
                     error={errors.holidays}
@@ -90,6 +101,13 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
                     occupancy={data.occupancyRates}
                     error={errors.occupancyRates}
                     refreshAction={refreshOccupancy}
+                />
+            </div>
+            <div className="self-start">
+                <h3 className="text-base md:text-lg font-medium">Assignments Metrics</h3>
+                <AssignmentsMetricsComponent
+                    assignmentsMetrics={data.assignmentsMetrics}
+                    className="grid-cols-2 md:grid-cols-4"
                 />
             </div>
             <div className="self-start">
