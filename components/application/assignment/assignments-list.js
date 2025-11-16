@@ -229,7 +229,11 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
         const filteredAssignments = () => {
             return (
                 assignments
-                    ?.filter((assignment) => view === 'all' || assignment.projectStatus.toLowerCase() === view.toLowerCase())
+                    ?.filter(
+                        (assignment) =>
+                            view === 'all' ||
+                            assignment.projectStatus.toLowerCase() === view.toLowerCase()
+                    )
                     ?.filter(
                         (assignment) =>
                             searchQuery === '' ||
@@ -246,6 +250,8 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
             startIndex,
             startIndex + itemsPerPage
         );
+
+        console.log('filteredAssignments.length', filteredAssignments().length);
 
         return (
             <div className="space-y-4">
@@ -281,7 +287,7 @@ export function AssignmentListComponent({ assignments, employeeNumber, error: in
                             onClick={handleAssignmentClick}
                         />
                     ))}
-                    {filteredAssignments.length === 0 && (
+                    {filteredAssignments().length === 0 && (
                         <div className="text-center py-8 text-gray-500">No assignments found</div>
                     )}
                 </div>
