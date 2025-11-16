@@ -48,3 +48,9 @@ fake-auth.js
 fake-auth.config.js
 
 prisma/data-scripts/*.sql
+
+# PWA files
+**/public/sw.js
+**/public/sw.js.map
+**/public/workbox-*.js
+**/public/workbox-*.js.map

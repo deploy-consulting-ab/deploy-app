@@ -11,6 +11,15 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
     title: 'Tilde',
     description: 'Tilde App',
+    manifest: '/manifest.json',
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'default',
+        title: 'Tilde',
+    },
+    formatDetection: {
+        telephone: false,
+    },
     icons: {
         icon: [
             {
@@ -26,6 +35,7 @@ export const metadata = {
                 type: 'image/png',
             },
         ],
+        apple: '/images/tilde-black.png',
     },
 };
 
