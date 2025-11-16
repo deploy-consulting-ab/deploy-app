@@ -4,10 +4,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { AssignmentsListPhoneComponent } from '@/components/application/assignment/phone/assignments-list-phone';
 import { AssignmentsListDesktopComponent } from '@/components/application/assignment/assignments-list-desktop';
 
-export function AssignmentsListComponent({ assignments, employeeNumber, error: initialError }) {
+export function AssignmentsListComponent({ assignments, employeeNumber, error }) {
     const isMobile = useIsMobile();
-
-
 
     const projectViews = [
         { value: 'all', label: 'All Assignments' },
@@ -21,7 +19,7 @@ export function AssignmentsListComponent({ assignments, employeeNumber, error: i
             <AssignmentsListPhoneComponent
                 assignments={assignments}
                 employeeNumber={employeeNumber}
-                error={initialError}
+                error={error}
                 projectViews={projectViews}
             />
         );
@@ -31,7 +29,7 @@ export function AssignmentsListComponent({ assignments, employeeNumber, error: i
         <AssignmentsListDesktopComponent
             assignments={assignments}
             employeeNumber={employeeNumber}
-            error={initialError}
+            error={error}
             projectViews={projectViews}
         />
     );

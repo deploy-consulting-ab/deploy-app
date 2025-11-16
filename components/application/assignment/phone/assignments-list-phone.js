@@ -12,12 +12,9 @@ import { AssignmentCardPhoneComponent } from '@/components/application/assignmen
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
-export function AssignmentsListPhoneComponent({
-    assignments,
-    error: initialError,
-    projectViews,
-}) {
+export function AssignmentsListPhoneComponent({ assignments, error, projectViews }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
@@ -71,19 +68,23 @@ export function AssignmentsListPhoneComponent({
             },
             { threshold: 0.1 } // Trigger when 10% of the target is visible
         );
-    
+
         const currentTarget = observerTarget.current; // Capture the ref value
-    
+
         if (currentTarget) {
             observer.observe(currentTarget);
         }
-    
+
         return () => {
             if (currentTarget) {
                 observer.unobserve(currentTarget);
             }
         };
     }, [hasMore]);
+
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
+    }
 
     return (
         <div className="space-y-4">
@@ -126,9 +127,7 @@ export function AssignmentsListPhoneComponent({
                 </div>
             )}
             {!hasMore && filtered.length > 0 && (
-                <div className="text-center py-4 text-sm text-gray-500">
-                    All assignments loaded
-                </div>
+                <div className="text-center py-4 text-sm text-gray-500">All assignments loaded</div>
             )}
         </div>
     );
