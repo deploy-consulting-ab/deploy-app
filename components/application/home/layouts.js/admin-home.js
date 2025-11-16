@@ -61,7 +61,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
         try {
             const today = new Date();
             const formattedToday = formatDateToISOString(today);
-            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);;
+            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
         } catch (error) {
             errors.occupancyRates = error;
         }
@@ -78,7 +78,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
     }
 
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+        <div className="h-full grid grid-rows-[auto_1fr] gap-4 py-4">
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                 <HolidaysCardComponent
                     holidays={data.holidays}
