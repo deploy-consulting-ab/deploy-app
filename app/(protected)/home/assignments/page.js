@@ -1,7 +1,7 @@
 'use server';
 
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
-import { AssignmentListComponent } from '@/components/application/assignment/assignments-list';
+import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { auth } from '@/auth';
 
 const AssignmentsPage = async () => {
@@ -18,7 +18,7 @@ const AssignmentsPage = async () => {
 
     return (
         <div className="py-4">
-            <AssignmentListComponent
+            <AssignmentsListComponent
                 error={error}
                 assignments={assignments}
                 employeeNumber={user?.employeeNumber}
