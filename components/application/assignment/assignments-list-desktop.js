@@ -4,12 +4,11 @@ import { DatatableWrapperComponent } from '@/components/application/datatable-wr
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { NoDataComponent } from '@/components/errors/no-data';
 import {
     Select,
     SelectContent,
@@ -20,14 +19,21 @@ import {
 import Link from 'next/link';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
-export function AssignmentsListDesktopComponent({ assignments, employeeNumber, error: initialError, projectViews }) {
+export function AssignmentsListDesktopComponent({
+    assignments,
+    employeeNumber,
+    error: initialError,
+    projectViews,
+}) {
     const searchParams = useSearchParams();
+
+    const viewParam = searchParams.get('view') || 'all';
 
     const [assignmentData, setAssignmentData] = useState(assignments);
     const [error, setError] = useState(initialError);
-    
+
     const [searchQuery, setSearchQuery] = useState('');
-    const [view, setView] = useState(searchParams.get('view') || 'all');
+    const [view, setView] = useState(viewParam);
     const [currentPage, setCurrentPage] = useState(1);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -35,6 +41,29 @@ export function AssignmentsListDesktopComponent({ assignments, employeeNumber, e
     useEffect(() => {
         setCurrentPage(1);
     }, [searchQuery, view]);
+
+    const setFilterAssignments = useCallback(
+        (value) => {
+            let filteredData = null;
+
+            if (value === 'all') {
+                filteredData = assignments;
+            } else {
+                filteredData = assignments.filter(
+                    (item) => item['projectStatus'].toLowerCase() === value.toLowerCase()
+                );
+            }
+
+            setAssignmentData(filteredData);
+            setView(value);
+        },
+        [assignments]
+    );
+
+    // Apply initial filter based on URL view parameter
+    useEffect(() => {
+        setFilterAssignments(viewParam);
+    }, [viewParam, setFilterAssignments]);
 
     const handleRefresh = async () => {
         if (isRefreshing) {
@@ -55,18 +84,7 @@ export function AssignmentsListDesktopComponent({ assignments, employeeNumber, e
     };
 
     const handleFilterAssignment = (value) => {
-        let filteredData = null;
-
-        if (value === 'all') {
-            filteredData = assignments;
-        } else {
-            filteredData = assignments.filter(
-                (item) => item['projectStatus'].toLowerCase() === value.toLowerCase()
-            );
-        }
-
-        setAssignmentData(filteredData);
-        setView(value);
+        setFilterAssignments(value);
     };
 
     const columns = [
