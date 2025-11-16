@@ -7,7 +7,7 @@ import { ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
-export async function SubcontractorHomeComponent({ profileId, employeeNumber }) {
+export async function SubcontractorHomeComponent({ employeeNumber }) {
     let subcontractorAssignmentsMetrics = null;
     let error = null;
 
