@@ -42,14 +42,14 @@ export function getHomeRequiredDataForProfile(profileId) {
                 ...dataRequirements,
                 occupancyRates: true,
                 holidays: true,
-                assignmentsMetrics: false,
+                assignmentsMetrics: true,
             };
         case CONSULTANT_PROFILE:
             return {
                 ...dataRequirements,
                 occupancyRates: true,
                 holidays: true,
-                assignmentsMetrics: false,
+                assignmentsMetrics: true,
             };
         case SALES_PROFILE:
             return {
