@@ -49,7 +49,7 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
             ORDER BY Date__c ASC`;
 };
 
-const getSubcontractorAssignmentsMetricsQuery = (employeeNumber) => {
+const getAssignmentsMetricsQuery = (employeeNumber) => {
     return `SELECT Project__r.Status__c, StartDate__c, COUNT(Id) assignmentsMetrics
             FROM Assignment__c
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
@@ -70,5 +70,5 @@ export {
     getOpportunitiesByNameQuery,
     getOpportunityByIdQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
-    getSubcontractorAssignmentsMetricsQuery,
+    getAssignmentsMetricsQuery,
 };

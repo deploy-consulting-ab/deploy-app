@@ -11,7 +11,7 @@ import {
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getOpportunityByIdQuery,
-    getSubcontractorAssignmentsMetricsQuery,
+    getAssignmentsMetricsQuery,
 } from './queries';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -186,9 +186,9 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
     }
 }
 
-export async function getSubcontractorAssignmentsMetrics(employeeNumber) {
+export async function getAssignmentsMetrics(employeeNumber) {
     try {
-        const result = await queryData(getSubcontractorAssignmentsMetricsQuery(employeeNumber));
+        const result = await queryData(getAssignmentsMetricsQuery(employeeNumber));
 
         const map = new Map();
         map.set('All', 0);

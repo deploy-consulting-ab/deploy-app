@@ -1,7 +1,7 @@
 'use server';
 
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { getSubcontractorAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
 import { MetricsCardComponent } from '@/components/application/metrics-card';
 import { ClipboardList } from 'lucide-react';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
     let error = null;
 
     try {
-        subcontractorAssignmentsMetrics = await getSubcontractorAssignmentsMetrics(employeeNumber);
+        subcontractorAssignmentsMetrics = await getAssignmentsMetrics(employeeNumber);
     } catch (error) {
         error = error;
     }
