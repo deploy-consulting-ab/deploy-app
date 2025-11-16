@@ -138,8 +138,6 @@ export async function getCombinedSystemPermissionsForUser(id) {
             },
         });
 
-        console.log('userWithPermissions', userWithPermissions);
-
         if (!userWithPermissions) {
             return []; // Return empty array if user not found
         }

@@ -215,8 +215,6 @@ export async function getSubcontractorAssignmentsMetrics(employeeNumber) {
             });
         }
 
-        console.log('## Assignments Metrics', assignmentsMetrics);
-
         return assignmentsMetrics;
     } catch (error) {
         throw error;
