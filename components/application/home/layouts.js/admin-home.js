@@ -72,7 +72,16 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
 
     if (dataRequirements.assignmentsMetrics) {
         try {
-            data.assignmentsMetrics = await getAssignmentsMetrics(employeeNumber);
+            const metrics = await getAssignmentsMetrics(employeeNumber);
+
+            data.assignmentsMetrics = metrics.map((assignment) => ({
+                ...assignment,
+                title: assignment.status,
+                description:
+                    assignment.count === 0
+                        ? `No ${assignment.status} assignments yet`
+                        : `${assignment.status} assignments`,
+            }));
         } catch (error) {
             errors.assignmentsMetrics = error;
         }
