@@ -39,6 +39,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                                 onSelect={handleSelect}
                                 initialFocus
                                 locale={enGB}
+                                defaultMonth={date || undefined}
                             />
                         </PopoverContent>
                     </Popover>
