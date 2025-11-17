@@ -5,7 +5,6 @@ import {
     getAssignmentsMetrics,
 } from '@/actions/salesforce/salesforce-actions';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
-import { AssignmentsMetricsComponent } from '@/components/application/assignment/assignments-metrics';
 import { auth } from '@/auth';
 
 const AssignmentsPage = async () => {

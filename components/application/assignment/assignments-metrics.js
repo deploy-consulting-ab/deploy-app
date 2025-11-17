@@ -8,12 +8,12 @@ import { cn } from '@/lib/utils';
 
 export async function AssignmentsMetricsComponent({ assignmentsMetrics, className }) {
     return (
-        <div className={cn('h-full grid gap-4 py-4', className)}>
+        <div className={cn('grid gap-3 md:gap-4 py-4', className)}>
             {assignmentsMetrics.map((assignment) => (
                 <Link
                     href={`${ASSIGNMENTS_ROUTE}?view=${assignment.status.toLowerCase()}`}
                     key={assignment.status}
-                    className="block"
+                    className="block h-full"
                 >
                     <MetricsCardComponent
                         metric={assignment.count}
