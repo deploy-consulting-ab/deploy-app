@@ -12,7 +12,6 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
     const [date, setDate] = useState(null);
 
     const handleSelect = (date) => {
-        console.log('date', date);
         setDate(date);
         onDateChange(date);
     };
