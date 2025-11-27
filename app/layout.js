@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/auth/form/theme-provider';
 import { Analytics } from '@vercel/analytics/next';
@@ -6,7 +6,7 @@ import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
 
-const inter = Inter({ subsets: ['latin'] });
+const nunitoSans = Nunito_Sans({ subsets: ['latin'] });
 
 export const metadata = {
     title: 'Tilde',
@@ -49,7 +49,7 @@ export default async function RootLayout({ children }) {
                     content="width=device-width, initial-scale=1, maximum-scale=1"
                 />
             </head>
-            <body className={`${inter.className} antialiased h-full`}>
+            <body className={`${nunitoSans.className} antialiased h-full`}>
                 <SessionProvider session={session}>
                     <ThemeProvider
                         attribute="class"
