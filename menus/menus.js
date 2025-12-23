@@ -9,6 +9,7 @@ import {
     UserCircle,
     Box,
     Settings,
+    Clock,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -21,6 +22,7 @@ import {
     PROFILES_ROUTE,
     PERMISSION_SETS_ROUTE,
     SYSTEM_PERMISSIONS_ROUTE,
+    TIMEREPORT_ROUTE,
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -29,6 +31,7 @@ import {
     VIEW_ASSIGNMENTS_PERMISSION,
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
+    VIEW_TIMEREPORT_PERMISSION,
 } from '@/lib/rba-constants';
 
 // Map of menu items with their required permissions and configurations
@@ -63,6 +66,12 @@ export const MENU_ITEMS_MAP = {
         icon: TrendingUp,
         systemPermission: VIEW_OPPORTUNITIES_PERMISSION,
     },
+    timereport: {
+        title: 'Timereport',
+        url: TIMEREPORT_ROUTE,
+        icon: Clock,
+        systemPermission: VIEW_TIMEREPORT_PERMISSION,
+    }
 };
 
 export const SETUP_MENU_ITEMS_MAP = {
