@@ -103,6 +103,7 @@ export function HoursGrid({
                     {/* Project rows */}
                     <div className="space-y-2">
                         {selectedProjects.map((projectId) => {
+                            console.log('## projectId', projectId);
                             const project = projects.find((p) => p.id === projectId);
                             if (!project) return null;
 

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, Save, RotateCcw } from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
+import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import {
     Card,
@@ -13,7 +14,8 @@ import {
     CardAction,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { WeekNavigation, getWeekMonday } from './week-navigation';
+import { WeekNavigation } from './week-navigation';
+import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
 import { ProjectSelector } from './project-selector';
 import { HoursGrid } from './hours-grid';
 
@@ -21,15 +23,21 @@ import { HoursGrid } from './hours-grid';
  * Main time report card component.
  * Manages the state for week selection, project selection, and hour entries.
  */
-export function TimereportCard({ projects, existingEntries, userName }) {
+export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     // Get Monday of current week as default
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(new Date()));
 
+    // Assignments fetched from Salesforce based on selected week
+    const [projects, setProjects] = useState([]);
+    const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+
+    // Potentially this will be removed - or get it from the previous timecard
     // Track selected projects for the current week
     const [selectedProjects, setSelectedProjects] = useState(() => {
         // Initialize with projects from existing entries for the current week
         const weekKey = getWeekMonday(new Date()).toISOString().split('T')[0];
         const weekEntries = existingEntries?.[weekKey] || {};
+        console.log('## existingEntries', existingEntries);
         return Object.keys(weekEntries);
     });
 
@@ -44,10 +52,53 @@ export function TimereportCard({ projects, existingEntries, userName }) {
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
+    /**
+     * Fetch projects for the given week
+     */
+    const fetchProjects = useCallback(
+        async (weekStart) => {
+            if (!employeeNumber) return;
+
+            setIsLoadingProjects(true);
+            try {
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+
+                // Format dates to YYYY-MM-DD for Salesforce SOQL query
+                const formattedStartDate = formatDateToISOString(weekStart);
+                const formattedEndDate = formatDateToISOString(weekEnd);
+
+                const data = await getCurrentAssignmentsByEmployeeNumber(
+                    employeeNumber,
+                    formattedStartDate,
+                    formattedEndDate
+                );
+                setProjects(data || []);
+
+                console.log('Projects:', data);
+            } catch (error) {
+                console.error('Failed to fetch projects:', error);
+                toastRichError({ message: 'Failed to load projects for the selected week' });
+                setProjects([]);
+            } finally {
+                setIsLoadingProjects(false);
+            }
+        },
+        [employeeNumber]
+    );
+
+    // Fetch projects on initial load
+    useEffect(() => {
+        fetchProjects(selectedWeek);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
     // Handle week change
     const handleWeekChange = useCallback(
         (newWeek) => {
             setSelectedWeek(newWeek);
+
+            // Fetch projects for the new week
+            fetchProjects(newWeek);
 
             // Load entries for the new week
             const weekKey = newWeek.toISOString().split('T')[0];
@@ -57,11 +108,12 @@ export function TimereportCard({ projects, existingEntries, userName }) {
             setSelectedProjects(Object.keys(weekEntries));
             setHasChanges(false);
         },
-        [existingEntries]
+        [existingEntries, fetchProjects]
     );
 
     // Handle adding a project
     const handleAddProject = useCallback((projectId) => {
+        console.log('projectId:', projectId);
         setSelectedProjects((prev) => [...prev, projectId]);
         setHours((prev) => ({
             ...prev,
