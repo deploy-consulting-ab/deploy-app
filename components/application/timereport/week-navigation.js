@@ -2,10 +2,6 @@
 
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-
-const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const FULL_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 /**
  * Get the Monday of the week containing the given date
@@ -45,8 +41,7 @@ function getWeekNumber(date) {
  * Allows navigating to previous weeks and returning to current week.
  */
 export function WeekNavigation({ selectedWeek, onWeekChange }) {
-  const today = new Date()
-  const currentWeekMonday = getWeekMonday(today)
+  const currentWeekMonday = getWeekMonday(new Date())
   const selectedMonday = getWeekMonday(selectedWeek)
   
   const isCurrentWeek = selectedMonday.getTime() === currentWeekMonday.getTime()
@@ -55,13 +50,6 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
   // Calculate Sunday of the selected week
   const selectedSunday = new Date(selectedMonday)
   selectedSunday.setDate(selectedMonday.getDate() + 6)
-
-  // Generate dates for the week
-  const weekDates = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(selectedMonday)
-    date.setDate(selectedMonday.getDate() + i)
-    return date
-  })
 
   const handlePreviousWeek = () => {
     const newDate = new Date(selectedMonday)
@@ -80,89 +68,51 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Week selector header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handlePreviousWeek}
-            className="h-8 w-8"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-lg min-w-[200px] justify-center">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium text-sm">
-              Week {weekNumber}
-            </span>
-            <span className="text-muted-foreground text-sm">
-              ({formatDate(selectedMonday)} - {formatDate(selectedSunday)})
-            </span>
-          </div>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleNextWeek}
-            disabled={isCurrentWeek}
-            className="h-8 w-8"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handlePreviousWeek}
+          className="h-8 w-8"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-lg min-w-[200px] justify-center">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <span className="font-medium text-sm">
+            Week {weekNumber}
+          </span>
+          <span className="text-muted-foreground text-sm">
+            ({formatDate(selectedMonday)} - {formatDate(selectedSunday)})
+          </span>
         </div>
 
-        {!isCurrentWeek && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCurrentWeek}
-            className="text-xs"
-          >
-            Go to current week
-          </Button>
-        )}
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleNextWeek}
+          disabled={isCurrentWeek}
+          className="h-8 w-8"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* Day headers with dates */}
-      <div className="grid grid-cols-7 gap-2">
-        {weekDates.map((date, index) => {
-          const isToday = date.toDateString() === today.toDateString()
-          const isWeekend = index >= 5
-          
-          return (
-            <div
-              key={DAYS_OF_WEEK[index]}
-              className={cn(
-                'flex flex-col items-center p-2 rounded-lg transition-colors',
-                isToday && 'bg-primary/10 ring-1 ring-primary/20',
-                isWeekend && 'bg-muted/30',
-                !isToday && !isWeekend && 'bg-muted/50'
-              )}
-            >
-              <span className={cn(
-                'text-xs font-medium',
-                isToday && 'text-primary',
-                isWeekend && 'text-muted-foreground'
-              )}>
-                {DAYS_OF_WEEK[index]}
-              </span>
-              <span className={cn(
-                'text-sm font-semibold',
-                isToday && 'text-primary',
-                isWeekend && 'text-muted-foreground'
-              )}>
-                {date.getDate()}
-              </span>
-            </div>
-          )
-        })}
-      </div>
+      {!isCurrentWeek && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleCurrentWeek}
+          className="text-xs"
+        >
+          Go to current week
+        </Button>
+      )}
     </div>
   )
 }
 
-export { DAYS_OF_WEEK, FULL_DAYS, getWeekMonday, getWeekNumber }
+export { getWeekMonday, getWeekNumber }
 

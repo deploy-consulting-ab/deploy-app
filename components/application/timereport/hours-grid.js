@@ -51,11 +51,55 @@ export function HoursGrid({
         return null;
     }
 
+    const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
     return (
         <div className="space-y-4">
             {/* Hours grid */}
             <div className="overflow-x-auto">
                 <div className="min-w-[600px]">
+                    {/* Day headers */}
+                    <div className="grid grid-cols-[minmax(140px,1fr)_repeat(7,minmax(52px,1fr))_60px] gap-1.5 items-center mb-2">
+                        <div /> {/* Empty cell for project column */}
+                        {weekDates.map((date, index) => {
+                            const isToday = date.toDateString() === today.toDateString();
+                            const isWeekend = index >= 5;
+
+                            return (
+                                <div
+                                    key={index}
+                                    className={cn(
+                                        'text-center py-2 rounded-md',
+                                        isToday && 'bg-primary/10 ring-1 ring-primary/20',
+                                        isWeekend && !isToday && 'bg-muted/30'
+                                    )}
+                                >
+                                    <p
+                                        className={cn(
+                                            'text-xs font-medium',
+                                            isToday && 'text-primary',
+                                            isWeekend && !isToday && 'text-muted-foreground'
+                                        )}
+                                    >
+                                        {DAYS_SHORT[index]}
+                                    </p>
+                                    <p
+                                        className={cn(
+                                            'text-sm font-semibold',
+                                            isToday && 'text-primary',
+                                            isWeekend && !isToday && 'text-muted-foreground'
+                                        )}
+                                    >
+                                        {date.getDate()}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                        <div className="text-center text-xs font-medium text-muted-foreground">
+                            Total
+                        </div>
+                    </div>
+
                     {/* Project rows */}
                     <div className="space-y-2">
                         {selectedProjects.map((projectId) => {
