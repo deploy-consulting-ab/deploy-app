@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { Clock, Save, RotateCcw } from 'lucide-react';
+import { createTimecard } from '@/actions/flex/flex-actions';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import {
     Card,
     CardContent,
@@ -94,16 +96,21 @@ export function TimereportCard({ projects, existingEntries, userName }) {
     const handleSave = async () => {
         setIsSaving(true);
 
-        // Simulate save delay - replace with actual API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+            const timecard = {
+                week: selectedWeek.toISOString().split('T')[0],
+                entries: hours,
+            };
 
-        console.log('Saving time entries:', {
-            week: selectedWeek.toISOString().split('T')[0],
-            entries: hours,
-        });
-
-        setIsSaving(false);
-        setHasChanges(false);
+            await createTimecard(timecard);
+            setHasChanges(false);
+            toastRichSuccess({ message: 'Time report saved successfully' });
+        } catch (error) {
+            console.error('Failed to save timecard:', error);
+            toastRichError({ message: error.message || 'Failed to save time report' });
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     // Handle reset

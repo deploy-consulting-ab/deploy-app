@@ -62,3 +62,13 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
         );
     }
 }
+
+export async function createTimecard(timecard) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        const response = await flexApiClient.createTimecard(timecard);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
