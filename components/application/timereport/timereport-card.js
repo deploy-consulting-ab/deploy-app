@@ -182,13 +182,12 @@ export function TimereportCard({ projects, existingEntries, userName }) {
                         )}
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                     {/* Project Selector */}
                     <ProjectSelector
                         projects={projects}
                         selectedProjects={selectedProjects}
                         onAddProject={handleAddProject}
-                        onRemoveProject={handleRemoveProject}
                     />
 
                     {/* Hours Grid */}
@@ -197,42 +196,43 @@ export function TimereportCard({ projects, existingEntries, userName }) {
                         selectedProjects={selectedProjects}
                         hours={hours}
                         onHoursChange={handleHoursChange}
+                        onRemoveProject={handleRemoveProject}
                         selectedWeek={selectedWeek}
                     />
                 </CardContent>
             </Card>
 
             {/* Quick stats */}
-            {weekTotal > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Card size="sm">
-                        <CardContent className="pt-4">
-                            <p className="text-xs text-muted-foreground">Total Hours</p>
-                            <p className="text-xl font-bold">{weekTotal}h</p>
-                        </CardContent>
-                    </Card>
-                    <Card size="sm">
-                        <CardContent className="pt-4">
-                            <p className="text-xs text-muted-foreground">Projects</p>
-                            <p className="text-xl font-bold">{selectedProjects.length}</p>
-                        </CardContent>
-                    </Card>
-                    <Card size="sm">
-                        <CardContent className="pt-4">
-                            <p className="text-xs text-muted-foreground">Avg per Day</p>
-                            <p className="text-xl font-bold">{(weekTotal / 5).toFixed(1)}h</p>
-                        </CardContent>
-                    </Card>
-                    <Card size="sm">
-                        <CardContent className="pt-4">
-                            <p className="text-xs text-muted-foreground">Target Progress</p>
-                            <p className="text-xl font-bold">
-                                {Math.min(100, Math.round((weekTotal / 40) * 100))}%
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
-            )}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card size="sm">
+                    <CardContent className="pt-4">
+                        <p className="text-xs text-muted-foreground">Total Hours</p>
+                        <p className="text-xl font-bold tabular-nums">{weekTotal}h</p>
+                    </CardContent>
+                </Card>
+                <Card size="sm">
+                    <CardContent className="pt-4">
+                        <p className="text-xs text-muted-foreground">Projects</p>
+                        <p className="text-xl font-bold tabular-nums">{selectedProjects.length}</p>
+                    </CardContent>
+                </Card>
+                <Card size="sm">
+                    <CardContent className="pt-4">
+                        <p className="text-xs text-muted-foreground">Avg per Day</p>
+                        <p className="text-xl font-bold tabular-nums">
+                            {weekTotal > 0 ? (weekTotal / 5).toFixed(1) : '0.0'}h
+                        </p>
+                    </CardContent>
+                </Card>
+                <Card size="sm">
+                    <CardContent className="pt-4">
+                        <p className="text-xs text-muted-foreground">Target Progress</p>
+                        <p className="text-xl font-bold tabular-nums">
+                            {Math.min(100, Math.round((weekTotal / 40) * 100))}%
+                        </p>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 }
