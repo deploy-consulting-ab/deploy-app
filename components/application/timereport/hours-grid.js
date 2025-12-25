@@ -306,10 +306,10 @@ export function HoursGridComponent({
             {/* Desktop Layout - Grid view (visible at xl breakpoint and above) */}
             <div className="hidden xl:block space-y-4">
                 {/* Hours grid */}
-                <div className="overflow-x-auto">
-                    <div className="min-w-[600px]">
+                <div>
+                    <div>
                         {/* Day headers */}
-                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center mb-2">
+                        <div className="grid grid-cols-[minmax(180px,1.5fr)_repeat(7,minmax(60px,1fr))_48px_72px] gap-1.5 items-center mb-2">
                             <div /> {/* Empty cell for project column */}
                             {weekDates.map((date, index) => {
                                 const isToday = date.toDateString() === today.toDateString();
@@ -363,7 +363,7 @@ export function HoursGridComponent({
                                 return (
                                     <div
                                         key={project.projectId}
-                                        className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center group"
+                                        className="grid grid-cols-[minmax(180px,1.5fr)_repeat(7,minmax(60px,1fr))_48px_72px] gap-1.5 items-center group"
                                     >
                                         {/* Project name with remove button */}
                                         <div className="flex items-center gap-2 pr-2">
@@ -472,7 +472,7 @@ export function HoursGridComponent({
                         </div>
 
                         {/* Totals row */}
-                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center mt-3 pt-3 border-t">
+                        <div className="grid grid-cols-[minmax(180px,1.5fr)_repeat(7,minmax(60px,1fr))_48px_72px] gap-1.5 items-center mt-3 pt-3 border-t">
                             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                 Total
                             </div>
