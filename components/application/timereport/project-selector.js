@@ -14,7 +14,7 @@ import {
  */
 export function ProjectSelector({ projects, selectedProjects, onAddProject }) {
     // Filter out already selected projects
-    const availableProjects = projects.filter((p) => !selectedProjects.includes(p.id));
+    const availableProjects = projects.filter((p) => !selectedProjects.includes(p.flexId));
 
     const handleProjectSelect = (projectId) => {
         if (projectId && !selectedProjects.includes(projectId)) {
@@ -44,7 +44,7 @@ export function ProjectSelector({ projects, selectedProjects, onAddProject }) {
                     </SelectTrigger>
                     <SelectContent>
                         {projects.map((project) => (
-                            <SelectItem key={project.id} value={project.id}>
+                            <SelectItem key={project.flexId} value={project.flexId}>
                                 <div className="flex items-center gap-2">
                                     <div
                                         className="w-2 h-2 rounded-full"
@@ -70,7 +70,7 @@ export function ProjectSelector({ projects, selectedProjects, onAddProject }) {
                 </SelectTrigger>
                 <SelectContent>
                     {availableProjects.map((project) => (
-                        <SelectItem key={project.id} value={project.id}>
+                        <SelectItem key={project.flexId} value={project.flexId}>
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-2 h-2 rounded-full"
