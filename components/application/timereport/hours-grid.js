@@ -1,12 +1,14 @@
-'use client';
+'use client'
 
-import { useCallback, useMemo } from 'react';
-import { X, Clock } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useCallback, useMemo } from 'react'
+import { X, Clock } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { HoursGridPhone } from './hours-grid-phone'
 
-const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 /**
  * Hours grid component for entering daily hours per project.
@@ -30,7 +32,8 @@ export function HoursGridComponent({
     selectedProjects = new Set(),
     disabled = false,
 }) {
-    const today = new Date();
+    const today = new Date()
+    const isMobile = useIsMobile()
 
     // Generate dates for the week
     const weekDates = useMemo(() => {
@@ -266,9 +269,27 @@ export function HoursGridComponent({
     );
 
     if (uniqueProjects.length === 0) {
-        return null;
+        return null
     }
 
+    // Mobile Layout - Card-based view
+    if (isMobile) {
+        return (
+            <HoursGridPhone
+                weekDates={weekDates}
+                uniqueProjects={uniqueProjects}
+                hoursLookup={hoursLookup}
+                dailyTotals={dailyTotals}
+                weekTotal={weekTotal}
+                onHourChange={handleHourChange}
+                onRemoveProject={handleRemoveProject}
+                onFillFullTime={handleFillFullTime}
+                disabled={disabled}
+            />
+        )
+    }
+
+    // Desktop Layout - Grid view
     return (
         <div className="space-y-4">
             {/* Hours grid */}
@@ -278,8 +299,8 @@ export function HoursGridComponent({
                     <div className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center mb-2">
                         <div /> {/* Empty cell for project column */}
                         {weekDates.map((date, index) => {
-                            const isToday = date.toDateString() === today.toDateString();
-                            const isWeekend = index >= 5;
+                            const isToday = date.toDateString() === today.toDateString()
+                            const isWeekend = index >= 5
 
                             return (
                                 <div
@@ -309,7 +330,7 @@ export function HoursGridComponent({
                                         {date.getDate()}
                                     </p>
                                 </div>
-                            );
+                            )
                         })}
                         <div className="text-center text-xs font-medium text-muted-foreground">
                             Total
@@ -320,11 +341,11 @@ export function HoursGridComponent({
                     {/* Project rows */}
                     <div className="space-y-2">
                         {uniqueProjects.map((project) => {
-                            const projectHours = hoursLookup[project.projectId] || {};
+                            const projectHours = hoursLookup[project.projectId] || {}
                             const projectTotal = Object.values(projectHours).reduce(
                                 (sum, h) => sum + h,
                                 0
-                            );
+                            )
 
                             return (
                                 <div
@@ -359,9 +380,9 @@ export function HoursGridComponent({
 
                                     {/* Hour inputs for each day */}
                                     {weekDates.map((date, dayIndex) => {
-                                        const isWeekend = dayIndex >= 5;
+                                        const isWeekend = dayIndex >= 5
                                         const isToday =
-                                            date.toDateString() === today.toDateString();
+                                            date.toDateString() === today.toDateString()
 
                                         return (
                                             <Input
@@ -389,7 +410,7 @@ export function HoursGridComponent({
                                                     disabled && 'cursor-not-allowed opacity-60'
                                                 )}
                                             />
-                                        );
+                                        )
                                     })}
 
                                     {/* Project total */}
@@ -418,7 +439,7 @@ export function HoursGridComponent({
                                     )}
                                     {disabled && <div />}
                                 </div>
-                            );
+                            )
                         })}
                     </div>
 
@@ -428,8 +449,8 @@ export function HoursGridComponent({
                             Total
                         </div>
                         {dailyTotals.map((total, index) => {
-                            const isOvertime = total > 8;
-                            const isWeekend = index >= 5;
+                            const isOvertime = total > 8
+                            const isWeekend = index >= 5
 
                             return (
                                 <div
@@ -449,7 +470,7 @@ export function HoursGridComponent({
                                 >
                                     {total}h
                                 </div>
-                            );
+                            )
                         })}
                         <div className="text-right">
                             <span
@@ -482,5 +503,5 @@ export function HoursGridComponent({
                 <span>Target: {weekTotal}/40h</span>
             </div>
         </div>
-    );
+    )
 }
