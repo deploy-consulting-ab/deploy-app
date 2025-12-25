@@ -186,9 +186,10 @@ export function TimereportCard({ employeeNumber }) {
 
             // TO DO: FIX THIS
             await createTimecard(employeeNumber, timecard);
-            setInitialTimeData(JSON.parse(JSON.stringify(timeData)));
-            setHasChanges(false);
             toastRichSuccess({ message: 'Time report saved successfully' });
+
+            // Re-fetch timereports to get the latest data from the server
+            await fetchTimereports();
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });
         } finally {

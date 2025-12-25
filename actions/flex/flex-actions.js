@@ -112,6 +112,7 @@ export async function createTimecard(employeeId, timecard) {
 
 export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
     try {
+        // TODO: pass employeeId as a parameter
         employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
         // weekStartDate = '2025-12-01';
         // weekEndDate = '2025-12-07';
