@@ -31,13 +31,15 @@ function getProjectColor(projectId) {
  * @param {Function} props.onTimeDataChange - Callback when hours change, receives updated timeData
  * @param {Function} props.onRemoveProject - Callback when removing a project
  * @param {Array} props.projects - Optional array of projects for color lookup (with flexId and color properties)
+ * @param {Set} props.selectedProjects - Set of selected project IDs to display even without time entries
  */
 export function HoursGridComponent({
   timeData = [],
   selectedWeek,
   onTimeDataChange,
   onRemoveProject,
-  projects = []
+  projects = [],
+  selectedProjects = new Set()
 }) {
   const today = new Date()
 
@@ -51,10 +53,11 @@ export function HoursGridComponent({
     })
   }, [selectedWeek])
 
-  // Extract unique projects from timeData
+  // Extract unique projects from timeData and selectedProjects
   const uniqueProjects = useMemo(() => {
     const projectMap = new Map()
 
+    // First, add projects from timeData
     timeData.forEach(dayEntry => {
       dayEntry.timeRows?.forEach(row => {
         if (!projectMap.has(row.projectId)) {
@@ -70,8 +73,23 @@ export function HoursGridComponent({
       })
     })
 
+    // Then, add selected projects that aren't in timeData yet
+    selectedProjects.forEach(projectId => {
+      if (!projectMap.has(projectId)) {
+        const projectFromProps = projects.find(p => p.flexId === projectId)
+        if (projectFromProps) {
+          projectMap.set(projectId, {
+            projectId: projectId,
+            projectName: projectFromProps.name,
+            projectCode: projectFromProps.projectCode || '',
+            color: projectFromProps.color || getProjectColor(projectId)
+          })
+        }
+      }
+    })
+
     return Array.from(projectMap.values())
-  }, [timeData, projects])
+  }, [timeData, projects, selectedProjects])
 
   // Build hours lookup: { [projectId]: { [dayIndex]: hours } }
   const hoursLookup = useMemo(() => {

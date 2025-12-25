@@ -294,6 +294,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                                 onTimeDataChange={handleTimeDataChange}
                                 onRemoveProject={handleRemoveProject}
                                 projects={projects}
+                                selectedProjects={selectedProjects}
                             />
                         </>
                     )}
