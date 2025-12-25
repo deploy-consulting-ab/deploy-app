@@ -185,7 +185,6 @@ export function TimereportCard({ employeeNumber }) {
             setHasChanges(false);
             toastRichSuccess({ message: 'Time report saved successfully' });
         } catch (error) {
-            console.error('Failed to save timecard:', error);
             toastRichError({ message: error.message || 'Failed to save time report' });
         } finally {
             setIsSaving(false);
