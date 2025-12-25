@@ -287,7 +287,7 @@ export function HoursGridComponent({
                                                 onClick={() =>
                                                     handleRemoveProject(project.projectId)
                                                 }
-                                                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity -ml-1 text-muted-foreground hover:text-destructive"
+                                                className="h-6 w-6 -ml-1 text-muted-foreground hover:text-destructive"
                                             >
                                                 <X className="h-3.5 w-3.5" />
                                             </Button>
