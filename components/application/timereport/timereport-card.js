@@ -13,6 +13,7 @@ import { ProjectSelectorComponent } from '@/components/application/timereport/pr
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { Spinner } from '@/components/ui/spinner';
+import { RefreshCw } from 'lucide-react';
 
 /**
  * Main time report card component.
@@ -262,7 +263,11 @@ export function TimereportCard({ employeeNumber }) {
                             className="gap-2"
                         >
                             <Save className="h-4 w-4" />
-                            {isSaving ? 'Saving...' : <span className="hidden sm:inline">Save Time Report</span>}
+                            {isSaving ? (
+                                'Saving...'
+                            ) : (
+                                <span className="hidden sm:inline">Save Time Report</span>
+                            )}
                             {!isSaving && <span className="sm:hidden">Save</span>}
                         </Button>
                     </div>
@@ -294,21 +299,22 @@ export function TimereportCard({ employeeNumber }) {
                         </div>
                         {weekTotal > 0 && (
                             <div className="text-right shrink-0">
-                                <p className="text-xl md:text-2xl font-bold text-primary">{weekTotal}h</p>
-                                <p className="text-[10px] md:text-xs text-muted-foreground">this week</p>
+                                <p className="text-xl md:text-2xl font-bold text-primary">
+                                    {weekTotal}h
+                                </p>
+                                <p className="text-[10px] md:text-xs text-muted-foreground">
+                                    this week
+                                </p>
                             </div>
                         )}
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Loading state */}
-                    {isLoadingProjects || isLoadingTimereports ? (
-                        <div className="flex items-center justify-center py-8">
-                            <Spinner size="lg" label="Loading..." />
-                        </div>
-                    ) : (
-                        <>
-                            {/* Project Selector - only visible for current week */}
+
+                    <>
+                        {/* Project Selector and Refresh Button */}
+                        <div className="flex items-center gap-2">
                             {isPastWeek && (
                                 <ProjectSelectorComponent
                                     projects={projects}
@@ -316,8 +322,26 @@ export function TimereportCard({ employeeNumber }) {
                                     onAddProject={handleAddProject}
                                 />
                             )}
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={fetchTimereports}
+                                disabled={isLoadingTimereports}
+                                className={`md:hover:cursor-pointer ${
+                                    isLoadingTimereports ? 'animate-spin' : ''
+                                }`}
+                            >
+                                <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                                <span className="sr-only">Refresh data</span>
+                            </Button>
+                        </div>
 
-                            {/* Hours Grid */}
+                        {/* Hours Grid */}
+                        {isLoadingProjects || isLoadingTimereports ? (
+                            <div className="flex items-center justify-center py-8">
+                                <Spinner size="lg" label="Loading..." />
+                            </div>
+                        ) : (
                             <HoursGridComponent
                                 timeData={timeData}
                                 selectedWeek={selectedWeek}
@@ -327,8 +351,8 @@ export function TimereportCard({ employeeNumber }) {
                                 selectedProjects={selectedProjects}
                                 disabled={!isPastWeek}
                             />
-                        </>
-                    )}
+                        )}
+                    </>
                 </CardContent>
             </Card>
 
@@ -356,7 +380,9 @@ export function TimereportCard({ employeeNumber }) {
                 </Card>
                 <Card size="sm">
                     <CardContent className="pt-3 md:pt-4 pb-3 md:pb-4">
-                        <p className="text-[10px] md:text-xs text-muted-foreground">Target Progress</p>
+                        <p className="text-[10px] md:text-xs text-muted-foreground">
+                            Target Progress
+                        </p>
                         <p className="text-lg md:text-xl font-bold tabular-nums">
                             {Math.min(100, Math.round((weekTotal / 40) * 100))}%
                         </p>
