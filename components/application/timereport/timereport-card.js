@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Clock, Save, RotateCcw } from 'lucide-react';
+import { Clock, Save, RotateCcw, RefreshCw } from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
 import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
@@ -13,7 +13,6 @@ import { ProjectSelectorComponent } from '@/components/application/timereport/pr
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { Spinner } from '@/components/ui/spinner';
-import { RefreshCw } from 'lucide-react';
 
 /**
  * Main time report card component.
@@ -270,6 +269,18 @@ export function TimereportCard({ employeeNumber }) {
                             )}
                             {!isSaving && <span className="sm:hidden">Save</span>}
                         </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={fetchTimereports}
+                            disabled={isLoadingTimereports}
+                            className={`md:hover:cursor-pointer ${
+                                isLoadingTimereports ? 'animate-spin' : ''
+                            }`}
+                        >
+                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                            <span className="sr-only">Refresh data</span>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -312,47 +323,31 @@ export function TimereportCard({ employeeNumber }) {
                 <CardContent className="space-y-4">
                     {/* Loading state */}
 
-                    <>
-                        {/* Project Selector and Refresh Button */}
-                        <div className="flex items-center gap-2">
-                            {isPastWeek && (
-                                <ProjectSelectorComponent
-                                    projects={projects}
-                                    selectedProjects={selectedProjects}
-                                    onAddProject={handleAddProject}
-                                />
-                            )}
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={fetchTimereports}
-                                disabled={isLoadingTimereports}
-                                className={`md:hover:cursor-pointer ${
-                                    isLoadingTimereports ? 'animate-spin' : ''
-                                }`}
-                            >
-                                <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                                <span className="sr-only">Refresh data</span>
-                            </Button>
-                        </div>
+                    {/* Project Selector - only visible for current week */}
+                    {isPastWeek && (
+                        <ProjectSelectorComponent
+                            projects={projects}
+                            selectedProjects={selectedProjects}
+                            onAddProject={handleAddProject}
+                        />
+                    )}
 
-                        {/* Hours Grid */}
-                        {isLoadingProjects || isLoadingTimereports ? (
-                            <div className="flex items-center justify-center py-8">
-                                <Spinner size="lg" label="Loading..." />
-                            </div>
-                        ) : (
-                            <HoursGridComponent
-                                timeData={timeData}
-                                selectedWeek={selectedWeek}
-                                onTimeDataChange={handleTimeDataChange}
-                                onRemoveProject={handleRemoveProject}
-                                projects={projects}
-                                selectedProjects={selectedProjects}
-                                disabled={!isPastWeek}
-                            />
-                        )}
-                    </>
+                    {/* Hours Grid */}
+                    {isLoadingProjects || isLoadingTimereports ? (
+                        <div className="flex items-center justify-center py-8">
+                            <Spinner size="lg" label="Loading..." />
+                        </div>
+                    ) : (
+                        <HoursGridComponent
+                            timeData={timeData}
+                            selectedWeek={selectedWeek}
+                            onTimeDataChange={handleTimeDataChange}
+                            onRemoveProject={handleRemoveProject}
+                            projects={projects}
+                            selectedProjects={selectedProjects}
+                            disabled={!isPastWeek}
+                        />
+                    )}
                 </CardContent>
             </Card>
 
