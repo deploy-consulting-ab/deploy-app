@@ -279,7 +279,7 @@ export function TimereportCard({ employeeNumber }) {
 
             {/* Main time entry card */}
             <Card>
-                <CardHeader className="pb-3 md:pb-6">
+                <CardHeader>
                     <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                             <CardTitle className="text-sm md:text-base">Time Entries</CardTitle>

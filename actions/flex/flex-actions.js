@@ -93,8 +93,6 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
             .map((timereport) => ({
                 date: timereport.Date,
                 timeRows: timereport.TimeRows.map((timeRow) => {
-                    console.log('timeRow', timeRow);
-
                     if (timeRow.TimeCode.Id === WORKING_TYPE_ID) {
                         const projectAccount = timeRow.Accounts.find(
                             (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
@@ -111,8 +109,8 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
                             projectCode: projectAccount.Code,
                             hours: timeRow.TimeInMinutes / 60,
                         };
-                    
-                    // Other types of absences
+
+                        // Other types of absences
                     } else {
                         return {
                             projectId: timeRow.TimeCode.Id,
@@ -123,10 +121,6 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
                     }
                 }).filter(Boolean),
             }));
-
-        for (const timereport of timereportResponse) {
-            console.log('timereport', timereport);
-        }
 
         return {
             timereportResponse,
