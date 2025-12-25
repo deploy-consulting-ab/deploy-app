@@ -160,14 +160,17 @@ export function TimereportCard({ employeeNumber }) {
     const handleTimeDataChange = useCallback((updatedTimeData) => {
         setTimeData(updatedTimeData);
 
-        // Update selectedProjects based on timeData
-        const projectIds = new Set();
-        updatedTimeData.forEach((dayEntry) => {
-            dayEntry.timeRows?.forEach((row) => {
-                projectIds.add(row.projectId);
+        // Add any new projects from timeData to selectedProjects, but don't remove existing ones
+        // Projects should only be removed via the explicit remove button (handleRemoveProject)
+        setSelectedProjects((prev) => {
+            const next = new Set(prev);
+            updatedTimeData.forEach((dayEntry) => {
+                dayEntry.timeRows?.forEach((row) => {
+                    next.add(row.projectId);
+                });
             });
+            return next;
         });
-        setSelectedProjects(projectIds);
         setHasChanges(true);
     }, []);
 
