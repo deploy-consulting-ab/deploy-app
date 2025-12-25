@@ -67,35 +67,43 @@ export async function createTimecard(employeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
 
-        // TODO: FIX THIS
+        // TODO: pass employeeId as a parameter
         employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
-
         const promises = timecard.timeData.map(async (timereport) => {
-            // TODO THIS
+            // TODO: Change the date
             // const date = formatDateToISOString(timereport.date);
             const date = '2026-01-06';
 
             // TODO: Support multiple days
 
+            // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+            let previousTomTime = 0;
+            
             const timeRows = timereport.timeRows.map((timeRow) => {
-                return {
+                const tomTime = previousTomTime + timeRow.hours;
+                const body = {
                     accounts: [
                         {
                             accountDistributionId: PROJECT_TYPE_ID,
                             id: timeRow.projectId,
                         },
                     ],
-                    fromTime: 0,
-                    tomTime: timeRow.hours,
+                    fromTime: previousTomTime,
+                    tomTime: tomTime,
                     timeCode: {
                         code: 'ARB',
                     },
                 };
+                previousTomTime = tomTime;
+                return body;
             });
 
             const body = {
                 timeRows: timeRows,
             };
+
+            // console.dir(body, { depth: null });
+            // return;
 
             return await flexApiClient.createTimecard(employeeId, date, body);
         });
