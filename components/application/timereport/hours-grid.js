@@ -330,11 +330,10 @@ export function HoursGridComponent({
                                                 disabled={disabled}
                                                 className={cn(
                                                     'text-center h-9 text-sm px-1',
-                                                    isWeekend && 'bg-muted/30',
+                                                    isWeekend && 'bg-muted/30 opacity-50',
                                                     isToday &&
                                                         !disabled &&
                                                         'ring-1 ring-primary/30',
-                                                    isFuture && !disabled && 'opacity-50',
                                                     disabled && 'cursor-not-allowed opacity-60'
                                                 )}
                                             />
