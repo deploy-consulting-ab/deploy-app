@@ -12,7 +12,7 @@ class FlexApiService extends CalloutService {
     // Helper method to add common Flex parameters
     addFlexParams(params = {}) {
         return {
-            ...params
+            ...params,
         };
     }
 
@@ -27,6 +27,18 @@ class FlexApiService extends CalloutService {
             },
         };
         return super.get(endpoint, flexOptions);
+    }
+
+    async put(endpoint, body, options = {}) {
+        const flexOptions = {
+            ...options,
+            params: this.addFlexParams(options.params),
+            headers: {
+                ...options.headers,
+                'Service-Version': '1.0',
+            },
+        };
+        return super.put(endpoint, body, flexOptions);
     }
 
     // Specialized methods for Flex API endpoints
@@ -47,6 +59,15 @@ class FlexApiService extends CalloutService {
                 tom: weekEndDate,
             },
         });
+    }
+
+    async createTimecard(employeeId, date, body) {
+        console.log('body...');
+        console.dir(body, { depth: null });
+        return this.put(
+            `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
+            body
+        );
     }
 }
 

@@ -91,6 +91,7 @@ export function TimereportCard({ employeeNumber }) {
 
         setIsLoadingTimereports(true);
         try {
+            // TO DO: Fix this
             const response = await getTimereports(
                 employeeNumber,
                 formattedWeekStart,
@@ -180,7 +181,8 @@ export function TimereportCard({ employeeNumber }) {
                 timeData: timeData,
             };
 
-            await createTimecard(timecard);
+            // TO DO: FIX THIS
+            await createTimecard(employeeNumber, timecard);
             setInitialTimeData(JSON.parse(JSON.stringify(timeData)));
             setHasChanges(false);
             toastRichSuccess({ message: 'Time report saved successfully' });

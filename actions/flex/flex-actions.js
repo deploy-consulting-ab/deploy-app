@@ -4,6 +4,7 @@ import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
 import { calculateHolidays, calculateNextResetDate, generateDateRange } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
+import { formatDateToISOString } from '@/lib/utils.js';
 
 export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
     try {
@@ -62,11 +63,45 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
     }
 }
 
-export async function createTimecard(timecard) {
+export async function createTimecard(employeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
-        const response = await flexApiClient.createTimecard(timecard);
-        return response;
+
+        // TO DO: FIX THIS
+        employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
+
+        const promises = timecard.timeData.map(async (timereport) => {
+            // FIX THIS
+            // const date = formatDateToISOString(timereport.date);
+            const date = '2026-01-06';
+
+            console.log('timereport...', timereport);
+
+            const timeRows = timereport.timeRows.map((timeRow) => {
+                return {
+                    accounts: [
+                        {
+                            accountDistributionId: PROJECT_TYPE_ID,
+                            id: timeRow.projectId,
+                        },
+                    ],
+                    fromTime: 0,
+                    tomTime: timeRow.hours,
+                    timeCode: {
+                        code: 'ARB',
+                    },
+                };
+            });
+
+            const body = {
+                timeRows: timeRows,
+            };
+
+            const response = await flexApiClient.createTimecard(employeeId, date, body);
+            return response?.status;
+        });
+
+        return await Promise.all(promises);
     } catch (error) {
         throw error;
     }

@@ -74,6 +74,11 @@ class CalloutService {
                 cache: this.config.cache,
             });
 
+            console.log('## response...', response);
+
+            console.log('## response.ok...', response.ok);
+            console.log('## response.status...', response.status);
+
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
@@ -82,7 +87,14 @@ class CalloutService {
                 await handleApiError(response);
             }
 
+            const contentLength = response.headers.get('content-length');
+            if (contentLength === '0' || contentLength === null) {
+                console.log('## data... (empty response)');
+                return response;
+            }
+
             const data = await response.json();
+            console.log('## data...', data);
             return data;
         } catch (error) {
             console.error('Request error:', {
