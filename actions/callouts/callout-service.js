@@ -87,15 +87,9 @@ class CalloutService {
                 await handleApiError(response);
             }
 
-            const contentLength = response.headers.get('content-length');
-            if (contentLength === '0' || contentLength === null) {
-                console.log('## data... (empty response)');
-                return response;
-            }
-
-            const data = await response.json();
-            console.log('## data...', data);
-            return data;
+            // const data = await response.json();
+            // console.log('## data...', data);
+            return response;
         } catch (error) {
             console.error('Request error:', {
                 message: error.message,

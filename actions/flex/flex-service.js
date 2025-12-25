@@ -43,31 +43,35 @@ class FlexApiService extends CalloutService {
 
     // Specialized methods for Flex API endpoints
     async getAbsenceApplications(employeeNumber) {
-        return this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
+        const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
                 instance: ENV.FLEX_API_INSTANCE,
                 companynumber: ENV.FLEX_API_COMPANY_NUMBER,
             },
         });
+
+        return await response.json();
     }
 
     async getTimereports(employeeId, weekStartDate, weekEndDate) {
-        return this.get(`${FLEX_API_CONFIG.endpoints.timereports}/${employeeId}`, {
+        const response = await this.get(`${FLEX_API_CONFIG.endpoints.timereports}/${employeeId}`, {
             params: {
                 from: weekStartDate,
                 tom: weekEndDate,
             },
         });
+
+        return await response.json();
     }
 
     async createTimecard(employeeId, date, body) {
-        console.log('body...');
-        console.dir(body, { depth: null });
-        return this.put(
+        const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
             body
         );
+
+        return response.status;
     }
 }
 

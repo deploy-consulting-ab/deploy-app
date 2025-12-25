@@ -67,15 +67,15 @@ export async function createTimecard(employeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
 
-        // TO DO: FIX THIS
+        // TODO: FIX THIS
         employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
 
         const promises = timecard.timeData.map(async (timereport) => {
-            // FIX THIS
+            // TODO THIS
             // const date = formatDateToISOString(timereport.date);
             const date = '2026-01-06';
 
-            console.log('timereport...', timereport);
+            // TODO: Support multiple days
 
             const timeRows = timereport.timeRows.map((timeRow) => {
                 return {
@@ -97,8 +97,7 @@ export async function createTimecard(employeeId, timecard) {
                 timeRows: timeRows,
             };
 
-            const response = await flexApiClient.createTimecard(employeeId, date, body);
-            return response?.status;
+            return await flexApiClient.createTimecard(employeeId, date, body);
         });
 
         return await Promise.all(promises);
