@@ -18,7 +18,7 @@ import { Spinner } from '@/components/ui/spinner';
  * Main time report card component.
  * Manages the state for week selection, project selection, and hour entries.
  */
-export function TimereportCard({ existingEntries, userName, employeeNumber }) {
+export function TimereportCard({ employeeNumber }) {
     // Get Monday of current week as default
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(new Date()));
 
@@ -266,7 +266,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
             {/* Week Navigation */}
             <Card>
-                <CardHeader className="pb-3 md:pb-4">
+                <CardHeader>
                     <CardTitle className="text-sm md:text-base flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         Select Week
