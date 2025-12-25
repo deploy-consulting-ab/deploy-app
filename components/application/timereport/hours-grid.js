@@ -138,9 +138,12 @@ export function HoursGridComponent({
       const project = uniqueProjects.find(p => p.projectId === projectId)
       if (!project) return
 
-      // Get the date for this day index
+      // Get the date for this day index (use local date, not UTC)
       const targetDate = weekDates[dayIndex]
-      const targetDateStr = targetDate.toISOString().split('T')[0] + 'T00:00:00'
+      const year = targetDate.getFullYear()
+      const month = String(targetDate.getMonth() + 1).padStart(2, '0')
+      const day = String(targetDate.getDate()).padStart(2, '0')
+      const targetDateStr = `${year}-${month}-${day}T00:00:00`
 
       // Clone timeData and update
       const newTimeData = [...timeData]
