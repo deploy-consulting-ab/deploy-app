@@ -62,7 +62,14 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
         setIsLoadingProjects(true);
         try {
-            const { formattedWeekStart, formattedWeekEnd } = dateRange;
+            const { weekStart, weekEnd } = dateRange;
+
+            // Add a grace period for when the Assignment ends or starts in the middle of the week but the endDate will always be a Sunday and startDate a Monday
+            weekStart.setDate(weekStart.getDate() + 6);
+            weekEnd.setDate(weekEnd.getDate() - 6);
+
+            const formattedWeekStart = formatDateToISOString(weekStart);
+            const formattedWeekEnd = formatDateToISOString(weekEnd);
 
             const data = await getCurrentAssignmentsByEmployeeNumber(
                 employeeNumber,
