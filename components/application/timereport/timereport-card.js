@@ -19,6 +19,7 @@ import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { getTimereports } from '@/actions/flex/flex-actions';
+import { Spinner } from '@/components/ui/spinner';
 
 /**
  * Main time report card component.
@@ -31,6 +32,8 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     // Assignments fetched from Salesforce based on selected week
     const [projects, setProjects] = useState([]);
     const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+    const [selectedProjects, setSelectedProjects] = useState(new Set());
+    const [isLoadingTimereports, setIsLoadingTimereports] = useState(true);
 
     const dateRange = useMemo(() => {
         const weekStart = getWeekMonday(selectedWeek);
@@ -42,17 +45,6 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
         return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
     }, [selectedWeek]);
-
-    // Potentially this will be removed - or get it from the previous timecard
-    // Track selected projects for the current week
-    // const [selectedProjects, setSelectedProjects] = useState(() => {
-    //     // Initialize with projects from existing entries for the current week
-    //     const weekKey = getWeekMonday(new Date()).toISOString().split('T')[0];
-    //     const weekEntries = existingEntries?.[weekKey] || {};
-    //     return Object.keys(weekEntries);
-    // });
-
-    const [selectedProjects, setSelectedProjects] = useState(new Set());
 
     // Track hours per project per day
     const [hours, setHours] = useState(() => {
@@ -93,6 +85,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     const fetchTimereports = useCallback(async () => {
         const { formattedWeekStart, formattedWeekEnd } = dateRange;
 
+        setIsLoadingTimereports(true);
         try {
             const response = await getTimereports(
                 employeeNumber,
@@ -105,6 +98,8 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
         } catch (error) {
             console.error('Failed to fetch timereports:', error);
             toastRichError({ message: 'Failed to load timereports for the selected week' });
+        } finally {
+            setIsLoadingTimereports(false);
         }
     }, [employeeNumber, dateRange]);
 
@@ -267,22 +262,31 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Project Selector */}
-                    <ProjectSelectorComponent
-                        projects={projects}
-                        selectedProjects={selectedProjects}
-                        onAddProject={handleAddProject}
-                    />
+                    {/* Loading state */}
+                    {isLoadingProjects || isLoadingTimereports ? (
+                        <div className="flex items-center justify-center py-8">
+                            <Spinner size="lg" label="Loading..." />
+                        </div>
+                    ) : (
+                        <>
+                            {/* Project Selector */}
+                            <ProjectSelectorComponent
+                                projects={projects}
+                                selectedProjects={selectedProjects}
+                                onAddProject={handleAddProject}
+                            />
 
-                    {/* Hours Grid */}
-                    <HoursGridComponent
-                        projects={projects}
-                        selectedProjects={selectedProjects}
-                        hours={hours}
-                        onHoursChange={handleHoursChange}
-                        onRemoveProject={handleRemoveProject}
-                        selectedWeek={selectedWeek}
-                    />
+                            {/* Hours Grid */}
+                            <HoursGridComponent
+                                projects={projects}
+                                selectedProjects={selectedProjects}
+                                hours={hours}
+                                onHoursChange={handleHoursChange}
+                                onRemoveProject={handleRemoveProject}
+                                selectedWeek={selectedWeek}
+                            />
+                        </>
+                    )}
                 </CardContent>
             </Card>
 
