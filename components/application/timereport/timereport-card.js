@@ -5,14 +5,7 @@ import { Clock, Save, RotateCcw } from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
 import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardAction,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
@@ -35,6 +28,10 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     const [selectedProjects, setSelectedProjects] = useState(new Set());
     const [isLoadingTimereports, setIsLoadingTimereports] = useState(true);
 
+    // Time data in the new format: [{ date, timeRows: [{ projectId, projectName, projectCode, hours }] }]
+    const [timeData, setTimeData] = useState([]);
+    const [initialTimeData, setInitialTimeData] = useState([]);
+
     const dateRange = useMemo(() => {
         const weekStart = getWeekMonday(selectedWeek);
         const weekEnd = new Date(weekStart);
@@ -45,13 +42,6 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
         return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
     }, [selectedWeek]);
-
-    // Track hours per project per day
-    const [hours, setHours] = useState(() => {
-        // Initialize with existing entries
-        const weekKey = getWeekMonday(new Date()).toISOString().split('T')[0];
-        return existingEntries?.[weekKey] || {};
-    });
 
     // Track if there are unsaved changes
     const [hasChanges, setHasChanges] = useState(false);
@@ -92,12 +82,17 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                 formattedWeekStart,
                 formattedWeekEnd
             );
-            console.log('## timereports', response);
 
+            const timereportData = response.timereportResponse || [];
+            setTimeData(timereportData);
+            setInitialTimeData(JSON.parse(JSON.stringify(timereportData)));
             setSelectedProjects(new Set(response.selectedProjects));
+            setHasChanges(false);
         } catch (error) {
             console.error('Failed to fetch timereports:', error);
             toastRichError({ message: 'Failed to load timereports for the selected week' });
+            setTimeData([]);
+            setInitialTimeData([]);
         } finally {
             setIsLoadingTimereports(false);
         }
@@ -110,33 +105,31 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle week change
-    const handleWeekChange = useCallback(
-        (newWeek) => {
-            setSelectedWeek(newWeek);
+    const handleWeekChange = useCallback((newWeek) => {
+        setSelectedWeek(newWeek);
+        // The dateRange will update, triggering new fetches via useEffect
+    }, []);
 
-            // Fetch projects for the new week
-            fetchProjects(newWeek);
-
-            // Load entries for the new week
-            const weekKey = newWeek.toISOString().split('T')[0];
-            const weekEntries = existingEntries?.[weekKey] || {};
-
-            setHours(weekEntries);
-            setSelectedProjects(new Set(Object.keys(weekEntries)));
-            setHasChanges(false);
-        },
-        [existingEntries, fetchProjects]
-    );
+    // Refetch when selectedWeek changes (after initial load)
+    useEffect(() => {
+        fetchProjects();
+        fetchTimereports();
+    }, [selectedWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle adding a project
-    const handleAddProject = useCallback((projectId) => {
-        setSelectedProjects((prev) => new Set([...prev, projectId]));
-        setHours((prev) => ({
-            ...prev,
-            [projectId]: [0, 0, 0, 0, 0, 0, 0],
-        }));
-        setHasChanges(true);
-    }, []);
+    const handleAddProject = useCallback(
+        (projectId) => {
+            const project = projects.find((p) => p.flexId === projectId);
+            if (!project) return;
+
+            setSelectedProjects((prev) => new Set([...prev, projectId]));
+
+            // Add empty entries for all 7 days with 0 hours (they'll be filtered out on save)
+            // The grid component will handle displaying this project
+            setHasChanges(true);
+        },
+        [projects]
+    );
 
     // Handle removing a project
     const handleRemoveProject = useCallback((projectId) => {
@@ -145,22 +138,21 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
             next.delete(projectId);
             return next;
         });
-        setHours((prev) => {
-            const newHours = { ...prev };
-            delete newHours[projectId];
-            return newHours;
-        });
         setHasChanges(true);
     }, []);
 
-    // Handle hours change
-    const handleHoursChange = useCallback((projectId, dayIndex, value) => {
-        setHours((prev) => ({
-            ...prev,
-            [projectId]:
-                prev[projectId]?.map((h, i) => (i === dayIndex ? value : h)) ||
-                Array.from({ length: 7 }, (_, i) => (i === dayIndex ? value : 0)),
-        }));
+    // Handle time data change from the grid
+    const handleTimeDataChange = useCallback((updatedTimeData) => {
+        setTimeData(updatedTimeData);
+
+        // Update selectedProjects based on timeData
+        const projectIds = new Set();
+        updatedTimeData.forEach((dayEntry) => {
+            dayEntry.timeRows?.forEach((row) => {
+                projectIds.add(row.projectId);
+            });
+        });
+        setSelectedProjects(projectIds);
         setHasChanges(true);
     }, []);
 
@@ -171,10 +163,11 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
         try {
             const timecard = {
                 week: selectedWeek.toISOString().split('T')[0],
-                entries: hours,
+                timeData: timeData,
             };
 
             await createTimecard(timecard);
+            setInitialTimeData(JSON.parse(JSON.stringify(timeData)));
             setHasChanges(false);
             toastRichSuccess({ message: 'Time report saved successfully' });
         } catch (error) {
@@ -187,20 +180,38 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
     // Handle reset
     const handleReset = useCallback(() => {
-        const weekKey = selectedWeek.toISOString().split('T')[0];
-        const weekEntries = existingEntries?.[weekKey] || {};
+        setTimeData(JSON.parse(JSON.stringify(initialTimeData)));
 
-        setHours(weekEntries);
-        setSelectedProjects(new Set(Object.keys(weekEntries)));
+        // Recalculate selectedProjects from initialTimeData
+        const projectIds = new Set();
+        initialTimeData.forEach((dayEntry) => {
+            dayEntry.timeRows?.forEach((row) => {
+                projectIds.add(row.projectId);
+            });
+        });
+        setSelectedProjects(projectIds);
         setHasChanges(false);
-    }, [selectedWeek, existingEntries]);
+    }, [initialTimeData]);
 
-    // Calculate total hours for the week
+    // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {
-        return Object.values(hours).reduce((total, projectHours) => {
-            return total + (projectHours?.reduce((sum, h) => sum + h, 0) || 0);
+        return timeData.reduce((total, dayEntry) => {
+            const dayTotal =
+                dayEntry.timeRows?.reduce((sum, row) => sum + (row.hours || 0), 0) || 0;
+            return total + dayTotal;
         }, 0);
-    }, [hours]);
+    }, [timeData]);
+
+    // Calculate unique projects count
+    const projectCount = useMemo(() => {
+        const projectIds = new Set();
+        timeData.forEach((dayEntry) => {
+            dayEntry.timeRows?.forEach((row) => {
+                projectIds.add(row.projectId);
+            });
+        });
+        return projectIds.size;
+    }, [timeData]);
 
     return (
         <div className="space-y-6">
@@ -278,12 +289,11 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
                             {/* Hours Grid */}
                             <HoursGridComponent
-                                projects={projects}
-                                selectedProjects={selectedProjects}
-                                hours={hours}
-                                onHoursChange={handleHoursChange}
-                                onRemoveProject={handleRemoveProject}
+                                timeData={timeData}
                                 selectedWeek={selectedWeek}
+                                onTimeDataChange={handleTimeDataChange}
+                                onRemoveProject={handleRemoveProject}
+                                projects={projects}
                             />
                         </>
                     )}
@@ -301,7 +311,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                 <Card size="sm">
                     <CardContent className="pt-4">
                         <p className="text-xs text-muted-foreground">Projects</p>
-                        <p className="text-xl font-bold tabular-nums">{selectedProjects.size}</p>
+                        <p className="text-xl font-bold tabular-nums">{projectCount}</p>
                     </CardContent>
                 </Card>
                 <Card size="sm">
