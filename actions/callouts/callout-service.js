@@ -86,9 +86,6 @@ class CalloutService {
             if (!response.ok) {
                 await handleApiError(response);
             }
-
-            // const data = await response.json();
-            // console.log('## data...', data);
             return response;
         } catch (error) {
             console.error('Request error:', {
