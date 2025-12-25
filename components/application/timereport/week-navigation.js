@@ -59,7 +59,6 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     variant="outline"
                     size="icon"
                     onClick={handleNextWeek}
-                    disabled={isCurrentWeek}
                     className="h-8 w-8"
                 >
                     <ChevronRight className="h-4 w-4" />
