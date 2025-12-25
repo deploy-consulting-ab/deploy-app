@@ -36,21 +36,21 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
     };
 
     return (
-        <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 justify-center sm:justify-start">
                 <Button
                     variant="outline"
                     size="icon"
                     onClick={handlePreviousWeek}
-                    className="h-8 w-8"
+                    className="h-8 w-8 shrink-0"
                 >
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
 
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-lg min-w-[200px] justify-center">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 bg-muted/50 rounded-lg justify-center flex-1 sm:flex-initial sm:min-w-[200px]">
+                    <Calendar className="h-4 w-4 text-muted-foreground hidden sm:block" />
                     <span className="font-medium text-sm">Week {weekNumber}</span>
-                    <span className="text-muted-foreground text-sm">
+                    <span className="text-muted-foreground text-xs sm:text-sm">
                         ({formatDateDayMonth(selectedMonday)} - {formatDateDayMonth(selectedSunday)})
                     </span>
                 </div>
@@ -59,14 +59,19 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     variant="outline"
                     size="icon"
                     onClick={handleNextWeek}
-                    className="h-8 w-8"
+                    className="h-8 w-8 shrink-0"
                 >
                     <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
 
             {!isCurrentWeek && (
-                <Button variant="ghost" size="sm" onClick={handleCurrentWeek} className="text-xs">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCurrentWeek}
+                    className="text-xs w-full sm:w-auto"
+                >
                     Go to current week
                 </Button>
             )}

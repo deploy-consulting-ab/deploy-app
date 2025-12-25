@@ -5,7 +5,6 @@ import { X, Clock } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useIsMobile } from '@/hooks/use-mobile'
 import { HoursGridPhone } from './hours-grid-phone'
 
 const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -33,7 +32,6 @@ export function HoursGridComponent({
     disabled = false,
 }) {
     const today = new Date()
-    const isMobile = useIsMobile()
 
     // Generate dates for the week
     const weekDates = useMemo(() => {
@@ -272,26 +270,25 @@ export function HoursGridComponent({
         return null
     }
 
-    // Mobile Layout - Card-based view
-    if (isMobile) {
-        return (
-            <HoursGridPhone
-                weekDates={weekDates}
-                uniqueProjects={uniqueProjects}
-                hoursLookup={hoursLookup}
-                dailyTotals={dailyTotals}
-                weekTotal={weekTotal}
-                onHourChange={handleHourChange}
-                onRemoveProject={handleRemoveProject}
-                onFillFullTime={handleFillFullTime}
-                disabled={disabled}
-            />
-        )
-    }
-
-    // Desktop Layout - Grid view
     return (
-        <div className="space-y-4">
+        <>
+            {/* Mobile/Tablet Layout - Card-based view (visible below xl breakpoint) */}
+            <div className="xl:hidden">
+                <HoursGridPhone
+                    weekDates={weekDates}
+                    uniqueProjects={uniqueProjects}
+                    hoursLookup={hoursLookup}
+                    dailyTotals={dailyTotals}
+                    weekTotal={weekTotal}
+                    onHourChange={handleHourChange}
+                    onRemoveProject={handleRemoveProject}
+                    onFillFullTime={handleFillFullTime}
+                    disabled={disabled}
+                />
+            </div>
+
+            {/* Desktop Layout - Grid view (visible at xl breakpoint and above) */}
+            <div className="hidden xl:block space-y-4">
             {/* Hours grid */}
             <div className="overflow-x-auto">
                 <div className="min-w-[600px]">
@@ -488,20 +485,21 @@ export function HoursGridComponent({
                 </div>
             </div>
 
-            {/* Compact legend */}
-            <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
-                <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                        8h
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-amber-500" />
-                        &gt;8h
-                    </span>
+                {/* Compact legend */}
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-2">
+                    <div className="flex items-center gap-3">
+                        <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                            8h
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-amber-500" />
+                            &gt;8h
+                        </span>
+                    </div>
+                    <span>Target: {weekTotal}/40h</span>
                 </div>
-                <span>Target: {weekTotal}/40h</span>
             </div>
-        </div>
+        </>
     )
 }

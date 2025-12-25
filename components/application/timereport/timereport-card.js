@@ -228,12 +228,12 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     }, [timeData]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Time Report</h1>
-                    <p className="text-muted-foreground mt-1">
+                    <h1 className="text-xl md:text-2xl font-bold tracking-tight">Time Report</h1>
+                    <p className="text-muted-foreground text-sm md:text-base mt-1">
                         Report your working hours for the week
                     </p>
                 </div>
@@ -247,16 +247,18 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                                 className="gap-2"
                             >
                                 <RotateCcw className="h-4 w-4" />
-                                Reset
+                                <span className="hidden sm:inline">Reset</span>
                             </Button>
                         )}
                         <Button
                             onClick={handleSave}
                             disabled={!hasChanges || isSaving}
+                            size="sm"
                             className="gap-2"
                         >
                             <Save className="h-4 w-4" />
-                            {isSaving ? 'Saving...' : 'Save Time Report'}
+                            {isSaving ? 'Saving...' : <span className="hidden sm:inline">Save Time Report</span>}
+                            {!isSaving && <span className="sm:hidden">Save</span>}
                         </Button>
                     </div>
                 )}
@@ -264,31 +266,31 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
 
             {/* Week Navigation */}
             <Card>
-                <CardHeader className="pb-4">
-                    <CardTitle className="text-base flex items-center gap-2">
+                <CardHeader className="pb-3 md:pb-4">
+                    <CardTitle className="text-sm md:text-base flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         Select Week
                     </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-0">
                     <WeekNavigation selectedWeek={selectedWeek} onWeekChange={handleWeekChange} />
                 </CardContent>
             </Card>
 
             {/* Main time entry card */}
             <Card>
-                <CardHeader>
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <CardTitle className="text-base">Time Entries</CardTitle>
-                            <CardDescription>
+                <CardHeader className="pb-3 md:pb-6">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                            <CardTitle className="text-sm md:text-base">Time Entries</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">
                                 Add projects and enter your daily hours
                             </CardDescription>
                         </div>
                         {weekTotal > 0 && (
-                            <div className="text-right">
-                                <p className="text-2xl font-bold text-primary">{weekTotal}h</p>
-                                <p className="text-xs text-muted-foreground">this week</p>
+                            <div className="text-right shrink-0">
+                                <p className="text-xl md:text-2xl font-bold text-primary">{weekTotal}h</p>
+                                <p className="text-[10px] md:text-xs text-muted-foreground">this week</p>
                             </div>
                         )}
                     </div>
@@ -326,31 +328,31 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
             </Card>
 
             {/* Quick stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                 <Card size="sm">
-                    <CardContent className="pt-4">
-                        <p className="text-xs text-muted-foreground">Total Hours</p>
-                        <p className="text-xl font-bold tabular-nums">{weekTotal}h</p>
+                    <CardContent className="pt-3 md:pt-4 pb-3 md:pb-4">
+                        <p className="text-[10px] md:text-xs text-muted-foreground">Total Hours</p>
+                        <p className="text-lg md:text-xl font-bold tabular-nums">{weekTotal}h</p>
                     </CardContent>
                 </Card>
                 <Card size="sm">
-                    <CardContent className="pt-4">
-                        <p className="text-xs text-muted-foreground">Projects</p>
-                        <p className="text-xl font-bold tabular-nums">{projectCount}</p>
+                    <CardContent className="pt-3 md:pt-4 pb-3 md:pb-4">
+                        <p className="text-[10px] md:text-xs text-muted-foreground">Projects</p>
+                        <p className="text-lg md:text-xl font-bold tabular-nums">{projectCount}</p>
                     </CardContent>
                 </Card>
                 <Card size="sm">
-                    <CardContent className="pt-4">
-                        <p className="text-xs text-muted-foreground">Avg per Day</p>
-                        <p className="text-xl font-bold tabular-nums">
+                    <CardContent className="pt-3 md:pt-4 pb-3 md:pb-4">
+                        <p className="text-[10px] md:text-xs text-muted-foreground">Avg per Day</p>
+                        <p className="text-lg md:text-xl font-bold tabular-nums">
                             {weekTotal > 0 ? (weekTotal / 5).toFixed(1) : '0.0'}h
                         </p>
                     </CardContent>
                 </Card>
                 <Card size="sm">
-                    <CardContent className="pt-4">
-                        <p className="text-xs text-muted-foreground">Target Progress</p>
-                        <p className="text-xl font-bold tabular-nums">
+                    <CardContent className="pt-3 md:pt-4 pb-3 md:pb-4">
+                        <p className="text-[10px] md:text-xs text-muted-foreground">Target Progress</p>
+                        <p className="text-lg md:text-xl font-bold tabular-nums">
                             {Math.min(100, Math.round((weekTotal / 40) * 100))}%
                         </p>
                     </CardContent>

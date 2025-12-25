@@ -30,16 +30,18 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
     // Empty state - no projects selected yet
     if (selectedProjects.size === 0) {
         return (
-            <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg border border-dashed border-border">
-                <Briefcase className="h-5 w-5 text-muted-foreground" />
-                <div className="flex-1">
-                    <p className="text-sm font-medium">No projects added</p>
-                    <p className="text-xs text-muted-foreground">
-                        Select a project to start logging hours
-                    </p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-muted/30 rounded-lg border border-dashed border-border">
+                <div className="flex items-center gap-3 flex-1">
+                    <Briefcase className="h-5 w-5 text-muted-foreground shrink-0" />
+                    <div className="min-w-0">
+                        <p className="text-sm font-medium">No projects added</p>
+                        <p className="text-xs text-muted-foreground">
+                            Select a project to start logging hours
+                        </p>
+                    </div>
                 </div>
                 <Select onValueChange={handleProjectSelect}>
-                    <SelectTrigger className="w-[200px]">
+                    <SelectTrigger className="w-full sm:w-[200px]">
                         <SelectValue placeholder="Add project" />
                     </SelectTrigger>
                     <SelectContent>
@@ -47,10 +49,10 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
                             <SelectItem key={project.flexId} value={project.flexId}>
                                 <div className="flex items-center gap-2">
                                     <div
-                                        className="w-2 h-2 rounded-full"
+                                        className="w-2 h-2 rounded-full shrink-0"
                                         style={{ backgroundColor: project.color }}
                                     />
-                                    <span>{project.name}</span>
+                                    <span className="truncate">{project.name}</span>
                                 </div>
                             </SelectItem>
                         ))}
@@ -64,7 +66,7 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
     return (
         <div className="flex items-center gap-2">
             <Select onValueChange={handleProjectSelect}>
-                <SelectTrigger className="w-auto gap-2 border-dashed">
+                <SelectTrigger className="w-full sm:w-auto gap-2 border-dashed">
                     <Plus className="h-4 w-4" />
                     <span className="text-muted-foreground">Add project</span>
                 </SelectTrigger>
@@ -73,11 +75,11 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
                         <SelectItem key={project.flexId} value={project.flexId}>
                             <div className="flex items-center gap-2">
                                 <div
-                                    className="w-2 h-2 rounded-full"
+                                    className="w-2 h-2 rounded-full shrink-0"
                                     style={{ backgroundColor: project.color }}
                                 />
-                                <span>{project.name}</span>
-                                <span className="text-muted-foreground text-xs">
+                                <span className="truncate">{project.name}</span>
+                                <span className="text-muted-foreground text-xs hidden sm:inline">
                                     {project.client}
                                 </span>
                             </div>
