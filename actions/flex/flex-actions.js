@@ -3,7 +3,7 @@
 import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
 import { calculateHolidays, calculateNextResetDate, generateDateRange } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
-import { PROJECT_TYPE_ID } from './constants.js';
+import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
 
 export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
     try {
@@ -77,6 +77,8 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
         employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
         // weekStartDate = '2025-12-01';
         // weekEndDate = '2025-12-07';
+        // weekStartDate = '2025-11-10';
+        // weekEndDate = '2025-11-16';
         const flexApiClient = await getFlexApiService();
         const timereports = await flexApiClient.getTimereports(
             employeeId,
@@ -91,21 +93,40 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
             .map((timereport) => ({
                 date: timereport.Date,
                 timeRows: timereport.TimeRows.map((timeRow) => {
-                    const projectAccount = timeRow.Accounts.find(
-                        (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
-                    );
-                    if (!projectAccount) return null;
+                    console.log('timeRow', timeRow);
 
-                    selectedProjects.add(projectAccount.Id);
+                    if (timeRow.TimeCode.Id === WORKING_TYPE_ID) {
+                        const projectAccount = timeRow.Accounts.find(
+                            (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+                        );
+                        if (!projectAccount) {
+                            return null;
+                        }
 
-                    return {
-                        projectId: projectAccount.Id,
-                        projectName: projectAccount.Name,
-                        projectCode: projectAccount.Code,
-                        hours: timeRow.TimeInMinutes / 60,
-                    };
+                        selectedProjects.add(projectAccount.Id);
+
+                        return {
+                            projectId: projectAccount.Id,
+                            projectName: projectAccount.Name,
+                            projectCode: projectAccount.Code,
+                            hours: timeRow.TimeInMinutes / 60,
+                        };
+                    
+                    // Other types of absences
+                    } else {
+                        return {
+                            projectId: timeRow.TimeCode.Id,
+                            projectName: timeRow.TimeCode.Name,
+                            projectCode: timeRow.TimeCode.Code,
+                            hours: timeRow.TimeInMinutes / 60,
+                        };
+                    }
                 }).filter(Boolean),
             }));
+
+        for (const timereport of timereportResponse) {
+            console.log('timereport', timereport);
+        }
 
         return {
             timereportResponse,

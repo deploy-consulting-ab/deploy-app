@@ -57,7 +57,7 @@ export function HoursGridComponent({
                         projectId: row.projectId,
                         projectName: row.projectName,
                         projectCode: row.projectCode,
-                        color: projectFromProps?.color,
+                        color: projectFromProps?.color || 'red',
                     });
                 }
             });
