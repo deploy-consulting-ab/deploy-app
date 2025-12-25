@@ -43,6 +43,13 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
         return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
     }, [selectedWeek]);
 
+    // Check if the selected week is the current week
+    const isCurrentWeek = useMemo(() => {
+        const currentWeekMonday = getWeekMonday(new Date());
+        const selectedWeekMonday = getWeekMonday(selectedWeek);
+        return currentWeekMonday.toDateString() === selectedWeekMonday.toDateString();
+    }, [selectedWeek]);
+
     // Track if there are unsaved changes
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -223,22 +230,29 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                         Report your working hours for the week
                     </p>
                 </div>
-                <div className="flex items-center gap-2">
-                    {hasChanges && (
-                        <Button variant="outline" size="sm" onClick={handleReset} className="gap-2">
-                            <RotateCcw className="h-4 w-4" />
-                            Reset
+                {isCurrentWeek && (
+                    <div className="flex items-center gap-2">
+                        {hasChanges && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleReset}
+                                className="gap-2"
+                            >
+                                <RotateCcw className="h-4 w-4" />
+                                Reset
+                            </Button>
+                        )}
+                        <Button
+                            onClick={handleSave}
+                            disabled={!hasChanges || isSaving}
+                            className="gap-2"
+                        >
+                            <Save className="h-4 w-4" />
+                            {isSaving ? 'Saving...' : 'Save Time Report'}
                         </Button>
-                    )}
-                    <Button
-                        onClick={handleSave}
-                        disabled={!hasChanges || isSaving}
-                        className="gap-2"
-                    >
-                        <Save className="h-4 w-4" />
-                        {isSaving ? 'Saving...' : 'Save Time Report'}
-                    </Button>
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Week Navigation */}
@@ -280,12 +294,14 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                         </div>
                     ) : (
                         <>
-                            {/* Project Selector */}
-                            <ProjectSelectorComponent
-                                projects={projects}
-                                selectedProjects={selectedProjects}
-                                onAddProject={handleAddProject}
-                            />
+                            {/* Project Selector - only visible for current week */}
+                            {isCurrentWeek && (
+                                <ProjectSelectorComponent
+                                    projects={projects}
+                                    selectedProjects={selectedProjects}
+                                    onAddProject={handleAddProject}
+                                />
+                            )}
 
                             {/* Hours Grid */}
                             <HoursGridComponent
@@ -295,6 +311,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                                 onRemoveProject={handleRemoveProject}
                                 projects={projects}
                                 selectedProjects={selectedProjects}
+                                disabled={!isCurrentWeek}
                             />
                         </>
                     )}
