@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { X, Clock } from 'lucide-react';
+import { X, Clock, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -266,6 +266,21 @@ export function HoursGridComponent({
         [timeData, weekDates, uniqueProjects, onTimeDataChange]
     );
 
+    const handleResetProject = useCallback(
+        (projectId) => {
+            // Set all hours to 0 for this project
+            const newTimeData = timeData.map((dayEntry) => ({
+                ...dayEntry,
+                timeRows: dayEntry.timeRows?.map((row) =>
+                    row.projectId === projectId ? { ...row, hours: 0 } : row
+                ) || [],
+            }));
+
+            onTimeDataChange(newTimeData);
+        },
+        [timeData, onTimeDataChange]
+    );
+
     if (uniqueProjects.length === 0) {
         return null;
     }
@@ -283,6 +298,7 @@ export function HoursGridComponent({
                     onHourChange={handleHourChange}
                     onRemoveProject={handleRemoveProject}
                     onFillFullTime={handleFillFullTime}
+                    onResetProject={handleResetProject}
                     disabled={disabled}
                 />
             </div>
@@ -293,7 +309,7 @@ export function HoursGridComponent({
                 <div className="overflow-x-auto">
                     <div className="min-w-[600px]">
                         {/* Day headers */}
-                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center mb-2">
+                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center mb-2">
                             <div /> {/* Empty cell for project column */}
                             {weekDates.map((date, index) => {
                                 const isToday = date.toDateString() === today.toDateString();
@@ -347,7 +363,7 @@ export function HoursGridComponent({
                                 return (
                                     <div
                                         key={project.projectId}
-                                        className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center group"
+                                        className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center group"
                                     >
                                         {/* Project name with remove button */}
                                         <div className="flex items-center gap-2 pr-2">
@@ -422,19 +438,32 @@ export function HoursGridComponent({
                                             </span>
                                         </div>
 
-                                        {/* Fill full time button */}
+                                        {/* Action buttons */}
                                         {!disabled && (
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() =>
-                                                    handleFillFullTime(project.projectId)
-                                                }
-                                                className="h-7 w-7 text-muted-foreground hover:text-primary"
-                                                title="Fill 8h for Mon-Fri"
-                                            >
-                                                <Clock className="h-4 w-4" />
-                                            </Button>
+                                            <div className="flex items-center gap-0.5">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() =>
+                                                        handleFillFullTime(project.projectId)
+                                                    }
+                                                    className="h-7 w-7 text-muted-foreground hover:text-primary"
+                                                    title="Fill 8h for Mon-Fri"
+                                                >
+                                                    <Clock className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() =>
+                                                        handleResetProject(project.projectId)
+                                                    }
+                                                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                                                    title="Reset all hours"
+                                                >
+                                                    <RotateCcw className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         )}
                                         {disabled && <div />}
                                     </div>
@@ -443,7 +472,7 @@ export function HoursGridComponent({
                         </div>
 
                         {/* Totals row */}
-                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center mt-3 pt-3 border-t">
+                        <div className="grid grid-cols-[320px_repeat(7,100px)_50px_72px] gap-1.5 items-center mt-3 pt-3 border-t">
                             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                 Total
                             </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Clock } from 'lucide-react'
+import { X, Clock, RotateCcw } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -19,6 +19,7 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
  * @param {Function} props.onHourChange - Callback (projectId, dayIndex, value) => void
  * @param {Function} props.onRemoveProject - Callback (projectId) => void
  * @param {Function} props.onFillFullTime - Callback (projectId) => void
+ * @param {Function} props.onResetProject - Callback (projectId) => void
  * @param {boolean} props.disabled - Whether inputs are disabled
  */
 export function HoursGridPhone({
@@ -30,6 +31,7 @@ export function HoursGridPhone({
   onHourChange,
   onRemoveProject,
   onFillFullTime,
+  onResetProject,
   disabled = false,
 }) {
   const today = new Date()
@@ -153,8 +155,18 @@ export function HoursGridPhone({
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => onResetProject(project.projectId)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title="Reset all hours"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => onRemoveProject(project.projectId)}
                         className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title="Remove project"
                       >
                         <X className="h-4 w-4" />
                       </Button>
