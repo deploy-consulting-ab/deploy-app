@@ -3,3 +3,6 @@ Todo:
   ☐ Implement employeeId in database
   ☐ Populate employeeId in database in UAT
   ☐ Populate employeeId in database in Production
+  ☐ Display red days in the the grid
+  ☐ Enable delete of rows and send them to the Flex API -> Set them to zero!
+  ☐ Refresh page when timecard is created
