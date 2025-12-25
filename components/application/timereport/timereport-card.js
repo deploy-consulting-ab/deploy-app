@@ -52,7 +52,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     //     return Object.keys(weekEntries);
     // });
 
-    const [selectedProjects, setSelectedProjects] = useState(new Set())
+    const [selectedProjects, setSelectedProjects] = useState(new Set());
 
     // Track hours per project per day
     const [hours, setHours] = useState(() => {
@@ -81,8 +81,6 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                 formattedWeekEnd
             );
             setProjects(data || []);
-
-            console.log('Projects:', data);
         } catch (error) {
             console.error('Failed to fetch projects:', error);
             toastRichError({ message: 'Failed to load projects for the selected week' });
@@ -103,9 +101,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
             );
             console.log('## timereports', response);
 
-
-            setSelectedProjects(new Set(response.selectedProjects))
-
+            setSelectedProjects(new Set(response.selectedProjects));
         } catch (error) {
             console.error('Failed to fetch timereports:', error);
             toastRichError({ message: 'Failed to load timereports for the selected week' });
@@ -130,38 +126,37 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
             const weekKey = newWeek.toISOString().split('T')[0];
             const weekEntries = existingEntries?.[weekKey] || {};
 
-            setHours(weekEntries)
-            setSelectedProjects(new Set(Object.keys(weekEntries)))
-            setHasChanges(false)
+            setHours(weekEntries);
+            setSelectedProjects(new Set(Object.keys(weekEntries)));
+            setHasChanges(false);
         },
         [existingEntries, fetchProjects]
-    )
+    );
 
     // Handle adding a project
     const handleAddProject = useCallback((projectId) => {
-        console.log('projectId:', projectId)
-        setSelectedProjects((prev) => new Set([...prev, projectId]))
+        setSelectedProjects((prev) => new Set([...prev, projectId]));
         setHours((prev) => ({
             ...prev,
             [projectId]: [0, 0, 0, 0, 0, 0, 0],
-        }))
-        setHasChanges(true)
-    }, [])
+        }));
+        setHasChanges(true);
+    }, []);
 
     // Handle removing a project
     const handleRemoveProject = useCallback((projectId) => {
         setSelectedProjects((prev) => {
-            const next = new Set(prev)
-            next.delete(projectId)
-            return next
-        })
+            const next = new Set(prev);
+            next.delete(projectId);
+            return next;
+        });
         setHours((prev) => {
-            const newHours = { ...prev }
-            delete newHours[projectId]
-            return newHours
-        })
-        setHasChanges(true)
-    }, [])
+            const newHours = { ...prev };
+            delete newHours[projectId];
+            return newHours;
+        });
+        setHasChanges(true);
+    }, []);
 
     // Handle hours change
     const handleHoursChange = useCallback((projectId, dayIndex, value) => {
@@ -200,10 +195,10 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
         const weekKey = selectedWeek.toISOString().split('T')[0];
         const weekEntries = existingEntries?.[weekKey] || {};
 
-        setHours(weekEntries)
-        setSelectedProjects(new Set(Object.keys(weekEntries)))
-        setHasChanges(false)
-    }, [selectedWeek, existingEntries])
+        setHours(weekEntries);
+        setSelectedProjects(new Set(Object.keys(weekEntries)));
+        setHasChanges(false);
+    }, [selectedWeek, existingEntries]);
 
     // Calculate total hours for the week
     const weekTotal = useMemo(() => {
