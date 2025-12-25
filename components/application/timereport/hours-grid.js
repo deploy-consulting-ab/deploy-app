@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
  * Hours grid component for entering daily hours per project.
  * Displays a grid where rows are projects and columns are days.
  */
-export function HoursGrid({
+export function HoursGridComponent({
     projects,
     selectedProjects,
     hours,
@@ -30,10 +30,10 @@ export function HoursGrid({
 
     // Calculate totals per day
     const dailyTotals = Array.from({ length: 7 }, (_, dayIndex) => {
-        return selectedProjects.reduce((sum, projectId) => {
-            return sum + (hours[projectId]?.[dayIndex] || 0);
-        }, 0);
-    });
+        return [...selectedProjects].reduce((sum, projectId) => {
+            return sum + (hours[projectId]?.[dayIndex] || 0)
+        }, 0)
+    })
 
     // Calculate total for the week
     const weekTotal = dailyTotals.reduce((sum, hours) => sum + hours, 0);
@@ -47,8 +47,8 @@ export function HoursGrid({
         [onHoursChange]
     );
 
-    if (selectedProjects.length === 0) {
-        return null;
+    if (selectedProjects.size === 0) {
+        return null
     }
 
     const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -102,17 +102,16 @@ export function HoursGrid({
 
                     {/* Project rows */}
                     <div className="space-y-2">
-                        {selectedProjects.map((projectId) => {
-                            console.log('## projectId', projectId);
-                            const project = projects.find((p) => p.id === projectId);
+                        {[...selectedProjects].map((projectId) => {
+                            const project = projects.find((p) => p.flexId === projectId);
                             if (!project) return null;
 
-                            const projectHours = hours[projectId] || [0, 0, 0, 0, 0, 0, 0];
+                            const projectHours = hours[project.flexId] || [0, 0, 0, 0, 0, 0, 0];
                             const projectTotal = projectHours.reduce((sum, h) => sum + h, 0);
 
                             return (
                                 <div
-                                    key={projectId}
+                                    key={project.flexId}
                                     className="grid grid-cols-[minmax(140px,1fr)_repeat(7,minmax(52px,1fr))_60px] gap-1.5 items-center group"
                                 >
                                     {/* Project name with remove button */}
@@ -137,7 +136,8 @@ export function HoursGrid({
                                     {/* Hour inputs for each day */}
                                     {weekDates.map((date, dayIndex) => {
                                         const isWeekend = dayIndex >= 5;
-                                        const isToday = date.toDateString() === today.toDateString();
+                                        const isToday =
+                                            date.toDateString() === today.toDateString();
                                         const isFuture = date > today;
 
                                         return (
@@ -149,7 +149,11 @@ export function HoursGrid({
                                                 step="0.5"
                                                 value={projectHours[dayIndex] || ''}
                                                 onChange={(e) =>
-                                                    handleHourChange(projectId, dayIndex, e.target.value)
+                                                    handleHourChange(
+                                                        projectId,
+                                                        dayIndex,
+                                                        e.target.value
+                                                    )
                                                 }
                                                 placeholder="0"
                                                 className={cn(
@@ -192,7 +196,8 @@ export function HoursGrid({
                                     key={index}
                                     className={cn(
                                         'text-center text-sm font-semibold py-1.5 rounded tabular-nums',
-                                        isOvertime && 'text-amber-600 bg-amber-50 dark:bg-amber-950/30',
+                                        isOvertime &&
+                                            'text-amber-600 bg-amber-50 dark:bg-amber-950/30',
                                         total === 8 &&
                                             'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                         total > 0 &&

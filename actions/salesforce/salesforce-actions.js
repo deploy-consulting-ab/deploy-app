@@ -100,6 +100,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(employeeNumber, star
         const result = await queryData(
             getCurrentAssignmentsByEmployeeNumberQuery(employeeNumber, startDate, endDate)
         );
+        console.log('## result', result);
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Project__r.Name,
@@ -107,7 +108,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(employeeNumber, star
             startDate: assignment.StartDate__c,
             endDate: assignment.EndDate__c,
             projectType: assignment.ProjectType__c,
-            flexId: assignment.Project__r.FlexId__c,
+            flexId: assignment.Project__r.FlexID__c,
             projectStatus: assignment.ProjectStatus__c,
             color: assignment.ProjectType__c === PROJECT_TYPE_INTERNAL ? '#6b7280' : '#3b82f6',
         }));

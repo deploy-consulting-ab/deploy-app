@@ -3,6 +3,7 @@
 import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
 import { calculateHolidays, calculateNextResetDate, generateDateRange } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
+import { PROJECT_TYPE_ID } from './constants.js';
 
 export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
     try {
@@ -19,23 +20,21 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
 
         holidays.totalHolidays = 30; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
-        
+
         // Format dates as ISO strings before sending to client
-        holidays.recentHolidayPeriods = holidays.holidayPeriods
-            .slice(0, 3)
-            .map(period => ({
-                ...period,
-                fromDate: period.fromDate.toISOString().split('T')[0],
-                toDate: period.toDate.toISOString().split('T')[0]
-            }));
-            
+        holidays.recentHolidayPeriods = holidays.holidayPeriods.slice(0, 3).map((period) => ({
+            ...period,
+            fromDate: period.fromDate.toISOString().split('T')[0],
+            toDate: period.toDate.toISOString().split('T')[0],
+        }));
+
         holidays.nextResetDate = calculateNextResetDate(new Date()).toISOString().split('T')[0];
-        
+
         // Convert all holiday range dates to ISO strings
         holidays.allHolidaysRange = [];
         for (const holiday of holidays.holidayPeriods) {
             const range = generateDateRange(holiday.fromDate, holiday.toDate);
-            holidays.allHolidaysRange.push(...range.map(date => date.toISOString()));
+            holidays.allHolidaysRange.push(...range.map((date) => date.toISOString()));
         }
 
         return holidays;
@@ -68,6 +67,50 @@ export async function createTimecard(timecard) {
         const flexApiClient = await getFlexApiService();
         const response = await flexApiClient.createTimecard(timecard);
         return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
+    try {
+        employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
+        // weekStartDate = '2025-12-01';
+        // weekEndDate = '2025-12-07';
+        const flexApiClient = await getFlexApiService();
+        const timereports = await flexApiClient.getTimereports(
+            employeeId,
+            weekStartDate,
+            weekEndDate
+        );
+
+        const selectedProjects = new Set();
+
+        const timereportResponse = timereports
+            .filter((timereport) => timereport.TimeRows?.length > 0)
+            .map((timereport) => ({
+                date: timereport.Date,
+                timeRows: timereport.TimeRows.map((timeRow) => {
+                    const projectAccount = timeRow.Accounts.find(
+                        (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+                    );
+                    if (!projectAccount) return null;
+
+                    selectedProjects.add(projectAccount.Id);
+
+                    return {
+                        projectId: projectAccount.Id,
+                        projectName: projectAccount.Name,
+                        projectCode: projectAccount.Code,
+                        hours: timeRow.TimeInMinutes / 60,
+                    };
+                }).filter(Boolean),
+            }));
+
+        return {
+            timereportResponse,
+            selectedProjects,
+        };
     } catch (error) {
         throw error;
     }

@@ -12,9 +12,7 @@ class FlexApiService extends CalloutService {
     // Helper method to add common Flex parameters
     addFlexParams(params = {}) {
         return {
-            ...params,
-            instance: ENV.FLEX_API_INSTANCE,
-            companynumber: ENV.FLEX_API_COMPANY_NUMBER,
+            ...params
         };
     }
 
@@ -36,6 +34,17 @@ class FlexApiService extends CalloutService {
         return this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
+                instance: ENV.FLEX_API_INSTANCE,
+                companynumber: ENV.FLEX_API_COMPANY_NUMBER,
+            },
+        });
+    }
+
+    async getTimereports(employeeId, weekStartDate, weekEndDate) {
+        return this.get(`${FLEX_API_CONFIG.endpoints.timereports}/${employeeId}`, {
+            params: {
+                from: weekStartDate,
+                tom: weekEndDate,
             },
         });
     }

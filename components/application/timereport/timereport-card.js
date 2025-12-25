@@ -14,10 +14,11 @@ import {
     CardAction,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { WeekNavigation } from './week-navigation';
+import { WeekNavigation } from '@/components/application/timereport/week-navigation';
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
-import { ProjectSelector } from './project-selector';
-import { HoursGrid } from './hours-grid';
+import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
+import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
+import { getTimereports } from '@/actions/flex/flex-actions';
 
 /**
  * Main time report card component.
@@ -31,15 +32,27 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     const [projects, setProjects] = useState([]);
     const [isLoadingProjects, setIsLoadingProjects] = useState(true);
 
+    const dateRange = useMemo(() => {
+        const weekStart = getWeekMonday(selectedWeek);
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+
+        const formattedWeekStart = formatDateToISOString(weekStart);
+        const formattedWeekEnd = formatDateToISOString(weekEnd);
+
+        return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
+    }, [selectedWeek]);
+
     // Potentially this will be removed - or get it from the previous timecard
     // Track selected projects for the current week
-    const [selectedProjects, setSelectedProjects] = useState(() => {
-        // Initialize with projects from existing entries for the current week
-        const weekKey = getWeekMonday(new Date()).toISOString().split('T')[0];
-        const weekEntries = existingEntries?.[weekKey] || {};
-        console.log('## existingEntries', existingEntries);
-        return Object.keys(weekEntries);
-    });
+    // const [selectedProjects, setSelectedProjects] = useState(() => {
+    //     // Initialize with projects from existing entries for the current week
+    //     const weekKey = getWeekMonday(new Date()).toISOString().split('T')[0];
+    //     const weekEntries = existingEntries?.[weekKey] || {};
+    //     return Object.keys(weekEntries);
+    // });
+
+    const [selectedProjects, setSelectedProjects] = useState(new Set())
 
     // Track hours per project per day
     const [hours, setHours] = useState(() => {
@@ -55,41 +68,54 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     /**
      * Fetch projects for the given week
      */
-    const fetchProjects = useCallback(
-        async (weekStart) => {
-            if (!employeeNumber) return;
+    const fetchProjects = useCallback(async () => {
+        if (!employeeNumber) return;
 
-            setIsLoadingProjects(true);
-            try {
-                const weekEnd = new Date(weekStart);
-                weekEnd.setDate(weekEnd.getDate() + 6);
+        setIsLoadingProjects(true);
+        try {
+            const { formattedWeekStart, formattedWeekEnd } = dateRange;
 
-                // Format dates to YYYY-MM-DD for Salesforce SOQL query
-                const formattedStartDate = formatDateToISOString(weekStart);
-                const formattedEndDate = formatDateToISOString(weekEnd);
+            const data = await getCurrentAssignmentsByEmployeeNumber(
+                employeeNumber,
+                formattedWeekStart,
+                formattedWeekEnd
+            );
+            setProjects(data || []);
 
-                const data = await getCurrentAssignmentsByEmployeeNumber(
-                    employeeNumber,
-                    formattedStartDate,
-                    formattedEndDate
-                );
-                setProjects(data || []);
+            console.log('Projects:', data);
+        } catch (error) {
+            console.error('Failed to fetch projects:', error);
+            toastRichError({ message: 'Failed to load projects for the selected week' });
+            setProjects([]);
+        } finally {
+            setIsLoadingProjects(false);
+        }
+    }, [employeeNumber, dateRange]);
 
-                console.log('Projects:', data);
-            } catch (error) {
-                console.error('Failed to fetch projects:', error);
-                toastRichError({ message: 'Failed to load projects for the selected week' });
-                setProjects([]);
-            } finally {
-                setIsLoadingProjects(false);
-            }
-        },
-        [employeeNumber]
-    );
+    const fetchTimereports = useCallback(async () => {
+        const { formattedWeekStart, formattedWeekEnd } = dateRange;
+
+        try {
+            const response = await getTimereports(
+                employeeNumber,
+                formattedWeekStart,
+                formattedWeekEnd
+            );
+            console.log('## timereports', response);
+
+
+            setSelectedProjects(new Set(response.selectedProjects))
+
+        } catch (error) {
+            console.error('Failed to fetch timereports:', error);
+            toastRichError({ message: 'Failed to load timereports for the selected week' });
+        }
+    }, [employeeNumber, dateRange]);
 
     // Fetch projects on initial load
     useEffect(() => {
-        fetchProjects(selectedWeek);
+        fetchProjects();
+        fetchTimereports();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle week change
@@ -104,34 +130,38 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
             const weekKey = newWeek.toISOString().split('T')[0];
             const weekEntries = existingEntries?.[weekKey] || {};
 
-            setHours(weekEntries);
-            setSelectedProjects(Object.keys(weekEntries));
-            setHasChanges(false);
+            setHours(weekEntries)
+            setSelectedProjects(new Set(Object.keys(weekEntries)))
+            setHasChanges(false)
         },
         [existingEntries, fetchProjects]
-    );
+    )
 
     // Handle adding a project
     const handleAddProject = useCallback((projectId) => {
-        console.log('projectId:', projectId);
-        setSelectedProjects((prev) => [...prev, projectId]);
+        console.log('projectId:', projectId)
+        setSelectedProjects((prev) => new Set([...prev, projectId]))
         setHours((prev) => ({
             ...prev,
             [projectId]: [0, 0, 0, 0, 0, 0, 0],
-        }));
-        setHasChanges(true);
-    }, []);
+        }))
+        setHasChanges(true)
+    }, [])
 
     // Handle removing a project
     const handleRemoveProject = useCallback((projectId) => {
-        setSelectedProjects((prev) => prev.filter((id) => id !== projectId));
+        setSelectedProjects((prev) => {
+            const next = new Set(prev)
+            next.delete(projectId)
+            return next
+        })
         setHours((prev) => {
-            const newHours = { ...prev };
-            delete newHours[projectId];
-            return newHours;
-        });
-        setHasChanges(true);
-    }, []);
+            const newHours = { ...prev }
+            delete newHours[projectId]
+            return newHours
+        })
+        setHasChanges(true)
+    }, [])
 
     // Handle hours change
     const handleHoursChange = useCallback((projectId, dayIndex, value) => {
@@ -170,10 +200,10 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
         const weekKey = selectedWeek.toISOString().split('T')[0];
         const weekEntries = existingEntries?.[weekKey] || {};
 
-        setHours(weekEntries);
-        setSelectedProjects(Object.keys(weekEntries));
-        setHasChanges(false);
-    }, [selectedWeek, existingEntries]);
+        setHours(weekEntries)
+        setSelectedProjects(new Set(Object.keys(weekEntries)))
+        setHasChanges(false)
+    }, [selectedWeek, existingEntries])
 
     // Calculate total hours for the week
     const weekTotal = useMemo(() => {
@@ -243,14 +273,14 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Project Selector */}
-                    <ProjectSelector
+                    <ProjectSelectorComponent
                         projects={projects}
                         selectedProjects={selectedProjects}
                         onAddProject={handleAddProject}
                     />
 
                     {/* Hours Grid */}
-                    <HoursGrid
+                    <HoursGridComponent
                         projects={projects}
                         selectedProjects={selectedProjects}
                         hours={hours}
@@ -272,7 +302,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                 <Card size="sm">
                     <CardContent className="pt-4">
                         <p className="text-xs text-muted-foreground">Projects</p>
-                        <p className="text-xl font-bold tabular-nums">{selectedProjects.length}</p>
+                        <p className="text-xl font-bold tabular-nums">{selectedProjects.size}</p>
                     </CardContent>
                 </Card>
                 <Card size="sm">

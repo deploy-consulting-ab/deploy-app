@@ -31,6 +31,7 @@ export const FLEX_API_CONFIG = {
     // Endpoints
     endpoints: {
         absenceApplications: '/api/absenceapplications',
+        timereports: '/api/timereports',
     },
 
     // Rate limiting configuration

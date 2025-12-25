@@ -54,10 +54,10 @@ const getAssignmentsMetricsQuery = (employeeNumber) => {
 };
 
 const getCurrentAssignmentsByEmployeeNumberQuery = (employeeNumber, startDate, endDate) => {
-    return `SELECT Id, StartDate__c, EndDate__c, ProjectType__c, Project__r.Name, Project__r.FlexId__c, Project__r.Account__r.Name 
+    return `SELECT Id, StartDate__c, EndDate__c, ProjectType__c, Project__r.Name, Project__r.FlexID__c, Project__r.Account__r.Name 
             FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
-            AND Project__r.FlexId__c != NULL
+            AND Project__r.FlexID__c != NULL
             AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
             AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
             AND (
