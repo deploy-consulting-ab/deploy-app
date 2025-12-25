@@ -44,10 +44,10 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
     }, [selectedWeek]);
 
     // Check if the selected week is the current week
-    const isCurrentWeek = useMemo(() => {
+    const isPastWeek = useMemo(() => {
         const currentWeekMonday = getWeekMonday(new Date());
         const selectedWeekMonday = getWeekMonday(selectedWeek);
-        return currentWeekMonday.toDateString() === selectedWeekMonday.toDateString();
+        return currentWeekMonday.getTime() <= selectedWeekMonday.getTime();
     }, [selectedWeek]);
 
     // Track if there are unsaved changes
@@ -230,7 +230,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                         Report your working hours for the week
                     </p>
                 </div>
-                {isCurrentWeek && (
+                {isPastWeek && (
                     <div className="flex items-center gap-2">
                         {hasChanges && (
                             <Button
@@ -295,7 +295,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                     ) : (
                         <>
                             {/* Project Selector - only visible for current week */}
-                            {isCurrentWeek && (
+                            {isPastWeek && (
                                 <ProjectSelectorComponent
                                     projects={projects}
                                     selectedProjects={selectedProjects}
@@ -311,7 +311,7 @@ export function TimereportCard({ existingEntries, userName, employeeNumber }) {
                                 onRemoveProject={handleRemoveProject}
                                 projects={projects}
                                 selectedProjects={selectedProjects}
-                                disabled={!isCurrentWeek}
+                                disabled={!isPastWeek}
                             />
                         </>
                     )}
