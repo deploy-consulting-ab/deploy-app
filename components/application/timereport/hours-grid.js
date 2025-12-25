@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { X } from 'lucide-react';
+import { X, Clock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -213,6 +213,58 @@ export function HoursGridComponent({
         [timeData, onTimeDataChange, onRemoveProject]
     );
 
+    const handleFillFullTime = useCallback(
+        (projectId) => {
+            const project = uniqueProjects.find((p) => p.projectId === projectId);
+            if (!project) return;
+
+            // Fill 8 hours for Mon-Fri (indices 0-4)
+            let newTimeData = [...timeData];
+
+            for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
+                const targetDate = weekDates[dayIndex];
+                const year = targetDate.getFullYear();
+                const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+                const day = String(targetDate.getDate()).padStart(2, '0');
+                const targetDateStr = `${year}-${month}-${day}T00:00:00`;
+
+                let dayEntryIndex = newTimeData.findIndex((entry) => {
+                    const entryDate = new Date(entry.date);
+                    return entryDate.toDateString() === targetDate.toDateString();
+                });
+
+                if (dayEntryIndex === -1) {
+                    newTimeData.push({
+                        date: targetDateStr,
+                        timeRows: [],
+                    });
+                    dayEntryIndex = newTimeData.length - 1;
+                }
+
+                const dayEntry = { ...newTimeData[dayEntryIndex] };
+                const timeRows = [...(dayEntry.timeRows || [])];
+                const timeRowIndex = timeRows.findIndex((row) => row.projectId === projectId);
+
+                if (timeRowIndex >= 0) {
+                    timeRows[timeRowIndex] = { ...timeRows[timeRowIndex], hours: 8 };
+                } else {
+                    timeRows.push({
+                        projectId: project.projectId,
+                        projectName: project.projectName,
+                        projectCode: project.projectCode,
+                        hours: 8,
+                    });
+                }
+
+                dayEntry.timeRows = timeRows;
+                newTimeData[dayEntryIndex] = dayEntry;
+            }
+
+            onTimeDataChange(newTimeData);
+        },
+        [timeData, weekDates, uniqueProjects, onTimeDataChange]
+    );
+
     if (uniqueProjects.length === 0) {
         return null;
     }
@@ -223,7 +275,7 @@ export function HoursGridComponent({
             <div className="overflow-x-auto">
                 <div className="min-w-[600px]">
                     {/* Day headers */}
-                    <div className="grid grid-cols-[minmax(140px,1fr)_repeat(7,minmax(52px,1fr))_60px] gap-1.5 items-center mb-2">
+                    <div className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center mb-2">
                         <div /> {/* Empty cell for project column */}
                         {weekDates.map((date, index) => {
                             const isToday = date.toDateString() === today.toDateString();
@@ -262,6 +314,7 @@ export function HoursGridComponent({
                         <div className="text-center text-xs font-medium text-muted-foreground">
                             Total
                         </div>
+                        <div /> {/* Empty cell for action column */}
                     </div>
 
                     {/* Project rows */}
@@ -276,7 +329,7 @@ export function HoursGridComponent({
                             return (
                                 <div
                                     key={project.projectId}
-                                    className="grid grid-cols-[minmax(140px,1fr)_repeat(7,minmax(52px,1fr))_60px] gap-1.5 items-center group"
+                                    className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center group"
                                 >
                                     {/* Project name with remove button */}
                                     <div className="flex items-center gap-2 pr-2">
@@ -309,7 +362,6 @@ export function HoursGridComponent({
                                         const isWeekend = dayIndex >= 5;
                                         const isToday =
                                             date.toDateString() === today.toDateString();
-                                        const isFuture = date > today;
 
                                         return (
                                             <Input
@@ -351,13 +403,27 @@ export function HoursGridComponent({
                                             {projectTotal}h
                                         </span>
                                     </div>
+
+                                    {/* Fill full time button */}
+                                    {!disabled && (
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleFillFullTime(project.projectId)}
+                                            className="h-7 w-7 text-muted-foreground hover:text-primary"
+                                            title="Fill 8h for Mon-Fri"
+                                        >
+                                            <Clock className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                    {disabled && <div />}
                                 </div>
                             );
                         })}
                     </div>
 
                     {/* Totals row */}
-                    <div className="grid grid-cols-[minmax(140px,1fr)_repeat(7,minmax(52px,1fr))_60px] gap-1.5 items-center mt-3 pt-3 border-t">
+                    <div className="grid grid-cols-[320px_repeat(7,100px)_50px_36px] gap-1.5 items-center mt-3 pt-3 border-t">
                         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                             Total
                         </div>
@@ -396,6 +462,7 @@ export function HoursGridComponent({
                                 {weekTotal}h
                             </span>
                         </div>
+                        <div /> {/* Empty cell for action column */}
                     </div>
                 </div>
             </div>
