@@ -265,7 +265,7 @@ export function TimereportCard({ employeeNumber }) {
                             {isSaving ? (
                                 'Saving...'
                             ) : (
-                                <span className="hidden sm:inline">Save Time Report</span>
+                                <span className="hidden sm:inline">Save</span>
                             )}
                             {!isSaving && <span className="sm:hidden">Save</span>}
                         </Button>
