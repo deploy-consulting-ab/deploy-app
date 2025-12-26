@@ -242,47 +242,51 @@ export function TimereportCard({
                         Report your working hours for the week
                     </p>
                 </div>
-                {!isPastWeek && (
-                    <div className="flex items-center gap-2">
-                        {hasChanges && (
+
+                <div className="flex items-center gap-2">
+                    {!isPastWeek && (
+                        <>
+                            {hasChanges && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleReset}
+                                    className="gap-2"
+                                >
+                                    <RotateCcw className="h-4 w-4" />
+                                    <span className="hidden sm:inline">Reset</span>
+                                </Button>
+                            )}
+
                             <Button
-                                variant="outline"
+                                onClick={handleSave}
+                                disabled={!hasChanges || isSaving}
                                 size="sm"
-                                onClick={handleReset}
                                 className="gap-2"
                             >
-                                <RotateCcw className="h-4 w-4" />
-                                <span className="hidden sm:inline">Reset</span>
+                                <Save className="h-4 w-4" />
+                                {isSaving ? (
+                                    'Saving...'
+                                ) : (
+                                    <span className="hidden sm:inline">Save</span>
+                                )}
+                                {!isSaving && <span className="sm:hidden">Save</span>}
                             </Button>
-                        )}
-                        <Button
-                            onClick={handleSave}
-                            disabled={!hasChanges || isSaving}
-                            size="sm"
-                            className="gap-2"
-                        >
-                            <Save className="h-4 w-4" />
-                            {isSaving ? (
-                                'Saving...'
-                            ) : (
-                                <span className="hidden sm:inline">Save</span>
-                            )}
-                            {!isSaving && <span className="sm:hidden">Save</span>}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={refreshTimereports}
-                            disabled={isLoadingTimereports}
-                            className={`md:hover:cursor-pointer ${
-                                isLoadingTimereports ? 'animate-spin' : ''
-                            }`}
-                        >
-                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                            <span className="sr-only">Refresh data</span>
-                        </Button>
-                    </div>
-                )}
+                        </>
+                    )}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={refreshTimereports}
+                        disabled={isLoadingTimereports}
+                        className={`md:hover:cursor-pointer ${
+                            isLoadingTimereports ? 'animate-spin' : ''
+                        }`}
+                    >
+                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                        <span className="sr-only">Refresh data</span>
+                    </Button>
+                </div>
             </div>
 
             {/* Week Navigation */}

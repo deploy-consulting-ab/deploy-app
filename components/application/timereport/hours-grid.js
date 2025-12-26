@@ -465,7 +465,13 @@ export function HoursGridComponent({
                                                             isWorkingTime &&
                                                             'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                                         disabled &&
-                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
+                                                            !isBankHoliday &&
+                                                            !(!isWorkingTime && hasHours) &&
+                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
+                                                        disabled &&
+                                                            (isBankHoliday ||
+                                                                (!isWorkingTime && hasHours)) &&
+                                                            'cursor-not-allowed disabled:opacity-100'
                                                     )}
                                                 />
                                             );

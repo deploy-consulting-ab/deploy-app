@@ -71,8 +71,8 @@ export function HoursGridPhone({
                             className={cn(
                                 'flex flex-col items-center py-1.5 rounded-md',
                                 isBankHoliday &&
-                                    'bg-red-100 dark:bg-red-950/40 ring-1 ring-red-300 dark:ring-red-800',
-                                isToday && !isBankHoliday && 'bg-primary/10 ring-1 ring-primary/30'
+                                    'bg-red-100 dark:bg-red-950/40',
+                                isToday && !isBankHoliday && 'bg-primary/10'
                             )}
                             title={isBankHoliday ? 'Bank Holiday' : undefined}
                         >
@@ -258,7 +258,12 @@ export function HoursGridPhone({
                                                         isWorkingTime &&
                                                         'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                                     disabled &&
-                                                        'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
+                                                        !isBankHoliday &&
+                                                        !(!isWorkingTime && hasHours) &&
+                                                        'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
+                                                    disabled &&
+                                                        (isBankHoliday || (!isWorkingTime && hasHours)) &&
+                                                        'cursor-not-allowed disabled:opacity-100'
                                                 )}
                                             />
                                         </div>
