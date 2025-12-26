@@ -1,6 +1,6 @@
 'use server';
 
-import { queryData, queryCachedData } from './salesforce-service';
+import { queryData } from './salesforce-service';
 import {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -12,10 +12,7 @@ import {
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getOpportunityByIdQuery,
     getAssignmentsMetricsQuery,
-    getCurrentAssignmentsByEmployeeNumberQuery,
-    getHolidaysQuery,
 } from './queries';
-import { PROJECT_TYPE_INTERNAL } from './constants';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
     try {
@@ -90,27 +87,6 @@ export async function getAssignmentTimecards(assignmentId, employeeNumber) {
                 timecard.SaturdayHours__c,
                 timecard.SundayHours__c,
             ],
-        }));
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getCurrentAssignmentsByEmployeeNumber(employeeNumber, startDate, endDate) {
-    try {
-        const result = await queryData(
-            getCurrentAssignmentsByEmployeeNumberQuery(employeeNumber, startDate, endDate)
-        );
-        return result.map((assignment) => ({
-            id: assignment.Id,
-            name: assignment.Project__r.Name,
-            client: assignment.Project__r.Account__r.Name,
-            startDate: assignment.StartDate__c,
-            endDate: assignment.EndDate__c,
-            projectType: assignment.ProjectType__c,
-            flexId: assignment.Project__r.FlexID__c,
-            projectStatus: assignment.ProjectStatus__c,
-            color: assignment.ProjectType__c === PROJECT_TYPE_INTERNAL ? '#6b7280' : '#3b82f6',
         }));
     } catch (error) {
         throw error;
@@ -240,23 +216,6 @@ export async function getAssignmentsMetrics(employeeNumber) {
         }
 
         return assignmentsMetrics;
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getHolidays() {
-    try {
-        const result = await queryCachedData(getHolidaysQuery(), {
-            tags: ['holidays'],
-            cacheKey: 'holidays-list',
-            revalidate: 86400, // 24 hours
-        });
-        const holidaysSet = new Set();
-        for (const holiday of result) {
-            holidaysSet.add(holiday.ActivityDate);
-        }
-        return holidaysSet;
     } catch (error) {
         throw error;
     }

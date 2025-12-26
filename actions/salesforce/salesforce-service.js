@@ -1,11 +1,7 @@
 'use server';
 
-import { unstable_cache, revalidateTag } from 'next/cache';
 import { getSalesforceConnection, invalidateSalesforceConnection } from './salesforce-auth';
 import { NetworkError } from '../callouts/errors';
-
-// Default cache duration: 1 hour (in seconds)
-const DEFAULT_CACHE_DURATION = 3600;
 
 /**
  * Generic error handler for Salesforce operations
@@ -23,8 +19,13 @@ const handleSalesforceError = async (error, operation) => {
 
     if (error.errorCode === 'INVALID_SESSION_ID') {
         console.log('Invalid session ID, refreshing token...');
+        // 1. Invalidate the cache
         invalidateSalesforceConnection();
+            
+        // 2. Get a brand new connection
         const newConnection = await getSalesforceConnection();
+        
+        // 3. Retry the query ONCE with the new connection
         return newConnection;
     }
 
@@ -50,51 +51,6 @@ export async function queryData(query) {
             return result.records;
         }
     }
-}
-
-/**
- * Execute a cached SOQL query - use for data that doesn't change often
- * @param {string} query - The SOQL query to execute
- * @param {Object} options - Cache options
- * @param {string[]} options.tags - Additional cache tags for targeted revalidation
- * @param {number} options.revalidate - Cache duration in seconds (default: 1 hour)
- * @param {string} options.cacheKey - Optional unique key for the cache entry
- * @returns {Promise<Array>} The query results
- */
-export async function queryCachedData(query, options = {}) {
-    const { tags = [], revalidate = DEFAULT_CACHE_DURATION, cacheKey = query } = options;
-
-    const cachedQuery = unstable_cache(
-        async () => {
-            try {
-                const connection = await getSalesforceConnection();
-                const result = await connection.query(query);
-                return result.records;
-            } catch (error) {
-                const connection = await handleSalesforceError(error, 'cached query data');
-
-                if (connection) {
-                    const result = await connection.query(query);
-                    return result.records;
-                }
-            }
-        },
-        [cacheKey],
-        {
-            tags: ['salesforce', ...tags],
-            revalidate,
-        }
-    );
-
-    return cachedQuery();
-}
-
-/**
- * Invalidate cached Salesforce data by tag
- * @param {string} tag - The cache tag to invalidate
- */
-export async function invalidateSalesforceCache(tag = 'salesforce') {
-    revalidateTag(tag);
 }
 
 /**
@@ -190,8 +146,7 @@ export async function queryBatch(query, batchHandler) {
     try {
         const connection = await getSalesforceConnection();
         return new Promise((resolve, reject) => {
-            connection
-                .query(query)
+            connection.query(query)
                 .on('record', batchHandler)
                 .on('end', resolve)
                 .on('error', reject)
@@ -202,8 +157,7 @@ export async function queryBatch(query, batchHandler) {
 
         if (connection) {
             return new Promise((resolve, reject) => {
-                connection
-                    .query(query)
+                connection.query(query)
                     .on('record', batchHandler)
                     .on('end', resolve)
                     .on('error', reject)

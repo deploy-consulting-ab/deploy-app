@@ -32,10 +32,9 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
 
     const form = useForm({
         defaultValues: {
-            employeeNumber: user.employeeNumber || '',
-            flexEmployeeId: user.flexEmployeeId || '',
-            profileId: user.profileId || '',
-            isActive: user.isActive || true,
+            employeeNumber: user.employeeNumber,
+            profileId: user.profileId,
+            isActive: user.isActive,
         },
     });
 
@@ -92,21 +91,6 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                                 <FormLabel>Employee Number</FormLabel>
                                 <FormControl>
                                     <Input {...field} placeholder="Enter employee number" />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Flex Employee ID */}
-                    <FormField
-                        control={form.control}
-                        name="flexEmployeeId"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Flex Employee ID</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="Enter Flex Employee ID" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

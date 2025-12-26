@@ -54,5 +54,3 @@ prisma/data-scripts/*.sql
 **/public/sw.js.map
 **/public/workbox-*.js
 **/public/workbox-*.js.map
-
-TODO
