@@ -39,7 +39,7 @@ async function fetchProjectsForWeek(employeeNumber, weekStart) {
 /**
  * Fetch timereports for a given week
  */
-async function fetchTimereportsForWeek(employeeNumber, weekStart) {
+async function fetchTimereportsForWeek(flexEmployeeId, weekStart) {
     const monday = getWeekMonday(new Date(weekStart));
     const weekEnd = new Date(monday);
     weekEnd.setDate(weekEnd.getDate() + 6);
@@ -47,7 +47,7 @@ async function fetchTimereportsForWeek(employeeNumber, weekStart) {
     const formattedWeekStart = formatDateToISOString(monday);
     const formattedWeekEnd = formatDateToISOString(weekEnd);
 
-    const response = await getTimereports(employeeNumber, formattedWeekStart, formattedWeekEnd);
+    const response = await getTimereports(flexEmployeeId, formattedWeekStart, formattedWeekEnd);
 
     // Convert Set to Array for serialization (server actions can't pass Sets)
     return {
@@ -72,14 +72,15 @@ async function refreshProjectsData(weekStart) {
 async function refreshTimereportsData(weekStart) {
     'use server';
     const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
-    return fetchTimereportsForWeek(employeeNumber, weekStart);
+    const flexEmployeeId = session.user.flexEmployeeId;
+    return fetchTimereportsForWeek(flexEmployeeId, weekStart);
 }
 
 export default async function TimereportPage() {
     const session = await auth();
     const { user } = session;
     const employeeNumber = user.employeeNumber;
+    const flexEmployeeId = user.flexEmployeeId;
 
     // Fetch initial data for the current week
     let initialProjects = [];
@@ -90,7 +91,7 @@ export default async function TimereportPage() {
         const [holidaysData, projects, timereports] = await Promise.all([
             fetchHolidays(),
             fetchProjectsForWeek(employeeNumber, new Date()),
-            fetchTimereportsForWeek(employeeNumber, new Date()),
+            fetchTimereportsForWeek(flexEmployeeId, new Date()),
         ]);
         initialProjects = projects;
         initialTimereports = timereports;
@@ -103,7 +104,7 @@ export default async function TimereportPage() {
     return (
         <div className="py-4">
             <TimereportCard
-                employeeNumber={employeeNumber}
+                flexEmployeeId={flexEmployeeId}
                 initialProjects={initialProjects}
                 initialTimereports={initialTimereports}
                 refreshProjectsAction={refreshProjectsData}

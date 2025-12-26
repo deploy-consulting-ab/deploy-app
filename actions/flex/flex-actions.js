@@ -63,12 +63,9 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
     }
 }
 
-export async function createTimecard(employeeId, timecard) {
+export async function createTimecard(flexEmployeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
-
-        // TODO: pass employeeId as a parameter
-        employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
         const promises = timecard.timeData.map(async (timereport) => {
             const date = formatDateToISOString(timereport.date);
 
@@ -98,7 +95,7 @@ export async function createTimecard(employeeId, timecard) {
                 timeRows: timeRows,
             };
 
-            return await flexApiClient.createTimecard(employeeId, date, body);
+            return await flexApiClient.createTimecard(flexEmployeeId, date, body);
         });
 
         return await Promise.all(promises);
@@ -107,15 +104,13 @@ export async function createTimecard(employeeId, timecard) {
     }
 }
 
-export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
+export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 
     try {
-        // TODO: pass employeeId as a parameter
-        employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
         const timereports = await flexApiClient.getTimereports(
-            employeeId,
+            flexEmployeeId,
             weekStartDate,
             weekEndDate
         );
@@ -151,7 +146,7 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
                             isWorkingTime: true,
                         };
 
-                    // Other types of absences
+                        // Other types of absences
                     } else {
                         return {
                             projectId: timeRow.TimeCode.Id,

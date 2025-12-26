@@ -17,7 +17,7 @@ import { Spinner } from '@/components/ui/spinner';
  * Manages the state for week selection, project selection, and hour entries.
  */
 export function TimereportCard({
-    employeeNumber,
+    flexEmployeeId,
     initialProjects,
     initialTimereports,
     refreshProjectsAction,
@@ -185,7 +185,7 @@ export function TimereportCard({
                 week: selectedWeek.toISOString().split('T')[0],
                 timeData: timeData,
             };
-            await createTimecard(employeeNumber, timecard);
+            await createTimecard(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully' });
 
             // Re-fetch timereports to get the latest data from the server
