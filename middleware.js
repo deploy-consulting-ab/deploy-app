@@ -9,8 +9,9 @@ import {
 
 import { NextResponse } from 'next/server';
 
-// Import the configured auth instance instead of creating a new one
-import { auth } from '@/auth';
+// Import the edge-compatible auth instance (without Prisma/bcrypt)
+// Full auth with database is in @/auth.js for server-side use
+import { auth } from '@/auth.edge'
 
 export default auth((req) => {
     const { nextUrl } = req;
