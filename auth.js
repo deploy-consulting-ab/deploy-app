@@ -46,10 +46,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.employeeNumber = token.employeeNumber;
             }
 
-            if (token.flexEmployeeId) {
-                session.user.flexEmployeeId = token.flexEmployeeId;
-            }
-
             if (token.systemPermissions) {
                 session.user.systemPermissions = token.systemPermissions;
             }
@@ -71,7 +67,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.name = token.impersonatedUser.name;
                 session.user.email = token.impersonatedUser.email;
                 session.user.profileId = token.impersonatedUser.profileId;
-                session.user.flexEmployeeId = token.impersonatedUser.flexEmployeeId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;
                 session.user.image = token.impersonatedUser.image;
@@ -101,7 +96,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 
                 token.systemPermissions = systemPermissions;
                 token.employeeNumber = user.employeeNumber;
-                token.flexEmployeeId = user.flexEmployeeId;
                 token.sub = user.id;
                 token.profileId = user.profileId;
                 token.isActive = user.isActive;

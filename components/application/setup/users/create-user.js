@@ -36,7 +36,6 @@ export const CreateUserComponent = ({ fireSuccess }) => {
             password: '',
             name: '',
             employeeNumber: '',
-            flexEmployeeId: '',
             profileId: CONSULTANT_PROFILE,
         },
     });
@@ -126,25 +125,7 @@ export const CreateUserComponent = ({ fireSuccess }) => {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="flexEmployeeId"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Flex Employee ID</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        disabled={isSubmitting}
-                                        type="text"
-                                        placeholder="Enter Flex Employee ID"
-                                        {...field}
-                                        className="input"
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />                    
+
                     <FormField
                         control={form.control}
                         name="password"
