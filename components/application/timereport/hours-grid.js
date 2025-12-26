@@ -59,6 +59,7 @@ export function HoursGridComponent({
                         projectName: row.projectName,
                         projectCode: row.projectCode,
                         color: row.color || projectFromProps?.color || 'red',
+                        isWorkingTime: row.isWorkingTime,
                     });
                 }
             });
@@ -74,6 +75,7 @@ export function HoursGridComponent({
                         projectName: projectFromProps.name,
                         projectCode: projectFromProps.projectCode || '',
                         color: projectFromProps.color,
+                        isWorkingTime: true, // Projects from dropdown are always working time
                     });
                 }
             }
@@ -380,6 +382,8 @@ export function HoursGridComponent({
                                     0
                                 );
 
+                                const isWorkingTime = project.isWorkingTime;
+
                                 return (
                                     <div
                                         key={project.projectId}
@@ -417,6 +421,7 @@ export function HoursGridComponent({
                                             const isToday =
                                                 date.toDateString() === today.toDateString();
                                             const isBankHoliday = isHolidayDate(date, holidays);
+                                            const hasHours = projectHours[dayIndex] > 0;
 
                                             return (
                                                 <Input
@@ -442,6 +447,9 @@ export function HoursGridComponent({
                                                         'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                                                         isBankHoliday &&
                                                             'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                        !isWorkingTime &&
+                                                            hasHours &&
+                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                         isWeekend &&
                                                             !isBankHoliday &&
                                                             'bg-muted/50 text-muted-foreground',
@@ -449,7 +457,8 @@ export function HoursGridComponent({
                                                             !disabled &&
                                                             !isBankHoliday &&
                                                             'ring-1 ring-primary/30',
-                                                        disabled && 'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
+                                                        disabled &&
+                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                     )}
                                                 />
                                             );

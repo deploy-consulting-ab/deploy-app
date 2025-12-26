@@ -128,6 +128,7 @@ export function HoursGridPhone({
                 {uniqueProjects.map((project) => {
                     const projectHours = hoursLookup[project.projectId] || {};
                     const projectTotal = Object.values(projectHours).reduce((sum, h) => sum + h, 0);
+                    const isWorkingTime = project.isWorkingTime;
 
                     return (
                         <div
@@ -197,6 +198,7 @@ export function HoursGridPhone({
                                     const isWeekend = dayIndex >= 5;
                                     const isToday = date.toDateString() === today.toDateString();
                                     const isBankHoliday = isHolidayDate(date, holidays);
+                                    const hasHours = projectHours[dayIndex] > 0;
 
                                     return (
                                         <div
@@ -238,6 +240,9 @@ export function HoursGridPhone({
                                                     'text-center h-10 text-sm px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                                                     isBankHoliday &&
                                                         'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                    !isWorkingTime &&
+                                                        hasHours &&
+                                                        'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                     isWeekend &&
                                                         !isBankHoliday &&
                                                         'bg-muted/50 text-muted-foreground',
@@ -245,7 +250,8 @@ export function HoursGridPhone({
                                                         !disabled &&
                                                         !isBankHoliday &&
                                                         'ring-2 ring-primary/40',
-                                                    disabled && 'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
+                                                    disabled &&
+                                                        'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                 )}
                                             />
                                         </div>

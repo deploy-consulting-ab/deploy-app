@@ -148,6 +148,7 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
                             projectCode: projectAccount.Code,
                             hours: timeRow.TimeInMinutes / 60,
                             color: color,
+                            isWorkingTime: true,
                         };
 
                     // Other types of absences
@@ -157,7 +158,8 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
                             projectName: timeRow.TimeCode.Name,
                             projectCode: timeRow.TimeCode.Code,
                             hours: timeRow.TimeInMinutes / 60,
-                            color: 'red'
+                            color: 'red',
+                            isWorkingTime: false,
                         };
                     }
                 }).filter(Boolean),
