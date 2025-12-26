@@ -22,6 +22,7 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
  * @param {Function} props.onResetProject - Callback (projectId) => void
  * @param {boolean} props.disabled - Whether inputs are disabled
  * @param {Set} props.holidays - Set of holiday date strings (YYYY-MM-DD format)
+ * @param {boolean} props.isPastWeek - Whether the selected week is in the past
  */
 export function HoursGridPhone({
     weekDates,
@@ -35,6 +36,7 @@ export function HoursGridPhone({
     onResetProject,
     disabled = false,
     holidays,
+    isPastWeek,
 }) {
     const today = new Date();
 
@@ -237,7 +239,7 @@ export function HoursGridPhone({
                                                 disabled={disabled}
                                                 title={isBankHoliday ? 'Bank Holiday' : undefined}
                                                 className={cn(
-                                                    'text-center h-10 text-sm px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+                                                    'text-center h-10 text-sm px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
                                                     isBankHoliday &&
                                                         'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                     !isWorkingTime &&
@@ -249,7 +251,12 @@ export function HoursGridPhone({
                                                     isToday &&
                                                         !disabled &&
                                                         !isBankHoliday &&
-                                                        'ring-2 ring-primary/40',
+                                                        'ring-1 ring-primary/30',
+                                                    isPastWeek &&
+                                                        hasHours &&
+                                                        !isWeekend &&
+                                                        isWorkingTime &&
+                                                        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                                     disabled &&
                                                         'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                 )}

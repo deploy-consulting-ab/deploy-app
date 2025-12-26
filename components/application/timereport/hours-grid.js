@@ -25,6 +25,7 @@ const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export function HoursGridComponent({
     timeData = [],
     selectedWeek,
+    isPastWeek,
     onTimeDataChange,
     onRemoveProject,
     holidays,
@@ -309,6 +310,7 @@ export function HoursGridComponent({
                     onResetProject={handleResetProject}
                     disabled={disabled}
                     holidays={holidays}
+                    isPastWeek={isPastWeek}
                 />
             </div>
 
@@ -457,6 +459,11 @@ export function HoursGridComponent({
                                                             !disabled &&
                                                             !isBankHoliday &&
                                                             'ring-1 ring-primary/30',
+                                                        isPastWeek &&
+                                                            hasHours &&
+                                                            !isWeekend &&
+                                                            isWorkingTime &&
+                                                            'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                                         disabled &&
                                                             'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                     )}

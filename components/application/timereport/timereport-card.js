@@ -347,6 +347,7 @@ export function TimereportCard({
                             selectedProjects={selectedProjects}
                             disabled={isPastWeek}
                             holidays={holidays}
+                            isPastWeek={isPastWeek}
                         />
                     )}
                 </CardContent>
