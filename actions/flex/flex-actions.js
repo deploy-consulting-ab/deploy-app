@@ -114,10 +114,6 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
     try {
         // TODO: pass employeeId as a parameter
         employeeId = 'f0435e81-c674-49d5-aacd-b10f0109f7fc';
-        // weekStartDate = '2025-12-01';
-        // weekEndDate = '2025-12-07';
-        // weekStartDate = '2025-11-10';
-        // weekEndDate = '2025-11-16';
         const timereports = await flexApiClient.getTimereports(
             employeeId,
             weekStartDate,
