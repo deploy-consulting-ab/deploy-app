@@ -182,6 +182,8 @@ export function HoursGridComponent({
                         projectName: project.projectName,
                         projectCode: project.projectCode,
                         hours: clampedValue,
+                        color: project.color,
+                        isWorkingTime: project.isWorkingTime,
                     });
                 }
             }
@@ -262,6 +264,8 @@ export function HoursGridComponent({
                         projectName: project.projectName,
                         projectCode: project.projectCode,
                         hours: 8,
+                        color: project.color,
+                        isWorkingTime: project.isWorkingTime,
                     });
                 }
 
