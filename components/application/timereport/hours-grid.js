@@ -27,6 +27,7 @@ export function HoursGridComponent({
     selectedWeek,
     onTimeDataChange,
     onRemoveProject,
+    holidays,
     projects = [],
     selectedProjects = new Set(),
     disabled = false,
@@ -42,6 +43,19 @@ export function HoursGridComponent({
             return date;
         });
     }, [selectedWeek]);
+
+    // Helper to check if a date is a holiday (uses local date, not UTC)
+    const isHoliday = useCallback(
+        (date) => {
+            if (!holidays || holidays.size === 0) return false;
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            return holidays.has(dateStr);
+        },
+        [holidays]
+    );
 
     // Extract unique projects from timeData and selectedProjects
     const uniqueProjects = useMemo(() => {
@@ -271,9 +285,10 @@ export function HoursGridComponent({
             // Set all hours to 0 for this project
             const newTimeData = timeData.map((dayEntry) => ({
                 ...dayEntry,
-                timeRows: dayEntry.timeRows?.map((row) =>
-                    row.projectId === projectId ? { ...row, hours: 0 } : row
-                ) || [],
+                timeRows:
+                    dayEntry.timeRows?.map((row) =>
+                        row.projectId === projectId ? { ...row, hours: 0 } : row
+                    ) || [],
             }));
 
             onTimeDataChange(newTimeData);
@@ -300,6 +315,7 @@ export function HoursGridComponent({
                     onFillFullTime={handleFillFullTime}
                     onResetProject={handleResetProject}
                     disabled={disabled}
+                    holidays={holidays}
                 />
             </div>
 
@@ -314,21 +330,30 @@ export function HoursGridComponent({
                             {weekDates.map((date, index) => {
                                 const isToday = date.toDateString() === today.toDateString();
                                 const isWeekend = index >= 5;
-
+                                const isBankHoliday = isHoliday(date);
                                 return (
                                     <div
                                         key={index}
                                         className={cn(
                                             'text-center py-2 rounded-md',
-                                            isToday && 'bg-primary/10 ring-1 ring-primary/20',
-                                            isWeekend && !isToday && 'bg-muted/30'
+                                            isBankHoliday &&
+                                                'bg-red-100 dark:bg-red-950/40 ring-1 ring-red-300 dark:ring-red-800',
+                                            isToday &&
+                                                !isBankHoliday &&
+                                                'bg-primary/10 ring-1 ring-primary/20',
+                                            isWeekend && !isToday && !isBankHoliday && 'bg-muted/30'
                                         )}
+                                        title={isBankHoliday ? 'Bank Holiday' : undefined}
                                     >
                                         <p
                                             className={cn(
                                                 'text-xs font-medium',
-                                                isToday && 'text-primary',
-                                                isWeekend && !isToday && 'text-muted-foreground'
+                                                isBankHoliday && 'text-red-600 dark:text-red-400',
+                                                isToday && !isBankHoliday && 'text-primary',
+                                                isWeekend &&
+                                                    !isToday &&
+                                                    !isBankHoliday &&
+                                                    'text-muted-foreground'
                                             )}
                                         >
                                             {DAYS_SHORT[index]}
@@ -336,8 +361,12 @@ export function HoursGridComponent({
                                         <p
                                             className={cn(
                                                 'text-sm font-semibold',
-                                                isToday && 'text-primary',
-                                                isWeekend && !isToday && 'text-muted-foreground'
+                                                isBankHoliday && 'text-red-600 dark:text-red-400',
+                                                isToday && !isBankHoliday && 'text-primary',
+                                                isWeekend &&
+                                                    !isToday &&
+                                                    !isBankHoliday &&
+                                                    'text-muted-foreground'
                                             )}
                                         >
                                             {date.getDate()}
@@ -396,6 +425,7 @@ export function HoursGridComponent({
                                             const isWeekend = dayIndex >= 5;
                                             const isToday =
                                                 date.toDateString() === today.toDateString();
+                                            const isBankHoliday = isHoliday(date);
 
                                             return (
                                                 <Input
@@ -414,11 +444,19 @@ export function HoursGridComponent({
                                                     }
                                                     placeholder="0"
                                                     disabled={disabled}
+                                                    title={
+                                                        isBankHoliday ? 'Bank Holiday' : undefined
+                                                    }
                                                     className={cn(
                                                         'text-center h-9 text-sm px-1',
-                                                        isWeekend && 'bg-muted/30 opacity-50',
+                                                        isBankHoliday &&
+                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                        isWeekend &&
+                                                            !isBankHoliday &&
+                                                            'bg-muted/30 opacity-50',
                                                         isToday &&
                                                             !disabled &&
+                                                            !isBankHoliday &&
                                                             'ring-1 ring-primary/30',
                                                         disabled && 'cursor-not-allowed opacity-60'
                                                     )}
@@ -479,22 +517,31 @@ export function HoursGridComponent({
                             {dailyTotals.map((total, index) => {
                                 const isOvertime = total > 8;
                                 const isWeekend = index >= 5;
+                                const isBankHoliday = isHoliday(weekDates[index]);
 
                                 return (
                                     <div
                                         key={index}
                                         className={cn(
                                             'text-center text-sm font-semibold py-1.5 rounded tabular-nums',
-                                            isOvertime &&
+                                            isBankHoliday &&
+                                                'text-red-600 bg-red-100 dark:bg-red-950/40 dark:text-red-400',
+                                            !isBankHoliday &&
+                                                isOvertime &&
                                                 'text-amber-600 bg-amber-50 dark:bg-amber-950/30',
-                                            total === 8 &&
+                                            !isBankHoliday &&
+                                                total === 8 &&
                                                 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
-                                            total > 0 &&
+                                            !isBankHoliday &&
+                                                total > 0 &&
                                                 total < 8 &&
                                                 !isWeekend &&
                                                 'text-blue-600 bg-blue-50 dark:bg-blue-950/30',
-                                            (total === 0 || isWeekend) && 'text-muted-foreground'
+                                            !isBankHoliday &&
+                                                (total === 0 || isWeekend) &&
+                                                'text-muted-foreground'
                                         )}
+                                        title={isBankHoliday ? 'Bank Holiday' : undefined}
                                     >
                                         {total}h
                                     </div>

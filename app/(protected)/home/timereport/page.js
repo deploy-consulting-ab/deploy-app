@@ -82,15 +82,17 @@ export default async function TimereportPage() {
     let initialProjects = [];
     let initialTimereports = { timereportResponse: [], selectedProjects: [] };
     let error = null;
-
+    let holidays = null;
     try {
-        const [holidays, projects, timereports] = await Promise.all([
+        const [holidaysData, projects, timereports] = await Promise.all([
             fetchHolidays(),
             fetchProjectsForWeek(employeeNumber, new Date()),
             fetchTimereportsForWeek(employeeNumber, new Date()),
         ]);
         initialProjects = projects;
         initialTimereports = timereports;
+        holidays = holidaysData;
+        console.log('## holidays', holidays);
     } catch (err) {
         error = err;
         console.error('Failed to fetch initial data:', err);
@@ -105,6 +107,7 @@ export default async function TimereportPage() {
                 refreshProjectsAction={refreshProjectsData}
                 refreshTimereportsAction={refreshTimereportsData}
                 initialError={error}
+                holidays={holidays}
             />
         </div>
     );

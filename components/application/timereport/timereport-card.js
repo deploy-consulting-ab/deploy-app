@@ -23,6 +23,7 @@ export function TimereportCard({
     refreshProjectsAction,
     refreshTimereportsAction,
     initialError,
+    holidays,
 }) {
     // Get Monday of current week as default
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(new Date()));
@@ -345,6 +346,7 @@ export function TimereportCard({
                             projects={projects}
                             selectedProjects={selectedProjects}
                             disabled={isPastWeek}
+                            holidays={holidays}
                         />
                     )}
                 </CardContent>
