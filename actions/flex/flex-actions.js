@@ -137,20 +137,27 @@ export async function getTimereports(employeeId, weekStartDate, weekEndDate) {
 
                         selectedProjects.add(projectAccount.Id);
 
+                        // We do not have a project type in Flex, so we use a regex to determine the color
+                        const regex = /deploy/i;
+                        const isInternalProject = regex.test(projectAccount.Name);
+                        const color = isInternalProject ? '#6b7280' : '#3b82f6';
+
                         return {
                             projectId: projectAccount.Id,
                             projectName: projectAccount.Name,
                             projectCode: projectAccount.Code,
                             hours: timeRow.TimeInMinutes / 60,
+                            color: color,
                         };
 
-                        // Other types of absences
+                    // Other types of absences
                     } else {
                         return {
                             projectId: timeRow.TimeCode.Id,
                             projectName: timeRow.TimeCode.Name,
                             projectCode: timeRow.TimeCode.Code,
                             hours: timeRow.TimeInMinutes / 60,
+                            color: 'red'
                         };
                     }
                 }).filter(Boolean),
