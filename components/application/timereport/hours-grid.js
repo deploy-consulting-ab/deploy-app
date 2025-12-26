@@ -243,6 +243,10 @@ export function HoursGridComponent({
                 const day = String(targetDate.getDate()).padStart(2, '0');
                 const targetDateStr = `${year}-${month}-${day}T00:00:00`;
 
+                if (isHoliday(targetDate)) {
+                    continue;
+                }
+
                 let dayEntryIndex = newTimeData.findIndex((entry) => {
                     const entryDate = new Date(entry.date);
                     return entryDate.toDateString() === targetDate.toDateString();
