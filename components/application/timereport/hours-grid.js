@@ -330,10 +330,10 @@ export function HoursGridComponent({
                                         className={cn(
                                             'text-center py-2 rounded-md',
                                             isBankHoliday &&
-                                                'bg-red-100 dark:bg-red-950/40 ring-1 ring-red-300 dark:ring-red-800',
+                                                'bg-red-100 dark:bg-red-950/40 ring-red-300 dark:ring-red-800',
                                             isToday &&
                                                 !isBankHoliday &&
-                                                'bg-primary/10 ring-1 ring-primary/20',
+                                                'bg-primary/10 ring-primary/20',
                                             isWeekend && !isToday && !isBankHoliday && 'bg-muted/30'
                                         )}
                                         title={isBankHoliday ? 'Bank Holiday' : undefined}
