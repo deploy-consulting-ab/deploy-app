@@ -1,6 +1,6 @@
 'use server';
 
-import { queryData } from './salesforce-service';
+import { queryData, queryCachedData } from './salesforce-service';
 import {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -247,12 +247,15 @@ export async function getAssignmentsMetrics(employeeNumber) {
 
 export async function getHolidays() {
     try {
-        const result = await queryData(getHolidaysQuery());
+        const result = await queryCachedData(getHolidaysQuery(), {
+            tags: ['holidays'],
+            cacheKey: 'holidays-list',
+            revalidate: 86400, // 24 hours
+        });
         const holidaysSet = new Set();
         for (const holiday of result) {
             holidaysSet.add(holiday.ActivityDate);
         }
-        console.log('holidaysSet', holidaysSet);
         return holidaysSet;
     } catch (error) {
         throw error;
