@@ -13,6 +13,7 @@ import {
     getOpportunityByIdQuery,
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
+    getHolidaysQuery,
 } from './queries';
 import { PROJECT_TYPE_INTERNAL } from './constants';
 
@@ -239,6 +240,20 @@ export async function getAssignmentsMetrics(employeeNumber) {
         }
 
         return assignmentsMetrics;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getHolidays() {
+    try {
+        const result = await queryData(getHolidaysQuery());
+        const holidaysSet = new Set();
+        for (const holiday of result) {
+            holidaysSet.add(holiday.ActivityDate);
+        }
+        console.log('holidaysSet', holidaysSet);
+        return holidaysSet;
     } catch (error) {
         throw error;
     }

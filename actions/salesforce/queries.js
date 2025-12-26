@@ -105,6 +105,10 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
             ORDER BY Date__c ASC`;
 };
 
+const getHolidaysQuery = () => {
+    return `SELECT Id, Name, ActivityDate FROM Holiday`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -117,4 +121,5 @@ export {
     getOpportunityByIdQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
+    getHolidaysQuery,
 };

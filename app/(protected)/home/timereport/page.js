@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { getCurrentAssignmentsByEmployeeNumber, getHolidays } from '@/actions/salesforce/salesforce-actions';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { TimereportCard } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
@@ -53,6 +53,10 @@ async function fetchTimereportsForWeek(employeeNumber, weekStart) {
     };
 }
 
+async function fetchHolidays() {
+    return await getHolidays();
+}
+
 // Server action for refreshing projects data
 async function refreshProjectsData(weekStart) {
     'use server';
@@ -80,7 +84,8 @@ export default async function TimereportPage() {
     let error = null;
 
     try {
-        const [projects, timereports] = await Promise.all([
+        const [holidays, projects, timereports] = await Promise.all([
+            fetchHolidays(),
             fetchProjectsForWeek(employeeNumber, new Date()),
             fetchTimereportsForWeek(employeeNumber, new Date()),
         ]);
