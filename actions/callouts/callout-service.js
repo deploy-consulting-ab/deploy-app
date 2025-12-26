@@ -74,11 +74,6 @@ class CalloutService {
                 cache: this.config.cache,
             });
 
-            console.log('## response...', response);
-
-            console.log('## response.ok...', response.ok);
-            console.log('## response.status...', response.status);
-
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
