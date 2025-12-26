@@ -249,17 +249,17 @@ export function HoursGridPhone({
                                                 disabled={disabled}
                                                 title={isBankHoliday ? 'Bank Holiday' : undefined}
                                                 className={cn(
-                                                    'text-center h-10 text-sm px-0.5 w-full',
+                                                    'text-center h-10 text-sm px-0.5 w-full text-foreground',
                                                     isBankHoliday &&
                                                         'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                     isWeekend &&
                                                         !isBankHoliday &&
-                                                        'bg-muted/30 opacity-60',
+                                                        'bg-muted/50 text-muted-foreground',
                                                     isToday &&
                                                         !disabled &&
                                                         !isBankHoliday &&
                                                         'ring-2 ring-primary/40',
-                                                    disabled && 'cursor-not-allowed opacity-60'
+                                                    disabled && 'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                 )}
                                             />
                                         </div>

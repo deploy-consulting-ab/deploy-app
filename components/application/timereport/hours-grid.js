@@ -448,17 +448,17 @@ export function HoursGridComponent({
                                                         isBankHoliday ? 'Bank Holiday' : undefined
                                                     }
                                                     className={cn(
-                                                        'text-center h-9 text-sm px-1',
+                                                        'text-center h-9 text-sm px-1 text-foreground',
                                                         isBankHoliday &&
                                                             'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                         isWeekend &&
                                                             !isBankHoliday &&
-                                                            'bg-muted/30 opacity-50',
+                                                            'bg-muted/50 text-muted-foreground',
                                                         isToday &&
                                                             !disabled &&
                                                             !isBankHoliday &&
                                                             'ring-1 ring-primary/30',
-                                                        disabled && 'cursor-not-allowed opacity-60'
+                                                        disabled && 'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100'
                                                     )}
                                                 />
                                             );
