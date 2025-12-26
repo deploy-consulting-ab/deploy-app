@@ -2,8 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, Save, RotateCcw, RefreshCw } from 'lucide-react';
-import { createTimecard } from '@/actions/flex/flex-actions';
-import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { createTimecard, getTimereports } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,26 +10,44 @@ import { WeekNavigation } from '@/components/application/timereport/week-navigat
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
-import { getTimereports } from '@/actions/flex/flex-actions';
 import { Spinner } from '@/components/ui/spinner';
 
 /**
  * Main time report card component.
  * Manages the state for week selection, project selection, and hour entries.
  */
-export function TimereportCard({ employeeNumber }) {
+export function TimereportCard({
+    employeeNumber,
+    initialProjects,
+    refreshProjectsAction,
+    initialError,
+}) {
     // Get Monday of current week as default
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(new Date()));
 
     // Assignments fetched from Salesforce based on selected week
-    const [projects, setProjects] = useState([]);
-    const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+    const [projects, setProjects] = useState(initialProjects || []);
+    const [isLoadingProjects, setIsLoadingProjects] = useState(false);
     const [selectedProjects, setSelectedProjects] = useState(new Set());
     const [isLoadingTimereports, setIsLoadingTimereports] = useState(true);
 
     // Time data in the new format: [{ date, timeRows: [{ projectId, projectName, projectCode, hours }] }]
     const [timeData, setTimeData] = useState([]);
     const [initialTimeData, setInitialTimeData] = useState([]);
+
+    // Update projects when initialProjects prop changes
+    useEffect(() => {
+        if (initialProjects) {
+            setProjects(initialProjects);
+        }
+    }, [initialProjects]);
+
+    // Handle initial error
+    useEffect(() => {
+        if (initialError) {
+            toastRichError({ message: 'Failed to load projects for the selected week' });
+        }
+    }, [initialError]);
 
     const dateRange = useMemo(() => {
         const weekStart = getWeekMonday(selectedWeek);
@@ -43,11 +60,11 @@ export function TimereportCard({ employeeNumber }) {
         return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
     }, [selectedWeek]);
 
-    // Check if the selected week is the current week
+    // Check if the selected week is in the past
     const isPastWeek = useMemo(() => {
         const currentWeekMonday = getWeekMonday(new Date());
         const selectedWeekMonday = getWeekMonday(selectedWeek);
-        return currentWeekMonday.getTime() <= selectedWeekMonday.getTime();
+        return selectedWeekMonday.getTime() < currentWeekMonday.getTime();
     }, [selectedWeek]);
 
     // Track if there are unsaved changes
@@ -55,27 +72,13 @@ export function TimereportCard({ employeeNumber }) {
     const [isSaving, setIsSaving] = useState(false);
 
     /**
-     * Fetch projects for the given week
+     * Fetch projects for the given week using the server action
      */
-    const fetchProjects = useCallback(async () => {
-        if (!employeeNumber) return;
-
+    const refreshProjects = useCallback(async () => {
         setIsLoadingProjects(true);
         try {
-            const { weekStart, weekEnd } = dateRange;
-
-            // Add a grace period for when the Assignment ends or starts in the middle of the week but the endDate will always be a Sunday and startDate a Monday
-            weekStart.setDate(weekStart.getDate() + 6);
-            weekEnd.setDate(weekEnd.getDate() - 6);
-
-            const formattedWeekStart = formatDateToISOString(weekStart);
-            const formattedWeekEnd = formatDateToISOString(weekEnd);
-
-            const data = await getCurrentAssignmentsByEmployeeNumber(
-                employeeNumber,
-                formattedWeekStart,
-                formattedWeekEnd
-            );
+            const { weekStart } = dateRange;
+            const data = await refreshProjectsAction(weekStart.toISOString());
             setProjects(data || []);
         } catch (error) {
             console.error('Failed to fetch projects:', error);
@@ -84,7 +87,7 @@ export function TimereportCard({ employeeNumber }) {
         } finally {
             setIsLoadingProjects(false);
         }
-    }, [employeeNumber, dateRange]);
+    }, [refreshProjectsAction, dateRange]);
 
     const fetchTimereports = useCallback(async () => {
         const { formattedWeekStart, formattedWeekEnd } = dateRange;
@@ -113,9 +116,8 @@ export function TimereportCard({ employeeNumber }) {
         }
     }, [employeeNumber, dateRange]);
 
-    // Fetch projects on initial load
+    // Fetch timereports on initial load (projects come from server)
     useEffect(() => {
-        fetchProjects();
         fetchTimereports();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -127,7 +129,10 @@ export function TimereportCard({ employeeNumber }) {
 
     // Refetch when selectedWeek changes (after initial load)
     useEffect(() => {
-        fetchProjects();
+        // Only refresh projects for current/future weeks, not past weeks
+        if (!isPastWeek) {
+            refreshProjects();
+        }
         fetchTimereports();
     }, [selectedWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -242,7 +247,7 @@ export function TimereportCard({ employeeNumber }) {
                         Report your working hours for the week
                     </p>
                 </div>
-                {isPastWeek && (
+                {!isPastWeek && (
                     <div className="flex items-center gap-2">
                         {hasChanges && (
                             <Button
@@ -323,8 +328,8 @@ export function TimereportCard({ employeeNumber }) {
                 <CardContent className="space-y-4">
                     {/* Loading state */}
 
-                    {/* Project Selector - only visible for current week */}
-                    {isPastWeek && (
+                    {/* Project Selector - only visible for current/future weeks */}
+                    {!isPastWeek && (
                         <ProjectSelectorComponent
                             projects={projects}
                             selectedProjects={selectedProjects}
@@ -345,7 +350,7 @@ export function TimereportCard({ employeeNumber }) {
                             onRemoveProject={handleRemoveProject}
                             projects={projects}
                             selectedProjects={selectedProjects}
-                            disabled={!isPastWeek}
+                            disabled={isPastWeek}
                         />
                     )}
                 </CardContent>
