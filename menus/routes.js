@@ -5,6 +5,7 @@ import {
     VIEW_ASSIGNMENTS_PERMISSION,
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
+    VIEW_TIMEREPORT_PERMISSION,
 } from '@/lib/rba-constants';
 
 export const LOGIN_ROUTE = '/auth/login';
@@ -31,7 +32,7 @@ export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
-
+export const TIMEREPORT_ROUTE = `${HOME_ROUTE}/timereport`;
 export const SETUP_ROUTE = `/setup`;
 export const USERS_ROUTE = `${SETUP_ROUTE}/users`;
 export const PROFILES_ROUTE = `${SETUP_ROUTE}/profiles`;
@@ -49,4 +50,5 @@ export const PROTECTED_ROUTES = [
     { path : SYSTEM_PERMISSIONS_ROUTE, systemPermission : VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_SYSTEM_PERMISSIONS_PERMISSION
     { path : SETUP_ROUTE, systemPermission : VIEW_SETUP_PERMISSION },
     { path : HOME_ROUTE, systemPermission : VIEW_HOME_PERMISSION },
+    { path : TIMEREPORT_ROUTE, systemPermission : VIEW_TIMEREPORT_PERMISSION },
 ]
