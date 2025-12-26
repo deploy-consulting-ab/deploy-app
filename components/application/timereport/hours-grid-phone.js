@@ -1,10 +1,9 @@
 'use client';
 
-import { useCallback } from 'react';
 import { X, Clock, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, isHolidayDate } from '@/lib/utils';
 
 const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -39,19 +38,6 @@ export function HoursGridPhone({
 }) {
     const today = new Date();
 
-    // Helper to check if a date is a holiday (uses local date, not UTC)
-    const isHoliday = useCallback(
-        (date) => {
-            if (!holidays || holidays.size === 0) return false;
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
-            return holidays.has(dateStr);
-        },
-        [holidays]
-    );
-
     return (
         <div className="space-y-4">
             {/* Week summary header */}
@@ -75,7 +61,7 @@ export function HoursGridPhone({
                     const isWeekend = index >= 5;
                     const total = dailyTotals[index];
                     const isOvertime = total > 8;
-                    const isBankHoliday = isHoliday(date);
+                    const isBankHoliday = isHolidayDate(date, holidays);
 
                     return (
                         <div
@@ -210,7 +196,7 @@ export function HoursGridPhone({
                                 {weekDates.map((date, dayIndex) => {
                                     const isWeekend = dayIndex >= 5;
                                     const isToday = date.toDateString() === today.toDateString();
-                                    const isBankHoliday = isHoliday(date);
+                                    const isBankHoliday = isHolidayDate(date, holidays);
 
                                     return (
                                         <div

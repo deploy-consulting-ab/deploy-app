@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { X, Clock, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, isHolidayDate } from '@/lib/utils';
 import { HoursGridPhone } from './hours-grid-phone';
 
 const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -43,19 +43,6 @@ export function HoursGridComponent({
             return date;
         });
     }, [selectedWeek]);
-
-    // Helper to check if a date is a holiday (uses local date, not UTC)
-    const isHoliday = useCallback(
-        (date) => {
-            if (!holidays || holidays.size === 0) return false;
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const dateStr = `${year}-${month}-${day}`;
-            return holidays.has(dateStr);
-        },
-        [holidays]
-    );
 
     // Extract unique projects from timeData and selectedProjects
     const uniqueProjects = useMemo(() => {
@@ -243,7 +230,7 @@ export function HoursGridComponent({
                 const day = String(targetDate.getDate()).padStart(2, '0');
                 const targetDateStr = `${year}-${month}-${day}T00:00:00`;
 
-                if (isHoliday(targetDate)) {
+                if (isHolidayDate(targetDate, holidays)) {
                     continue;
                 }
 
@@ -281,7 +268,7 @@ export function HoursGridComponent({
 
             onTimeDataChange(newTimeData);
         },
-        [timeData, weekDates, uniqueProjects, onTimeDataChange]
+        [timeData, weekDates, uniqueProjects, onTimeDataChange, holidays]
     );
 
     const handleResetProject = useCallback(
@@ -334,7 +321,7 @@ export function HoursGridComponent({
                             {weekDates.map((date, index) => {
                                 const isToday = date.toDateString() === today.toDateString();
                                 const isWeekend = index >= 5;
-                                const isBankHoliday = isHoliday(date);
+                                const isBankHoliday = isHolidayDate(date, holidays);
                                 return (
                                     <div
                                         key={index}
@@ -429,7 +416,7 @@ export function HoursGridComponent({
                                             const isWeekend = dayIndex >= 5;
                                             const isToday =
                                                 date.toDateString() === today.toDateString();
-                                            const isBankHoliday = isHoliday(date);
+                                            const isBankHoliday = isHolidayDate(date, holidays);
 
                                             return (
                                                 <Input
@@ -521,7 +508,7 @@ export function HoursGridComponent({
                             {dailyTotals.map((total, index) => {
                                 const isOvertime = total > 8;
                                 const isWeekend = index >= 5;
-                                const isBankHoliday = isHoliday(weekDates[index]);
+                                const isBankHoliday = isHolidayDate(weekDates[index], holidays);
 
                                 return (
                                     <div
