@@ -1,7 +1,10 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getCurrentAssignmentsByEmployeeNumber, getHolidays } from '@/actions/salesforce/salesforce-actions';
+import {
+    getCurrentAssignmentsByEmployeeNumber,
+    getHolidays,
+} from '@/actions/salesforce/salesforce-actions';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { TimereportCard } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
@@ -92,7 +95,6 @@ export default async function TimereportPage() {
         initialProjects = projects;
         initialTimereports = timereports;
         holidays = holidaysData;
-        console.log('## holidays', holidays);
     } catch (err) {
         error = err;
         console.error('Failed to fetch initial data:', err);
