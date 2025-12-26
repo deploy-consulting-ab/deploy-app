@@ -98,9 +98,6 @@ export async function createTimecard(employeeId, timecard) {
                 timeRows: timeRows,
             };
 
-            // console.dir(body, { depth: null });
-            // return;
-
             return await flexApiClient.createTimecard(employeeId, date, body);
         });
 
