@@ -448,7 +448,7 @@ export function HoursGridComponent({
                                                         isBankHoliday ? 'Bank Holiday' : undefined
                                                     }
                                                     className={cn(
-                                                        'text-center h-9 text-sm px-1 text-foreground',
+                                                        'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
                                                         isBankHoliday &&
                                                             'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                         isWeekend &&
