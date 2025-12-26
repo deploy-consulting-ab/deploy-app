@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth';
 import { getCurrentAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { getTimereports } from '@/actions/flex/flex-actions';
 import { TimereportCard } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
 
@@ -32,13 +33,40 @@ async function fetchProjectsForWeek(employeeNumber, weekStart) {
     return data || [];
 }
 
+/**
+ * Fetch timereports for a given week
+ */
+async function fetchTimereportsForWeek(employeeNumber, weekStart) {
+    const monday = getWeekMonday(new Date(weekStart));
+    const weekEnd = new Date(monday);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
+    const formattedWeekStart = formatDateToISOString(monday);
+    const formattedWeekEnd = formatDateToISOString(weekEnd);
+
+    const response = await getTimereports(employeeNumber, formattedWeekStart, formattedWeekEnd);
+
+    // Convert Set to Array for serialization (server actions can't pass Sets)
+    return {
+        timereportResponse: response.timereportResponse || [],
+        selectedProjects: Array.from(response.selectedProjects || []),
+    };
+}
+
 // Server action for refreshing projects data
 async function refreshProjectsData(weekStart) {
     'use server';
-    console.log('Refresh projects data!!!');
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
     return fetchProjectsForWeek(employeeNumber, weekStart);
+}
+
+// Server action for refreshing timereports data
+async function refreshTimereportsData(weekStart) {
+    'use server';
+    const session = await auth();
+    const employeeNumber = session.user.employeeNumber;
+    return fetchTimereportsForWeek(employeeNumber, weekStart);
 }
 
 export default async function TimereportPage() {
@@ -46,17 +74,21 @@ export default async function TimereportPage() {
     const { user } = session;
     const employeeNumber = user.employeeNumber;
 
-    console.log('Inital load!!!');
-
-    // Fetch initial projects for the current week
+    // Fetch initial data for the current week
     let initialProjects = [];
+    let initialTimereports = { timereportResponse: [], selectedProjects: [] };
     let error = null;
 
     try {
-        initialProjects = await fetchProjectsForWeek(employeeNumber, new Date());
+        const [projects, timereports] = await Promise.all([
+            fetchProjectsForWeek(employeeNumber, new Date()),
+            fetchTimereportsForWeek(employeeNumber, new Date()),
+        ]);
+        initialProjects = projects;
+        initialTimereports = timereports;
     } catch (err) {
         error = err;
-        console.error('Failed to fetch initial projects:', err);
+        console.error('Failed to fetch initial data:', err);
     }
 
     return (
@@ -64,7 +96,9 @@ export default async function TimereportPage() {
             <TimereportCard
                 employeeNumber={employeeNumber}
                 initialProjects={initialProjects}
+                initialTimereports={initialTimereports}
                 refreshProjectsAction={refreshProjectsData}
+                refreshTimereportsAction={refreshTimereportsData}
                 initialError={error}
             />
         </div>

@@ -2,12 +2,12 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, Save, RotateCcw, RefreshCw } from 'lucide-react';
-import { createTimecard, getTimereports } from '@/actions/flex/flex-actions';
+import { createTimecard } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
-import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
+import { getWeekMonday } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { Spinner } from '@/components/ui/spinner';
@@ -19,7 +19,9 @@ import { Spinner } from '@/components/ui/spinner';
 export function TimereportCard({
     employeeNumber,
     initialProjects,
+    initialTimereports,
     refreshProjectsAction,
+    refreshTimereportsAction,
     initialError,
 }) {
     // Get Monday of current week as default
@@ -28,12 +30,16 @@ export function TimereportCard({
     // Assignments fetched from Salesforce based on selected week
     const [projects, setProjects] = useState(initialProjects || []);
     const [isLoadingProjects, setIsLoadingProjects] = useState(false);
-    const [selectedProjects, setSelectedProjects] = useState(new Set());
-    const [isLoadingTimereports, setIsLoadingTimereports] = useState(true);
+    const [selectedProjects, setSelectedProjects] = useState(
+        () => new Set(initialTimereports?.selectedProjects || [])
+    );
+    const [isLoadingTimereports, setIsLoadingTimereports] = useState(false);
 
     // Time data in the new format: [{ date, timeRows: [{ projectId, projectName, projectCode, hours }] }]
-    const [timeData, setTimeData] = useState([]);
-    const [initialTimeData, setInitialTimeData] = useState([]);
+    const [timeData, setTimeData] = useState(initialTimereports?.timereportResponse || []);
+    const [initialTimeData, setInitialTimeData] = useState(
+        initialTimereports?.timereportResponse || []
+    );
 
     // Update projects when initialProjects prop changes
     useEffect(() => {
@@ -42,23 +48,21 @@ export function TimereportCard({
         }
     }, [initialProjects]);
 
+    // Update timereports when initialTimereports prop changes
+    useEffect(() => {
+        if (initialTimereports) {
+            setTimeData(initialTimereports.timereportResponse || []);
+            setInitialTimeData(initialTimereports.timereportResponse || []);
+            setSelectedProjects(new Set(initialTimereports.selectedProjects || []));
+        }
+    }, [initialTimereports]);
+
     // Handle initial error
     useEffect(() => {
         if (initialError) {
-            toastRichError({ message: 'Failed to load projects for the selected week' });
+            toastRichError({ message: 'Failed to load data for the selected week' });
         }
     }, [initialError]);
-
-    const dateRange = useMemo(() => {
-        const weekStart = getWeekMonday(selectedWeek);
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekEnd.getDate() + 6);
-
-        const formattedWeekStart = formatDateToISOString(weekStart);
-        const formattedWeekEnd = formatDateToISOString(weekEnd);
-
-        return { weekStart, weekEnd, formattedWeekStart, formattedWeekEnd };
-    }, [selectedWeek]);
 
     // Check if the selected week is in the past
     const isPastWeek = useMemo(() => {
@@ -77,7 +81,7 @@ export function TimereportCard({
     const refreshProjects = useCallback(async () => {
         setIsLoadingProjects(true);
         try {
-            const { weekStart } = dateRange;
+            const weekStart = getWeekMonday(selectedWeek);
             const data = await refreshProjectsAction(weekStart.toISOString());
             setProjects(data || []);
         } catch (error) {
@@ -87,24 +91,21 @@ export function TimereportCard({
         } finally {
             setIsLoadingProjects(false);
         }
-    }, [refreshProjectsAction, dateRange]);
+    }, [refreshProjectsAction, selectedWeek]);
 
-    const fetchTimereports = useCallback(async () => {
-        const { formattedWeekStart, formattedWeekEnd } = dateRange;
-
+    /**
+     * Fetch timereports for the given week using the server action
+     */
+    const refreshTimereports = useCallback(async () => {
         setIsLoadingTimereports(true);
         try {
-            // TO DO: Fix this
-            const response = await getTimereports(
-                employeeNumber,
-                formattedWeekStart,
-                formattedWeekEnd
-            );
+            const weekStart = getWeekMonday(selectedWeek);
+            const response = await refreshTimereportsAction(weekStart.toISOString());
 
             const timereportData = response.timereportResponse || [];
             setTimeData(timereportData);
             setInitialTimeData(JSON.parse(JSON.stringify(timereportData)));
-            setSelectedProjects(new Set(response.selectedProjects));
+            setSelectedProjects(new Set(response.selectedProjects || []));
             setHasChanges(false);
         } catch (error) {
             console.error('Failed to fetch timereports:', error);
@@ -114,17 +115,12 @@ export function TimereportCard({
         } finally {
             setIsLoadingTimereports(false);
         }
-    }, [employeeNumber, dateRange]);
-
-    // Fetch timereports on initial load (projects come from server)
-    useEffect(() => {
-        fetchTimereports();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [refreshTimereportsAction, selectedWeek]);
 
     // Handle week change
     const handleWeekChange = useCallback((newWeek) => {
         setSelectedWeek(newWeek);
-        // The dateRange will update, triggering new fetches via useEffect
+        // The selectedWeek change will trigger refetch via useEffect
     }, []);
 
     // Refetch when selectedWeek changes (after initial load)
@@ -133,7 +129,7 @@ export function TimereportCard({
         if (!isPastWeek) {
             refreshProjects();
         }
-        fetchTimereports();
+        refreshTimereports();
     }, [selectedWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle adding a project
@@ -188,13 +184,11 @@ export function TimereportCard({
                 week: selectedWeek.toISOString().split('T')[0],
                 timeData: timeData,
             };
-
-            // TO DO: FIX THIS
             await createTimecard(employeeNumber, timecard);
             toastRichSuccess({ message: 'Time report saved successfully' });
 
             // Re-fetch timereports to get the latest data from the server
-            await fetchTimereports();
+            await refreshTimereports();
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });
         } finally {
@@ -277,7 +271,7 @@ export function TimereportCard({
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={fetchTimereports}
+                            onClick={refreshTimereports}
                             disabled={isLoadingTimereports}
                             className={`md:hover:cursor-pointer ${
                                 isLoadingTimereports ? 'animate-spin' : ''
