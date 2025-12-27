@@ -8,9 +8,14 @@ import {
 } from '@/menus/routes';
 
 import { NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
+import authConfig from '@/auth.config';
 
-// Import the configured auth instance instead of creating a new one
-import { auth } from '@/auth';
+/**
+ * Edge-compatible auth instance for middleware
+ * Uses only authConfig (no Prisma, bcrypt, or heavy Node.js libraries)
+ */
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
     const { nextUrl } = req;
@@ -61,7 +66,7 @@ const handleLoggedInUsers = (nextUrl, allSystemPermissions) => {
         return Response.redirect(new URL(HOME_ROUTE, nextUrl));
     }
 
-    const protectedRoute = PROTECTED_ROUTES.find(route => pathname.includes(route.path));
+    const protectedRoute = PROTECTED_ROUTES.find((route) => pathname.includes(route.path));
 
     if (protectedRoute) {
         if (allSystemPermissions.has(protectedRoute.systemPermission)) {
@@ -74,7 +79,7 @@ const handleLoggedInUsers = (nextUrl, allSystemPermissions) => {
 };
 
 /**
- * Every in the regex will invoke the middleware
+ * Every path matching the regex will invoke the middleware
  */
 export const config = {
     matcher: [
