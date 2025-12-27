@@ -105,6 +105,10 @@ export async function createTimecard(flexEmployeeId, timecard) {
 }
 
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
+    console.log('## getTimereports - flexEmployeeId', flexEmployeeId);
+    console.log('## getTimereports - weekStartDate', weekStartDate);
+    console.log('## getTimereports - weekEndDate', weekEndDate);
+
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 
@@ -159,6 +163,9 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                     }
                 }).filter(Boolean),
             }));
+
+        console.log('## getTimereports - timereportResponse', timereportResponse);
+        console.log('## getTimereports - selectedProjects', selectedProjects);
 
         return {
             timereportResponse,

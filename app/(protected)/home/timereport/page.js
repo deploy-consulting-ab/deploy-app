@@ -82,6 +82,9 @@ export default async function TimereportPage() {
     const employeeNumber = user.employeeNumber;
     const flexEmployeeId = user.flexEmployeeId;
 
+    console.log('## flexEmployeeId', flexEmployeeId);
+    console.log('## employeeNumber', employeeNumber);
+
     // Fetch initial data for the current week
     let initialProjects = [];
     let initialTimereports = { timereportResponse: [], selectedProjects: [] };

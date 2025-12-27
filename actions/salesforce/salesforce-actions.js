@@ -101,6 +101,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(employeeNumber, star
         const result = await queryData(
             getCurrentAssignmentsByEmployeeNumberQuery(employeeNumber, startDate, endDate)
         );
+        console.log('## getCurrentAssignmentsByEmployeeNumberQuery', result);
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Project__r.Name,
