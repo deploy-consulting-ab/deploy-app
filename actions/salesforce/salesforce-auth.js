@@ -14,7 +14,7 @@ let connection = null;
 export async function getSalesforceConnection() {
     // If we already have a connection and its access token is valid, return it.
     if (connection && connection.accessToken) {
-        console.log('Existing connection & valid token!');
+        console.log('Existing connection & valid token');
         return connection;
     }
 
