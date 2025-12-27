@@ -86,6 +86,7 @@ export async function createTimecard(flexEmployeeId, timecard) {
                             id: timeRow.projectId,
                         },
                     ],
+                    externalComment: '.', // Pass some external comment to prevent adding an extra row
                     fromTime: previousTomTime,
                     tomTime: tomTime,
                     timeCode: {
