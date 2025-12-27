@@ -164,7 +164,8 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                 }).filter(Boolean),
             }));
 
-        console.log('## getTimereports - timereportResponse', timereportResponse);
+        console.log('## getTimereports - timereportResponse');
+        console.dir({ timereportResponse }, { depth: null });
         console.log('## getTimereports - selectedProjects', selectedProjects);
 
         return {
