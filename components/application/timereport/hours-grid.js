@@ -161,29 +161,23 @@ export function HoursGridComponent({
             // Find or create the time row for this project
             const timeRowIndex = timeRows.findIndex((row) => row.projectId === projectId);
 
-            if (clampedValue === 0) {
-                // Remove the time row if hours is 0
-                if (timeRowIndex >= 0) {
-                    timeRows.splice(timeRowIndex, 1);
-                }
-            } else {
-                if (timeRowIndex >= 0) {
-                    // Update existing
-                    timeRows[timeRowIndex] = {
-                        ...timeRows[timeRowIndex],
-                        hours: clampedValue,
-                    };
-                } else {
-                    // Add new
-                    timeRows.push({
-                        projectId: project.projectId,
-                        projectName: project.projectName,
-                        projectCode: project.projectCode,
-                        hours: clampedValue,
-                        color: project.color,
-                        isWorkingTime: project.isWorkingTime,
-                    });
-                }
+            if (timeRowIndex >= 0) {
+                // Update existing time row (including setting to 0)
+                // We keep zero values so they get submitted as timecards to delete existing entries
+                timeRows[timeRowIndex] = {
+                    ...timeRows[timeRowIndex],
+                    hours: clampedValue,
+                };
+            } else if (clampedValue > 0) {
+                // Only add new rows for non-zero values
+                timeRows.push({
+                    projectId: project.projectId,
+                    projectName: project.projectName,
+                    projectCode: project.projectCode,
+                    hours: clampedValue,
+                    color: project.color,
+                    isWorkingTime: project.isWorkingTime,
+                });
             }
 
             dayEntry.timeRows = timeRows;
