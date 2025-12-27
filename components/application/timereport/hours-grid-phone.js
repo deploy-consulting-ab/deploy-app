@@ -240,7 +240,7 @@ export function HoursGridPhone({
                                                 disabled={disabled}
                                                 title={isBankHoliday ? 'Bank Holiday' : undefined}
                                                 className={cn(
-                                                    'text-center h-10 text-sm px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
+                                                    'text-center h-10 px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
                                                     isBankHoliday &&
                                                         'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
                                                     !isWorkingTime &&
