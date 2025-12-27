@@ -96,15 +96,15 @@ export async function getAssignmentTimecards(assignmentId, employeeNumber) {
     }
 }
 
-export async function getCurrentAssignmentsByEmployeeNumber(employeeNumber, weekStartDate, weekEndDate) {
-    console.log('## getCurrentAssignmentsByEmployeeNumber - employeeNumber', employeeNumber);
-    console.log('## getCurrentAssignmentsByEmployeeNumber - weekStartDate', weekStartDate);
-    console.log('## getCurrentAssignmentsByEmployeeNumber - weekEndDate', weekEndDate);
+export async function getCurrentAssignmentsByEmployeeNumber(
+    employeeNumber,
+    weekStartDate,
+    weekEndDate
+) {
     try {
         const result = await queryData(
             getCurrentAssignmentsByEmployeeNumberQuery(employeeNumber, weekStartDate, weekEndDate)
         );
-        console.log('## getCurrentAssignmentsByEmployeeNumberQuery', result);
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Project__r.Name,

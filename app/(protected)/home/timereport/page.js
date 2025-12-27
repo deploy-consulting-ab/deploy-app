@@ -82,16 +82,13 @@ export default async function TimereportPage() {
     const employeeNumber = user.employeeNumber;
     const flexEmployeeId = user.flexEmployeeId;
 
-    console.log('## flexEmployeeId', flexEmployeeId);
-    console.log('## employeeNumber', employeeNumber);
-
     // Fetch initial data for the current week
     let initialProjects = [];
     let initialTimereports = { timereportResponse: [], selectedProjects: [] };
     let error = null;
     let holidays = null;
     try {
-        const today = getUTCToday()
+        const today = getUTCToday();
         const [holidaysData, projects, timereports] = await Promise.all([
             fetchHolidays(),
             fetchProjectsForWeek(employeeNumber, today),

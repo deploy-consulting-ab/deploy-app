@@ -1,7 +1,12 @@
 'use server';
 
 import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
-import { calculateHolidays, calculateNextResetDate, generateDateRange, getUTCToday } from '@/lib/utils.js';
+import {
+    calculateHolidays,
+    calculateNextResetDate,
+    generateDateRange,
+    getUTCToday,
+} from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
 import { formatDateToISOString } from '@/lib/utils.js';
@@ -105,10 +110,6 @@ export async function createTimecard(flexEmployeeId, timecard) {
 }
 
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
-    console.log('## getTimereports - flexEmployeeId', flexEmployeeId);
-    console.log('## getTimereports - weekStartDate', weekStartDate);
-    console.log('## getTimereports - weekEndDate', weekEndDate);
-
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 
@@ -163,10 +164,6 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                     }
                 }).filter(Boolean),
             }));
-
-        console.log('## getTimereports - timereportResponse');
-        console.dir({ timereportResponse }, { depth: null });
-        console.log('## getTimereports - selectedProjects', selectedProjects);
 
         return {
             timereportResponse,
