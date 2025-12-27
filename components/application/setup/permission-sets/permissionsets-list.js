@@ -2,15 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpDown, MoreHorizontal, Box, RefreshCw, PermissionSetPlus } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Box, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectItem,
-} from '@/components/ui/select';
 import {
     DropdownMenu,
     DropdownMenuContent,

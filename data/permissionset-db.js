@@ -52,6 +52,7 @@ export async function createPermissionSet(data) {
             data: {
                 name: data.name,
                 description: data.description,
+                id: data.id,
                 systemPermissions: {
                     connect: data.systemPermissions || [],
                 },
