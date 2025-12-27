@@ -169,6 +169,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem
+                                variant="destructive"
                                 onClick={() => deleteSystemPermission(row.original.id)}
                             >
                                 Delete Permission

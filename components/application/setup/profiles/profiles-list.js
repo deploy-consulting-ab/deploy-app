@@ -165,7 +165,10 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deleteProfile(row.original.id)}>
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => deleteProfile(row.original.id)}
+                            >
                                 Delete Profile
                             </DropdownMenuItem>
                         </DropdownMenuContent>

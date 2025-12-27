@@ -169,7 +169,10 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deletePermissionSet(row.original.id)}>
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => deletePermissionSet(row.original.id)}
+                            >
                                 Delete Permission Set
                             </DropdownMenuItem>
                         </DropdownMenuContent>

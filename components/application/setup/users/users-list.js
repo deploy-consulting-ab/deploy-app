@@ -273,7 +273,10 @@ export function UsersListComponent({ users, error: initialError }) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deleteUser(row.original.id)}>
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => deleteUser(row.original.id)}
+                            >
                                 Delete User
                             </DropdownMenuItem>
                             {user.isActive && (
