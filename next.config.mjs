@@ -1,4 +1,9 @@
 import withSerwistInit from '@serwist/next'
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 const withSerwist = withSerwistInit({
   swSrc: 'app/sw.js',
@@ -11,4 +16,4 @@ const withSerwist = withSerwistInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {}
 
-export default withSerwist(nextConfig)
+export default withBundleAnalyzer(withSerwist(nextConfig))

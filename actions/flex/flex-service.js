@@ -13,8 +13,6 @@ class FlexApiService extends CalloutService {
     addFlexParams(params = {}) {
         return {
             ...params,
-            instance: ENV.FLEX_API_INSTANCE,
-            companynumber: ENV.FLEX_API_COMPANY_NUMBER,
         };
     }
 
@@ -31,13 +29,49 @@ class FlexApiService extends CalloutService {
         return super.get(endpoint, flexOptions);
     }
 
+    async put(endpoint, body, options = {}) {
+        const flexOptions = {
+            ...options,
+            params: this.addFlexParams(options.params),
+            headers: {
+                ...options.headers,
+                'Service-Version': '1.0',
+            },
+        };
+        return super.put(endpoint, body, flexOptions);
+    }
+
     // Specialized methods for Flex API endpoints
     async getAbsenceApplications(employeeNumber) {
-        return this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
+        const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
+                instance: ENV.FLEX_API_INSTANCE,
+                companynumber: ENV.FLEX_API_COMPANY_NUMBER,
             },
         });
+
+        return await response.json();
+    }
+
+    async getTimereports(employeeId, weekStartDate, weekEndDate) {
+        const response = await this.get(`${FLEX_API_CONFIG.endpoints.timereports}/${employeeId}`, {
+            params: {
+                from: weekStartDate,
+                tom: weekEndDate,
+            },
+        });
+
+        return await response.json();
+    }
+
+    async createTimecard(employeeId, date, body) {
+        const response = await this.put(
+            `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
+            body
+        );
+
+        return response.status;
     }
 }
 

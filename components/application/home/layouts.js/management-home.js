@@ -7,7 +7,7 @@ import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
-import { formatDateToISOString } from '@/lib/utils';
+import { formatDateToISOString, getUTCToday } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 
 export async function ManagementHomeComponent({ profileId, employeeNumber }) {
@@ -36,9 +36,9 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     async function refreshOccupancy() {
         'use server';
         try {
-            const today = new Date();
-            const formattedToday = formatDateToISOString(today);
-            return await getRecentOccupancyRate(employeeNumber, formattedToday);
+            const today = getUTCToday()
+            const formattedToday = formatDateToISOString(today)
+            return await getRecentOccupancyRate(employeeNumber, formattedToday)
         } catch (error) {
             throw new Error(error.message);
         }
@@ -59,9 +59,9 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
 
     if (dataRequirements.occupancyRates) {
         try {
-            const today = new Date();
-            const formattedToday = formatDateToISOString(today);
-            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
+            const today = getUTCToday()
+            const formattedToday = formatDateToISOString(today)
+            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday)
         } catch (error) {
             errors.occupancyRates = error;
         }

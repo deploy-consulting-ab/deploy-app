@@ -24,6 +24,9 @@ export const CreateUserSchema = z.object({
     employeeNumber: z.string().min(4, {
         message: 'Employee number is required',
     }),
+    flexEmployeeId: z.string().min(1, {
+        message: 'Flex Employee ID is required',
+    }),
     profileId: z.enum(PROFILES, {
         required_error: 'Profile is required',
     }),
@@ -32,6 +35,9 @@ export const CreateUserSchema = z.object({
 export const UpdateUserSchema = z.object({
     employeeNumber: z.string().min(4, {
         message: 'Employee number is required',
+    }),
+    flexEmployeeId: z.string().min(1, {
+        message: 'Flex Employee ID is required',
     }),
     profileId: z.enum(PROFILES, {
         required_error: 'Profile is required',
