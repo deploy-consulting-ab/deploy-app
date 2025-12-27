@@ -243,7 +243,7 @@ export function TimereportCard({
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2">
                     {!isPastWeek && (
                         <>
                             {hasChanges && (
@@ -254,7 +254,7 @@ export function TimereportCard({
                                     className="gap-2"
                                 >
                                     <RotateCcw className="h-4 w-4" />
-                                    <span className="hidden sm:inline">Reset</span>
+                                    Reset
                                 </Button>
                             )}
 
@@ -265,12 +265,7 @@ export function TimereportCard({
                                 className="gap-2"
                             >
                                 <Save className="h-4 w-4" />
-                                {isSaving ? (
-                                    'Saving...'
-                                ) : (
-                                    <span className="hidden sm:inline">Save</span>
-                                )}
-                                {!isSaving && <span className="sm:hidden">Save</span>}
+                                {isSaving ? 'Saving...' : 'Save'}
                             </Button>
                         </>
                     )}
@@ -279,7 +274,7 @@ export function TimereportCard({
                         size="icon"
                         onClick={refreshTimereports}
                         disabled={isLoadingTimereports}
-                        className={`md:hover:cursor-pointer ${
+                        className={`hover:cursor-pointer ${
                             isLoadingTimereports ? 'animate-spin' : ''
                         }`}
                     >
@@ -390,6 +385,37 @@ export function TimereportCard({
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Spacer to prevent content from being hidden behind the fixed bottom bar on mobile */}
+            {!isPastWeek && <div className="h-20 sm:hidden" />}
+
+            {/* Mobile bottom action bar - fixed at the bottom for easy thumb access */}
+            {!isPastWeek && (
+                <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-pb">
+                    <div className="flex items-center justify-center gap-3 max-w-md mx-auto">
+                        <Button
+                            onClick={handleSave}
+                            disabled={!hasChanges || isSaving}
+                            size="lg"
+                            className="flex-1 gap-2"
+                        >
+                            <Save className="h-5 w-5" />
+                            {isSaving ? 'Saving...' : 'Save'}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            onClick={refreshTimereports}
+                            disabled={isLoadingTimereports}
+                            className="gap-2"
+                        >
+                            <RefreshCw
+                                className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
+                            />
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
