@@ -3,7 +3,7 @@
 import { X, Clock, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { cn, isHolidayDate } from '@/lib/utils';
+import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
 
 const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -38,7 +38,7 @@ export function HoursGridPhone({
     holidays,
     isPastWeek,
 }) {
-    const today = new Date();
+    const today = getUTCToday()
 
     return (
         <div className="space-y-4">
@@ -59,11 +59,11 @@ export function HoursGridPhone({
             {/* Daily totals row */}
             <div className="grid grid-cols-7 gap-1 bg-muted/30 rounded-lg p-2">
                 {weekDates.map((date, index) => {
-                    const isToday = date.toDateString() === today.toDateString();
-                    const isWeekend = index >= 5;
-                    const total = dailyTotals[index];
-                    const isOvertime = total > 8;
-                    const isBankHoliday = isHolidayDate(date, holidays);
+                    const isToday = formatDateToISOString(date) === formatDateToISOString(today)
+                    const isWeekendDay = index >= 5
+                    const total = dailyTotals[index]
+                    const isOvertime = total > 8
+                    const isBankHoliday = isHolidayDate(date, holidays)
 
                     return (
                         <div
@@ -81,7 +81,7 @@ export function HoursGridPhone({
                                     'text-[10px] font-medium',
                                     isBankHoliday && 'text-red-600 dark:text-red-400',
                                     isToday && !isBankHoliday && 'text-primary',
-                                    isWeekend &&
+                                    isWeekendDay &&
                                         !isToday &&
                                         !isBankHoliday &&
                                         'text-muted-foreground'
@@ -94,13 +94,13 @@ export function HoursGridPhone({
                                     'text-xs font-semibold',
                                     isBankHoliday && 'text-red-600 dark:text-red-400',
                                     isToday && !isBankHoliday && 'text-primary',
-                                    isWeekend &&
+                                    isWeekendDay &&
                                         !isToday &&
                                         !isBankHoliday &&
                                         'text-muted-foreground'
                                 )}
                             >
-                                {date.getDate()}
+                                {date.getUTCDate()}
                             </span>
                             <span
                                 className={cn(
@@ -111,17 +111,17 @@ export function HoursGridPhone({
                                     !isBankHoliday &&
                                         total > 0 &&
                                         total < 8 &&
-                                        !isWeekend &&
+                                        !isWeekendDay &&
                                         'text-blue-600',
                                     !isBankHoliday &&
-                                        (total === 0 || isWeekend) &&
+                                        (total === 0 || isWeekendDay) &&
                                         'text-muted-foreground'
                                 )}
                             >
                                 {total}h
                             </span>
                         </div>
-                    );
+                    )
                 })}
             </div>
 
@@ -197,10 +197,10 @@ export function HoursGridPhone({
                             {/* Days grid - 7 columns */}
                             <div className="grid grid-cols-7 gap-1.5">
                                 {weekDates.map((date, dayIndex) => {
-                                    const isWeekend = dayIndex >= 5;
-                                    const isToday = date.toDateString() === today.toDateString();
-                                    const isBankHoliday = isHolidayDate(date, holidays);
-                                    const hasHours = projectHours[dayIndex] > 0;
+                                    const isWeekendDay = dayIndex >= 5
+                                    const isToday = formatDateToISOString(date) === formatDateToISOString(today)
+                                    const isBankHoliday = isHolidayDate(date, holidays)
+                                    const hasHours = projectHours[dayIndex] > 0
 
                                     return (
                                         <div
@@ -213,7 +213,7 @@ export function HoursGridPhone({
                                                     isBankHoliday &&
                                                         'text-red-600 dark:text-red-400',
                                                     isToday && !isBankHoliday && 'text-primary',
-                                                    isWeekend &&
+                                                    isWeekendDay &&
                                                         !isToday &&
                                                         !isBankHoliday &&
                                                         'text-muted-foreground'
@@ -245,7 +245,7 @@ export function HoursGridPhone({
                                                     !isWorkingTime &&
                                                         hasHours &&
                                                         'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                    isWeekend &&
+                                                    isWeekendDay &&
                                                         !isBankHoliday &&
                                                         'bg-muted/50 text-muted-foreground',
                                                     isToday &&
@@ -254,7 +254,7 @@ export function HoursGridPhone({
                                                         'ring-1 ring-primary/30',
                                                     isPastWeek &&
                                                         hasHours &&
-                                                        !isWeekend &&
+                                                        !isWeekendDay &&
                                                         isWorkingTime &&
                                                         'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
                                                     disabled &&
@@ -267,7 +267,7 @@ export function HoursGridPhone({
                                                 )}
                                             />
                                         </div>
-                                    );
+                                    )
                                 })}
                             </div>
                         </div>

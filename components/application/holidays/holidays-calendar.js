@@ -14,17 +14,18 @@ import { useState } from 'react';
 import { enGB } from 'react-day-picker/locale';
 import { useLayoutSize } from '@/hooks/use-layout-size';
 import { NoDataComponent } from '@/components/errors/no-data';
+import { getUTCToday } from '@/lib/utils';
 
 export function HolidaysCalendarComponent({ holidays, error }) {
-    const [month, setMonth] = useState(new Date());
+    const [month, setMonth] = useState(getUTCToday());
     const isSingleColumn = useLayoutSize(1260);
 
     const handleToday = () => {
-        const today = new Date();
-        setMonth(today);
+        const today = getUTCToday()
+        setMonth(today)
         // Reset selection to holidays
-        setSelectedDates(holidays?.allHolidaysRange || []);
-    };
+        setSelectedDates(holidays?.allHolidaysRange || [])
+    }
 
     return (
         <Card className="h-full pb-0" variant="shadow">

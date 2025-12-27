@@ -1,7 +1,7 @@
 'use server';
 
 import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
-import { calculateHolidays, calculateNextResetDate, generateDateRange } from '@/lib/utils.js';
+import { calculateHolidays, calculateNextResetDate, generateDateRange, getUTCToday } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
 import { formatDateToISOString } from '@/lib/utils.js';
@@ -29,7 +29,7 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
             toDate: period.toDate.toISOString().split('T')[0],
         }));
 
-        holidays.nextResetDate = calculateNextResetDate(new Date()).toISOString().split('T')[0];
+        holidays.nextResetDate = calculateNextResetDate(getUTCToday()).toISOString().split('T')[0];
 
         // Convert all holiday range dates to ISO strings
         holidays.allHolidaysRange = [];

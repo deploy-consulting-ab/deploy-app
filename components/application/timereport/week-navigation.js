@@ -2,38 +2,38 @@
 
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getWeekMonday, getWeekNumber, formatDateDayMonth } from '@/lib/utils';
+import { getWeekMonday, getWeekNumber, formatDateDayMonth, getUTCToday } from '@/lib/utils';
 
 /**
  * Week navigation component for selecting time report weeks.
  * Allows navigating to previous weeks and returning to current week.
  */
 export function WeekNavigation({ selectedWeek, onWeekChange }) {
-    const currentWeekMonday = getWeekMonday(new Date());
-    const selectedMonday = getWeekMonday(selectedWeek);
+    const currentWeekMonday = getWeekMonday(getUTCToday())
+    const selectedMonday = getWeekMonday(selectedWeek)
 
-    const isCurrentWeek = selectedMonday.getTime() === currentWeekMonday.getTime();
-    const weekNumber = getWeekNumber(selectedMonday);
+    const isCurrentWeek = selectedMonday.getTime() === currentWeekMonday.getTime()
+    const weekNumber = getWeekNumber(selectedMonday)
 
-    // Calculate Sunday of the selected week
-    const selectedSunday = new Date(selectedMonday);
-    selectedSunday.setDate(selectedMonday.getDate() + 6);
+    // Calculate Sunday of the selected week (use UTC methods for consistency)
+    const selectedSunday = new Date(selectedMonday)
+    selectedSunday.setUTCDate(selectedMonday.getUTCDate() + 6)
 
     const handlePreviousWeek = () => {
-        const newDate = new Date(selectedMonday);
-        newDate.setDate(newDate.getDate() - 7);
-        onWeekChange(newDate);
-    };
+        const newDate = new Date(selectedMonday)
+        newDate.setUTCDate(newDate.getUTCDate() - 7)
+        onWeekChange(newDate)
+    }
 
     const handleNextWeek = () => {
-        const newDate = new Date(selectedMonday);
-        newDate.setDate(newDate.getDate() + 7);
-        onWeekChange(newDate);
-    };
+        const newDate = new Date(selectedMonday)
+        newDate.setUTCDate(newDate.getUTCDate() + 7)
+        onWeekChange(newDate)
+    }
 
     const handleCurrentWeek = () => {
-        onWeekChange(currentWeekMonday);
-    };
+        onWeekChange(currentWeekMonday)
+    }
 
     return (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

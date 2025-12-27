@@ -7,7 +7,7 @@ import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
-import { getWeekMonday } from '@/lib/utils';
+import { getWeekMonday, getUTCToday, formatDateToISOString } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { Spinner } from '@/components/ui/spinner';
@@ -25,8 +25,8 @@ export function TimereportCard({
     initialError,
     holidays,
 }) {
-    // Get Monday of current week as default
-    const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(new Date()));
+    // Get Monday of current week as default (use UTC for consistent timezone handling)
+    const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(getUTCToday()));
 
     // Assignments fetched from Salesforce based on selected week
     const [projects, setProjects] = useState(initialProjects || []);
@@ -65,11 +65,11 @@ export function TimereportCard({
         }
     }, [initialError]);
 
-    // Check if the selected week is in the past
+    // Check if the selected week is in the past (use UTC for consistent timezone handling)
     const isPastWeek = useMemo(() => {
-        const currentWeekMonday = getWeekMonday(new Date());
-        const selectedWeekMonday = getWeekMonday(selectedWeek);
-        return selectedWeekMonday.getTime() < currentWeekMonday.getTime();
+        const currentWeekMonday = getWeekMonday(getUTCToday())
+        const selectedWeekMonday = getWeekMonday(selectedWeek)
+        return selectedWeekMonday.getTime() < currentWeekMonday.getTime()
     }, [selectedWeek]);
 
     // Track if there are unsaved changes
@@ -182,7 +182,7 @@ export function TimereportCard({
 
         try {
             const timecard = {
-                week: selectedWeek.toISOString().split('T')[0],
+                week: formatDateToISOString(selectedWeek),
                 timeData: timeData,
             };
             await createTimecard(flexEmployeeId, timecard);

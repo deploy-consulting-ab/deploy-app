@@ -4,7 +4,7 @@ import { useMemo, useCallback } from 'react';
 import { X, Clock, RotateCcw } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { cn, isHolidayDate } from '@/lib/utils';
+import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
 import { HoursGridPhone } from './hours-grid-phone';
 
 const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -33,17 +33,17 @@ export function HoursGridComponent({
     selectedProjects = new Set(),
     disabled = false,
 }) {
-    const today = new Date();
+    const today = getUTCToday()
 
-    // Generate dates for the week
+    // Generate dates for the week (using UTC methods for consistency)
     const weekDates = useMemo(() => {
-        const monday = new Date(selectedWeek);
+        const monday = new Date(selectedWeek)
         return Array.from({ length: 7 }, (_, i) => {
-            const date = new Date(monday);
-            date.setDate(monday.getDate() + i);
-            return date;
-        });
-    }, [selectedWeek]);
+            const date = new Date(monday)
+            date.setUTCDate(monday.getUTCDate() + i)
+            return date
+        })
+    }, [selectedWeek])
 
     // Extract unique projects from timeData and selectedProjects
     const uniqueProjects = useMemo(() => {
@@ -86,28 +86,29 @@ export function HoursGridComponent({
     }, [timeData, projects, selectedProjects]);
 
     // Build hours lookup: { [projectId]: { [dayIndex]: hours } }
+    // Use UTC date strings for comparison to avoid timezone issues
     const hoursLookup = useMemo(() => {
-        const lookup = {};
+        const lookup = {}
 
         timeData.forEach((dayEntry) => {
-            const entryDate = new Date(dayEntry.date);
+            const entryDateStr = formatDateToISOString(dayEntry.date)
             // Find which day index this date corresponds to
             const dayIndex = weekDates.findIndex(
-                (weekDate) => weekDate.toDateString() === entryDate.toDateString()
-            );
+                (weekDate) => formatDateToISOString(weekDate) === entryDateStr
+            )
 
             if (dayIndex >= 0) {
                 dayEntry.timeRows?.forEach((row) => {
                     if (!lookup[row.projectId]) {
-                        lookup[row.projectId] = {};
+                        lookup[row.projectId] = {}
                     }
-                    lookup[row.projectId][dayIndex] = row.hours;
-                });
+                    lookup[row.projectId][dayIndex] = row.hours
+                })
             }
-        });
+        })
 
-        return lookup;
-    }, [timeData, weekDates]);
+        return lookup
+    }, [timeData, weekDates])
 
     // Calculate totals per day
     const dailyTotals = useMemo(() => {
@@ -125,28 +126,25 @@ export function HoursGridComponent({
 
     const handleHourChange = useCallback(
         (projectId, dayIndex, value) => {
-            const numValue = parseFloat(value) || 0;
-            const clampedValue = Math.max(0, Math.min(24, numValue));
+            const numValue = parseFloat(value) || 0
+            const clampedValue = Math.max(0, Math.min(24, numValue))
 
             // Find the project info
-            const project = uniqueProjects.find((p) => p.projectId === projectId);
-            if (!project) return;
+            const project = uniqueProjects.find((p) => p.projectId === projectId)
+            if (!project) return
 
-            // Get the date for this day index (use local date, not UTC)
-            const targetDate = weekDates[dayIndex];
-            const year = targetDate.getFullYear();
-            const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-            const day = String(targetDate.getDate()).padStart(2, '0');
-            const targetDateStr = `${year}-${month}-${day}T00:00:00`;
+            // Get the date for this day index (use UTC for consistent timezone handling)
+            const targetDate = weekDates[dayIndex]
+            const targetDateStr = `${formatDateToISOString(targetDate)}T00:00:00`
 
             // Clone timeData and update
-            const newTimeData = [...timeData];
+            const newTimeData = [...timeData]
 
-            // Find or create the day entry
+            // Find or create the day entry (compare using UTC date strings)
+            const targetDateISOStr = formatDateToISOString(targetDate)
             let dayEntryIndex = newTimeData.findIndex((entry) => {
-                const entryDate = new Date(entry.date);
-                return entryDate.toDateString() === targetDate.toDateString();
-            });
+                return formatDateToISOString(entry.date) === targetDateISOStr
+            })
 
             if (dayEntryIndex === -1) {
                 // Create new day entry
@@ -222,27 +220,25 @@ export function HoursGridComponent({
 
     const handleFillFullTime = useCallback(
         (projectId) => {
-            const project = uniqueProjects.find((p) => p.projectId === projectId);
-            if (!project) return;
+            const project = uniqueProjects.find((p) => p.projectId === projectId)
+            if (!project) return
 
             // Fill 8 hours for Mon-Fri (indices 0-4)
-            let newTimeData = [...timeData];
+            let newTimeData = [...timeData]
 
             for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
-                const targetDate = weekDates[dayIndex];
-                const year = targetDate.getFullYear();
-                const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-                const day = String(targetDate.getDate()).padStart(2, '0');
-                const targetDateStr = `${year}-${month}-${day}T00:00:00`;
+                const targetDate = weekDates[dayIndex]
+                const targetDateStr = `${formatDateToISOString(targetDate)}T00:00:00`
 
                 if (isHolidayDate(targetDate, holidays)) {
-                    continue;
+                    continue
                 }
 
+                // Compare using UTC date strings
+                const targetDateISOStr = formatDateToISOString(targetDate)
                 let dayEntryIndex = newTimeData.findIndex((entry) => {
-                    const entryDate = new Date(entry.date);
-                    return entryDate.toDateString() === targetDate.toDateString();
-                });
+                    return formatDateToISOString(entry.date) === targetDateISOStr
+                })
 
                 if (dayEntryIndex === -1) {
                     newTimeData.push({
@@ -327,9 +323,9 @@ export function HoursGridComponent({
                         <div className="grid grid-cols-[minmax(180px,1.5fr)_repeat(7,minmax(60px,1fr))_48px_72px] gap-1.5 items-center mb-2">
                             <div /> {/* Empty cell for project column */}
                             {weekDates.map((date, index) => {
-                                const isToday = date.toDateString() === today.toDateString();
-                                const isWeekend = index >= 5;
-                                const isBankHoliday = isHolidayDate(date, holidays);
+                                const isToday = formatDateToISOString(date) === formatDateToISOString(today)
+                                const isWeekendDay = index >= 5
+                                const isBankHoliday = isHolidayDate(date, holidays)
                                 return (
                                     <div
                                         key={index}
@@ -340,7 +336,7 @@ export function HoursGridComponent({
                                             isToday &&
                                                 !isBankHoliday &&
                                                 'bg-primary/10 ring-primary/20',
-                                            isWeekend && !isToday && !isBankHoliday && 'bg-muted/30'
+                                            isWeekendDay && !isToday && !isBankHoliday && 'bg-muted/30'
                                         )}
                                         title={isBankHoliday ? 'Bank Holiday' : undefined}
                                     >
@@ -349,7 +345,7 @@ export function HoursGridComponent({
                                                 'text-xs font-medium',
                                                 isBankHoliday && 'text-red-600 dark:text-red-400',
                                                 isToday && !isBankHoliday && 'text-primary',
-                                                isWeekend &&
+                                                isWeekendDay &&
                                                     !isToday &&
                                                     !isBankHoliday &&
                                                     'text-muted-foreground'
@@ -362,16 +358,16 @@ export function HoursGridComponent({
                                                 'text-sm font-semibold',
                                                 isBankHoliday && 'text-red-600 dark:text-red-400',
                                                 isToday && !isBankHoliday && 'text-primary',
-                                                isWeekend &&
+                                                isWeekendDay &&
                                                     !isToday &&
                                                     !isBankHoliday &&
                                                     'text-muted-foreground'
                                             )}
                                         >
-                                            {date.getDate()}
+                                            {date.getUTCDate()}
                                         </p>
                                     </div>
-                                );
+                                )
                             })}
                             <div className="text-center text-xs font-medium text-muted-foreground">
                                 Total
@@ -423,11 +419,10 @@ export function HoursGridComponent({
 
                                         {/* Hour inputs for each day */}
                                         {weekDates.map((date, dayIndex) => {
-                                            const isWeekend = dayIndex >= 5;
-                                            const isToday =
-                                                date.toDateString() === today.toDateString();
-                                            const isBankHoliday = isHolidayDate(date, holidays);
-                                            const hasHours = projectHours[dayIndex] > 0;
+                                            const isWeekendDay = dayIndex >= 5
+                                            const isToday = formatDateToISOString(date) === formatDateToISOString(today)
+                                            const isBankHoliday = isHolidayDate(date, holidays)
+                                            const hasHours = projectHours[dayIndex] > 0
 
                                             return (
                                                 <Input
@@ -449,34 +444,34 @@ export function HoursGridComponent({
                                                     title={
                                                         isBankHoliday ? 'Bank Holiday' : undefined
                                                     }
-                                                    className={cn(
-                                                        'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
-                                                        isBankHoliday &&
-                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                        !isWorkingTime &&
-                                                            hasHours &&
-                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                        isWeekend &&
-                                                            !isBankHoliday &&
-                                                            'bg-muted/50 text-muted-foreground',
-                                                        isToday &&
-                                                            !disabled &&
-                                                            !isBankHoliday &&
-                                                            'ring-1 ring-primary/30',
-                                                        isPastWeek &&
-                                                            hasHours &&
-                                                            !isWeekend &&
-                                                            isWorkingTime &&
-                                                            'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
-                                                        disabled &&
-                                                            !isBankHoliday &&
-                                                            !(!isWorkingTime && hasHours) &&
-                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
-                                                        disabled &&
-                                                            (isBankHoliday ||
-                                                                (!isWorkingTime && hasHours)) &&
-                                                            'cursor-not-allowed disabled:opacity-100'
-                                                    )}
+                                                className={cn(
+                                                    'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
+                                                    isBankHoliday &&
+                                                        'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                    !isWorkingTime &&
+                                                        hasHours &&
+                                                        'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                    isWeekendDay &&
+                                                        !isBankHoliday &&
+                                                        'bg-muted/50 text-muted-foreground',
+                                                    isToday &&
+                                                        !disabled &&
+                                                        !isBankHoliday &&
+                                                        'ring-1 ring-primary/30',
+                                                    isPastWeek &&
+                                                        hasHours &&
+                                                        !isWeekendDay &&
+                                                        isWorkingTime &&
+                                                        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
+                                                    disabled &&
+                                                        !isBankHoliday &&
+                                                        !(!isWorkingTime && hasHours) &&
+                                                        'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
+                                                    disabled &&
+                                                        (isBankHoliday ||
+                                                            (!isWorkingTime && hasHours)) &&
+                                                        'cursor-not-allowed disabled:opacity-100'
+                                                )}
                                                 />
                                             );
                                         })}
@@ -532,9 +527,9 @@ export function HoursGridComponent({
                                 Total
                             </div>
                             {dailyTotals.map((total, index) => {
-                                const isOvertime = total > 8;
-                                const isWeekend = index >= 5;
-                                const isBankHoliday = isHolidayDate(weekDates[index], holidays);
+                                const isOvertime = total > 8
+                                const isWeekendDay = index >= 5
+                                const isBankHoliday = isHolidayDate(weekDates[index], holidays)
 
                                 return (
                                     <div
@@ -552,17 +547,17 @@ export function HoursGridComponent({
                                             !isBankHoliday &&
                                                 total > 0 &&
                                                 total < 8 &&
-                                                !isWeekend &&
+                                                !isWeekendDay &&
                                                 'text-blue-600 bg-blue-50 dark:bg-blue-950/30',
                                             !isBankHoliday &&
-                                                (total === 0 || isWeekend) &&
+                                                (total === 0 || isWeekendDay) &&
                                                 'text-muted-foreground'
                                         )}
                                         title={isBankHoliday ? 'Bank Holiday' : undefined}
                                     >
                                         {total}h
                                     </div>
-                                );
+                                )
                             })}
                             <div className="text-right">
                                 <span

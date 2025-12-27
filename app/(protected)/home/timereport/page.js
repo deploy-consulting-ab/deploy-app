@@ -7,7 +7,7 @@ import {
 } from '@/actions/salesforce/salesforce-actions';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { TimereportCard } from '@/components/application/timereport/timereport-card';
-import { getWeekMonday, formatDateToISOString } from '@/lib/utils';
+import { getWeekMonday, formatDateToISOString, getUTCToday } from '@/lib/utils';
 
 /**
  * Fetch projects for a given week
@@ -91,10 +91,11 @@ export default async function TimereportPage() {
     let error = null;
     let holidays = null;
     try {
+        const today = getUTCToday()
         const [holidaysData, projects, timereports] = await Promise.all([
             fetchHolidays(),
-            fetchProjectsForWeek(employeeNumber, new Date()),
-            fetchTimereportsForWeek(flexEmployeeId, new Date()),
+            fetchProjectsForWeek(employeeNumber, today),
+            fetchTimereportsForWeek(flexEmployeeId, today),
         ]);
         initialProjects = projects;
         initialTimereports = timereports;

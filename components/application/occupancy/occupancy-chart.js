@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 
 import { useIsMobile } from '@/hooks/use-mobile';
-import { getFiscalYear, isInFiscalYear } from '@/lib/utils';
+import { getFiscalYear, isInFiscalYear, getUTCToday } from '@/lib/utils';
 import {
     Card,
     CardAction,
@@ -73,39 +73,36 @@ export function OccupancyChartComponent({ chartData, error }) {
     }
 
     const filteredData = chartData.filter((item) => {
-        const date = new Date(item.date);
-        const currentDate = new Date();
+        const date = new Date(item.date)
+        const currentDate = getUTCToday()
 
         if (timeRange === 'FY' || timeRange === 'PFY') {
-            const currentFiscalYear = getFiscalYear(currentDate);
-            const targetFiscalYear = timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1;
-            return isInFiscalYear(date, targetFiscalYear);
+            const currentFiscalYear = getFiscalYear(currentDate)
+            const targetFiscalYear = timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1
+            return isInFiscalYear(date, targetFiscalYear)
         } else if (timeRange === 'CURRENT_MONTH') {
-            // Current month: same year and month as current date
+            // Current month: same year and month as current date (using UTC)
             return (
-                date.getFullYear() === currentDate.getFullYear() &&
-                date.getMonth() === currentDate.getMonth()
-            );
+                date.getUTCFullYear() === currentDate.getUTCFullYear() &&
+                date.getUTCMonth() === currentDate.getUTCMonth()
+            )
         } else if (timeRange === 'LAST_MONTH') {
-            // Last month: get previous month
-            const lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+            // Last month: get previous month (using UTC)
+            const lastMonth = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth() - 1, 1))
             return (
-                date.getFullYear() === lastMonth.getFullYear() &&
-                date.getMonth() === lastMonth.getMonth()
-            );
+                date.getUTCFullYear() === lastMonth.getUTCFullYear() &&
+                date.getUTCMonth() === lastMonth.getUTCMonth()
+            )
         } else if (timeRange === 'LAST_THREE_MONTHS') {
-            // Last 3 full months excluding current month
-            const currentDate = new Date();
+            // Last 3 full months excluding current month (using UTC)
             const firstDayOfCurrentMonth = new Date(
-                currentDate.getFullYear(),
-                currentDate.getMonth(),
-                1
-            );
-            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 3, 1);
-            return date >= startDate && date < firstDayOfCurrentMonth;
+                Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), 1)
+            )
+            const startDate = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth() - 3, 1))
+            return date >= startDate && date < firstDayOfCurrentMonth
         }
-        return true; // Default case: show all data
-    });
+        return true // Default case: show all data
+    })
 
     return (
         <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
