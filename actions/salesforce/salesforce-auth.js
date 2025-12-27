@@ -1,5 +1,5 @@
 // lib/jsforce.js
-
+import chalk from 'chalk';
 import jsforce from 'jsforce';
 import { NetworkError } from '../callouts/errors';
 
@@ -14,12 +14,12 @@ let connection = null;
 export async function getSalesforceConnection() {
     // If we already have a connection and its access token is valid, return it.
     if (connection && connection.accessToken) {
-        console.log('Existing connection & valid token');
+        console.log(chalk.green('Existing connection & valid token'));
         return connection;
     }
 
     try {
-        console.log('Token expired, getting new token...');
+        console.log(chalk.yellow('Token expired, getting new token'));
 
         // Use fetch as jsforce did not with the client credentials flow
         const myHeaders = new Headers();

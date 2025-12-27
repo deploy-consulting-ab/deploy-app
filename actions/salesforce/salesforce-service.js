@@ -3,6 +3,7 @@
 import { unstable_cache, revalidateTag } from 'next/cache';
 import { getSalesforceConnection, invalidateSalesforceConnection } from './salesforce-auth';
 import { NetworkError } from '../callouts/errors';
+import chalk from 'chalk';
 
 // Default cache duration: 1 hour (in seconds)
 const DEFAULT_CACHE_DURATION = 3600;
@@ -22,7 +23,7 @@ const handleSalesforceError = async (error, operation) => {
     }
 
     if (error.errorCode === 'INVALID_SESSION_ID') {
-        console.log('Invalid session ID, refreshing token...');
+        console.log(chalk.yellow('Invalid session ID, refreshing token'));
         invalidateSalesforceConnection();
         const newConnection = await getSalesforceConnection();
         return newConnection;
