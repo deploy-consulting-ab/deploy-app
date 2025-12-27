@@ -21,11 +21,11 @@ export function HolidaysCalendarComponent({ holidays, error }) {
     const isSingleColumn = useLayoutSize(1260);
 
     const handleToday = () => {
-        const today = getUTCToday()
-        setMonth(today)
+        const today = getUTCToday();
+        setMonth(today);
         // Reset selection to holidays
-        setSelectedDates(holidays?.allHolidaysRange || [])
-    }
+        setSelectedDates(holidays?.allHolidaysRange || []);
+    };
 
     return (
         <Card className="h-full pb-0" variant="shadow">

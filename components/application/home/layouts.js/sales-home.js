@@ -18,7 +18,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
     const errors = {
         holidays: null,
     };
-    
+
     async function refreshHolidays() {
         'use server';
         try {

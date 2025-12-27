@@ -29,7 +29,6 @@ export function UsefulLinksComponent({ links, title }) {
                             variant="shadow"
                             key={link.href}
                             className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
-                            
                         >
                             <Link href={link.href} className="block" target={link.target}>
                                 <CardContent className="p-4 flex flex-col items-center text-center">

@@ -168,7 +168,9 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => deleteSystemPermission(row.original.id)}>
+                            <DropdownMenuItem
+                                onClick={() => deleteSystemPermission(row.original.id)}
+                            >
                                 Delete Permission
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -181,10 +183,14 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
-    
 
     const createSystemPermissionButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-system-permission">
+        <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            size="lg"
+            key="create-system-permission"
+        >
             <DialogTrigger asChild>
                 <Button size="sm">
                     <ShieldPlus className="h-4 w-4" />

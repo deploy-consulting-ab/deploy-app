@@ -4,7 +4,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { AssignmentsListPhoneComponent } from '@/components/application/assignment/phone/assignments-list-phone';
 import { AssignmentsListDesktopComponent } from '@/components/application/assignment/assignments-list-desktop';
 
-export function AssignmentsListComponent({ assignments, employeeNumber, error, assignmentsMetrics }) {
+export function AssignmentsListComponent({
+    assignments,
+    employeeNumber,
+    error,
+    assignmentsMetrics,
+}) {
     const isMobile = useIsMobile();
 
     const projectViews = [

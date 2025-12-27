@@ -67,9 +67,9 @@ export function TimereportCard({
 
     // Check if the selected week is in the past (use UTC for consistent timezone handling)
     const isPastWeek = useMemo(() => {
-        const currentWeekMonday = getWeekMonday(getUTCToday())
-        const selectedWeekMonday = getWeekMonday(selectedWeek)
-        return selectedWeekMonday.getTime() < currentWeekMonday.getTime()
+        const currentWeekMonday = getWeekMonday(getUTCToday());
+        const selectedWeekMonday = getWeekMonday(selectedWeek);
+        return selectedWeekMonday.getTime() < currentWeekMonday.getTime();
     }, [selectedWeek]);
 
     // Track if there are unsaved changes

@@ -9,7 +9,10 @@ export async function SystemPermissionCardComponent({ systemPermission }) {
     return (
         <div className="grid grid-cols-1 gap-6">
             <div className="col-span-1">
-                <RecordCardHeaderComponent title={systemPermission.name} description={systemPermission.id}>
+                <RecordCardHeaderComponent
+                    title={systemPermission.name}
+                    description={systemPermission.id}
+                >
                     <SystemPermissionCardActionsComponent systemPermission={systemPermission} />
                 </RecordCardHeaderComponent>
             </div>

@@ -8,7 +8,7 @@ import { revalidatePath } from 'next/cache';
 export async function startImpersonation(userId) {
     try {
         const session = await auth();
-        
+
         // Check if user is authenticated and is an admin
         if (!session || session.user.profileId !== ADMIN_PROFILE) {
             return { error: 'Unauthorized access' };
@@ -20,7 +20,7 @@ export async function startImpersonation(userId) {
 
         // Get the target user and their system permissions
         const targetUser = await getUserById(userId);
-        
+
         if (!targetUser) {
             return { error: 'User not found' };
         }
@@ -51,7 +51,7 @@ export async function startImpersonation(userId) {
                 systemPermissions: session.user.systemPermissions,
                 image: session.user.image,
                 isActive: session.user.isActive,
-            }
+            },
         };
 
         revalidatePath('/');
@@ -65,7 +65,7 @@ export async function startImpersonation(userId) {
 export async function endImpersonation() {
     try {
         const session = await auth();
-        
+
         if (!session) {
             return { error: 'Unauthorized access' };
         }

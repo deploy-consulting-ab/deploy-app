@@ -45,14 +45,8 @@ export function ProfilePermissions({ profile, totalSystemPermissions }) {
         startTransition(async () => {
             try {
                 isAssigned
-                    ? await removeSystemPermissionFromProfileAction(
-                          profile.id,
-                          systemPermissionId
-                      )
-                    : await addSystemPermissionToProfileAction(
-                          profile.id,
-                          systemPermissionId
-                      );
+                    ? await removeSystemPermissionFromProfileAction(profile.id, systemPermissionId)
+                    : await addSystemPermissionToProfileAction(profile.id, systemPermissionId);
 
                 toastRichSuccess({
                     message: isAssigned

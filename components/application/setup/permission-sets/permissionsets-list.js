@@ -191,7 +191,12 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
     }
 
     const createPermissionSetButton = (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-permission-set">
+        <Dialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            size="lg"
+            key="create-permission-set"
+        >
             <DialogTrigger asChild>
                 <Button size="sm">
                     <Box className="h-4 w-4" />

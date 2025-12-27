@@ -99,8 +99,8 @@ export function SystemPermissionCardActionsComponent({ systemPermission }) {
                     <DialogHeader>
                         <DialogTitle>Delete System Permission</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete {systemPermission.name}? This action cannot be
-                            undone.
+                            Are you sure you want to delete {systemPermission.name}? This action
+                            cannot be undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

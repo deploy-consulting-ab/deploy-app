@@ -71,7 +71,7 @@ export const MENU_ITEMS_MAP = {
         url: TIMEREPORT_ROUTE,
         icon: Clock,
         systemPermission: VIEW_TIMEREPORT_PERMISSION,
-    }
+    },
 };
 
 export const SETUP_MENU_ITEMS_MAP = {

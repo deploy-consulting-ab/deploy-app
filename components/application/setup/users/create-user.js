@@ -144,7 +144,7 @@ export const CreateUserComponent = ({ fireSuccess }) => {
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />                    
+                    />
                     <FormField
                         control={form.control}
                         name="password"

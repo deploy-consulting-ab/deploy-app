@@ -69,15 +69,15 @@ export async function updateSystemPermission(id, data) {
                     select: {
                         id: true,
                         name: true,
-                        description: true
-                    }
+                        description: true,
+                    },
                 },
                 permissionSets: {
                     select: {
                         id: true,
                         name: true,
-                        description: true
-                    }
+                        description: true,
+                    },
                 },
             },
         });
@@ -119,15 +119,15 @@ export async function getSystemPermissionAssignmentsById(permissionId) {
                     select: {
                         id: true,
                         name: true,
-                        description: true
-                    }
+                        description: true,
+                    },
                 },
                 permissionSets: {
                     select: {
                         id: true,
                         name: true,
-                        description: true
-                    }
+                        description: true,
+                    },
                 },
             },
         });

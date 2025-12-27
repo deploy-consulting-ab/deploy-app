@@ -10,7 +10,10 @@ export async function PermissionSetCardComponent({ permissionSet, totalSystemPer
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
-                <RecordCardHeaderComponent title={permissionSet.name} description={permissionSet.id}>
+                <RecordCardHeaderComponent
+                    title={permissionSet.name}
+                    description={permissionSet.id}
+                >
                     <PermissionSetCardActionsComponent permissionSet={permissionSet} />
                 </RecordCardHeaderComponent>
             </div>
@@ -36,11 +39,17 @@ export async function PermissionSetCardComponent({ permissionSet, totalSystemPer
             </Card>
 
             {/* Permissions Card */}
-            <PermissionSetPermissions permissionSet={permissionSet} totalSystemPermissions={totalSystemPermissions} />
+            <PermissionSetPermissions
+                permissionSet={permissionSet}
+                totalSystemPermissions={totalSystemPermissions}
+            />
 
             {/* Users List */}
             <div className="col-span-2">
-                <PermissionSetAssignmentsListComponent users={permissionSet.users} permissionSetId={permissionSet.id} />
+                <PermissionSetAssignmentsListComponent
+                    users={permissionSet.users}
+                    permissionSetId={permissionSet.id}
+                />
             </div>
         </div>
     );

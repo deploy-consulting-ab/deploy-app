@@ -9,31 +9,31 @@ import { getWeekMonday, getWeekNumber, formatDateDayMonth, getUTCToday } from '@
  * Allows navigating to previous weeks and returning to current week.
  */
 export function WeekNavigation({ selectedWeek, onWeekChange }) {
-    const currentWeekMonday = getWeekMonday(getUTCToday())
-    const selectedMonday = getWeekMonday(selectedWeek)
+    const currentWeekMonday = getWeekMonday(getUTCToday());
+    const selectedMonday = getWeekMonday(selectedWeek);
 
-    const isCurrentWeek = selectedMonday.getTime() === currentWeekMonday.getTime()
-    const weekNumber = getWeekNumber(selectedMonday)
+    const isCurrentWeek = selectedMonday.getTime() === currentWeekMonday.getTime();
+    const weekNumber = getWeekNumber(selectedMonday);
 
     // Calculate Sunday of the selected week (use UTC methods for consistency)
-    const selectedSunday = new Date(selectedMonday)
-    selectedSunday.setUTCDate(selectedMonday.getUTCDate() + 6)
+    const selectedSunday = new Date(selectedMonday);
+    selectedSunday.setUTCDate(selectedMonday.getUTCDate() + 6);
 
     const handlePreviousWeek = () => {
-        const newDate = new Date(selectedMonday)
-        newDate.setUTCDate(newDate.getUTCDate() - 7)
-        onWeekChange(newDate)
-    }
+        const newDate = new Date(selectedMonday);
+        newDate.setUTCDate(newDate.getUTCDate() - 7);
+        onWeekChange(newDate);
+    };
 
     const handleNextWeek = () => {
-        const newDate = new Date(selectedMonday)
-        newDate.setUTCDate(newDate.getUTCDate() + 7)
-        onWeekChange(newDate)
-    }
+        const newDate = new Date(selectedMonday);
+        newDate.setUTCDate(newDate.getUTCDate() + 7);
+        onWeekChange(newDate);
+    };
 
     const handleCurrentWeek = () => {
-        onWeekChange(currentWeekMonday)
-    }
+        onWeekChange(currentWeekMonday);
+    };
 
     return (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -51,7 +51,8 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     <Calendar className="h-4 w-4 text-muted-foreground hidden sm:block" />
                     <span className="font-medium text-sm">Week {weekNumber}</span>
                     <span className="text-muted-foreground text-xs sm:text-sm">
-                        ({formatDateDayMonth(selectedMonday)} - {formatDateDayMonth(selectedSunday)})
+                        ({formatDateDayMonth(selectedMonday)} - {formatDateDayMonth(selectedSunday)}
+                        )
                     </span>
                 </div>
 
@@ -78,4 +79,3 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
         </div>
     );
 }
-

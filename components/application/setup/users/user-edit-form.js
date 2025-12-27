@@ -147,8 +147,8 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                             <FormItem>
                                 <FormLabel>Active</FormLabel>
                                 <FormControl>
-                                    <Switch 
-                                        checked={field.value} 
+                                    <Switch
+                                        checked={field.value}
                                         onCheckedChange={field.onChange}
                                     />
                                 </FormControl>

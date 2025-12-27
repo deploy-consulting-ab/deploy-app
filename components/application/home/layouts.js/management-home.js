@@ -36,9 +36,9 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     async function refreshOccupancy() {
         'use server';
         try {
-            const today = getUTCToday()
-            const formattedToday = formatDateToISOString(today)
-            return await getRecentOccupancyRate(employeeNumber, formattedToday)
+            const today = getUTCToday();
+            const formattedToday = formatDateToISOString(today);
+            return await getRecentOccupancyRate(employeeNumber, formattedToday);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -59,9 +59,9 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
 
     if (dataRequirements.occupancyRates) {
         try {
-            const today = getUTCToday()
-            const formattedToday = formatDateToISOString(today)
-            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday)
+            const today = getUTCToday();
+            const formattedToday = formatDateToISOString(today);
+            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
         } catch (error) {
             errors.occupancyRates = error;
         }

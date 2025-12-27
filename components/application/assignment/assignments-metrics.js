@@ -18,7 +18,9 @@ export async function AssignmentsMetricsComponent({ assignmentsMetrics, classNam
                     <MetricsCardComponent
                         metric={assignment.count}
                         title={assignment.title}
-                        IconComponent={<ClipboardList className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />}
+                        IconComponent={
+                            <ClipboardList className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" />
+                        }
                         description={assignment.description}
                     />
                 </Link>

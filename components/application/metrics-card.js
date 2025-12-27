@@ -17,7 +17,9 @@ export async function MetricsCardComponent({ metric, title, IconComponent, descr
             </CardHeader>
             <CardContent className="flex-1 flex flex-col justify-between pt-0">
                 <div className="text-xl md:text-2xl lg:text-3xl font-bold pb-2">{metric}</div>
-                <CardDescription className="text-xs md:text-sm line-clamp-2">{description}</CardDescription>
+                <CardDescription className="text-xs md:text-sm line-clamp-2">
+                    {description}
+                </CardDescription>
             </CardContent>
         </Card>
     );

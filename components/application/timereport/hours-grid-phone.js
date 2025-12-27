@@ -38,7 +38,7 @@ export function HoursGridPhone({
     holidays,
     isPastWeek,
 }) {
-    const today = getUTCToday()
+    const today = getUTCToday();
 
     return (
         <div className="space-y-4">
@@ -59,19 +59,18 @@ export function HoursGridPhone({
             {/* Daily totals row */}
             <div className="grid grid-cols-7 gap-1 bg-muted/30 rounded-lg p-2">
                 {weekDates.map((date, index) => {
-                    const isToday = formatDateToISOString(date) === formatDateToISOString(today)
-                    const isWeekendDay = index >= 5
-                    const total = dailyTotals[index]
-                    const isOvertime = total > 8
-                    const isBankHoliday = isHolidayDate(date, holidays)
+                    const isToday = formatDateToISOString(date) === formatDateToISOString(today);
+                    const isWeekendDay = index >= 5;
+                    const total = dailyTotals[index];
+                    const isOvertime = total > 8;
+                    const isBankHoliday = isHolidayDate(date, holidays);
 
                     return (
                         <div
                             key={index}
                             className={cn(
                                 'flex flex-col items-center py-1.5 rounded-md',
-                                isBankHoliday &&
-                                    'bg-red-100 dark:bg-red-950/40',
+                                isBankHoliday && 'bg-red-100 dark:bg-red-950/40',
                                 isToday && !isBankHoliday && 'bg-primary/10'
                             )}
                             title={isBankHoliday ? 'Bank Holiday' : undefined}
@@ -121,7 +120,7 @@ export function HoursGridPhone({
                                 {total}h
                             </span>
                         </div>
-                    )
+                    );
                 })}
             </div>
 
@@ -197,10 +196,12 @@ export function HoursGridPhone({
                             {/* Days grid - 7 columns */}
                             <div className="grid grid-cols-7 gap-1.5">
                                 {weekDates.map((date, dayIndex) => {
-                                    const isWeekendDay = dayIndex >= 5
-                                    const isToday = formatDateToISOString(date) === formatDateToISOString(today)
-                                    const isBankHoliday = isHolidayDate(date, holidays)
-                                    const hasHours = projectHours[dayIndex] > 0
+                                    const isWeekendDay = dayIndex >= 5;
+                                    const isToday =
+                                        formatDateToISOString(date) ===
+                                        formatDateToISOString(today);
+                                    const isBankHoliday = isHolidayDate(date, holidays);
+                                    const hasHours = projectHours[dayIndex] > 0;
 
                                     return (
                                         <div
@@ -262,12 +263,13 @@ export function HoursGridPhone({
                                                         !(!isWorkingTime && hasHours) &&
                                                         'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
                                                     disabled &&
-                                                        (isBankHoliday || (!isWorkingTime && hasHours)) &&
+                                                        (isBankHoliday ||
+                                                            (!isWorkingTime && hasHours)) &&
                                                         'cursor-not-allowed disabled:opacity-100'
                                                 )}
                                             />
                                         </div>
-                                    )
+                                    );
                                 })}
                             </div>
                         </div>

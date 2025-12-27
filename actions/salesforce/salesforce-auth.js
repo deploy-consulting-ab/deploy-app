@@ -31,14 +31,8 @@ export async function getSalesforceConnection() {
 
         const urlencoded = new URLSearchParams();
         urlencoded.append('grant_type', 'client_credentials');
-        urlencoded.append(
-            'client_id',
-            process.env.SALESFORCE_CLIENT_ID            
-        );
-        urlencoded.append(
-            'client_secret',
-            process.env.SALESFORCE_CLIENT_SECRET
-        );
+        urlencoded.append('client_id', process.env.SALESFORCE_CLIENT_ID);
+        urlencoded.append('client_secret', process.env.SALESFORCE_CLIENT_SECRET);
 
         const requestOptions = {
             method: 'POST',
@@ -61,7 +55,6 @@ export async function getSalesforceConnection() {
         connection = newConnection;
 
         return connection;
-        
     } catch (error) {
         // Clear the failed connection attempt
         connection = null;

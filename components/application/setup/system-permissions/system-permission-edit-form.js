@@ -107,7 +107,10 @@ export function SystemPermissionEditForm({ systemPermission, onEditingChange, on
                             <FormItem>
                                 <FormLabel>System Permission Description</FormLabel>
                                 <FormControl>
-                                    <Input {...field} placeholder="Enter system permission description" />
+                                    <Input
+                                        {...field}
+                                        placeholder="Enter system permission description"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
