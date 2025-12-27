@@ -398,7 +398,7 @@ export function HoursGridComponent({
                                                     onClick={() =>
                                                         handleRemoveProject(project.projectId)
                                                     }
-                                                    className="h-6 w-6 -ml-1 text-muted-foreground hover:text-destructive"
+                                                    className="h-6 w-6 -ml-1 text-muted-foreground hover:text-destructive hover:cursor-pointer"
                                                 >
                                                     <X className="h-3.5 w-3.5" />
                                                 </Button>
@@ -497,7 +497,7 @@ export function HoursGridComponent({
                                                     onClick={() =>
                                                         handleFillFullTime(project.projectId)
                                                     }
-                                                    className="h-7 w-7 text-muted-foreground hover:text-primary"
+                                                    className="h-7 w-7 text-muted-foreground hover:text-primary hover:cursor-pointer"
                                                     title="Fill 8h for Mon-Fri"
                                                 >
                                                     <Clock className="h-4 w-4" />
@@ -508,7 +508,7 @@ export function HoursGridComponent({
                                                     onClick={() =>
                                                         handleResetProject(project.projectId)
                                                     }
-                                                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                                                    className="h-7 w-7 text-muted-foreground hover:text-destructive hover:cursor-pointer"
                                                     title="Reset all hours"
                                                 >
                                                     <RotateCcw className="h-4 w-4" />

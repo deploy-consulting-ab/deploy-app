@@ -42,7 +42,7 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     variant="outline"
                     size="icon"
                     onClick={handlePreviousWeek}
-                    className="h-8 w-8 shrink-0"
+                    className="h-8 w-8 shrink-0 hover:cursor-pointer"
                 >
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -60,7 +60,7 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     variant="outline"
                     size="icon"
                     onClick={handleNextWeek}
-                    className="h-8 w-8 shrink-0"
+                    className="h-8 w-8 shrink-0 hover:cursor-pointer"
                 >
                     <ChevronRight className="h-4 w-4" />
                 </Button>

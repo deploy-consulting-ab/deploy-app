@@ -251,7 +251,7 @@ export function TimereportCard({
                                     variant="outline"
                                     size="sm"
                                     onClick={handleReset}
-                                    className="gap-2"
+                                    className="gap-2 hover:cursor-pointer"
                                 >
                                     <RotateCcw className="h-4 w-4" />
                                     Reset
@@ -262,7 +262,7 @@ export function TimereportCard({
                                 onClick={handleSave}
                                 disabled={!hasChanges || isSaving}
                                 size="sm"
-                                className="gap-2"
+                                className="gap-2 hover:cursor-pointer"
                             >
                                 <Save className="h-4 w-4" />
                                 {isSaving ? 'Saving...' : 'Save'}
