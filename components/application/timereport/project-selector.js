@@ -72,7 +72,7 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
                 </SelectTrigger>
                 <SelectContent>
                     {availableProjects.map((project) => (
-                        <SelectItem key={project.flexId} value={project.flexId}>
+                        <SelectItem key={project.flexId} value={project.flexId} className="hover:cursor-pointer">
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-2 h-2 rounded-full shrink-0"
