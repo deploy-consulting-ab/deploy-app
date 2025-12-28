@@ -66,7 +66,7 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
     return (
         <div className="flex items-center gap-2">
             <Select onValueChange={handleProjectSelect}>
-                <SelectTrigger className="w-full sm:w-auto gap-2 border-dashed">
+                <SelectTrigger className="w-full sm:w-auto gap-2 border-dashed hover:cursor-pointer">
                     <Plus className="h-4 w-4" />
                     <span className="text-muted-foreground">Add project</span>
                 </SelectTrigger>
