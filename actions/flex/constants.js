@@ -148,3 +148,6 @@ export const MONTHS = [
     'November',
     'December',
 ];
+
+export const FLEX_TIMEREPORT_URL =
+    'https://web.flexhrm.com/Tid/Manad?f=b4253a61-f229-4ca9-9831-ad931d9a75a6';

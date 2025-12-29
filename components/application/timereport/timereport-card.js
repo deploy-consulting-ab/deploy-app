@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Clock, Save, RotateCcw, RefreshCw } from 'lucide-react';
+import { Clock, Save, RotateCcw, RefreshCw, ExternalLink } from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import { getWeekMonday, getUTCToday, formatDateToISOString } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { Spinner } from '@/components/ui/spinner';
+import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 
 /**
  * Main time report card component.
@@ -269,6 +270,15 @@ export function TimereportCard({
                             </Button>
                         </>
                     )}
+                    <a
+                        href={FLEX_TIMEREPORT_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                    >
+                        <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">Flex</span>
+                    </a>
                     <Button
                         variant="ghost"
                         size="icon"
