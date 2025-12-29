@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Wallet, Shield, Leaf, Clock, FileText } from 'lucide-react';
-import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const iconMap = {
@@ -30,7 +29,12 @@ export function UsefulLinksComponent({ links, title }) {
                             key={link.href}
                             className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
                         >
-                            <Link href={link.href} className="block" target={link.target}>
+                            <a
+                                href={link.href}
+                                className="block"
+                                target={link.target}
+                                rel="noopener noreferrer"
+                            >
                                 <CardContent className="p-4 flex flex-col items-center text-center">
                                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
                                         <Icon className="h-6 w-6 text-primary" />
@@ -42,7 +46,7 @@ export function UsefulLinksComponent({ links, title }) {
                                         {link.description}
                                     </p>
                                 </CardContent>
-                            </Link>
+                            </a>
                         </Card>
                     );
                 })}
