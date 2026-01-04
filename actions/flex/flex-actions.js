@@ -25,8 +25,6 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
 
         const holidays = calculateHolidays(response.Result);
 
-        console.log(chalk.blue(), holidays);
-
         holidays.totalHolidays = 30; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
 
