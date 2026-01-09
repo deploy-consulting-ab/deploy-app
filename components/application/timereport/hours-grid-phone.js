@@ -307,7 +307,7 @@ export function HoursGridPhone({
                                                     )}
                                                 />
                                                 {isSynced && hasHours && (
-                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-0.5 pointer-events-none">
+                                                    <div className="absolute -bottom-1 -right-1 pointer-events-none">
                                                         <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400" />
                                                     </div>
                                                 )}
