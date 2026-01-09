@@ -224,8 +224,9 @@ export function TimereportCard({
 
     // Handle checkmark toggle
     const handleToggleCheckmark = useCallback(() => {
-        setIsCheckmarked((prev) => !prev);
-    }, []);
+        const newCheckmarkValue = !isCheckmarked;
+        setIsCheckmarked(newCheckmarkValue);
+    }, [isCheckmarked]);
 
     // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {
