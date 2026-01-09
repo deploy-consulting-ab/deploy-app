@@ -274,10 +274,7 @@ export function HoursGridPhone({
                                                                 : undefined
                                                     }
                                                     className={cn(
-                                                        'text-center h-10 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
-                                                        isSynced && hasHours
-                                                            ? 'px-0.5 pr-5'
-                                                            : 'px-0.5',
+                                                        'text-center h-10 px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
                                                         !isSynced &&
                                                             hasHours &&
                                                             !disabled &&
@@ -310,7 +307,9 @@ export function HoursGridPhone({
                                                     )}
                                                 />
                                                 {isSynced && hasHours && (
-                                                    <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400 absolute right-0.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-0.5 pointer-events-none">
+                                                        <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400" />
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>

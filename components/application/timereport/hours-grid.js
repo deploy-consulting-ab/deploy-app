@@ -485,10 +485,7 @@ export function HoursGridComponent({
                                                                     : undefined
                                                         }
                                                         className={cn(
-                                                            'text-center h-9 text-sm text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
-                                                            isSynced && hasHours
-                                                                ? 'px-1 pr-5'
-                                                                : 'px-1',
+                                                            'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
                                                             !isSynced &&
                                                                 hasHours &&
                                                                 !disabled &&
@@ -521,7 +518,9 @@ export function HoursGridComponent({
                                                         )}
                                                     />
                                                     {isSynced && hasHours && (
-                                                        <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                        <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                            <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400" />
+                                                        </div>
                                                     )}
                                                 </div>
                                             );
