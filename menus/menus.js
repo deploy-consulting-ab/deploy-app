@@ -67,7 +67,7 @@ export const MENU_ITEMS_MAP = {
         systemPermission: VIEW_OPPORTUNITIES_PERMISSION,
     },
     timereport: {
-        title: 'Timereport',
+        title: 'Time Report',
         url: TIMEREPORT_ROUTE,
         icon: Clock,
         systemPermission: VIEW_TIMEREPORT_PERMISSION,
