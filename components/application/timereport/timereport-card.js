@@ -324,6 +324,7 @@ export function TimereportCard({
                     ) : (
                         <HoursGridComponent
                             timeData={timeData}
+                            initialTimeData={initialTimeData}
                             selectedWeek={selectedWeek}
                             onTimeDataChange={handleTimeDataChange}
                             onRemoveProject={handleRemoveProject}

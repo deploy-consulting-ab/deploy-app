@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Clock, RotateCcw } from 'lucide-react';
+import { X, Clock, RotateCcw, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
@@ -23,6 +23,8 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
  * @param {boolean} props.disabled - Whether inputs are disabled
  * @param {Set} props.holidays - Set of holiday date strings (YYYY-MM-DD format)
  * @param {boolean} props.isPastWeek - Whether the selected week is in the past
+ * @param {Array} props.initialTimeData - Initial time data from Flex (for sync status)
+ * @param {Array} props.timeData - Current time data
  */
 export function HoursGridPhone({
     weekDates,
@@ -37,8 +39,30 @@ export function HoursGridPhone({
     disabled = false,
     holidays,
     isPastWeek,
+    initialTimeData = [],
+    timeData = [],
 }) {
     const today = getUTCToday();
+
+    // Check if a cell's value matches the initial synced data from Flex
+    const isCellSynced = (projectId, dayIndex) => {
+        const targetDate = weekDates[dayIndex];
+        const targetDateStr = formatDateToISOString(targetDate);
+
+        const initialDayEntry = initialTimeData.find(
+            (entry) => formatDateToISOString(entry.date) === targetDateStr
+        );
+
+        const currentDayEntry = timeData.find(
+            (entry) => formatDateToISOString(entry.date) === targetDateStr
+        );
+
+        const initialRow = initialDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+        const currentRow = currentDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+
+        // Synced if values match the initial data from Flex
+        return (initialRow?.hours || 0) === (currentRow?.hours || 0);
+    };
 
     return (
         <div className="space-y-4">
@@ -202,6 +226,7 @@ export function HoursGridPhone({
                                         formatDateToISOString(today);
                                     const isBankHoliday = isHolidayDate(date, holidays);
                                     const hasHours = projectHours[dayIndex] > 0;
+                                    const isSynced = isCellSynced(project.projectId, dayIndex);
 
                                     return (
                                         <div
@@ -222,52 +247,72 @@ export function HoursGridPhone({
                                             >
                                                 {DAYS_SINGLE[dayIndex]}
                                             </span>
-                                            <Input
-                                                type="number"
-                                                inputMode="decimal"
-                                                min="0"
-                                                max="24"
-                                                step="0.5"
-                                                value={projectHours[dayIndex] || ''}
-                                                onChange={(e) =>
-                                                    onHourChange(
-                                                        project.projectId,
-                                                        dayIndex,
-                                                        e.target.value
-                                                    )
-                                                }
-                                                placeholder="0"
-                                                disabled={disabled}
-                                                title={isBankHoliday ? 'Bank Holiday' : undefined}
-                                                className={cn(
-                                                    'text-center h-10 px-0.5 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
-                                                    isBankHoliday &&
-                                                        'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                    !isWorkingTime &&
-                                                        hasHours &&
-                                                        'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                    isWeekendDay &&
-                                                        !isBankHoliday &&
-                                                        'bg-muted/50 text-muted-foreground',
-                                                    isToday &&
-                                                        !disabled &&
-                                                        !isBankHoliday &&
-                                                        'ring-1 ring-primary/30',
-                                                    isPastWeek &&
-                                                        hasHours &&
-                                                        !isWeekendDay &&
-                                                        isWorkingTime &&
-                                                        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
-                                                    disabled &&
-                                                        !isBankHoliday &&
-                                                        !(!isWorkingTime && hasHours) &&
-                                                        'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
-                                                    disabled &&
-                                                        (isBankHoliday ||
-                                                            (!isWorkingTime && hasHours)) &&
-                                                        'cursor-not-allowed disabled:opacity-100'
+                                            <div className="relative w-full">
+                                                <Input
+                                                    type="number"
+                                                    inputMode="decimal"
+                                                    min="0"
+                                                    max="24"
+                                                    step="0.5"
+                                                    value={projectHours[dayIndex] || ''}
+                                                    onChange={(e) =>
+                                                        onHourChange(
+                                                            project.projectId,
+                                                            dayIndex,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="0"
+                                                    disabled={disabled}
+                                                    title={
+                                                        isBankHoliday
+                                                            ? 'Bank Holiday'
+                                                            : isSynced && hasHours
+                                                              ? 'Synced to Flex'
+                                                              : !isSynced && hasHours
+                                                                ? 'Not yet saved to Flex'
+                                                                : undefined
+                                                    }
+                                                    className={cn(
+                                                        'text-center h-10 w-full text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
+                                                        isSynced && hasHours
+                                                            ? 'px-0.5 pr-5'
+                                                            : 'px-0.5',
+                                                        !isSynced &&
+                                                            hasHours &&
+                                                            !disabled &&
+                                                            'opacity-70',
+                                                        isBankHoliday &&
+                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                        !isWorkingTime &&
+                                                            hasHours &&
+                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                        isWeekendDay &&
+                                                            !isBankHoliday &&
+                                                            'bg-muted/50 text-muted-foreground',
+                                                        isToday &&
+                                                            !disabled &&
+                                                            !isBankHoliday &&
+                                                            'ring-1 ring-primary/30',
+                                                        isPastWeek &&
+                                                            hasHours &&
+                                                            !isWeekendDay &&
+                                                            isWorkingTime &&
+                                                            'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
+                                                        disabled &&
+                                                            !isBankHoliday &&
+                                                            !(!isWorkingTime && hasHours) &&
+                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
+                                                        disabled &&
+                                                            (isBankHoliday ||
+                                                                (!isWorkingTime && hasHours)) &&
+                                                            'cursor-not-allowed disabled:opacity-100'
+                                                    )}
+                                                />
+                                                {isSynced && hasHours && (
+                                                    <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400 absolute right-0.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                                                 )}
-                                            />
+                                            </div>
                                         </div>
                                     );
                                 })}

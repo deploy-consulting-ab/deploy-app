@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { X, Clock, RotateCcw, Save } from 'lucide-react';
+import { X, Clock, RotateCcw, Save, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
@@ -15,6 +15,7 @@ const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
  *
  * @param {Object} props
  * @param {Array} props.timeData - Array of { date, timeRows: [{ projectId, projectName, projectCode, hours }] }
+ * @param {Array} props.initialTimeData - Initial time data from Flex (for sync status)
  * @param {Date} props.selectedWeek - The Monday of the selected week
  * @param {Function} props.onTimeDataChange - Callback when hours change, receives updated timeData
  * @param {Function} props.onRemoveProject - Callback when removing a project
@@ -24,6 +25,7 @@ const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
  */
 export function HoursGridComponent({
     timeData = [],
+    initialTimeData = [],
     selectedWeek,
     isPastWeek,
     onTimeDataChange,
@@ -112,6 +114,29 @@ export function HoursGridComponent({
 
         return lookup;
     }, [timeData, weekDates]);
+
+    // Check if a cell's value matches the initial synced data from Flex
+    const isCellSynced = useCallback(
+        (projectId, dayIndex) => {
+            const targetDate = weekDates[dayIndex];
+            const targetDateStr = formatDateToISOString(targetDate);
+
+            const initialDayEntry = initialTimeData.find(
+                (entry) => formatDateToISOString(entry.date) === targetDateStr
+            );
+
+            const currentDayEntry = timeData.find(
+                (entry) => formatDateToISOString(entry.date) === targetDateStr
+            );
+
+            const initialRow = initialDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+            const currentRow = currentDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+
+            // Synced if values match the initial data from Flex
+            return (initialRow?.hours || 0) === (currentRow?.hours || 0);
+        },
+        [weekDates, initialTimeData, timeData]
+    );
 
     // Calculate totals per day
     const dailyTotals = useMemo(() => {
@@ -308,6 +333,8 @@ export function HoursGridComponent({
                     disabled={disabled}
                     holidays={holidays}
                     isPastWeek={isPastWeek}
+                    initialTimeData={initialTimeData}
+                    timeData={timeData}
                 />
             </div>
 
@@ -426,56 +453,77 @@ export function HoursGridComponent({
                                                 formatDateToISOString(today);
                                             const isBankHoliday = isHolidayDate(date, holidays);
                                             const hasHours = projectHours[dayIndex] > 0;
+                                            const isSynced = isCellSynced(
+                                                project.projectId,
+                                                dayIndex
+                                            );
 
                                             return (
-                                                <Input
-                                                    key={dayIndex}
-                                                    type="number"
-                                                    min="0"
-                                                    max="24"
-                                                    step="0.5"
-                                                    value={projectHours[dayIndex] || ''}
-                                                    onChange={(e) =>
-                                                        handleHourChange(
-                                                            project.projectId,
-                                                            dayIndex,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    placeholder="0"
-                                                    disabled={disabled}
-                                                    title={
-                                                        isBankHoliday ? 'Bank Holiday' : undefined
-                                                    }
-                                                    className={cn(
-                                                        'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none',
-                                                        isBankHoliday &&
-                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                        !isWorkingTime &&
-                                                            hasHours &&
-                                                            'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
-                                                        isWeekendDay &&
-                                                            !isBankHoliday &&
-                                                            'bg-muted/50 text-muted-foreground',
-                                                        isToday &&
-                                                            !disabled &&
-                                                            !isBankHoliday &&
-                                                            'ring-1 ring-primary/30',
-                                                        isPastWeek &&
-                                                            hasHours &&
-                                                            !isWeekendDay &&
-                                                            isWorkingTime &&
-                                                            'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
-                                                        disabled &&
-                                                            !isBankHoliday &&
-                                                            !(!isWorkingTime && hasHours) &&
-                                                            'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
-                                                        disabled &&
-                                                            (isBankHoliday ||
-                                                                (!isWorkingTime && hasHours)) &&
-                                                            'cursor-not-allowed disabled:opacity-100'
+                                                <div key={dayIndex} className="relative">
+                                                    <Input
+                                                        type="number"
+                                                        min="0"
+                                                        max="24"
+                                                        step="0.5"
+                                                        value={projectHours[dayIndex] || ''}
+                                                        onChange={(e) =>
+                                                            handleHourChange(
+                                                                project.projectId,
+                                                                dayIndex,
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        placeholder="0"
+                                                        disabled={disabled}
+                                                        title={
+                                                            isBankHoliday
+                                                                ? 'Bank Holiday'
+                                                                : isSynced && hasHours
+                                                                  ? 'Synced to Flex'
+                                                                  : !isSynced && hasHours
+                                                                    ? 'Not yet saved to Flex'
+                                                                    : undefined
+                                                        }
+                                                        className={cn(
+                                                            'text-center h-9 text-sm text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
+                                                            isSynced && hasHours
+                                                                ? 'px-1 pr-5'
+                                                                : 'px-1',
+                                                            !isSynced &&
+                                                                hasHours &&
+                                                                !disabled &&
+                                                                'opacity-70',
+                                                            isBankHoliday &&
+                                                                'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                            !isWorkingTime &&
+                                                                hasHours &&
+                                                                'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
+                                                            isWeekendDay &&
+                                                                !isBankHoliday &&
+                                                                'bg-muted/50 text-muted-foreground',
+                                                            isToday &&
+                                                                !disabled &&
+                                                                !isBankHoliday &&
+                                                                'ring-1 ring-primary/30',
+                                                            isPastWeek &&
+                                                                hasHours &&
+                                                                !isWeekendDay &&
+                                                                isWorkingTime &&
+                                                                'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
+                                                            disabled &&
+                                                                !isBankHoliday &&
+                                                                !(!isWorkingTime && hasHours) &&
+                                                                'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
+                                                            disabled &&
+                                                                (isBankHoliday ||
+                                                                    (!isWorkingTime && hasHours)) &&
+                                                                'cursor-not-allowed disabled:opacity-100'
+                                                        )}
+                                                    />
+                                                    {isSynced && hasHours && (
+                                                        <Check className="h-3 w-3 text-emerald-500 dark:text-emerald-400 absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none" />
                                                     )}
-                                                />
+                                                </div>
                                             );
                                         })}
 
