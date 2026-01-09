@@ -322,8 +322,8 @@ export function HoursGridComponent({
 
     return (
         <>
-            {/* Mobile/Tablet Layout - Card-based view (visible below xl breakpoint) */}
-            <div className="xl:hidden">
+            {/* Mobile/Tablet Layout - Card-based view (visible below md breakpoint) */}
+            <div className="md:hidden">
                 <HoursGridPhone
                     weekDates={weekDates}
                     uniqueProjects={uniqueProjects}
@@ -343,8 +343,8 @@ export function HoursGridComponent({
                 />
             </div>
 
-            {/* Desktop Layout - Grid view (visible at xl breakpoint and above) */}
-            <div className="hidden xl:block space-y-4">
+            {/* Desktop Layout - Grid view (visible at md breakpoint and above) */}
+            <div className="hidden md:block space-y-4">
                 {/* Hours grid */}
                 <div>
                     <div>

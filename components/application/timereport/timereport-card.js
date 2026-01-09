@@ -224,7 +224,6 @@ export function TimereportCard({
 
     // Handle checkmark toggle
     const handleToggleCheckmark = useCallback(() => {
-        console.log('handleToggleCheckmark', isCheckmarked);
         setIsCheckmarked((prev) => !prev);
     }, []);
 
@@ -393,11 +392,11 @@ export function TimereportCard({
             </div>
 
             {/* Spacer to prevent content from being hidden behind the fixed bottom bar on mobile */}
-            {!isPastWeek && <div className="h-20 sm:hidden" />}
+            {!isPastWeek && <div className="h-20 md:hidden" />}
 
             {/* Mobile bottom action bar - fixed at the bottom for easy thumb access */}
             {!isPastWeek && (
-                <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-pb">
+                <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-pb">
                     <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
                         <Button
                             onClick={handleSave}
@@ -415,9 +414,15 @@ export function TimereportCard({
                             className="gap-2"
                         >
                             {isCheckmarked ? (
-                                <XCircle className="h-5 w-5" />
+                                <>
+                                    <XCircle className="h-5 w-5" />
+                                    Uncheckmark
+                                </>
                             ) : (
-                                <CheckCircle className="h-5 w-5" />
+                                <>
+                                    <CheckCircle className="h-5 w-5" />
+                                    Checkmark
+                                </>
                             )}
                         </Button>
                         <Button
