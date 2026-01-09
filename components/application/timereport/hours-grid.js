@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { X, Clock, RotateCcw, Save, Check } from 'lucide-react';
+import { X, Clock, RotateCcw, Save, Check, CheckCircle, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
@@ -22,6 +22,8 @@ const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
  * @param {Array} props.projects - Optional array of projects for color lookup (with flexId and color properties)
  * @param {Set} props.selectedProjects - Set of selected project IDs to display even without time entries
  * @param {boolean} props.disabled - Whether the grid inputs are disabled (read-only mode)
+ * @param {boolean} props.isCheckmarked - Whether the timecard is checkmarked
+ * @param {Function} props.onToggleCheckmark - Callback to toggle checkmark status
  */
 export function HoursGridComponent({
     timeData = [],
@@ -37,6 +39,8 @@ export function HoursGridComponent({
     hasChanges = false,
     isSaving = false,
     onSave,
+    isCheckmarked = false,
+    onToggleCheckmark,
 }) {
     const today = getUTCToday();
 
@@ -335,6 +339,7 @@ export function HoursGridComponent({
                     isPastWeek={isPastWeek}
                     initialTimeData={initialTimeData}
                     timeData={timeData}
+                    isCheckmarked={isCheckmarked}
                 />
             </div>
 
@@ -637,9 +642,42 @@ export function HoursGridComponent({
                             &gt;8h
                         </span>
                         <span>Target: {weekTotal}/40h</span>
+                        {!isPastWeek && (
+                            <span
+                                className={cn(
+                                    'flex items-center gap-1.5',
+                                    isCheckmarked
+                                        ? 'text-emerald-600 dark:text-emerald-500'
+                                        : 'text-muted-foreground'
+                                )}
+                            >
+                                <Check className="h-3 w-3" />
+                                {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+                            </span>
+                        )}
                     </div>
-                    <div className="flex items-center gap-3">
-                        {!disabled && onSave && (
+                    <div className="flex items-center gap-2">
+                        {!isPastWeek && onToggleCheckmark && (
+                            <Button
+                                onClick={onToggleCheckmark}
+                                variant={isCheckmarked ? 'destructive' : 'default'}
+                                size="sm"
+                                className="gap-2 hover:cursor-pointer"
+                            >
+                                {isCheckmarked ? (
+                                    <>
+                                        <XCircle className="h-4 w-4" />
+                                        Uncheckmark
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle className="h-4 w-4" />
+                                        Checkmark
+                                    </>
+                                )}
+                            </Button>
+                        )}
+                        {!isPastWeek && !isCheckmarked && onSave && (
                             <Button
                                 onClick={onSave}
                                 disabled={!hasChanges || isSaving}

@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Clock, Save, RotateCcw, RefreshCw, ExternalLink } from 'lucide-react';
+import {
+    Clock,
+    Save,
+    RotateCcw,
+    RefreshCw,
+    ExternalLink,
+    CheckCircle,
+    XCircle,
+} from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -76,6 +84,7 @@ export function TimereportCard({
     // Track if there are unsaved changes
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isCheckmarked, setIsCheckmarked] = useState(false);
 
     /**
      * Fetch projects for the given week using the server action
@@ -213,6 +222,12 @@ export function TimereportCard({
         setHasChanges(false);
     }, [initialTimeData]);
 
+    // Handle checkmark toggle
+    const handleToggleCheckmark = useCallback(() => {
+        console.log('handleToggleCheckmark', isCheckmarked);
+        setIsCheckmarked((prev) => !prev);
+    }, []);
+
     // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {
         return timeData.reduce((total, dayEntry) => {
@@ -330,12 +345,14 @@ export function TimereportCard({
                             onRemoveProject={handleRemoveProject}
                             projects={projects}
                             selectedProjects={selectedProjects}
-                            disabled={isPastWeek}
+                            disabled={isPastWeek || isCheckmarked}
                             holidays={holidays}
                             isPastWeek={isPastWeek}
                             hasChanges={hasChanges}
                             isSaving={isSaving}
                             onSave={handleSave}
+                            isCheckmarked={isCheckmarked}
+                            onToggleCheckmark={handleToggleCheckmark}
                         />
                     )}
                 </CardContent>
@@ -381,15 +398,27 @@ export function TimereportCard({
             {/* Mobile bottom action bar - fixed at the bottom for easy thumb access */}
             {!isPastWeek && (
                 <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-pb">
-                    <div className="flex items-center justify-center gap-3 max-w-md mx-auto">
+                    <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
                         <Button
                             onClick={handleSave}
-                            disabled={!hasChanges || isSaving}
+                            disabled={!hasChanges || isSaving || isCheckmarked}
                             size="lg"
                             className="flex-1 gap-2"
                         >
                             <Save className="h-5 w-5" />
                             {isSaving ? 'Saving...' : 'Save'}
+                        </Button>
+                        <Button
+                            variant={isCheckmarked ? 'destructive' : 'default'}
+                            size="lg"
+                            onClick={handleToggleCheckmark}
+                            className="gap-2"
+                        >
+                            {isCheckmarked ? (
+                                <XCircle className="h-5 w-5" />
+                            ) : (
+                                <CheckCircle className="h-5 w-5" />
+                            )}
                         </Button>
                         <Button
                             variant="outline"

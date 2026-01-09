@@ -25,6 +25,7 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
  * @param {boolean} props.isPastWeek - Whether the selected week is in the past
  * @param {Array} props.initialTimeData - Initial time data from Flex (for sync status)
  * @param {Array} props.timeData - Current time data
+ * @param {boolean} props.isCheckmarked - Whether the timecard is checkmarked
  */
 export function HoursGridPhone({
     weekDates,
@@ -41,6 +42,7 @@ export function HoursGridPhone({
     isPastWeek,
     initialTimeData = [],
     timeData = [],
+    isCheckmarked = false,
 }) {
     const today = getUTCToday();
 
@@ -67,17 +69,34 @@ export function HoursGridPhone({
     return (
         <div className="space-y-4">
             {/* Week summary header */}
-            <div className="flex items-center justify-between px-1">
-                <span className="text-sm font-medium text-muted-foreground">Week Total</span>
-                <span
-                    className={cn(
-                        'text-lg font-bold tabular-nums',
-                        weekTotal >= 40 && 'text-emerald-600',
-                        weekTotal > 0 && weekTotal < 40 && 'text-primary'
-                    )}
-                >
-                    {weekTotal}/40h
-                </span>
+            <div className="space-y-1">
+                <div className="flex items-center justify-between px-1">
+                    <span className="text-sm font-medium text-muted-foreground">Week Total</span>
+                    <span
+                        className={cn(
+                            'text-lg font-bold tabular-nums',
+                            weekTotal >= 40 && 'text-emerald-600',
+                            weekTotal > 0 && weekTotal < 40 && 'text-primary'
+                        )}
+                    >
+                        {weekTotal}/40h
+                    </span>
+                </div>
+                {!isPastWeek && (
+                    <div className="text-center">
+                        <span
+                            className={cn(
+                                'text-xs flex items-center justify-center gap-1.5',
+                                isCheckmarked
+                                    ? 'text-emerald-600 dark:text-emerald-500'
+                                    : 'text-muted-foreground'
+                            )}
+                        >
+                            <Check className="h-3 w-3" />
+                            {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Daily totals row */}
