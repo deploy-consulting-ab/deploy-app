@@ -245,31 +245,6 @@ export function TimereportCard({
                 </div>
 
                 <div className="hidden sm:flex items-center gap-2">
-                    {!isPastWeek && (
-                        <>
-                            {hasChanges && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleReset}
-                                    className="gap-2 hover:cursor-pointer"
-                                >
-                                    <RotateCcw className="h-4 w-4" />
-                                    Reset
-                                </Button>
-                            )}
-
-                            <Button
-                                onClick={handleSave}
-                                disabled={!hasChanges || isSaving}
-                                size="sm"
-                                className="gap-2 hover:cursor-pointer"
-                            >
-                                <Save className="h-4 w-4" />
-                                {isSaving ? 'Saving...' : 'Save'}
-                            </Button>
-                        </>
-                    )}
                     <a
                         href={FLEX_TIMEREPORT_URL}
                         target="_blank"
@@ -357,6 +332,9 @@ export function TimereportCard({
                             disabled={isPastWeek}
                             holidays={holidays}
                             isPastWeek={isPastWeek}
+                            hasChanges={hasChanges}
+                            isSaving={isSaving}
+                            onSave={handleSave}
                         />
                     )}
                 </CardContent>

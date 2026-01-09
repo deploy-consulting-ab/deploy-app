@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { X, Clock, RotateCcw } from 'lucide-react';
+import { X, Clock, RotateCcw, Save } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
@@ -32,6 +32,9 @@ export function HoursGridComponent({
     projects = [],
     selectedProjects = new Set(),
     disabled = false,
+    hasChanges = false,
+    isSaving = false,
+    onSave,
 }) {
     const today = getUTCToday();
 
@@ -586,8 +589,21 @@ export function HoursGridComponent({
                             <span className="w-2 h-2 rounded-full bg-amber-500" />
                             &gt;8h
                         </span>
+                        <span>Target: {weekTotal}/40h</span>
                     </div>
-                    <span>Target: {weekTotal}/40h</span>
+                    <div className="flex items-center gap-3">
+                        {!disabled && onSave && (
+                            <Button
+                                onClick={onSave}
+                                disabled={!hasChanges || isSaving}
+                                size="sm"
+                                className="gap-2 hover:cursor-pointer"
+                            >
+                                <Save className="h-4 w-4" />
+                                {isSaving ? 'Saving...' : 'Save'}
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </>
