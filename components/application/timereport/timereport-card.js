@@ -346,6 +346,7 @@ export function TimereportCard({
                             projects={projects}
                             selectedProjects={selectedProjects}
                             onAddProject={handleAddProject}
+                            isCheckmarked={isCheckmarked}
                         />
                     )}
 

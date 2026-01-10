@@ -347,6 +347,23 @@ export function HoursGridComponent({
             <div className="hidden md:block space-y-4">
                 {/* Hours grid */}
                 <div>
+                    {/* Checkmark status - only shown for past weeks (for current weeks it's shown next to Add project button) */}
+                    {isPastWeek && (
+                        <div className="flex items-center mb-4">
+                            <span
+                                className={cn(
+                                    'flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg',
+                                    isCheckmarked
+                                        ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
+                                        : 'text-muted-foreground bg-muted/50'
+                                )}
+                            >
+                                <Check className="h-4 w-4" />
+                                {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+                            </span>
+                        </div>
+                    )}
+
                     <div>
                         {/* Day headers */}
                         <div className="grid grid-cols-[minmax(180px,1.5fr)_repeat(7,minmax(60px,1fr))_48px_72px] gap-1.5 items-center mb-2">
@@ -642,19 +659,6 @@ export function HoursGridComponent({
                             &gt;8h
                         </span>
                         <span>Target: {weekTotal}/40h</span>
-                        {!isPastWeek && (
-                            <span
-                                className={cn(
-                                    'flex items-center gap-1.5',
-                                    isCheckmarked
-                                        ? 'text-emerald-600 dark:text-emerald-500'
-                                        : 'text-muted-foreground'
-                                )}
-                            >
-                                <Check className="h-3 w-3" />
-                                {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
-                            </span>
-                        )}
                     </div>
                     <div className="flex items-center gap-2">
                         {!isPastWeek && onToggleCheckmark && (

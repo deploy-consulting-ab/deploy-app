@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Briefcase } from 'lucide-react';
+import { Plus, Briefcase, Check } from 'lucide-react';
 import {
     Select,
     SelectContent,
@@ -8,11 +8,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 /**
  * Minimal project selector for adding projects to time report.
  */
-export function ProjectSelectorComponent({ projects, selectedProjects, onAddProject }) {
+export function ProjectSelectorComponent({
+    projects,
+    selectedProjects,
+    onAddProject,
+    isCheckmarked,
+}) {
     // Filter out already selected projects
     const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
 
@@ -64,7 +70,7 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
 
     // Compact add button when projects are already selected
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
             <Select onValueChange={handleProjectSelect}>
                 <SelectTrigger className="w-full sm:w-auto gap-2 border-dashed hover:cursor-pointer">
                     <Plus className="h-4 w-4" />
@@ -72,7 +78,11 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
                 </SelectTrigger>
                 <SelectContent>
                     {availableProjects.map((project) => (
-                        <SelectItem key={project.flexId} value={project.flexId} className="hover:cursor-pointer">
+                        <SelectItem
+                            key={project.flexId}
+                            value={project.flexId}
+                            className="hover:cursor-pointer"
+                        >
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-2 h-2 rounded-full shrink-0"
@@ -87,6 +97,19 @@ export function ProjectSelectorComponent({ projects, selectedProjects, onAddProj
                     ))}
                 </SelectContent>
             </Select>
+
+            {/* Checkmark status */}
+            <span
+                className={cn(
+                    'flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg',
+                    isCheckmarked
+                        ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
+                        : 'text-muted-foreground bg-muted/50'
+                )}
+            >
+                <Check className="h-4 w-4" />
+                {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+            </span>
         </div>
     );
 }
