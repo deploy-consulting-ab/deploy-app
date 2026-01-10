@@ -31,6 +31,7 @@ export function TimereportCard({
     initialTimereports,
     refreshProjectsAction,
     refreshTimereportsAction,
+    toggleCheckmarkAction,
     initialError,
     holidays,
 }) {
@@ -64,6 +65,7 @@ export function TimereportCard({
             setTimeData(initialTimereports.timereportResponse || []);
             setInitialTimeData(initialTimereports.timereportResponse || []);
             setSelectedProjects(new Set(initialTimereports.selectedProjects || []));
+            setIsCheckmarked(initialTimereports.isCheckmarked || false);
         }
     }, [initialTimereports]);
 
@@ -84,7 +86,7 @@ export function TimereportCard({
     // Track if there are unsaved changes
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [isCheckmarked, setIsCheckmarked] = useState(false);
+    const [isCheckmarked, setIsCheckmarked] = useState(initialTimereports?.isCheckmarked || false);
 
     /**
      * Fetch projects for the given week using the server action
@@ -223,10 +225,26 @@ export function TimereportCard({
     }, [initialTimeData]);
 
     // Handle checkmark toggle
-    const handleToggleCheckmark = useCallback(() => {
-        const newCheckmarkValue = !isCheckmarked;
-        setIsCheckmarked(newCheckmarkValue);
-    }, [isCheckmarked]);
+    const handleToggleCheckmark = useCallback(async () => {
+        try {
+            const weekStart = getWeekMonday(selectedWeek);
+            const newCheckmarkValue = await toggleCheckmarkAction(
+                weekStart.toISOString(),
+                isCheckmarked
+            );
+            setIsCheckmarked(newCheckmarkValue);
+
+            if (newCheckmarkValue) {
+                toastRichSuccess({ message: 'Time report checkmarked successfully' });
+            } else {
+                toastRichSuccess({ message: 'Checkmark removed successfully' });
+            }
+        } catch (error) {
+            toastRichError({
+                message: error.message || 'Failed to update checkmark status',
+            });
+        }
+    }, [isCheckmarked, selectedWeek, toggleCheckmarkAction]);
 
     // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {

@@ -49,6 +49,7 @@ model User {
     profileId       String          @default("deploy_consultant")
     permissionSets  PermissionSet[] 
     accounts        Account[]
+    timereportCheckmarks TimereportCheckmark[]
     isActive        Boolean         @default(true)
 
     createdAt DateTime? @default(now())
@@ -74,4 +75,18 @@ model Account {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@id([provider, providerAccountId])
+}
+
+model TimereportCheckmark {
+    id            String   @id @default(cuid())
+    userId        String
+    weekStartDate DateTime
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, weekStartDate])
+    @@index([userId])
+    @@index([weekStartDate])
 }

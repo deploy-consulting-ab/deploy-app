@@ -6,6 +6,11 @@ import {
     getHolidays,
 } from '@/actions/salesforce/salesforce-actions';
 import { getTimereports } from '@/actions/flex/flex-actions';
+import {
+    getTimereportCheckmarkAction,
+    createTimereportCheckmarkAction,
+    deleteTimereportCheckmarkAction,
+} from '@/actions/database/timereport-checkmark-actions';
 import { TimereportCard } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString, getUTCToday } from '@/lib/utils';
 
@@ -60,6 +65,20 @@ async function fetchHolidays() {
     return await getHolidays();
 }
 
+/**
+ * Fetch checkmark status for a given week
+ */
+async function fetchCheckmarkStatus(userId, weekStart) {
+    const monday = getWeekMonday(new Date(weekStart));
+    try {
+        const checkmark = await getTimereportCheckmarkAction(userId, monday);
+        return !!checkmark;
+    } catch (error) {
+        console.error('Failed to fetch checkmark status:', error);
+        return false;
+    }
+}
+
 // Server action for refreshing projects data
 async function refreshProjectsData(weekStart) {
     'use server';
@@ -73,7 +92,31 @@ async function refreshTimereportsData(weekStart) {
     'use server';
     const session = await auth();
     const flexEmployeeId = session.user.flexEmployeeId;
-    return fetchTimereportsForWeek(flexEmployeeId, weekStart);
+    const userId = session.user.sessionId;
+    const timereports = await fetchTimereportsForWeek(flexEmployeeId, weekStart);
+    const isCheckmarked = await fetchCheckmarkStatus(userId, weekStart);
+    return { ...timereports, isCheckmarked };
+}
+
+// Server action for toggling checkmark
+async function toggleCheckmarkData(weekStart, isCurrentlyCheckmarked) {
+    'use server';
+    const session = await auth();
+    const userId = session.user.sessionId;
+    const monday = getWeekMonday(new Date(weekStart));
+
+    try {
+        if (isCurrentlyCheckmarked) {
+            await deleteTimereportCheckmarkAction(userId, monday);
+            return false;
+        } else {
+            await createTimereportCheckmarkAction(userId, monday);
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to toggle checkmark:', error);
+        throw error;
+    }
 }
 
 export default async function TimereportPage() {
@@ -81,21 +124,23 @@ export default async function TimereportPage() {
     const { user } = session;
     const employeeNumber = user.employeeNumber;
     const flexEmployeeId = user.flexEmployeeId;
+    const userId = user.sessionId;
 
     // Fetch initial data for the current week
     let initialProjects = [];
-    let initialTimereports = { timereportResponse: [], selectedProjects: [] };
+    let initialTimereports = { timereportResponse: [], selectedProjects: [], isCheckmarked: false };
     let error = null;
     let holidays = null;
     try {
         const today = getUTCToday();
-        const [holidaysData, projects, timereports] = await Promise.all([
+        const [holidaysData, projects, timereports, isCheckmarked] = await Promise.all([
             fetchHolidays(),
             fetchProjectsForWeek(employeeNumber, today),
             fetchTimereportsForWeek(flexEmployeeId, today),
+            fetchCheckmarkStatus(userId, today),
         ]);
         initialProjects = projects;
-        initialTimereports = timereports;
+        initialTimereports = { ...timereports, isCheckmarked };
         holidays = holidaysData;
     } catch (err) {
         error = err;
@@ -110,6 +155,7 @@ export default async function TimereportPage() {
                 initialTimereports={initialTimereports}
                 refreshProjectsAction={refreshProjectsData}
                 refreshTimereportsAction={refreshTimereportsData}
+                toggleCheckmarkAction={toggleCheckmarkData}
                 initialError={error}
                 holidays={holidays}
             />
