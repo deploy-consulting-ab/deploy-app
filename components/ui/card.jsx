@@ -8,6 +8,7 @@ const cardVariants = {
     flat: 'bg-card',
     elevated: 'bg-card shadow-lg',
     bordered: 'bg-card border-2',
+    glass: 'bg-gradient-to-br from-white/40 via-white/30 to-white/20 backdrop-blur-xl shadow-2xl dark:from-slate-800/40 dark:via-slate-800/30 dark:to-slate-900/20',
 };
 
 const cardSizes = {

@@ -71,7 +71,7 @@ export function HolidaysCardComponent({
 
     return (
         <Card
-            variant="shadow"
+            variant="glass"
             className={`relative overflow-hidden ${
                 !isNavigationDisabled && isMobile && 'md:hover:cursor-pointer'
             }`}
