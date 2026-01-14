@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 
 export async function MetricsCardComponent({ metric, title, IconComponent, description }) {
     return (
-        <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer h-full min-h-[160px] md:min-h-[180px] flex flex-col">
+        <Card className="group hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer h-full min-h-[160px] md:min-h-[180px] flex flex-col" variant="glass">
             <CardHeader className="space-y-1 pb-3">
                 <div className="flex items-start space-x-2">
                     <div className="p-1.5 md:p-2 bg-primary/10 rounded-lg flex-shrink-0">

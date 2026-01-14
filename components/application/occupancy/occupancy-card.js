@@ -53,7 +53,7 @@ export function OccupancyCardComponent({
     const isIncreasing = occupancyData.history[0]?.rate <= occupancyData.current;
 
     return (
-        <Card className="relative overflow-hidden" variant="shadow">
+        <Card className="relative overflow-hidden" variant="glass">
             <CardHeader className="border-b">
                 <CardTitle>Occupancy Rate</CardTitle>
                 <CardDescription>How busy have you been this month?</CardDescription>
