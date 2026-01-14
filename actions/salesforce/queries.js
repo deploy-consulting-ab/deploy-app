@@ -5,6 +5,7 @@ import {
     PROJECT_STATUS_CANCELLED,
     OPPORTUNITY_STATUS_CLOSED_WON,
     OPPORTUNITY_STATUS_CLOSED_LOST,
+    OPPORTUNITY_STATUS_CLOSED_DECLINED,
 } from '@/actions/salesforce/constants';
 
 /**
@@ -73,21 +74,29 @@ const getCurrentAssignmentsByEmployeeNumberQuery = (employeeNumber, startDate, e
 
 const getOpportunitiesQuery = () => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
-            FROM Opportunity WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}' 
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}' 
+            FROM Opportunity 
+            WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
             ORDER BY CloseDate DESC`;
 };
 
 const getOpportunitiesByNameQuery = (name) => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
             FROM Opportunity WHERE Name LIKE '%${name}%' 
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}' AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}' ORDER BY CloseDate DESC`;
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            ORDER BY CloseDate DESC`;
 };
 
 const getOpportunityByIdQuery = (opportunityId) => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
             FROM Opportunity WHERE Id = '${opportunityId}' 
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}' AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}' LIMIT 1`;
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            LIMIT 1`;
 };
 
 /**

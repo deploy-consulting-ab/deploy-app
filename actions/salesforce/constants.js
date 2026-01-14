@@ -6,3 +6,4 @@ export const PROJECT_STATUS_CANCELLED = 'Cancelled';
 export const PROJECT_STATUS_COMPLETED = 'Completed';
 export const OPPORTUNITY_STATUS_CLOSED_WON = 'Closed Won';
 export const OPPORTUNITY_STATUS_CLOSED_LOST = 'Closed Lost';
+export const OPPORTUNITY_STATUS_CLOSED_DECLINED = 'Closed Declined';
