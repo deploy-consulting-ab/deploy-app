@@ -27,17 +27,21 @@ export function AppSidebarUserComponent({ user }) {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-accent/50 hover:bg-accent/30 rounded-xl transition-all"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg">
+                            <Avatar className="h-9 w-9 rounded-full border-2 border-border/50">
                                 <AvatarImage src={user.image} alt={user.name} />
-                                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                                <AvatarFallback className="rounded-full bg-gradient-to-br from-[#4c6ef5] to-[#5f3dc4] text-white font-semibold">
+                                    {initials}
+                                </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">{user.name}</span>
-                                <span className="truncate text-xs">{user.email}</span>
+                                <span className="truncate font-semibold">{user.name}</span>
+                                <span className="truncate text-xs text-muted-foreground">
+                                    {user.email}
+                                </span>
                             </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

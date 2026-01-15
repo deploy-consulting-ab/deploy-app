@@ -39,7 +39,7 @@ export function AppSidebarMenusComponent({ user, location }) {
     };
 
     return (
-        <SidebarMenu>
+        <SidebarMenu className="space-y-1">
             {sidebarMenuItems.map((menu) => (
                 <SidebarMenuItem key={menu.title}>
                     <SidebarMenuButton
@@ -47,12 +47,18 @@ export function AppSidebarMenusComponent({ user, location }) {
                         asChild
                         isActive={isMenuActive(menu.url)}
                         className={cn(
-                            'hover:bg-accent/50',
-                            isMenuActive(menu.url) && 'dark:!bg-accent/50'
+                            'rounded-xl hover:bg-accent/50 transition-all group',
+                            isMenuActive(menu.url) &&
+                                'bg-gradient-to-r from-[#4c6ef5]/10 to-[#5f3dc4]/10 border-l-2 border-[#4c6ef5] font-semibold'
                         )}
                     >
                         <Link href={menu.url} onClick={handleMenuClick}>
-                            <menu.icon />
+                            <menu.icon
+                                className={cn(
+                                    'transition-colors',
+                                    isMenuActive(menu.url) && 'text-[#4c6ef5]'
+                                )}
+                            />
                             <span>{menu.title}</span>
                         </Link>
                     </SidebarMenuButton>

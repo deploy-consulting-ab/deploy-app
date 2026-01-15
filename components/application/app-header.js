@@ -9,6 +9,7 @@ import { LogoutButtonComponent } from '@/components/application/logout-button';
 import { GlobalSearch } from '@/components/application/search/global-search';
 import { SetupButtonComponent } from '@/components/application/setup-button';
 import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
+import { PremiumButton } from '@/components/application/premium-button';
 
 export async function AppHeaderComponent() {
     const session = await auth();
@@ -17,10 +18,10 @@ export async function AppHeaderComponent() {
     return (
         <>
             <ImpersonationBannerComponent />
-            <header className="dark:[background:var(--haberdashery-gradient)] flex h-16 shrink-0 items-center border-b dark:border-b-0 px-4">
-                {/* Left section with sidebar trigger and breadcrumbs - no fixed width */}
+            <header className="backdrop-blur-lg bg-background/80 border-b border-border/50 flex h-16 shrink-0 items-center px-4 sticky top-0 z-40">
+                {/* Left section with sidebar trigger and breadcrumbs */}
                 <div className="flex items-center gap-4 min-w-fit">
-                    <SidebarTrigger className="-ml-1" />
+                    <SidebarTrigger className="-ml-1 hover:bg-accent/50 rounded-lg transition-colors" />
                     <div className="hidden md:block whitespace-nowrap">
                         <DynamicBreadcrumbComponent />
                     </div>
@@ -33,6 +34,7 @@ export async function AppHeaderComponent() {
                 </div>
                 {/* Right section with icons */}
                 <div className="flex items-center gap-2">
+                    <PremiumButton />
                     {user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && (
                         <SetupButtonComponent />
                     )}

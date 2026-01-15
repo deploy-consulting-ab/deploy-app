@@ -19,20 +19,22 @@ export async function AppSidebarComponent({ user, location }) {
         <Sidebar
             variant="default"
             collapsible="icon"
-            className="dark:[background:var(--haberdashery-gradient)] dark:border-r-0"
+            className="border-r border-border/50 bg-background/95 backdrop-blur-xl"
         >
-            <SidebarHeader>
+            <SidebarHeader className="border-b border-border/50 pb-4">
                 <AppSidebarLogoComponent />
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="px-2 py-4">
                 <SidebarGroup>
-                    <SidebarGroupLabel>Tilde</SidebarGroupLabel>
+                    <SidebarGroupLabel className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Tilde
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <AppSidebarMenusComponent user={user} location={location} />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="border-t border-border/50 pt-4">
                 <AppSidebarUserComponent user={user} />
             </SidebarFooter>
             <SidebarRail />
