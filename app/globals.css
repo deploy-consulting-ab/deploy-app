@@ -178,8 +178,27 @@
     /* 120%+: Fully saturated - over capacity */
     --occupancy-color-critical-high: oklch(0.5474 0.0839 var(--deploy-chart));
 
-    /* -- Haberdashery Gradient */
-    --haberdashery-gradient: linear-gradient(to bottom, #1a2634, #0d1117);
+    /* -- Haberdashery Gradient - matches app background */
+    --haberdashery-gradient: 
+        /* Diagonal light streak */
+        linear-gradient(
+            135deg,
+            transparent 0%,
+            transparent 40%,
+            rgba(255, 255, 255, 0.04) 45%,
+            rgba(255, 255, 255, 0.07) 50%,
+            rgba(255, 255, 255, 0.04) 55%,
+            transparent 60%,
+            transparent 100%
+        ),
+        /* Subtle blue glow bottom */
+        radial-gradient(
+            ellipse 100% 60% at 50% 100%,
+            rgba(60, 120, 180, 0.22) 0%,
+            transparent 50%
+        ),
+        /* Base color matching app background */
+        linear-gradient(to bottom, #080808, #080808);
 }
 
 /* Custom input focus */
