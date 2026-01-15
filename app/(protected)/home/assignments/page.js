@@ -22,7 +22,7 @@ const AssignmentsPage = async () => {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <AssignmentsListComponent
                 error={error}
                 assignments={assignments}

@@ -148,7 +148,7 @@ export default async function TimereportPage() {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <TimereportCard
                 flexEmployeeId={flexEmployeeId}
                 initialProjects={initialProjects}

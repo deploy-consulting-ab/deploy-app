@@ -13,7 +13,7 @@ const OpportunitiesPage = async () => {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <OpportunitiesListComponent error={error} opportunities={opportunities} />
         </div>
     );

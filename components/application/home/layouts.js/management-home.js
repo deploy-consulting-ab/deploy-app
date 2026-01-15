@@ -1,14 +1,14 @@
-'use server';
-
-import { HolidaysCardComponent } from '@/components/application/holidays/holidays-card';
-import { OccupancyCardComponent } from '@/components/application/occupancy/occupancy-card';
-import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
-import { formatDateToISOString, getUTCToday } from '@/lib/utils';
+import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import {
+    HolidaysCardComponent,
+    OccupancyRatesCard,
+    QuickLinksCard,
+} from '@/components/application/home/dashboard-cards';
 
 export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors
@@ -27,7 +27,8 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     async function refreshHolidays() {
         'use server';
         try {
-            return await getAbsenceApplications(employeeNumber);
+            const rawData = await getAbsenceApplications(employeeNumber);
+            return transformHolidaysData(rawData);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -38,7 +39,8 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
         try {
             const today = getUTCToday();
             const formattedToday = formatDateToISOString(today);
-            return await getRecentOccupancyRate(employeeNumber, formattedToday);
+            const rawData = await getRecentOccupancyRate(employeeNumber, formattedToday);
+            return transformOccupancyData(rawData);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -51,9 +53,10 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
-            data.holidays = await getAbsenceApplications(employeeNumber);
+            const rawHolidays = await getAbsenceApplications(employeeNumber);
+            data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
-            errors.holidays = error;
+            errors.holidays = error.message || 'Failed to load holidays';
         }
     }
 
@@ -61,11 +64,21 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
         try {
             const today = getUTCToday();
             const formattedToday = formatDateToISOString(today);
-            data.occupancyRates = await getRecentOccupancyRate(employeeNumber, formattedToday);
+            const rawOccupancy = await getRecentOccupancyRate(employeeNumber, formattedToday);
+            data.occupancyRates = transformOccupancyData(rawOccupancy);
         } catch (error) {
-            errors.occupancyRates = error;
+            errors.occupancyRates = error.message || 'Failed to load occupancy';
         }
     }
+
+    // Transform quick links to match QuickLinksCard format
+    const quickLinks = links.map((link) => ({
+        title: link.title,
+        description: link.description,
+        href: link.href,
+        icon: link.icon,
+        external: link.target === '_blank',
+    }));
 
     loading = false;
 
@@ -76,8 +89,10 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
             </div>
         );
     }
+
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+        <div className="h-full grid gap-4">
+            {/* Top row: Holidays and Occupancy Rates */}
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                 <HolidaysCardComponent
                     holidays={data.holidays}
@@ -85,15 +100,36 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
                     isNavigationDisabled={false}
                     refreshAction={refreshHolidays}
                 />
-                <OccupancyCardComponent
+                <OccupancyRatesCard
                     occupancy={data.occupancyRates}
                     error={errors.occupancyRates}
                     refreshAction={refreshOccupancy}
+                    target={85}
                 />
             </div>
-            <div className="self-start">
-                <UsefulLinksComponent links={links} title="Quick Access" />
-            </div>
+
+            {/* Bottom row: Quick Links */}
+            <QuickLinksCard
+                title="Quick Access"
+                description="Frequently used resources and tools"
+                links={quickLinks}
+                columns={4}
+            />
         </div>
     );
+}
+
+// Transform raw occupancy data to match OccupancyRatesCard expected format
+function transformOccupancyData(rawData) {
+    if (!rawData) return null;
+
+    return {
+        currentRate: rawData.current ?? 0,
+        previousRate: rawData.history?.[0]?.rate ?? null,
+        history:
+            rawData.history?.map((item) => ({
+                period: item.month,
+                rate: item.rate,
+            })) ?? [],
+    };
 }

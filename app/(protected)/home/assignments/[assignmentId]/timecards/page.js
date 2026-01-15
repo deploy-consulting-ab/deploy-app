@@ -20,7 +20,7 @@ const TimecardsPage = async ({ params }) => {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <TimecardListComponent error={error} timecards={timecards} />
         </div>
     );

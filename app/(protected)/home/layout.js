@@ -16,7 +16,7 @@ export default async function HomeLayout({ children }) {
             <AppSidebarComponent user={user} location="home" />
             <SidebarInset>
                 <AppHeaderComponent />
-                <main className="h-full">{children}</main>
+                <main className="h-full p-4 md:p-6">{children}</main>
             </SidebarInset>
         </SidebarProvider>
     );

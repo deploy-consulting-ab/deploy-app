@@ -1,68 +1,194 @@
-'use client';
+'use client'
 
-import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
-import {
-    Card,
-    CardContent,
-    CardTitle,
-    CardHeader,
-    CardDescription,
-    CardAction,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { enGB } from 'react-day-picker/locale';
-import { useLayoutSize } from '@/hooks/use-layout-size';
-import { NoDataComponent } from '@/components/errors/no-data';
-import { getUTCToday } from '@/lib/utils';
+import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useMemo, useCallback } from 'react'
+import { Button } from '@/components/ui/button'
 
 export function HolidaysCalendarComponent({ holidays, error }) {
-    const [month, setMonth] = useState(getUTCToday());
-    const isSingleColumn = useLayoutSize(1260);
+  const today = useMemo(() => new Date(), [])
+  const [currentDate, setCurrentDate] = useState(today)
 
-    const handleToday = () => {
-        const today = getUTCToday();
-        setMonth(today);
-        // Reset selection to holidays
-        setSelectedDates(holidays?.allHolidaysRange || []);
-    };
+  // Extract holiday dates from the passed data
+  const holidayDates = useMemo(() => {
+    if (!holidays?.allHolidaysRange) return []
+    return holidays.allHolidaysRange.map((date) => {
+      const d = new Date(date)
+      return {
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        day: d.getDate(),
+      }
+    })
+  }, [holidays])
 
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth()
+
+  // Memoize calendar data to prevent flickering
+  const calendarData = useMemo(() => {
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
+    // Adjust for Monday start (0 = Monday, 6 = Sunday)
+    const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1
+
+    return { daysInMonth, startDay }
+  }, [currentYear, currentMonth])
+
+  const { daysInMonth, startDay } = calendarData
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+  const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
+
+  const goToPreviousMonth = useCallback(() => {
+    setCurrentDate(new Date(currentYear, currentMonth - 1, 1))
+  }, [currentYear, currentMonth])
+
+  const goToNextMonth = useCallback(() => {
+    setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
+  }, [currentYear, currentMonth])
+
+  const goToToday = useCallback(() => {
+    setCurrentDate(new Date())
+  }, [])
+
+  const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear
+
+  const isHoliday = useCallback((day) => {
+    return holidayDates.some(
+      (h) => h.year === currentYear && h.month === currentMonth && h.day === day
+    )
+  }, [holidayDates, currentYear, currentMonth])
+
+  const isToday = useCallback((day) => {
     return (
-        <Card className="h-full pb-0" variant="shadow">
-            <CardHeader className="border-b">
-                <CardTitle>Holiday Calendar</CardTitle>
-                <CardDescription>
-                    Have a look at your calendar to see what you have been up to.
-                </CardDescription>
-                <CardAction>
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleToday}
-                        className="hover:cursor-pointer"
-                    >
-                        {/* <RefreshCw className="h-4 w-4" /> */}
-                        Today
-                    </Button>
-                </CardAction>
-            </CardHeader>
-            <CardContent className="p-0">
-                <div className="w-full h-full flex items-center justify-center">
-                    <ReadOnlyCalendar
-                        mode="multiple"
-                        defaultMonth={month}
-                        month={month}
-                        onMonthChange={setMonth}
-                        selected={holidays?.allHolidaysRange || []}
-                        numberOfMonths={isSingleColumn ? 1 : 2}
-                        locale={enGB}
-                        disabled
-                        showWeekNumber
-                        showOutsideDays={false}
-                        className="w-full flex items-center justify-center rounded-lg pt-0"
-                    />
-                </div>
-            </CardContent>
-        </Card>
-    );
+      today.getDate() === day &&
+      today.getMonth() === currentMonth &&
+      today.getFullYear() === currentYear
+    )
+  }, [today, currentMonth, currentYear])
+
+  const isWeekend = useCallback((day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    const dayOfWeek = date.getDay()
+    return dayOfWeek === 0 || dayOfWeek === 6
+  }, [currentYear, currentMonth])
+
+  const isPast = useCallback((day) => {
+    const date = new Date(currentYear, currentMonth, day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return date < todayStart
+  }, [currentYear, currentMonth, today])
+
+  // Count holidays in current month
+  const holidaysThisMonth = useMemo(() => {
+    return holidayDates.filter(
+      (h) => h.year === currentYear && h.month === currentMonth
+    ).length
+  }, [holidayDates, currentYear, currentMonth])
+
+  if (error) {
+    return (
+      <Card className="p-5 bg-gradient-to-br from-[#4c6ef5] to-[#5f3dc4] border-0">
+        <h3 className="text-base font-semibold text-white mb-2">Your Holidays</h3>
+        <p className="text-sm text-white/80">{error}</p>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="p-5 bg-gradient-to-br from-[#4c6ef5] to-[#5f3dc4] border-0">
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-base font-semibold text-white">Your Holidays</h3>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={goToPreviousMonth}
+              className="p-1.5 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-sm text-white min-w-[110px] text-center">
+              {monthNames[currentMonth]} {currentYear}
+            </span>
+            <button
+              onClick={goToNextMonth}
+              className="p-1.5 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Week Days Header */}
+        <div className="grid grid-cols-7 gap-2">
+          {weekDays.map((day, i) => (
+            <div key={i} className="text-center text-xs font-medium text-white/60 py-1">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar Grid - key forces clean re-render on month change */}
+        <div key={`${currentYear}-${currentMonth}`} className="grid grid-cols-7 gap-2">
+          {/* Empty cells for days before the first of the month */}
+          {Array.from({ length: startDay }).map((_, index) => (
+            <div key={`empty-${index}`} className="aspect-square" />
+          ))}
+
+          {/* Days of the month */}
+          {Array.from({ length: daysInMonth }).map((_, index) => {
+            const day = index + 1
+            const holiday = isHoliday(day)
+            const todayDay = isToday(day)
+            const weekend = isWeekend(day)
+            const past = isPast(day)
+
+            return (
+              <div
+                key={day}
+                className={cn(
+                  'aspect-square rounded-full flex items-center justify-center text-sm font-medium',
+                  // Holiday styling - bright lime green
+                  holiday && 'bg-[#a9e34b] text-gray-900 font-bold',
+                  // Today styling
+                  todayDay && !holiday && 'ring-2 ring-white bg-white/20 text-white font-bold',
+                  // Weekend styling (not holiday)
+                  weekend && !holiday && !todayDay && 'bg-white/10 text-white/50',
+                  // Past days (not holiday, not today, not weekend)
+                  past && !holiday && !todayDay && !weekend && 'text-white/40',
+                  // Future days
+                  !past && !holiday && !todayDay && !weekend && 'text-white/80',
+                )}
+              >
+                {day}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+          <p className="text-sm text-white/80">
+            <span className="font-bold text-white">{holidaysThisMonth}</span> holiday{holidaysThisMonth !== 1 ? 's' : ''} this month
+          </p>
+          {!isCurrentMonth && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={goToToday}
+              className="text-xs text-white/80 hover:text-white hover:bg-white/10 h-7 px-2"
+            >
+              Today
+            </Button>
+          )}
+        </div>
+      </div>
+    </Card>
+  )
 }

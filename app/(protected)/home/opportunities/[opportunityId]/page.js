@@ -14,7 +14,7 @@ const OpportunityPage = async ({ params }) => {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <OpportunityCardComponent error={error} opportunity={opportunity} />
         </div>
     );

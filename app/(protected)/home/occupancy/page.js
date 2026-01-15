@@ -37,7 +37,7 @@ export default async function OccupancyPage() {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <OccupancyChartComponent chartData={occupancyRates} error={error} />
         </div>
     );
