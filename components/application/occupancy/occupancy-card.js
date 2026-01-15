@@ -50,8 +50,6 @@ export function OccupancyCardComponent({
         }
     };
 
-    const isIncreasing = occupancyData.history[0]?.rate <= occupancyData.current;
-
     return (
         <Card className="relative overflow-hidden" variant="shadow">
             <CardHeader className="border-b">
@@ -89,16 +87,6 @@ export function OccupancyCardComponent({
                         <p className="text-sm font-medium text-muted-foreground">Occupancy Rate</p>
                         <div className="flex items-center gap-2">
                             <h3 className="text-2xl font-bold">{occupancyData.current}%</h3>
-                            <span
-                                className={`flex items-center text-sm  ${
-                                    isIncreasing ? 'text-green-600' : 'text-red-400'
-                                }`}
-                            >
-                                <TrendingUp
-                                    className={`h-4 w-4 mr-1 ${!isIncreasing && 'rotate-180'}`}
-                                />
-                                vs last month
-                            </span>
                         </div>
                     </div>
                 </div>
