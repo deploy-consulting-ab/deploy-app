@@ -19,7 +19,7 @@ export async function AppSidebarComponent({ user, location }) {
         <Sidebar
             variant="default"
             collapsible="icon"
-            className="dark:[background:var(--haberdashery-gradient)] dark:border-r-0"
+            className="dark:[background:var(--haberdashery-gradient)] dark:border-r-0 dark:[box-shadow:inset_-0.5px_0_0_rgba(200,210,220,0.15)]"
         >
             <SidebarHeader>
                 <AppSidebarLogoComponent />
