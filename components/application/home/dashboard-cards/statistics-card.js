@@ -86,7 +86,7 @@ export function StatisticsCard({
 
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">{title}</h2>
                 <div className="flex items-center gap-2">
                     {refreshAction && (

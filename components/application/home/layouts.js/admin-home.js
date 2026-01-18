@@ -9,7 +9,7 @@ import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import {
     HolidaysCardComponent,
-    OccupancyRatesCard,
+    OccupancyRatesCardComponent,
     QuickLinksCard,
     StatisticsCard,
 } from '@/components/application/home/dashboard-cards';
@@ -131,7 +131,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
                 {/* Main Content - Left Side */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* Occupancy Rate Card - Team Capacity */}
-                    <OccupancyRatesCard
+                    <OccupancyRatesCardComponent
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
                         refreshAction={refreshOccupancy}
@@ -168,7 +168,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
     );
 }
 
-// Transform raw occupancy data to match OccupancyRatesCard expected format
+// Transform raw occupancy data to match OccupancyRatesCardComponent expected format
 function transformOccupancyData(rawData) {
     if (!rawData) return null;
 

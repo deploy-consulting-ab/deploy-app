@@ -1,14 +1,14 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ProgressRing } from '@/components/application/home/progress-ring';
 import { MiniLineChart } from '@/components/application/home/mini-chart';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
-export function OccupancyRatesCard({
+export function OccupancyRatesCardComponent({
     occupancy: initialOccupancy,
     error: initialError,
     refreshAction,
@@ -51,7 +51,7 @@ export function OccupancyRatesCard({
 
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between">
                 <h3 className="text-md font-semibold text-foreground">Occupancy Rate</h3>
                 {refreshAction && (
                     <Button
