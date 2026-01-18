@@ -117,16 +117,6 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
 
     return (
         <div className="min-h-screen space-y-6">
-            {/* Header */}
-            <div className="flex items-start justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">
-                        Hello, {userName || employeeNumber}!
-                    </h1>
-                    <p className="text-muted-foreground mt-1">Ready for today&apos;s challenges?</p>
-                </div>
-            </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content - Left Side */}
                 <div className="lg:col-span-2 space-y-6">
