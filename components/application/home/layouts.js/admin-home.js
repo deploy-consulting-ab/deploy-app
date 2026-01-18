@@ -130,20 +130,20 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content - Left Side */}
                 <div className="lg:col-span-2 space-y-6">
-                    {/* Statistics Card - Business Activity */}
-                    <StatisticsCard
-                        title="Business Activity"
-                        stats={data.assignmentsMetrics}
-                        error={errors.assignmentsMetrics}
-                        refreshAction={refreshStatistics}
-                    />
-
-                    {/* Occupancy Rate Card */}
+                    {/* Occupancy Rate Card - Team Capacity */}
                     <OccupancyRatesCard
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
                         refreshAction={refreshOccupancy}
                         target={90}
+                    />
+
+                    {/* Assignments Card */}
+                    <StatisticsCard
+                        title="Assignments"
+                        stats={data.assignmentsMetrics}
+                        error={errors.assignmentsMetrics}
+                        refreshAction={refreshStatistics}
                     />
                 </div>
 
