@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ProgressRing } from '@/components/application/home/progress-ring';
 import { MiniLineChart } from '@/components/application/home/mini-chart';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function OccupancyRatesCard({
     occupancy: initialOccupancy,
@@ -35,10 +36,8 @@ export function OccupancyRatesCard({
     const previousRate = occupancy?.previousRate ?? null;
     const history = occupancy?.history ?? [];
 
-    // Calculate trend
-    const isIncreasing = previousRate !== null ? currentRate >= previousRate : true;
-    const changeAmount =
-        previousRate !== null ? Math.abs(currentRate - previousRate).toFixed(1) : null;
+    // Get current month name
+    const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
 
     // Generate chart data from history or use current rate
     const chartData =
@@ -47,49 +46,45 @@ export function OccupancyRatesCard({
             : [currentRate, currentRate, currentRate, currentRate, currentRate];
 
     if (error) {
-        return (
-            <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
-                <h3 className="text-lg font-semibold mb-4">Occupancy Rate</h3>
-                <p className="text-sm text-destructive">{error}</p>
-            </Card>
-        );
+        return <ErrorDisplayComponent error={error} />;
     }
 
     return (
-        <Card className="p-4 bg-card/50 backdrop-blur border-border/50">
-            <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-medium text-muted-foreground">Team Capacity</h3>
+        <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-md font-semibold text-foreground">Occupancy Rate</h3>
                 {refreshAction && (
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
-                        className={`h-7 w-7 ${isRefreshing ? 'animate-spin' : ''}`}
+                        className={isRefreshing ? 'animate-spin' : ''}
                     >
-                        <RefreshCw className="h-3.5 w-3.5 text-muted-foreground" />
+                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
                     </Button>
                 )}
             </div>
 
             {/* Progress Ring */}
             <div className="flex items-center justify-center py-2">
-                <ProgressRing progress={currentRate} size={100} color="var(--accent-lime)">
+                <ProgressRing progress={currentRate} size={140} color="var(--accent-lime)">
                     <div className="text-center">
-                        <div className="text-2xl font-bold">{currentRate}%</div>
+                        <div className="text-4xl font-bold">{currentRate}%</div>
+                        <div className="text-sm text-muted-foreground mt-1">{currentMonth}</div>
                     </div>
                 </ProgressRing>
             </div>
 
-            <p className="text-xs text-muted-foreground text-center mt-2">
+            <p className="text-sm text-muted-foreground text-center">
                 Target is {target}% utilization
             </p>
 
             {/* Mini Chart */}
             {chartData.length > 1 && (
-                <div className="mt-3 pt-3 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground mb-1.5">Recent Trend</p>
-                    <div className="h-12">
+                <div className="mt-4 pt-4 border-t border-border/50">
+                    <p className="text-sm text-muted-foreground mb-2">Recent Trend</p>
+                    <div className="h-16">
                         <MiniLineChart data={chartData} color="var(--accent-lime)" />
                     </div>
                 </div>
@@ -97,13 +92,13 @@ export function OccupancyRatesCard({
 
             {/* History List */}
             {history.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-border/50">
-                    <p className="text-xs font-medium text-muted-foreground mb-1.5">
+                <div className="mt-4 pt-4 border-t border-border/50">
+                    <p className="text-md font-medium text-muted-foreground mb-2">
                         Monthly History
                     </p>
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                         {history.slice(0, 3).map((item, index) => (
-                            <div key={index} className="flex justify-between text-xs">
+                            <div key={index} className="flex justify-between text-sm">
                                 <span className="text-muted-foreground">{item.period}</span>
                                 <span className="font-medium">{item.rate}%</span>
                             </div>
