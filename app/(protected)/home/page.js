@@ -5,6 +5,7 @@ import { getHomeLayoutForProfile } from '@/components/application/home/home-layo
 
 export default async function HomePage() {
     const session = await auth();
+    console.log("session", session);
     const { profileId, employeeNumber, name } = session.user;
 
     // Get the appropriate layout component for this profile
