@@ -119,12 +119,14 @@ export function TimereportCard({
             setTimeData(timereportData);
             setInitialTimeData(JSON.parse(JSON.stringify(timereportData)));
             setSelectedProjects(new Set(response.selectedProjects || []));
+            setIsCheckmarked(response.isCheckmarked || false);
             setHasChanges(false);
         } catch (error) {
             console.error('Failed to fetch timereports:', error);
             toastRichError({ message: 'Failed to load timereports for the selected week' });
             setTimeData([]);
             setInitialTimeData([]);
+            setIsCheckmarked(false);
         } finally {
             setIsLoadingTimereports(false);
         }
