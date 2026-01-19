@@ -116,7 +116,7 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
 
 const getOccupancyHistoryQuery = (employeeNumber, today) => {
     return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c, 
-            BillableHours__c, TotalHours__c, AvailableHours__c
+            ExternalMonthHours__c, InternalMonthHours__c, TotalMonthlyHours__c, TotalHours__c
             FROM HistoricalHour__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
             ORDER BY Date__c DESC`;
