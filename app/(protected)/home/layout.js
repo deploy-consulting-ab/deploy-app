@@ -16,7 +16,7 @@ export default async function HomeLayout({ children }) {
             <AppSidebarComponent user={user} location="home" />
             <SidebarInset className="bg-sidebar">
                 <AppHeaderComponent location="home" />
-                <main className="flex-1 bg-background rounded-tl-3xl p-4 md:p-6">{children}</main>
+                <main className="flex-1 bg-background md:rounded-tl-3xl p-4 md:p-6 mt-4">{children}</main>
             </SidebarInset>
         </SidebarProvider>
     );
