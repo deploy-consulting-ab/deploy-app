@@ -8,7 +8,7 @@ const cardVariants = {
     flat: 'bg-card',
     elevated: 'bg-card shadow-lg',
     bordered: 'bg-card border-2',
-    glass: 'animate-gradient bg-gradient-to-br from-gray-100/40 via-slate-200/35 to-blue-200/30 backdrop-blur-xl shadow-2xl dark:from-gray-700/35 dark:via-slate-600/30 dark:to-blue-700/25',
+    glassBlue: 'animate-gradient bg-gradient-to-br from-gray-100/40 via-slate-200/35 to-blue-200/30 backdrop-blur-xl shadow-2xl dark:from-gray-700/35 dark:via-slate-600/30 dark:to-blue-700/25',
 };
 
 const cardSizes = {
