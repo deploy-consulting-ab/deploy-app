@@ -71,11 +71,12 @@ export function OpportunitiesListDesktopComponent({
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
@@ -84,7 +85,7 @@ export function OpportunitiesListDesktopComponent({
                 return (
                     <Link
                         href={`${OPPORTUNITIES_ROUTE}/${id}`}
-                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
+                        className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
                         title={row.getValue('name')}
                     >
                         {row.getValue('name')}
@@ -101,16 +102,17 @@ export function OpportunitiesListDesktopComponent({
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Account Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('accountName')}>
+                <div className="truncate text-foreground/80" title={row.getValue('accountName')}>
                     {row.getValue('accountName')}
                 </div>
             ),
@@ -124,18 +126,19 @@ export function OpportunitiesListDesktopComponent({
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Stage
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 const stage = row.getValue('stage');
                 return (
-                    <Badge className={`${getOpportunityStageColor(stage)} text-white`}>
+                    <Badge className={`${getOpportunityStageColor(stage)} text-white shadow-sm`}>
                         {stage}
                     </Badge>
                 );
@@ -150,16 +153,17 @@ export function OpportunitiesListDesktopComponent({
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Close Date
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div>
+                <div className="text-foreground/70 tabular-nums">
                     {row.getValue('closeDate')
                         ? formatDateToSwedish(row.getValue('closeDate'))
                         : '-'}
@@ -173,11 +177,12 @@ export function OpportunitiesListDesktopComponent({
                     <div className="text-right">
                         <Button
                             variant="ghost"
-                            size="large"
+                            size="sm"
+                            className="h-8 -mr-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                         >
                             Amount
-                            <ArrowUpDown />
+                            <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                         </Button>
                     </div>
                 );
@@ -187,7 +192,7 @@ export function OpportunitiesListDesktopComponent({
                 const currency = row.original.currency;
 
                 if (!amount) {
-                    return <div className="text-right font-medium">-</div>;
+                    return <div className="text-right font-medium text-foreground/70">-</div>;
                 }
 
                 const formatted = new Intl.NumberFormat('en-US', {
@@ -195,7 +200,7 @@ export function OpportunitiesListDesktopComponent({
                     currency: currency,
                 }).format(amount);
 
-                return <div className="text-right font-medium">{formatted}</div>;
+                return <div className="text-right font-medium tabular-nums">{formatted}</div>;
             },
         },
     ];
