@@ -14,10 +14,10 @@ export default async function HomeLayout({ children }) {
             }}
         >
             <AppSidebarComponent user={user} location="setup" />
-            <SidebarInset>
+            <SidebarInset className="bg-sidebar">
                 <AppHeaderComponent location="setup" />
-                <main>
-                    <div className="px-4 md:px-8 md:py-2 max-w-full">{children}</div>
+                <main className="flex-1 bg-background rounded-tl-3xl px-4 md:px-8 py-4 md:py-6">
+                    {children}
                 </main>
             </SidebarInset>
         </SidebarProvider>

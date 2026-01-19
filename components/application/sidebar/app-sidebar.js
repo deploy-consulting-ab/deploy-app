@@ -17,11 +17,11 @@ import { AppSidebarMenusComponent } from '@/components/application/sidebar/app-s
 export async function AppSidebarComponent({ user, location }) {
     return (
         <Sidebar
-            variant="default"
+            variant="borderless"
             collapsible="icon"
-            className="border-r border-border/50 bg-background/95 backdrop-blur-xl"
+            className="bg-sidebar"
         >
-            <SidebarHeader className="border-b border-border/50 pb-4">
+            <SidebarHeader className="pb-4">
                 <AppSidebarLogoComponent />
             </SidebarHeader>
             <SidebarContent className="px-2 py-4">
@@ -34,7 +34,7 @@ export async function AppSidebarComponent({ user, location }) {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t border-border/50 pt-4">
+            <SidebarFooter className="pt-4">
                 <AppSidebarUserComponent user={user} />
             </SidebarFooter>
             <SidebarRail />

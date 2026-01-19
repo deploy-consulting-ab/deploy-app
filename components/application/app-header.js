@@ -19,7 +19,7 @@ export async function AppHeaderComponent({ location }) {
     return (
         <>
             <ImpersonationBannerComponent />
-            <header className="backdrop-blur-lg bg-background/80 border-b border-border/50 flex h-16 shrink-0 items-center justify-between px-4 sticky top-0 z-40">
+            <header className="bg-sidebar flex h-16 shrink-0 items-center justify-between px-4 sticky top-0 z-40">
                 {/* Left section with sidebar trigger and breadcrumbs */}
                 <div className="flex items-center gap-4 min-w-fit">
                     <SidebarTrigger className="-ml-1 hover:bg-accent/50 rounded-lg transition-colors" />
