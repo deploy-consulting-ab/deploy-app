@@ -216,42 +216,27 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
     }
 }
 
-export async function getOccupancyHistory(employeeNumber, today, page = 1, pageSize = 10) {
+export async function getOccupancyHistory(employeeNumber, today) {
     try {
         const result = await queryData(getOccupancyHistoryQuery(employeeNumber, today));
 
         if (result?.length === 0) {
-            return {
-                data: [],
-                totalCount: 0,
-                page,
-                pageSize,
-                totalPages: 0,
-            };
+            return [];
         }
 
-        const totalCount = result.length;
-        const totalPages = Math.ceil(totalCount / pageSize);
-        const startIndex = (page - 1) * pageSize;
-        const paginatedData = result.slice(startIndex, startIndex + pageSize);
-
-        return {
-            data: paginatedData.map((occupancyRate) => ({
-                id: occupancyRate.Id,
-                month: occupancyRate.Month__c,
-                year: occupancyRate.Year__c,
-                date: occupancyRate.Date__c,
-                rate: occupancyRate.OccupancyRate__c,
-                externalHours: occupancyRate.ExternalMonthHours__c,
-                internalHours: occupancyRate.InternalMonthHours__c,
-                totalMonthlyHours: occupancyRate.TotalMonthlyHours__c,
-                totalHours: occupancyRate.TotalHours__c,
-            })),
-            totalCount,
-            page,
-            pageSize,
-            totalPages,
-        };
+        return result.map((occupancyRate) => ({
+            id: occupancyRate.Id,
+            month: occupancyRate.Month__c,
+            year: occupancyRate.Year__c,
+            period: `${occupancyRate.Month__c} ${occupancyRate.Year__c}`,
+            date: occupancyRate.Date__c,
+            rate: occupancyRate.OccupancyRate__c,
+            status: occupancyRate.OccupancyRate__c,
+            externalHours: occupancyRate.ExternalMonthHours__c || 0,
+            internalHours: occupancyRate.InternalMonthHours__c || 0,
+            totalMonthlyHours: occupancyRate.TotalMonthlyHours__c,
+            totalHours: occupancyRate.TotalHours__c,
+        }));
     } catch (error) {
         throw error;
     }

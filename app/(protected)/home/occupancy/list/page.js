@@ -5,34 +5,30 @@ import { OccupancyListComponent } from '@/components/application/occupancy/occup
 import { formatDateToISOString, getUTCToday } from '@/lib/utils';
 import { getOccupancyHistory } from '@/actions/salesforce/salesforce-actions';
 
-export default async function OccupancyListPage({ searchParams }) {
+export default async function OccupancyListPage() {
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     const today = getUTCToday();
     const formattedToday = formatDateToISOString(today);
 
-    const resolvedParams = await searchParams;
-    const page = parseInt(resolvedParams?.page) || 1;
-    const pageSize = 10;
-
-    let occupancyHistory = null;
+    let occupancyData = [];
     let error = null;
 
     try {
-        occupancyHistory = await getOccupancyHistory(
-            employeeNumber,
-            formattedToday,
-            page,
-            pageSize
-        );
+        occupancyData = await getOccupancyHistory(employeeNumber, formattedToday);
     } catch (err) {
         error = err;
     }
 
     return (
         <div>
-            <OccupancyListComponent data={occupancyHistory} error={error} currentPage={page} />
+            <OccupancyListComponent
+                occupancyData={occupancyData}
+                employeeNumber={employeeNumber}
+                formattedToday={formattedToday}
+                error={error}
+            />
         </div>
     );
 }
