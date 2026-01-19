@@ -53,7 +53,7 @@ export function DatatableWrapperComponent({ data, columns, placeholder, searchKe
                         onChange={(event) =>
                             table.getColumn(searchKey)?.setFilterValue(event.target.value)
                         }
-                        className="max-w-sm mr-2 border-transparent focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
+                        className="max-w-sm mr-2 bg-card border-border/50 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export function DatatableWrapperComponent({ data, columns, placeholder, searchKe
                     {props.actions && props.actions.map((action) => action)}
                 </div>
             </div>
-            <div className="overflow-hidden rounded-xl border-transparent bg-card/50 backdrop-blur-sm shadow-sm">
+            <div className="overflow-hidden rounded-xl border border-border/30 bg-card shadow-sm">
                 {!data || data.length === 0 ? (
                     <NoDataComponent text="No data found" />
                 ) : (
