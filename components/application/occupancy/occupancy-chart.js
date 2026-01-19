@@ -353,7 +353,7 @@ export function OccupancyChartComponent({ chartData, error }) {
                     </div>
                 ) : (
                     <div className="flex flex-col h-full">
-                        {!isMobile && <MetricsSummary data={filteredData} />}
+                        <MetricsSummary data={filteredData} />
 
                         <ChartContainer
                             config={chartConfig}
