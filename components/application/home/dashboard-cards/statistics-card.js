@@ -113,7 +113,7 @@ export function StatisticsCardComponent({
                             <Card className="p-4 bg-card/50 backdrop-blur border-border/50 hover:shadow-lg hover:border-[var(--accent-lime)]/50 transition-all cursor-pointer group">
                                 <div className="flex items-center justify-between mb-2">
                                     <Briefcase className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                                    <ArrowUpRight className="h-3 w-3 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                                    <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
                                 </div>
                                 <div className="text-2xl font-bold">{stat.value}</div>
                                 <div className="text-xs text-muted-foreground">{stat.label}</div>
