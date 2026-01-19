@@ -71,7 +71,7 @@ export function OccupancyRatesCardComponent({
                         </Button>
                     )}
                     <Link href={OCCUPANCY_ROUTE} className="md:block hover:cursor-pointer">
-                        <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--accent-lime)] transition-colors" />
                     </Link>
                 </div>
             </div>
