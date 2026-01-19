@@ -135,10 +135,10 @@ export function HolidaysCalendarComponent({ holidays, error }) {
         </div>
 
         {/* Calendar Grid - key forces clean re-render on month change */}
-        <div key={`${currentYear}-${currentMonth}`} className="grid grid-cols-7 gap-2">
+        <div key={`${currentYear}-${currentMonth}`} className="grid grid-cols-7 gap-1">
           {/* Empty cells for days before the first of the month */}
           {Array.from({ length: startDay }).map((_, index) => (
-            <div key={`empty-${index}`} className="aspect-square" />
+            <div key={`empty-${index}`} className="h-10" />
           ))}
 
           {/* Days of the month */}
@@ -153,9 +153,9 @@ export function HolidaysCalendarComponent({ holidays, error }) {
               <div
                 key={day}
                 className={cn(
-                  'aspect-square rounded-full flex items-center justify-center text-sm font-medium',
-                  // Holiday styling - bright lime green
-                  holiday && 'bg-[#a9e34b] text-gray-900 font-bold',
+                  'h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm font-medium',
+                  // Holiday styling - lime to yellow gradient
+                  holiday && 'bg-gradient-to-r from-[var(--accent-lime)] to-[var(--accent-yellow)] text-gray-900 font-bold',
                   // Today styling
                   todayDay && !holiday && 'ring-2 ring-white bg-white/20 text-white font-bold',
                   // Weekend styling (not holiday)
