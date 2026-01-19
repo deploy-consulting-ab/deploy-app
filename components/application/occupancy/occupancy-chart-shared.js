@@ -131,8 +131,6 @@ export function MetricsSummary({ data, allData, timeRange }) {
 
     const averageLevel = getOccupancyLevel(average);
     const TrendIcon = trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
-    const trendColor =
-        trend >= 0 ? 'var(--occupancy-color-optimal)' : 'var(--occupancy-color-critical-low)';
 
     const hasTrendData = trendFromMonth && trendToMonth;
 
@@ -143,27 +141,26 @@ export function MetricsSummary({ data, allData, timeRange }) {
                     className="w-2 h-2 rounded-full"
                     style={{ backgroundColor: averageLevel.color }}
                 />
-                <span className="text-xs text-muted-foreground">Avg</span>
+                <span className="text-sm text-muted-foreground">Avg</span>
                 <span className="text-sm font-mono font-semibold">{average}%</span>
             </div>
             <div className="flex items-center gap-2">
                 <TrendingUp className="w-3 h-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">High</span>
+                <span className="text-sm text-muted-foreground">High</span>
                 <span className="text-sm font-mono font-medium">{highest}%</span>
             </div>
             <div className="flex items-center gap-2">
                 <TrendingDown className="w-3 h-3 text-muted-foreground" />
-                <span className="text-xs text-muted-foreground">Low</span>
+                <span className="text-sm text-muted-foreground">Low</span>
                 <span className="text-sm font-mono font-medium">{lowest}%</span>
             </div>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div className="flex items-center gap-2 cursor-help">
-                        <TrendIcon className="w-3 h-3" style={{ color: trendColor }} />
+                        <TrendIcon className="w-3 h-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">Trend</span>
                         <span
                             className="text-sm font-mono font-medium"
-                            style={{ color: trendColor }}
                         >
                             {trend > 0 ? '+' : ''}
                             {trend}%
