@@ -1,12 +1,13 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ProgressRing } from '@/components/application/home/progress-ring';
 import { MiniLineChart } from '@/components/application/home/mini-chart';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function OccupancyRatesCardComponent({
     occupancy: initialOccupancy,
@@ -14,6 +15,7 @@ export function OccupancyRatesCardComponent({
     refreshAction,
     target = 85,
 }) {
+    const isMobile = useIsMobile();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [occupancy, setOccupancy] = useState(initialOccupancy);
     const [error, setError] = useState(initialError);
@@ -33,7 +35,6 @@ export function OccupancyRatesCardComponent({
     };
 
     const currentRate = occupancy?.currentRate ?? 0;
-    const previousRate = occupancy?.previousRate ?? null;
     const history = occupancy?.history ?? [];
 
     // Get current month name
@@ -52,7 +53,9 @@ export function OccupancyRatesCardComponent({
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
             <div className="flex items-center justify-between">
-                <h3 className="text-md font-semibold text-foreground">Occupancy Rate</h3>
+                <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
+                    Occupancy Rate
+                </CardTitle>
                 {refreshAction && (
                     <Button
                         variant="ghost"
