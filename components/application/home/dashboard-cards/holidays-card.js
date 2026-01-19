@@ -1,16 +1,20 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
-import { Calendar, RefreshCw } from 'lucide-react';
+import { Card, CardTitle } from '@/components/ui/card';
+import { Calendar, RefreshCw, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { formatDateToEnUSWithOptions } from '@/lib/utils';
+import Link from 'next/link';
+import { HOLIDAYS_ROUTE } from '@/menus/routes';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function HolidaysCardComponent({
     holidays: initialHolidays,
     refreshAction,
     error: initialError,
 }) {
+    const isMobile = useIsMobile();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [holidays, setHolidays] = useState(initialHolidays);
     const [error, setError] = useState(initialError);
@@ -50,22 +54,27 @@ export function HolidaysCardComponent({
 
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
+            <div className="flex items-center justify-between">
+                <CardTitle className={`flex items-center gap-2 ${isMobile ? 'text-sm' : 'text-xl'}`}>
                     <Calendar className="h-5 w-5" />
                     Upcoming Time Off
-                </h3>
-                {refreshAction && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isRefreshing}
-                        className={isRefreshing ? 'animate-spin' : ''}
-                    >
-                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                )}
+                </CardTitle>
+                <div className="flex items-center gap-1">
+                    {refreshAction && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isRefreshing}
+                            className={isRefreshing ? 'animate-spin' : ''}
+                        >
+                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                    )}
+                    <Link href={HOLIDAYS_ROUTE} className="md:block hover:cursor-pointer">
+                        <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                    </Link>
+                </div>
             </div>
 
             {/* Holiday Stats */}

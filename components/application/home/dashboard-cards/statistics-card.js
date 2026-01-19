@@ -1,11 +1,12 @@
 'use client';
 
-import { Card } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 import { Briefcase, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function StatisticsCardComponent({
     stats = [],
@@ -13,6 +14,7 @@ export function StatisticsCardComponent({
     refreshAction,
     error: initialError,
 }) {
+    const isMobile = useIsMobile();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [statsData, setStatsData] = useState(stats);
     const [error, setError] = useState(initialError);
@@ -86,7 +88,7 @@ export function StatisticsCardComponent({
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
             <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+                <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>{title}</CardTitle>
                 <div className="flex items-center gap-2">
                     {refreshAction && (
                         <Button

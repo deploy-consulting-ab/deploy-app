@@ -55,7 +55,7 @@ export function OccupancyRatesCardComponent({
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
             <div className="flex items-center justify-between">
-                <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
+                <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>
                     Occupancy Rate
                 </CardTitle>
                 <div className="flex items-center gap-1">
