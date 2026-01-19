@@ -255,11 +255,11 @@
     .modern-card {
         @apply rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 shadow-sm;
     }
-    
+
     .modern-card-hover {
         @apply hover:shadow-lg hover:border-border transition-all duration-300;
     }
-    
+
     .glass-effect {
         backdrop-filter: blur(12px);
         background: rgba(255, 255, 255, 0.05);
