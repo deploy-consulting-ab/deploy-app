@@ -123,7 +123,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
                         refreshAction={refreshOccupancy}
-                        target={90}
+                        target={85}
                     />
 
                     {/* Assignments Card */}
