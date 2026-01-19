@@ -7,7 +7,12 @@ import { QuickLinksCardComponent } from '@/components/application/home/dashboard
 import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
 
-export function HolidaysWrapperComponent({ initialData, refreshAction, error }) {
+export function HolidaysWrapperComponent({
+    initialData,
+    refreshAction,
+    error,
+    isNavigationDisabled = false,
+}) {
     const [rawData, setRawData] = useState(initialData);
     const [currentError, setCurrentError] = useState(error);
 
@@ -58,13 +63,17 @@ export function HolidaysWrapperComponent({ initialData, refreshAction, error }) 
                 <HolidaysCardComponent
                     holidays={transformedHolidays}
                     error={currentError}
-                    isNavigationDisabled={true}
+                    isNavigationDisabled={isNavigationDisabled}
                     refreshAction={handleRefresh}
                 />
             </div>
             {/* Right side - positioned independently on large screens */}
             <div className="mt-4 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:w-1/3 lg:pl-2 space-y-4">
-                <HolidaysCalendarComponent holidays={rawData} error={currentError} />
+                <HolidaysCalendarComponent
+                    holidays={rawData}
+                    error={currentError}
+                    isNavigationDisabled={isNavigationDisabled}
+                />
                 <QuickLinksCardComponent
                     title="Flex"
                     description="Time reporting resources"

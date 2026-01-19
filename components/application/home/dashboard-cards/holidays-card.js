@@ -13,6 +13,7 @@ export function HolidaysCardComponent({
     holidays: initialHolidays,
     refreshAction,
     error: initialError,
+    isNavigationDisabled = false,
 }) {
     const isMobile = useIsMobile();
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -55,7 +56,9 @@ export function HolidaysCardComponent({
     return (
         <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
             <div className="flex items-center justify-between">
-                <CardTitle className={`flex items-center gap-2 ${isMobile ? 'text-sm' : 'text-xl'}`}>
+                <CardTitle
+                    className={`flex items-center gap-2 ${isMobile ? 'text-sm' : 'text-xl'}`}
+                >
                     <Calendar className="h-5 w-5" />
                     Upcoming Time Off
                 </CardTitle>
@@ -71,9 +74,11 @@ export function HolidaysCardComponent({
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>
                     )}
-                    <Link href={HOLIDAYS_ROUTE} className="md:block hover:cursor-pointer">
-                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--accent-lime)] transition-colors" />
-                    </Link>
+                    {!isNavigationDisabled && (
+                        <Link href={HOLIDAYS_ROUTE} className="md:block hover:cursor-pointer">
+                            <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--accent-lime)] transition-colors" />
+                        </Link>
+                    )}
                 </div>
             </div>
 

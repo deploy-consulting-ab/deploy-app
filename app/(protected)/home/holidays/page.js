@@ -31,6 +31,7 @@ export default async function HolidaysPage() {
                 initialData={data}
                 refreshAction={refreshHolidayData}
                 error={error}
+                isNavigationDisabled={true}
             />
         </div>
     );
