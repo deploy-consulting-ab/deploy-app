@@ -19,8 +19,8 @@ export async function SetupHomeComponent({ metrics, error }) {
     return (
         <div className="space-y-8">
             {/* Introduction Section */}
-            <div className="space-y-4">
-                <h1 className="text-4xl font-bold">Setup & Configuration</h1>
+            <div className="space-y-5">
+                <h1 className="text-5xl font-bold">Setup & Configuration</h1>
                 <p className="text-muted-foreground text-lg">
                     Welcome to the setup area. Here you can manage your organization&apos;s users,
                     profiles, and system permissions. Use the cards below to navigate to different
@@ -35,7 +35,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                     <MetricsCardComponent
                         metric={metrics.totalUsers}
                         title="Total Users"
-                        IconComponent={<Users className="h-4 w-4 text-primary" />}
+                        IconComponent={<Users className="h-5 w-5" />}
                         description="Total users in the system"
                     />
                 </Link>
@@ -45,7 +45,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                     <MetricsCardComponent
                         metric={metrics.activeUsers}
                         title="Active Users"
-                        IconComponent={<UserCheck className="h-4 w-4 text-primary" />}
+                        IconComponent={<UserCheck className="h-5 w-5" />}
                         description="Total active users in the system"
                     />
                 </Link>
@@ -55,7 +55,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                     <MetricsCardComponent
                         metric={metrics.totalProfiles}
                         title="Profiles"
-                        IconComponent={<UserCircle className="h-4 w-4 text-primary" />}
+                        IconComponent={<UserCircle className="h-5 w-5" />}
                         description="Total user profiles in the system"
                     />
                 </Link>
@@ -65,7 +65,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                     <MetricsCardComponent
                         metric={metrics.totalSystemPermissions}
                         title="System Permissions"
-                        IconComponent={<Shield className="h-4 w-4 text-primary" />}
+                        IconComponent={<Shield className="h-5 w-5" />}
                         description="Total system permissions in the system"
                     />
                 </Link>
@@ -75,7 +75,7 @@ export async function SetupHomeComponent({ metrics, error }) {
                     <MetricsCardComponent
                         metric={metrics.totalPermissionSets}
                         title="Permission Sets"
-                        IconComponent={<Box className="h-4 w-4 text-primary" />}
+                        IconComponent={<Box className="h-5 w-5" />}
                         description="Total permission sets in the system"
                     />
                 </Link>

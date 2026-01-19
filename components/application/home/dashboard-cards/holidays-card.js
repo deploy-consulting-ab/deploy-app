@@ -54,7 +54,7 @@ export function HolidaysCardComponent({
     }
 
     return (
-        <Card className="p-6 border-border/50">
+        <Card className="p-6">
             <div className="flex items-center justify-between">
                 <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>
                     Upcoming Time Off
