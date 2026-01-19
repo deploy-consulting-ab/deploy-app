@@ -9,7 +9,6 @@ import { LogoutButtonComponent } from '@/components/application/logout-button';
 import { GlobalSearch } from '@/components/application/search/global-search';
 import { SetupButtonComponent } from '@/components/application/setup-button';
 import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
-import { PremiumButton } from '@/components/application/premium-button';
 
 export async function AppHeaderComponent() {
     const session = await auth();
@@ -34,7 +33,6 @@ export async function AppHeaderComponent() {
                 </div>
                 {/* Right section with icons */}
                 <div className="flex items-center gap-2">
-                    <PremiumButton />
                     {user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && (
                         <SetupButtonComponent />
                     )}
