@@ -67,9 +67,9 @@ export function QuickLinksCardComponent({
                             <Card className="p-4 border-border/50 hover:shadow-lg transition-all cursor-pointer h-full">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="p-2 rounded-lg transition-colors text-muted-foreground group-hover:text-foreground">
-                                        <Icon className="h-4 w-4" />
+                                        <Icon className="h-5 w-5" />
                                     </div>
-                                    <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
                                 </div>
                                 <div className="font-medium text-sm transition-colors">
                                     {link.title}

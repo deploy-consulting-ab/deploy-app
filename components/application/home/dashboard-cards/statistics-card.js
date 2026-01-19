@@ -114,11 +114,11 @@ export function StatisticsCardComponent({
                         <Link key={stat.id || index} href={href}>
                             <Card className="p-4 border-border/50 hover:shadow-lg hover:border-[var(--accent-lime)]/50 transition-all cursor-pointer group">
                                 <div className="flex items-center justify-between mb-2">
-                                    <Briefcase className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                                    <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                                    <Briefcase className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
                                 </div>
                                 <div className="text-2xl font-bold">{stat.value}</div>
-                                <div className="text-xs text-muted-foreground">{stat.label}</div>
+                                <div className="text-sm text-muted-foreground">{stat.label}</div>
                             </Card>
                         </Link>
                     );
