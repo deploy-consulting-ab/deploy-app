@@ -7,7 +7,7 @@ import { getHomeRequiredDataForProfile } from '@/components/application/home/hom
 import {
     HolidaysCardComponent,
     OccupancyRatesCardComponent,
-    QuickLinksCard,
+    QuickLinksCardComponent,
 } from '@/components/application/home/dashboard-cards';
 
 export async function ManagementHomeComponent({ profileId, employeeNumber }) {
@@ -109,7 +109,7 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
             </div>
 
             {/* Bottom row: Quick Links */}
-            <QuickLinksCard
+            <QuickLinksCardComponent
                 title="Quick Access"
                 description="Frequently used resources and tools"
                 links={quickLinks}

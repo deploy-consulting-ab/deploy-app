@@ -10,11 +10,11 @@ import { getHomeRequiredDataForProfile } from '@/components/application/home/hom
 import {
     HolidaysCardComponent,
     OccupancyRatesCardComponent,
-    QuickLinksCard,
-    StatisticsCard,
+    QuickLinksCardComponent,
+    StatisticsCardComponent,
 } from '@/components/application/home/dashboard-cards';
 
-export async function AdminHomeComponent({ profileId, employeeNumber, userName }) {
+export async function AdminHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors
     let loading = true;
 
@@ -129,7 +129,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
                     />
 
                     {/* Assignments Card */}
-                    <StatisticsCard
+                    <StatisticsCardComponent
                         title="Assignments"
                         stats={data.assignmentsMetrics}
                         error={errors.assignmentsMetrics}
@@ -147,7 +147,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber, userName }
                     />
 
                     {/* Quick Links */}
-                    <QuickLinksCard
+                    <QuickLinksCardComponent
                         title="Quick Access"
                         description="Access resources and support anytime"
                         links={quickLinks}

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { HolidaysCalendarComponent } from '@/components/application/holidays/holidays-calendar';
-import { QuickLinksCard } from '@/components/application/home/dashboard-cards';
+import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards';
 import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
 
@@ -65,7 +65,7 @@ export function HolidaysWrapperComponent({ initialData, refreshAction, error }) 
             {/* Right side - positioned independently on large screens */}
             <div className="mt-4 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:w-1/3 lg:pl-2 space-y-4">
                 <HolidaysCalendarComponent holidays={rawData} error={currentError} />
-                <QuickLinksCard
+                <QuickLinksCardComponent
                     title="Flex"
                     description="Time reporting resources"
                     links={quickLinks}

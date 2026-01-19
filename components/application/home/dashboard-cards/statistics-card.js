@@ -4,11 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Briefcase, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { MiniLineChart } from '@/components/application/home/mini-chart';
 import Link from 'next/link';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
-export function StatisticsCard({
+export function StatisticsCardComponent({
     stats = [],
     title = 'Assignments',
     refreshAction,

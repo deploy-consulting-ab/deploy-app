@@ -10,8 +10,8 @@ import { getHomeRequiredDataForProfile } from '@/components/application/home/hom
 import {
     HolidaysCardComponent,
     OccupancyRatesCardComponent,
-    QuickLinksCard,
-    StatisticsCard,
+    QuickLinksCardComponent,
+    StatisticsCardComponent,
 } from '@/components/application/home/dashboard-cards';
 
 export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
@@ -134,7 +134,7 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
             </div>
 
             {/* Middle row: Statistics */}
-            <StatisticsCard
+            <StatisticsCardComponent
                 title="Assignments Overview"
                 description="Your current assignment metrics"
                 stats={data.assignmentsMetrics}
@@ -144,7 +144,7 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
             />
 
             {/* Bottom row: Quick Links */}
-            <QuickLinksCard
+            <QuickLinksCardComponent
                 title="Quick Access"
                 description="Frequently used resources and tools"
                 links={quickLinks}
@@ -169,7 +169,7 @@ function transformOccupancyData(rawData) {
     };
 }
 
-// Transform raw metrics data to match StatisticsCard expected format
+// Transform raw metrics data to match StatisticsCardComponent expected format
 function transformStatisticsData(metrics) {
     if (!metrics || metrics.length === 0) return [];
 
