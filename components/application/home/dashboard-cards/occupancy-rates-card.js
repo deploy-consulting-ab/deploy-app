@@ -1,13 +1,15 @@
 'use client';
 
 import { Card, CardTitle } from '@/components/ui/card';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { ProgressRing } from '@/components/application/home/progress-ring';
 import { MiniLineChart } from '@/components/application/home/mini-chart';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { useIsMobile } from '@/hooks/use-mobile';
+import Link from 'next/link';
+import { OCCUPANCY_ROUTE } from '@/menus/routes';
 
 export function OccupancyRatesCardComponent({
     occupancy: initialOccupancy,
@@ -56,17 +58,22 @@ export function OccupancyRatesCardComponent({
                 <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
                     Occupancy Rate
                 </CardTitle>
-                {refreshAction && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isRefreshing}
-                        className={isRefreshing ? 'animate-spin' : ''}
-                    >
-                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                )}
+                <div className="flex items-center gap-1">
+                    {refreshAction && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isRefreshing}
+                            className={isRefreshing ? 'animate-spin' : ''}
+                        >
+                            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                    )}
+                    <Link href={OCCUPANCY_ROUTE} className="md:block hover:cursor-pointer">
+                        <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                    </Link>
+                </div>
             </div>
 
             {/* Progress Ring */}
