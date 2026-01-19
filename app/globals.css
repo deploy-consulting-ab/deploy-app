@@ -62,8 +62,8 @@
 
 :root {
     --radius: 0.65rem;
-    /* Light silver background for main content area */
-    --background: oklch(0.94 0.006 260);
+    /* Very subtle off-white background matching the cards */
+    --background: oklch(0.98 0.004 260);
     --foreground: oklch(0.22 0.02 260);
     /* White cards */
     --card: oklch(1 0 0);
@@ -255,8 +255,8 @@
     body {
         @apply bg-background text-foreground;
 
-        /* Light silver background */
-        background: oklch(0.94 0.006 260);
+        /* Very subtle off-white/light gray background */
+        background: oklch(0.98 0.004 260);
     }
 
     .dark body {
