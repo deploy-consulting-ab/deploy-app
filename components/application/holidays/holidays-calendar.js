@@ -177,11 +177,11 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                                     'h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm font-medium transition-colors',
                                     // Holiday styling - lime to yellow gradient
                                     holiday &&
-                                        'bg-gradient-to-r from-[var(--deploy-accent-lime)] to-[var(--deploy-accent-yellow)] text-gray-900 font-bold',
+                                        'bg-gradient-to-r from-deploy-accent-lime to-deploy-accent-yellow text-gray-900 font-bold',
                                     // Today styling
                                     todayDay &&
                                         !holiday &&
-                                        'ring-2 ring-primary bg-primary/20 text-foreground font-bold',
+                                        'bg-deploy-accent-silver/20 text-foreground font-bold',
                                     // Weekend styling (not holiday)
                                     weekend && !holiday && !todayDay && 'bg-muted/50 text-muted-foreground',
                                     // Past days (not holiday, not today, not weekend)

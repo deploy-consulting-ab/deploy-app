@@ -53,6 +53,11 @@
     --color-deploy-ocean: var(--deploy-ocean);
     --color-deploy-purple: var(--deploy-purple);
     --color-deploy-gray: var(--deploy-gray);
+    --color-deploy-accent-silver: var(--deploy-accent-silver);
+    --color-deploy-accent-lime: var(--deploy-accent-lime);
+    --color-deploy-accent-yellow: var(--deploy-accent-yellow);
+    --color-deploy-accent-orange: var(--deploy-accent-orange);
+    --color-deploy-accent-blue-bright: var(--deploy-accent-blue-bright);
 }
 
 :root {
