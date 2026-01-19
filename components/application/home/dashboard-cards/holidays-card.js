@@ -56,10 +56,7 @@ export function HolidaysCardComponent({
     return (
         <Card className="p-6 border-border/50">
             <div className="flex items-center justify-between">
-                <CardTitle
-                    className={`flex items-center gap-2 ${isMobile ? 'text-sm' : 'text-xl'}`}
-                >
-                    <Calendar className="h-5 w-5" />
+                <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>
                     Upcoming Time Off
                 </CardTitle>
                 <div className="flex items-center gap-1">
