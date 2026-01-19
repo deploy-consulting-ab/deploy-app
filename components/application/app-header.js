@@ -10,14 +10,16 @@ import { GlobalSearch } from '@/components/application/search/global-search';
 import { SetupButtonComponent } from '@/components/application/setup-button';
 import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
 
-export async function AppHeaderComponent() {
+export async function AppHeaderComponent({ location }) {
     const session = await auth();
     const { user } = session;
+
+    const isHomePage = location === 'home';
 
     return (
         <>
             <ImpersonationBannerComponent />
-            <header className="backdrop-blur-lg bg-background/80 border-b border-border/50 flex h-16 shrink-0 items-center px-4 sticky top-0 z-40">
+            <header className="backdrop-blur-lg bg-background/80 border-b border-border/50 flex h-16 shrink-0 items-center justify-between px-4 sticky top-0 z-40">
                 {/* Left section with sidebar trigger and breadcrumbs */}
                 <div className="flex items-center gap-4 min-w-fit">
                     <SidebarTrigger className="-ml-1 hover:bg-accent/50 rounded-lg transition-colors" />
@@ -25,15 +27,19 @@ export async function AppHeaderComponent() {
                         <DynamicBreadcrumbComponent />
                     </div>
                 </div>
+
                 {/* Center section with search */}
-                <div className="flex-1 flex justify-center px-4">
-                    <div className="w-full max-w-xl">
-                        <GlobalSearch user={user} />
+                {isHomePage && (
+                    <div className="flex-1 flex justify-center px-4">
+                        <div className="w-full max-w-xl">
+                            <GlobalSearch user={user} />
+                        </div>
                     </div>
-                </div>
+                )}
+
                 {/* Right section with icons */}
                 <div className="flex items-center gap-2">
-                    {user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && (
+                    {user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && isHomePage && (
                         <SetupButtonComponent />
                     )}
                     <ModeToggleComponent />
