@@ -82,13 +82,13 @@
     --accent-foreground: var(--deploy-blue);
     --destructive: oklch(0.55 0.22 25);
     /* Subtle silver borders */
-    --border: oklch(0.90 0.008 260);
+    --border: oklch(0.9 0.008 260);
     --input: oklch(0.96 0.005 260);
     /* Brand-influenced ring color */
     --ring: oklch(0.65 0.06 240);
     /* Vibrant, distinguishable chart colors for light mode */
     --chart-1: oklch(0.55 0.18 240);
-    --chart-2: oklch(0.60 0.14 175);
+    --chart-2: oklch(0.6 0.14 175);
     --chart-3: oklch(0.58 0.16 280);
     --chart-4: oklch(0.72 0.16 85);
     --chart-5: oklch(0.62 0.18 30);
@@ -221,7 +221,7 @@
     box-shadow:
         0 2px 8px oklch(0.5 0.01 260 / 0.08),
         0 1px 3px oklch(0.4 0.01 260 / 0.05);
-    border: 1px solid oklch(0.90 0.008 260 / 0.5);
+    border: 1px solid oklch(0.9 0.008 260 / 0.5);
 }
 
 .dark .shadow-box {

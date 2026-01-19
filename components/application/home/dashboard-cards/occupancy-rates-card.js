@@ -47,7 +47,7 @@ export function OccupancyRatesCardComponent({
         history.length > 0
             ? history.map((h) => h.rate).reverse()
             : [currentRate, currentRate, currentRate, currentRate, currentRate];
-    
+
     const chartLabels =
         history.length > 0
             ? history.map((h) => h.period).reverse()
@@ -100,7 +100,11 @@ export function OccupancyRatesCardComponent({
                 <div className="mt-4 pt-4 border-t border-border/50">
                     <p className="text-sm text-muted-foreground mb-2">Recent Trend</p>
                     <div className="h-16">
-                        <MiniLineChart data={chartData} labels={chartLabels} color="var(--deploy-accent-lime)" />
+                        <MiniLineChart
+                            data={chartData}
+                            labels={chartLabels}
+                            color="var(--deploy-accent-lime)"
+                        />
                     </div>
                 </div>
             )}

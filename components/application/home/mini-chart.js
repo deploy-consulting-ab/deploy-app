@@ -2,10 +2,16 @@
 
 import { useId, useState } from 'react';
 
-export function MiniLineChart({ data = [], labels = [], color = 'var(--deploy-accent-yellow)', height = 60, unit = '%' }) {
+export function MiniLineChart({
+    data = [],
+    labels = [],
+    color = 'var(--deploy-accent-yellow)',
+    height = 60,
+    unit = '%',
+}) {
     const gradientId = useId();
     const [hoveredIndex, setHoveredIndex] = useState(null);
-    
+
     if (!data || data.length === 0) return null;
 
     const max = Math.max(...data);
@@ -19,7 +25,7 @@ export function MiniLineChart({ data = [], labels = [], color = 'var(--deploy-ac
         return { x, y, value };
     });
 
-    const pathData = `M ${points.map(p => `${p.x},${p.y}`).join(' L ')}`;
+    const pathData = `M ${points.map((p) => `${p.x},${p.y}`).join(' L ')}`;
 
     return (
         <div className="relative" style={{ height: `${height}px` }}>
@@ -33,16 +39,17 @@ export function MiniLineChart({ data = [], labels = [], color = 'var(--deploy-ac
                         transform: 'translateX(-50%)',
                     }}
                 >
-                    <div className="font-medium">{labels[hoveredIndex] || `Point ${hoveredIndex + 1}`}</div>
-                    <div style={{ color }}>{data[hoveredIndex]}{unit}</div>
+                    <div className="font-medium">
+                        {labels[hoveredIndex] || `Point ${hoveredIndex + 1}`}
+                    </div>
+                    <div style={{ color }}>
+                        {data[hoveredIndex]}
+                        {unit}
+                    </div>
                 </div>
             )}
-            
-            <svg
-                viewBox="0 0 100 100"
-                className="w-full h-full"
-                preserveAspectRatio="none"
-            >
+
+            <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
                 {/* Gradient fill */}
                 <defs>
                     <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -85,8 +92,18 @@ export function MiniLineChart({ data = [], labels = [], color = 'var(--deploy-ac
                             {/* Visible point - shown when hovered or is max */}
                             {(isMax || isHovered) && (
                                 <>
-                                    <circle cx={point.x} cy={point.y} r={isHovered ? '4' : '3'} fill={color} />
-                                    <circle cx={point.x} cy={point.y} r={isHovered ? '2' : '1.5'} fill="white" />
+                                    <circle
+                                        cx={point.x}
+                                        cy={point.y}
+                                        r={isHovered ? '4' : '3'}
+                                        fill={color}
+                                    />
+                                    <circle
+                                        cx={point.x}
+                                        cy={point.y}
+                                        r={isHovered ? '2' : '1.5'}
+                                        fill="white"
+                                    />
                                 </>
                             )}
                         </g>

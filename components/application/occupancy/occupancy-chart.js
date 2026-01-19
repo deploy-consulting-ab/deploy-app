@@ -81,8 +81,7 @@ export function OccupancyChartComponent({ chartData, error }) {
 
         if (timeRange === 'FY' || timeRange === 'PFY') {
             const currentFiscalYear = getFiscalYear(currentDate);
-            const targetFiscalYear =
-                timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1;
+            const targetFiscalYear = timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1;
             return isInFiscalYear(date, targetFiscalYear);
         } else if (timeRange === 'CURRENT_MONTH') {
             return (
@@ -194,10 +193,7 @@ export function OccupancyChartComponent({ chartData, error }) {
                             timeRange={timeRange}
                         />
 
-                        <ChartContainer
-                            config={chartConfig}
-                            className="flex-1 w-full min-h-0"
-                        >
+                        <ChartContainer config={chartConfig} className="flex-1 w-full min-h-0">
                             <BarChart
                                 accessibilityLayer
                                 data={filteredData}

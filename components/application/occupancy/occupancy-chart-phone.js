@@ -45,11 +45,7 @@ export function OccupancyChartPhone({ filteredData, allData, timeRange, setTimeR
                 <CardDescription>{timeLabel.short}</CardDescription>
                 <CardAction>
                     <Select value={timeRange} onValueChange={setTimeRange}>
-                        <SelectTrigger
-                            className="w-36"
-                            size="sm"
-                            aria-label="Select time range"
-                        >
+                        <SelectTrigger className="w-36" size="sm" aria-label="Select time range">
                             <SelectValue placeholder="Current month" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -72,12 +68,12 @@ export function OccupancyChartPhone({ filteredData, allData, timeRange, setTimeR
                         </div>
                     </div>
                 ) : (
-                        <>
-                            <MetricsSummary
-                                data={filteredData}
-                                allData={allData}
-                                timeRange={timeRange}
-                            />
+                    <>
+                        <MetricsSummary
+                            data={filteredData}
+                            allData={allData}
+                            timeRange={timeRange}
+                        />
 
                         {/* Horizontal bar chart for mobile */}
                         <ChartContainer config={chartConfig} className="h-[180px] w-full">

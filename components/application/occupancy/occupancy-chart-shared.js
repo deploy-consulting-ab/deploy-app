@@ -62,10 +62,7 @@ export function OccupancyTooltip({ active, payload }) {
     return (
         <div className="rounded-xl border border-border/50 bg-card/95 backdrop-blur-md p-3 shadow-xl">
             <div className="flex items-center gap-2 mb-2">
-                <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: level.color }}
-                />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: level.color }} />
                 <span className="font-medium text-foreground">{data.month}</span>
             </div>
             <div className="space-y-1">
@@ -164,9 +161,7 @@ export function MetricsSummary({ data, allData, timeRange }) {
                     <div className="flex items-center gap-2 cursor-help">
                         <TrendIcon className="w-3 h-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">Trend</span>
-                        <span
-                            className="text-sm font-mono font-medium"
-                        >
+                        <span className="text-sm font-mono font-medium">
                             {trend > 0 ? '+' : ''}
                             {trend}%
                         </span>

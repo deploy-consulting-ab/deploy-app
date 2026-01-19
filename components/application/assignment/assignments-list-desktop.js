@@ -160,7 +160,9 @@ export function AssignmentsListDesktopComponent({
             cell: ({ row }) => {
                 const projectStatus = row.getValue('projectStatus');
                 return (
-                    <Badge className={`${getAssignmentStageColor(projectStatus)} text-white shadow-sm`}>
+                    <Badge
+                        className={`${getAssignmentStageColor(projectStatus)} text-white shadow-sm`}
+                    >
                         {projectStatus}
                     </Badge>
                 );

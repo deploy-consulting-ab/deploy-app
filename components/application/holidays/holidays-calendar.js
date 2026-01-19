@@ -149,7 +149,10 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                 {/* Week Days Header */}
                 <div className="grid grid-cols-7 gap-2">
                     {weekDays.map((day, i) => (
-                        <div key={i} className="text-center text-xs font-medium text-muted-foreground py-1">
+                        <div
+                            key={i}
+                            className="text-center text-xs font-medium text-muted-foreground py-1"
+                        >
                             {day}
                         </div>
                     ))}
@@ -183,11 +186,22 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                                         !holiday &&
                                         'bg-deploy-accent-silver/20 text-foreground font-bold',
                                     // Weekend styling (not holiday)
-                                    weekend && !holiday && !todayDay && 'bg-muted/50 text-muted-foreground',
+                                    weekend &&
+                                        !holiday &&
+                                        !todayDay &&
+                                        'bg-muted/50 text-muted-foreground',
                                     // Past days (not holiday, not today, not weekend)
-                                    past && !holiday && !todayDay && !weekend && 'text-muted-foreground/60',
+                                    past &&
+                                        !holiday &&
+                                        !todayDay &&
+                                        !weekend &&
+                                        'text-muted-foreground/60',
                                     // Future days
-                                    !past && !holiday && !todayDay && !weekend && 'text-foreground hover:bg-muted/50'
+                                    !past &&
+                                        !holiday &&
+                                        !todayDay &&
+                                        !weekend &&
+                                        'text-foreground hover:bg-muted/50'
                                 )}
                             >
                                 {day}
@@ -199,7 +213,8 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                 {/* Footer */}
                 <div className="pt-3 border-t border-border/50 flex items-center justify-between">
                     <p className="text-sm text-muted-foreground">
-                        <span className="font-bold text-foreground">{holidaysThisMonth}</span> holiday
+                        <span className="font-bold text-foreground">{holidaysThisMonth}</span>{' '}
+                        holiday
                         {holidaysThisMonth !== 1 ? 's' : ''} this month
                     </p>
                     {!isCurrentMonth && (

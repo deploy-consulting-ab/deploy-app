@@ -8,6 +8,8 @@ import {
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
+    getOccupancyHistoryQuery,
+    getOccupancyHistoryCountQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getOpportunityByIdQuery,
@@ -209,6 +211,46 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
             date: occupancyRate.Date__c,
             rate: occupancyRate.OccupancyRate__c,
         }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getOccupancyHistory(employeeNumber, today, page = 1, pageSize = 10) {
+    try {
+        const result = await queryData(getOccupancyHistoryQuery(employeeNumber, today));
+
+        if (result?.length === 0) {
+            return {
+                data: [],
+                totalCount: 0,
+                page,
+                pageSize,
+                totalPages: 0,
+            };
+        }
+
+        const totalCount = result.length;
+        const totalPages = Math.ceil(totalCount / pageSize);
+        const startIndex = (page - 1) * pageSize;
+        const paginatedData = result.slice(startIndex, startIndex + pageSize);
+
+        return {
+            data: paginatedData.map((occupancyRate) => ({
+                id: occupancyRate.Id,
+                month: occupancyRate.Month__c,
+                year: occupancyRate.Year__c,
+                date: occupancyRate.Date__c,
+                rate: occupancyRate.OccupancyRate__c,
+                billableHours: occupancyRate.BillableHours__c,
+                totalHours: occupancyRate.TotalHours__c,
+                availableHours: occupancyRate.AvailableHours__c,
+            })),
+            totalCount,
+            page,
+            pageSize,
+            totalPages,
+        };
     } catch (error) {
         throw error;
     }

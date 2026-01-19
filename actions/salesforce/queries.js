@@ -114,6 +114,19 @@ const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFisc
             ORDER BY Date__c ASC`;
 };
 
+const getOccupancyHistoryQuery = (employeeNumber, today) => {
+    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c, 
+            BillableHours__c, TotalHours__c, AvailableHours__c
+            FROM HistoricalHour__c 
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
+            ORDER BY Date__c DESC`;
+};
+
+const getOccupancyHistoryCountQuery = (employeeNumber, today) => {
+    return `SELECT COUNT() FROM HistoricalHour__c 
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}`;
+};
+
 const getHolidaysQuery = () => {
     return `SELECT Id, Name, ActivityDate FROM Holiday`;
 };
@@ -130,5 +143,7 @@ export {
     getOpportunityByIdQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
+    getOccupancyHistoryQuery,
+    getOccupancyHistoryCountQuery,
     getHolidaysQuery,
 };

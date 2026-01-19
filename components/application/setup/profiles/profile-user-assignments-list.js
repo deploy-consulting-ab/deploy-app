@@ -144,7 +144,10 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 tabular-nums" title={row.getValue('employeeNumber')}>
+                <div
+                    className="truncate text-foreground/70 tabular-nums"
+                    title={row.getValue('employeeNumber')}
+                >
                     {row.getValue('employeeNumber')}
                 </div>
             ),
@@ -166,7 +169,10 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                 </Button>
             ),
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 font-mono text-xs" title={row.getValue('profileId')}>
+                <div
+                    className="truncate text-foreground/70 font-mono text-xs"
+                    title={row.getValue('profileId')}
+                >
                     {row.getValue('profileId')}
                 </div>
             ),

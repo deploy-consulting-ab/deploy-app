@@ -150,7 +150,10 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
             },
             cell: ({ row }) => {
                 return (
-                    <div className="truncate text-foreground/70 font-mono text-xs" title={row.getValue('id')}>
+                    <div
+                        className="truncate text-foreground/70 font-mono text-xs"
+                        title={row.getValue('id')}
+                    >
                         {row.getValue('id')}
                     </div>
                 );
@@ -165,7 +168,10 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 opacity-50 hover:opacity-100">
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                            >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
                             </Button>

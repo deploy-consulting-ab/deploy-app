@@ -9,7 +9,10 @@ function Table({ className, ...props }) {
         <div data-slot="table-container" className="relative w-full overflow-x-auto">
             <table
                 data-slot="table"
-                className={cn('w-full caption-bottom text-sm border-separate border-spacing-0', className)}
+                className={cn(
+                    'w-full caption-bottom text-sm border-separate border-spacing-0',
+                    className
+                )}
                 {...props}
             />
         </div>
@@ -20,10 +23,7 @@ function TableHeader({ className, ...props }) {
     return (
         <thead
             data-slot="table-header"
-            className={cn(
-                'bg-muted/30 dark:bg-muted/20 sticky top-0 z-10',
-                className
-            )}
+            className={cn('bg-muted/30 dark:bg-muted/20 sticky top-0 z-10', className)}
             {...props}
         />
     );

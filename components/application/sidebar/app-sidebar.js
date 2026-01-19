@@ -16,11 +16,7 @@ import { AppSidebarMenusComponent } from '@/components/application/sidebar/app-s
 
 export async function AppSidebarComponent({ user, location }) {
     return (
-        <Sidebar
-            variant="borderless"
-            collapsible="icon"
-            className="bg-sidebar"
-        >
+        <Sidebar variant="borderless" collapsible="icon" className="bg-sidebar">
             <SidebarHeader className="pb-4">
                 <AppSidebarLogoComponent />
             </SidebarHeader>

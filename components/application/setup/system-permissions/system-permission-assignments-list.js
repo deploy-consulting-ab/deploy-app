@@ -133,7 +133,10 @@ export function SystemPermissionAssignmentsListComponent({
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 font-mono text-xs" title={row.getValue('id')}>
+                <div
+                    className="truncate text-foreground/70 font-mono text-xs"
+                    title={row.getValue('id')}
+                >
                     {row.getValue('id')}
                 </div>
             ),

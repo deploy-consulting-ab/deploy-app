@@ -204,7 +204,10 @@ export function UsersListComponent({ users, error: initialError }) {
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 tabular-nums" title={row.getValue('employeeNumber')}>
+                <div
+                    className="truncate text-foreground/70 tabular-nums"
+                    title={row.getValue('employeeNumber')}
+                >
                     {row.getValue('employeeNumber')}
                 </div>
             ),
@@ -272,7 +275,10 @@ export function UsersListComponent({ users, error: initialError }) {
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0 opacity-50 hover:opacity-100">
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                            >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
                             </Button>
