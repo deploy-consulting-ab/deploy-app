@@ -1,5 +1,5 @@
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
-import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards';
+import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
 export async function SubcontractorHomeComponent({ employeeNumber }) {
     let statsData = null;

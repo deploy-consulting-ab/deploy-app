@@ -4,11 +4,9 @@ import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import {
-    HolidaysCardComponent,
-    OccupancyRatesCardComponent,
-    QuickLinksCardComponent,
-} from '@/components/application/home/dashboard-cards';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
+import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
 export async function ManagementHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors

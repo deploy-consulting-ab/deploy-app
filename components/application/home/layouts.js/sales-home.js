@@ -3,10 +3,8 @@ import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { transformHolidaysData } from '@/lib/utils';
-import {
-    HolidaysCardComponent,
-    QuickLinksCardComponent,
-} from '@/components/application/home/dashboard-cards';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
 export async function SalesHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors

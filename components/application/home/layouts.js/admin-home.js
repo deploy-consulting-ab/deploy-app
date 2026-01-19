@@ -7,12 +7,10 @@ import {
 } from '@/actions/salesforce/salesforce-actions';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import {
-    HolidaysCardComponent,
-    OccupancyRatesCardComponent,
-    QuickLinksCardComponent,
-    StatisticsCardComponent,
-} from '@/components/application/home/dashboard-cards';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
+import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
+import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
 export async function AdminHomeComponent({ profileId, employeeNumber }) {
     // Initialize data and errors

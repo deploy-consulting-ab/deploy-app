@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { HolidaysCalendarComponent } from '@/components/application/holidays/holidays-calendar';
-import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards';
+import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
 
