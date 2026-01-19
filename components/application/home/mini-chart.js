@@ -1,8 +1,10 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { useId } from 'react';
 
 export function MiniLineChart({ data = [], color = 'var(--deploy-accent-yellow)', height = 60 }) {
+    const gradientId = useId();
+    
     if (!data || data.length === 0) return null;
 
     const max = Math.max(...data);
@@ -27,14 +29,14 @@ export function MiniLineChart({ data = [], color = 'var(--deploy-accent-yellow)'
         >
             {/* Gradient fill */}
             <defs>
-                <linearGradient id={`gradient-${color}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={color} stopOpacity="0" />
+                <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.2 }} />
+                    <stop offset="100%" style={{ stopColor: color, stopOpacity: 0 }} />
                 </linearGradient>
             </defs>
 
             {/* Area under the curve */}
-            <path d={`${pathData} L 100,100 L 0,100 Z`} fill={`url(#gradient-${color})`} />
+            <path d={`${pathData} L 100,100 L 0,100 Z`} fill={`url(#${gradientId})`} />
 
             {/* Line */}
             <path
