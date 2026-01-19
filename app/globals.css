@@ -62,28 +62,28 @@
 
 :root {
     --radius: 0.65rem;
-    /* Warm off-white background with subtle cream tint */
-    --background: oklch(0.985 0.008 85);
+    /* Light silver background for main content area */
+    --background: oklch(0.94 0.006 260);
     --foreground: oklch(0.22 0.02 260);
-    /* Slightly warm white cards that stand out from background */
-    --card: oklch(0.995 0.004 90);
+    /* White cards */
+    --card: oklch(1 0 0);
     --card-foreground: oklch(0.22 0.02 260);
-    --popover: oklch(0.995 0.004 90);
+    --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.22 0.02 260);
     --primary: var(--deploy-blue);
     --primary-foreground: oklch(0.99 0 0);
-    /* Subtle cool gray secondary with blue undertone */
-    --secondary: oklch(0.955 0.012 240);
+    /* Subtle cool gray secondary */
+    --secondary: oklch(0.96 0.008 260);
     --secondary-foreground: var(--deploy-blue);
-    --muted: oklch(0.955 0.01 240);
-    /* Improved contrast for muted text */
-    --muted-foreground: oklch(0.45 0.02 260);
-    --accent: oklch(0.94 0.015 240);
+    --muted: oklch(0.96 0.006 260);
+    /* Good contrast for muted text */
+    --muted-foreground: oklch(0.45 0.015 260);
+    --accent: oklch(0.94 0.01 260);
     --accent-foreground: var(--deploy-blue);
     --destructive: oklch(0.55 0.22 25);
-    /* More visible borders with subtle blue tint */
-    --border: oklch(0.88 0.015 240);
-    --input: oklch(0.92 0.01 240);
+    /* Subtle silver borders */
+    --border: oklch(0.90 0.008 260);
+    --input: oklch(0.96 0.005 260);
     /* Brand-influenced ring color */
     --ring: oklch(0.65 0.06 240);
     /* Vibrant, distinguishable chart colors for light mode */
@@ -93,14 +93,14 @@
     --chart-4: oklch(0.72 0.16 85);
     --chart-5: oklch(0.62 0.18 30);
     --radius: 0.625rem;
-    /* Sidebar with subtle warm tone */
-    --sidebar: oklch(0.98 0.006 85);
-    --sidebar-foreground: oklch(0.22 0.02 260);
+    /* White sidebar */
+    --sidebar: oklch(1 0 0);
+    --sidebar-foreground: oklch(0.25 0.02 260);
     --sidebar-primary: var(--deploy-blue);
     --sidebar-primary-foreground: oklch(0.99 0 0);
-    --sidebar-accent: oklch(0.94 0.02 240);
+    --sidebar-accent: oklch(0.95 0.015 240);
     --sidebar-accent-foreground: oklch(0.25 0.02 260);
-    --sidebar-border: oklch(0.88 0.015 240);
+    --sidebar-border: oklch(0.92 0.008 260);
     --sidebar-ring: var(--deploy-blue);
 
     /* Deploy colors */
@@ -216,12 +216,12 @@
     transition: all 200ms ease;
 }
 
-/* Custom card - enhanced for light mode */
+/* Custom card - soft shadow for light silver theme */
 .shadow-box {
     box-shadow:
-        0 2px 12px oklch(0.5 0.03 240 / 0.08),
-        0 1px 3px oklch(0.4 0.02 240 / 0.06);
-    border: 1px solid oklch(0.85 0.02 240 / 0.5);
+        0 2px 8px oklch(0.5 0.01 260 / 0.08),
+        0 1px 3px oklch(0.4 0.01 260 / 0.05);
+    border: 1px solid oklch(0.90 0.008 260 / 0.5);
 }
 
 .dark .shadow-box {
@@ -255,13 +255,8 @@
     body {
         @apply bg-background text-foreground;
 
-        /* Warm gradient with subtle blue-gray undertone for professional look */
-        background: linear-gradient(
-            165deg,
-            oklch(0.98 0.008 85) 0%,
-            oklch(0.96 0.012 220) 50%,
-            oklch(0.94 0.015 240) 100%
-        );
+        /* Light silver background */
+        background: oklch(0.94 0.006 260);
     }
 
     .dark body {
@@ -288,7 +283,7 @@
 
     .glass-effect {
         backdrop-filter: blur(12px);
-        background: oklch(0.98 0.01 240 / 0.7);
+        background: oklch(1 0 0 / 0.85);
     }
 
     .dark .glass-effect {
