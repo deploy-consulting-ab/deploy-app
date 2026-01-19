@@ -7,7 +7,7 @@ export function ProgressRing({
     size = 120,
     strokeWidth = 8,
     children,
-    color = 'var(--accent-lime)',
+    color = 'var(--deploy-accent-lime)',
 }) {
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;

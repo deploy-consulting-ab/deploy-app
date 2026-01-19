@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 
-export function MiniLineChart({ data = [], color = 'var(--accent-yellow)', height = 60 }) {
+export function MiniLineChart({ data = [], color = 'var(--deploy-accent-yellow)', height = 60 }) {
     if (!data || data.length === 0) return null;
 
     const max = Math.max(...data);
@@ -63,7 +63,7 @@ export function MiniLineChart({ data = [], color = 'var(--accent-yellow)', heigh
     );
 }
 
-export function MiniBarChart({ data = [], color = 'var(--accent-orange)', height = 60 }) {
+export function MiniBarChart({ data = [], color = 'var(--deploy-accent-orange)', height = 60 }) {
     if (!data || data.length === 0) return null;
 
     const max = Math.max(...data);

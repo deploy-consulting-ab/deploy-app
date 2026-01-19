@@ -41,7 +41,7 @@ export function QuickLinksCardComponent({
 }) {
     if (!links || links.length === 0) {
         return (
-            <Card className="p-6 bg-gradient-to-br from-[var(--accent-yellow)] to-[var(--accent-orange)] border-0 text-gray-900">
+            <Card className="p-6 bg-gradient-to-br from-[var(--deploy-accent-yellow)] to-[var(--deploy-accent-orange)] border-0 text-gray-900">
                 <h3 className="text-lg font-bold mb-2">{title}</h3>
                 <p className="text-sm mb-4 opacity-90">{description}</p>
                 <p className="text-sm opacity-75">No links configured</p>
@@ -69,7 +69,7 @@ export function QuickLinksCardComponent({
                                     <div className="p-2 rounded-lg transition-colors text-muted-foreground group-hover:text-foreground">
                                         <Icon className="h-5 w-5" />
                                     </div>
-                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--deploy-accent-lime)] transition-colors" />
                                 </div>
                                 <div className="font-medium text-sm transition-colors">
                                     {link.title}

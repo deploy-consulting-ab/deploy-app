@@ -98,10 +98,10 @@
     --deploy-gray: oklch(0.2478 0 0);
 
     /* Modern accent colors */
-    --accent-yellow: oklch(0.85 0.15 95);
-    --accent-lime: oklch(0.82 0.18 120);
-    --accent-orange: oklch(0.75 0.15 50);
-    --accent-blue-bright: oklch(0.65 0.15 240);
+    --deploy-accent-yellow: oklch(0.85 0.15 95);
+    --deploy-accent-lime: oklch(0.82 0.18 120);
+    --deploy-accent-orange: oklch(0.75 0.15 50);
+    --deploy-accent-blue-bright: oklch(0.65 0.15 240);
 
     /* Occupancy colors - Using 240.35 - #3f779d in OKLCH with different opacities */
     --deploy-chart: 240.35;
@@ -187,10 +187,10 @@
     --haberdashery-gradient: linear-gradient(to bottom, #1a2634, #0d1117);
 
     /* Modern accent colors */
-    --accent-yellow: oklch(0.85 0.15 95);
-    --accent-lime: oklch(0.82 0.18 120);
-    --accent-orange: oklch(0.75 0.15 50);
-    --accent-blue-bright: oklch(0.65 0.15 240);
+    --deploy-accent-yellow: oklch(0.85 0.15 95);
+    --deploy-accent-lime: oklch(0.82 0.18 120);
+    --deploy-accent-orange: oklch(0.75 0.15 50);
+    --deploy-accent-blue-bright: oklch(0.65 0.15 240);
 }
 
 /* Custom input focus */

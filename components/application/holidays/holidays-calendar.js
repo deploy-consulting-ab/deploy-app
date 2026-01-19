@@ -155,7 +155,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                 className={cn(
                   'h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm font-medium',
                   // Holiday styling - lime to yellow gradient
-                  holiday && 'bg-gradient-to-r from-[var(--accent-lime)] to-[var(--accent-yellow)] text-gray-900 font-bold',
+                  holiday && 'bg-gradient-to-r from-[var(--deploy-accent-lime)] to-[var(--deploy-accent-yellow)] text-gray-900 font-bold',
                   // Today styling
                   todayDay && !holiday && 'ring-2 ring-white bg-white/20 text-white font-bold',
                   // Weekend styling (not holiday)

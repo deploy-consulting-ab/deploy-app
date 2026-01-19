@@ -36,10 +36,10 @@ export function StatisticsCardComponent({
     // Color mapping for different stat types
     const getStatColor = (label) => {
         const lowerLabel = label?.toLowerCase() || '';
-        if (lowerLabel.includes('active')) return 'var(--accent-yellow)';
-        if (lowerLabel.includes('proposed')) return 'var(--accent-orange)';
-        if (lowerLabel.includes('closed')) return 'var(--accent-lime)';
-        return 'var(--accent-blue-bright)';
+        if (lowerLabel.includes('active')) return 'var(--deploy-accent-yellow)';
+        if (lowerLabel.includes('proposed')) return 'var(--deploy-accent-orange)';
+        if (lowerLabel.includes('closed')) return 'var(--deploy-accent-lime)';
+        return 'var(--deploy-accent-blue-bright)';
     };
 
     // Map label to view filter parameter
@@ -115,7 +115,7 @@ export function StatisticsCardComponent({
                             <Card className="p-4 bg-muted/50 border-0 rounded-xl hover:bg-muted/80 transition-all cursor-pointer group">
                                 <div className="flex items-center justify-between mb-2">
                                     <Briefcase className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
+                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--deploy-accent-lime)] transition-colors" />
                                 </div>
                                 <div className="text-2xl font-bold">{stat.value}</div>
                                 <div className="text-sm text-muted-foreground">{stat.label}</div>

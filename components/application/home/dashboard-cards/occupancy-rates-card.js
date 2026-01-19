@@ -71,14 +71,14 @@ export function OccupancyRatesCardComponent({
                         </Button>
                     )}
                     <Link href={OCCUPANCY_ROUTE} className="md:block hover:cursor-pointer">
-                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--accent-lime)] transition-colors" />
+                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--deploy-accent-lime)] transition-colors" />
                     </Link>
                 </div>
             </div>
 
             {/* Progress Ring */}
             <div className="flex items-center justify-center py-2">
-                <ProgressRing progress={currentRate} size={140} color="var(--accent-lime)">
+                <ProgressRing progress={currentRate} size={140} color="var(--deploy-accent-lime)">
                     <div className="text-center">
                         <div className="text-4xl font-bold">{currentRate}%</div>
                         <div className="text-sm text-muted-foreground mt-1">{currentMonth}</div>
@@ -95,7 +95,7 @@ export function OccupancyRatesCardComponent({
                 <div className="mt-4 pt-4 border-t border-border/50">
                     <p className="text-sm text-muted-foreground mb-2">Recent Trend</p>
                     <div className="h-16">
-                        <MiniLineChart data={chartData} color="var(--accent-lime)" />
+                        <MiniLineChart data={chartData} color="var(--deploy-accent-lime)" />
                     </div>
                 </div>
             )}
