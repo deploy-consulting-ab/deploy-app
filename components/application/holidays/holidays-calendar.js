@@ -114,32 +114,32 @@ export function HolidaysCalendarComponent({ holidays, error }) {
 
     if (error) {
         return (
-            <Card className="p-5 bg-gradient-to-br from-[#4c6ef5] to-[#5f3dc4] border-0">
-                <h3 className="text-base font-semibold text-white mb-2">Your Holidays</h3>
-                <p className="text-sm text-white/80">{error}</p>
+            <Card className="p-6 border-border/50">
+                <h3 className="text-base font-semibold text-foreground mb-2">Your Holidays</h3>
+                <p className="text-sm text-destructive">{error}</p>
             </Card>
         );
     }
 
     return (
-        <Card className="p-5 bg-gradient-to-br from-[#4c6ef5] to-[#5f3dc4] border-0">
+        <Card className="p-6 border-border/50">
             <div className="space-y-4">
                 {/* Header */}
                 <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-base font-semibold text-white">Your Holidays</h3>
+                    <h3 className="text-base font-semibold text-foreground">Your Holidays</h3>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={goToPreviousMonth}
-                            className="p-1.5 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                            className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </button>
-                        <span className="text-sm text-white min-w-[110px] text-center">
+                        <span className="text-sm text-foreground min-w-[110px] text-center">
                             {monthNames[currentMonth]} {currentYear}
                         </span>
                         <button
                             onClick={goToNextMonth}
-                            className="p-1.5 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                            className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                         >
                             <ChevronRight className="h-4 w-4" />
                         </button>
@@ -149,7 +149,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                 {/* Week Days Header */}
                 <div className="grid grid-cols-7 gap-2">
                     {weekDays.map((day, i) => (
-                        <div key={i} className="text-center text-xs font-medium text-white/60 py-1">
+                        <div key={i} className="text-center text-xs font-medium text-muted-foreground py-1">
                             {day}
                         </div>
                     ))}
@@ -174,20 +174,20 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                             <div
                                 key={day}
                                 className={cn(
-                                    'h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm font-medium',
+                                    'h-10 w-10 mx-auto rounded-full flex items-center justify-center text-sm font-medium transition-colors',
                                     // Holiday styling - lime to yellow gradient
                                     holiday &&
                                         'bg-gradient-to-r from-[var(--deploy-accent-lime)] to-[var(--deploy-accent-yellow)] text-gray-900 font-bold',
                                     // Today styling
                                     todayDay &&
                                         !holiday &&
-                                        'ring-2 ring-white bg-white/20 text-white font-bold',
+                                        'ring-2 ring-primary bg-primary/20 text-foreground font-bold',
                                     // Weekend styling (not holiday)
-                                    weekend && !holiday && !todayDay && 'bg-white/10 text-white/50',
+                                    weekend && !holiday && !todayDay && 'bg-muted/50 text-muted-foreground',
                                     // Past days (not holiday, not today, not weekend)
-                                    past && !holiday && !todayDay && !weekend && 'text-white/40',
+                                    past && !holiday && !todayDay && !weekend && 'text-muted-foreground/60',
                                     // Future days
-                                    !past && !holiday && !todayDay && !weekend && 'text-white/80'
+                                    !past && !holiday && !todayDay && !weekend && 'text-foreground hover:bg-muted/50'
                                 )}
                             >
                                 {day}
@@ -197,9 +197,9 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                 </div>
 
                 {/* Footer */}
-                <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                    <p className="text-sm text-white/80">
-                        <span className="font-bold text-white">{holidaysThisMonth}</span> holiday
+                <div className="pt-3 border-t border-border/50 flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                        <span className="font-bold text-foreground">{holidaysThisMonth}</span> holiday
                         {holidaysThisMonth !== 1 ? 's' : ''} this month
                     </p>
                     {!isCurrentMonth && (
@@ -207,7 +207,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                             variant="ghost"
                             size="sm"
                             onClick={goToToday}
-                            className="text-xs text-white/80 hover:text-white hover:bg-white/10 h-7 px-2"
+                            className="text-xs h-7 px-2"
                         >
                             Today
                         </Button>
