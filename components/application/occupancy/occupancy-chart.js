@@ -11,7 +11,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getFiscalYear, isInFiscalYear, getUTCToday } from '@/lib/utils';
@@ -117,6 +117,68 @@ function OccupancyTooltip({ active, payload }) {
                         {level.label}
                     </span>
                 </div>
+            </div>
+        </div>
+    );
+}
+
+// Compact metrics summary component
+function MetricsSummary({ data }) {
+    if (!data || data.length === 0) return null;
+
+    const rates = data.map((d) => d.rate).filter((r) => r != null);
+    const average =
+        rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : 0;
+    const highest = rates.length > 0 ? Math.max(...rates) : 0;
+    const lowest = rates.length > 0 ? Math.min(...rates) : 0;
+    const trend = rates.length >= 2 ? Math.round(rates[rates.length - 1] - rates[0]) : 0;
+
+    const averageLevel = getOccupancyLevel(average);
+    const TrendIcon = trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
+
+    return (
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-3 border-b border-border/30 mb-2">
+            <div className="flex items-center gap-2">
+                <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: averageLevel.color }}
+                />
+                <span className="text-xs text-muted-foreground">Avg</span>
+                <span className="text-sm font-mono font-semibold">{average}%</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <TrendingUp className="w-3 h-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">High</span>
+                <span className="text-sm font-mono font-medium">{highest}%</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <TrendingDown className="w-3 h-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">Low</span>
+                <span className="text-sm font-mono font-medium">{lowest}%</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <TrendIcon
+                    className="w-3 h-3"
+                    style={{
+                        color:
+                            trend >= 0
+                                ? 'var(--occupancy-color-optimal)'
+                                : 'var(--occupancy-color-critical-low)',
+                    }}
+                />
+                <span className="text-xs text-muted-foreground">Trend</span>
+                <span
+                    className="text-sm font-mono font-medium"
+                    style={{
+                        color:
+                            trend >= 0
+                                ? 'var(--occupancy-color-optimal)'
+                                : 'var(--occupancy-color-critical-low)',
+                    }}
+                >
+                    {trend > 0 ? '+' : ''}
+                    {trend}%
+                </span>
             </div>
         </div>
     );
@@ -291,6 +353,8 @@ export function OccupancyChartComponent({ chartData, error }) {
                     </div>
                 ) : (
                     <div className="flex flex-col h-full">
+                        {!isMobile && <MetricsSummary data={filteredData} />}
+
                         <ChartContainer
                             config={chartConfig}
                             className="flex-1 w-full min-h-0"
