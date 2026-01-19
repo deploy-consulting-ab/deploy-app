@@ -64,7 +64,7 @@ export function QuickLinksCardComponent({
                             rel={link.external ? 'noopener noreferrer' : undefined}
                             className="group"
                         >
-                            <Card className="p-4 bg-card/50 backdrop-blur border-border/50 hover:shadow-lg transition-all cursor-pointer h-full">
+                            <Card className="p-4 border-border/50 hover:shadow-lg transition-all cursor-pointer h-full">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="p-2 rounded-lg transition-colors text-muted-foreground group-hover:text-foreground">
                                         <Icon className="h-4 w-4" />

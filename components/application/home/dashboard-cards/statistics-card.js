@@ -86,7 +86,7 @@ export function StatisticsCardComponent({
     }
 
     return (
-        <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
+        <Card className="p-6 border-border/50">
             <div className="flex items-center justify-between">
                 <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>{title}</CardTitle>
                 <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export function StatisticsCardComponent({
 
                     return (
                         <Link key={stat.id || index} href={href}>
-                            <Card className="p-4 bg-card/50 backdrop-blur border-border/50 hover:shadow-lg hover:border-[var(--accent-lime)]/50 transition-all cursor-pointer group">
+                            <Card className="p-4 border-border/50 hover:shadow-lg hover:border-[var(--accent-lime)]/50 transition-all cursor-pointer group">
                                 <div className="flex items-center justify-between mb-2">
                                     <Briefcase className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                                     <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-[var(--accent-lime)] transition-colors" />
