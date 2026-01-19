@@ -125,7 +125,7 @@ export function GlobalSearch({ user }) {
                 <Input
                     ref={searchRef}
                     value={searchValue}
-                    placeholder="Search for some activities"
+                    placeholder="Search for records"
                     className="pl-9 pr-8 text-sm bg-background/50 border-border/50 focus:bg-background rounded-full h-9"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
