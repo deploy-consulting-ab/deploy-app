@@ -15,7 +15,7 @@ export function SetupButtonComponent() {
 
     return (
         <Link href={SETUP_ROUTE}>
-            <Button variant="outline" size="icon" className="hover:cursor-pointer">
+            <Button variant="ghost" size="icon" className="hover:cursor-pointer">
                 <Settings className="h-[1.2rem] w-[1.2rem]" />
             </Button>
         </Link>
