@@ -37,7 +37,7 @@ export async function AppSidebarComponent({ user, location }) {
             <SidebarFooter className="pt-4">
                 <AppSidebarUserComponent user={user} />
             </SidebarFooter>
-            <SidebarRail />
+            <SidebarRail variant="invisible" />
         </Sidebar>
     );
 }
