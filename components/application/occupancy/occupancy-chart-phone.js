@@ -37,7 +37,7 @@ import {
     MetricsSummary,
 } from './occupancy-chart-shared';
 
-export function OccupancyChartPhone({ filteredData, timeRange, setTimeRange, timeLabel }) {
+export function OccupancyChartPhone({ filteredData, allData, timeRange, setTimeRange, timeLabel }) {
     return (
         <Card className="@container/card" variant="shadow">
             <CardHeader>
@@ -72,8 +72,12 @@ export function OccupancyChartPhone({ filteredData, timeRange, setTimeRange, tim
                         </div>
                     </div>
                 ) : (
-                    <>
-                        <MetricsSummary data={filteredData} />
+                        <>
+                            <MetricsSummary
+                                data={filteredData}
+                                allData={allData}
+                                timeRange={timeRange}
+                            />
 
                         {/* Horizontal bar chart for mobile */}
                         <ChartContainer config={chartConfig} className="h-[180px] w-full">

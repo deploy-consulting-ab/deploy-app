@@ -1,6 +1,7 @@
 'use client';
 
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const chartConfig = {
     rate: {
@@ -90,7 +91,7 @@ export function OccupancyTooltip({ active, payload }) {
 }
 
 // Metrics summary component (inline)
-export function MetricsSummary({ data }) {
+export function MetricsSummary({ data, allData, timeRange }) {
     if (!data || data.length === 0) return null;
 
     const rates = data.map((d) => d.rate).filter((r) => r != null);
@@ -98,10 +99,42 @@ export function MetricsSummary({ data }) {
         rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : 0;
     const highest = rates.length > 0 ? Math.max(...rates) : 0;
     const lowest = rates.length > 0 ? Math.min(...rates) : 0;
-    const trend = rates.length >= 2 ? Math.round(rates[rates.length - 1] - rates[0]) : 0;
+
+    // Calculate trend based on the context
+    let trend = 0;
+    let trendFromMonth = '';
+    let trendToMonth = '';
+    let trendFromValue = 0;
+    let trendToValue = 0;
+
+    if (rates.length >= 2) {
+        // Multiple data points: compare last to first in the range
+        trendFromValue = data[0].rate;
+        trendToValue = data[data.length - 1].rate;
+        trendFromMonth = data[0].month;
+        trendToMonth = data[data.length - 1].month;
+        trend = Math.round(trendToValue - trendFromValue);
+    } else if (rates.length === 1 && allData && allData.length > 1) {
+        // Single data point (current/last month): compare with previous month in allData
+        const currentMonth = data[0].month;
+        const currentIndex = allData.findIndex((d) => d.month === currentMonth);
+
+        if (currentIndex > 0) {
+            const previousMonth = allData[currentIndex - 1];
+            trendFromValue = previousMonth.rate;
+            trendToValue = data[0].rate;
+            trendFromMonth = previousMonth.month;
+            trendToMonth = currentMonth;
+            trend = Math.round(trendToValue - trendFromValue);
+        }
+    }
 
     const averageLevel = getOccupancyLevel(average);
     const TrendIcon = trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
+    const trendColor =
+        trend >= 0 ? 'var(--occupancy-color-optimal)' : 'var(--occupancy-color-critical-low)';
+
+    const hasTrendData = trendFromMonth && trendToMonth;
 
     return (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-3 border-b border-border/30 mb-2">
@@ -123,30 +156,39 @@ export function MetricsSummary({ data }) {
                 <span className="text-xs text-muted-foreground">Low</span>
                 <span className="text-sm font-mono font-medium">{lowest}%</span>
             </div>
-            <div className="flex items-center gap-2">
-                <TrendIcon
-                    className="w-3 h-3"
-                    style={{
-                        color:
-                            trend >= 0
-                                ? 'var(--occupancy-color-optimal)'
-                                : 'var(--occupancy-color-critical-low)',
-                    }}
-                />
-                <span className="text-xs text-muted-foreground">Trend</span>
-                <span
-                    className="text-sm font-mono font-medium"
-                    style={{
-                        color:
-                            trend >= 0
-                                ? 'var(--occupancy-color-optimal)'
-                                : 'var(--occupancy-color-critical-low)',
-                    }}
-                >
-                    {trend > 0 ? '+' : ''}
-                    {trend}%
-                </span>
-            </div>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2 cursor-help">
+                        <TrendIcon className="w-3 h-3" style={{ color: trendColor }} />
+                        <span className="text-xs text-muted-foreground">Trend</span>
+                        <span
+                            className="text-sm font-mono font-medium"
+                            style={{ color: trendColor }}
+                        >
+                            {trend > 0 ? '+' : ''}
+                            {trend}%
+                        </span>
+                        <Info className="w-3 h-3 text-muted-foreground/50" />
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                    {hasTrendData ? (
+                        <div className="space-y-1">
+                            <div className="font-medium">Trend Calculation</div>
+                            <div className="text-xs opacity-90">
+                                {trendFromMonth.slice(0, 3)}: {trendFromValue}% →{' '}
+                                {trendToMonth.slice(0, 3)}: {trendToValue}%
+                            </div>
+                            <div className="text-xs opacity-75">
+                                Change: {trend > 0 ? '+' : ''}
+                                {trend}%
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-xs">No previous data available for comparison</div>
+                    )}
+                </TooltipContent>
+            </Tooltip>
         </div>
     );
 }

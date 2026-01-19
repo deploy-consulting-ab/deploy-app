@@ -116,6 +116,7 @@ export function OccupancyChartComponent({ chartData, error }) {
         return (
             <OccupancyChartPhone
                 filteredData={filteredData}
+                allData={chartData}
                 timeRange={timeRange}
                 setTimeRange={setTimeRange}
                 timeLabel={timeLabel}
@@ -187,7 +188,11 @@ export function OccupancyChartComponent({ chartData, error }) {
                     </div>
                 ) : (
                     <div className="flex flex-col h-full">
-                        <MetricsSummary data={filteredData} />
+                        <MetricsSummary
+                            data={filteredData}
+                            allData={chartData}
+                            timeRange={timeRange}
+                        />
 
                         <ChartContainer
                             config={chartConfig}
