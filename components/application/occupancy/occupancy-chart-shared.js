@@ -133,32 +133,37 @@ export function MetricsSummary({ data, allData, timeRange }) {
     const TrendIcon = trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
 
     const hasTrendData = trendFromMonth && trendToMonth;
+    const isSingleMonth = timeRange === 'CURRENT_MONTH' || timeRange === 'LAST_MONTH';
 
     return (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-3 border-b border-border/30 mb-2">
-            <div className="flex items-center gap-2">
-                <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: averageLevel.color }}
-                />
-                <span className="text-sm text-muted-foreground">Avg</span>
-                <span className="text-sm font-mono font-semibold">{average}%</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <TrendingUp className="w-3 h-3 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">High</span>
-                <span className="text-sm font-mono font-medium">{highest}%</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <TrendingDown className="w-3 h-3 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Low</span>
-                <span className="text-sm font-mono font-medium">{lowest}%</span>
-            </div>
+            {!isSingleMonth && (
+                <>
+                    <div className="flex items-center gap-2">
+                        <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: averageLevel.color }}
+                        />
+                        <span className="text-sm text-muted-foreground">Avg</span>
+                        <span className="text-sm font-mono font-semibold">{average}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <TrendingUp className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">High</span>
+                        <span className="text-sm font-mono font-medium">{highest}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <TrendingDown className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Low</span>
+                        <span className="text-sm font-mono font-medium">{lowest}%</span>
+                    </div>
+                </>
+            )}
             <Tooltip>
                 <TooltipTrigger asChild>
                     <div className="flex items-center gap-2 cursor-help">
                         <TrendIcon className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">Trend</span>
+                        <span className="text-sm text-muted-foreground">Trend</span>
                         <span
                             className="text-sm font-mono font-medium"
                         >
