@@ -49,14 +49,14 @@ export function AppSidebarMenusComponent({ user, location }) {
                         className={cn(
                             'rounded-xl hover:bg-accent/50 transition-all group',
                             isMenuActive(menu.url) &&
-                                'bg-gradient-to-r from-[#4c6ef5]/10 to-[#5f3dc4]/10 border-l-2 border-[#4c6ef5] font-semibold'
+                                'bg-gradient-to-r from-[var(--deploy-blue)]/10 to-[var(--deploy-purple)]/10 border-l-2 border-[var(--deploy-blue)] font-semibold'
                         )}
                     >
                         <Link href={menu.url} onClick={handleMenuClick}>
                             <menu.icon
                                 className={cn(
                                     'transition-colors',
-                                    isMenuActive(menu.url) && 'text-[#4c6ef5]'
+                                    isMenuActive(menu.url) && 'text-[var(--deploy-blue)]'
                                 )}
                             />
                             <span>{menu.title}</span>
