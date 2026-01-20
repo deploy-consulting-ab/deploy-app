@@ -47,7 +47,7 @@ export async function AppHeaderComponent({ location }) {
                 </div>
             </header>
             {/* Mobile breadcrumb */}
-            <div className="md:hidden px-4 pt-4">
+            <div className="md:hidden px-4 pt-2 pb-4">
                 <DynamicBreadcrumbComponent />
             </div>
         </>
