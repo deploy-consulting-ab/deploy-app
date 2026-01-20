@@ -19,7 +19,7 @@ const AssignmentPage = async ({ params }) => {
     }
 
     return (
-        <div className="py-4">
+        <div>
             <AssignmentCard error={error} assignment={assignment} />
         </div>
     );

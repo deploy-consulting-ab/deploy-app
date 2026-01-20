@@ -79,11 +79,12 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
@@ -92,7 +93,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                 return (
                     <Link
                         href={`${USERS_ROUTE}/${id}`}
-                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
+                        className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
                         title={row.getValue('name')}
                     >
                         {row.getValue('name')}
@@ -104,21 +105,22 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             accessorKey: 'email',
             size: 200,
             minSize: 150,
-            maxSize: 300, // Responsive size for account names
+            maxSize: 300,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Email
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('email')}>
+                <div className="truncate text-foreground/80" title={row.getValue('email')}>
                     {row.getValue('email')}
                 </div>
             ),
@@ -127,21 +129,25 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             accessorKey: 'employeeNumber',
             size: 120,
             minSize: 100,
-            maxSize: 150, // Responsive size for dates
+            maxSize: 150,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employee Number
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('employeeNumber')}>
+                <div
+                    className="truncate text-foreground/70 tabular-nums"
+                    title={row.getValue('employeeNumber')}
+                >
                     {row.getValue('employeeNumber')}
                 </div>
             ),
@@ -150,19 +156,23 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             accessorKey: 'profileId',
             size: 150,
             minSize: 120,
-            maxSize: 200, // Responsive size for status
+            maxSize: 200,
             header: ({ column }) => (
                 <Button
                     variant="ghost"
-                    size="large"
+                    size="sm"
+                    className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
                     Profile ID
-                    <ArrowUpDown />
+                    <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('profileId')}>
+                <div
+                    className="truncate text-foreground/70 font-mono text-xs"
+                    title={row.getValue('profileId')}
+                >
                     {row.getValue('profileId')}
                 </div>
             ),
@@ -171,16 +181,17 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             accessorKey: 'isActive',
             size: 120,
             minSize: 100,
-            maxSize: 150, // Responsive size for dates
+            maxSize: 150,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Active
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },

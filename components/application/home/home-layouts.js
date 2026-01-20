@@ -22,6 +22,12 @@ export async function ManagementHomeLayout({ profileId, employeeNumber }) {
     return <ManagementHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
 }
 
-export async function AdminHomeLayout({ profileId, employeeNumber }) {
-    return <AdminHomeComponent profileId={profileId} employeeNumber={employeeNumber} />;
+export async function AdminHomeLayout({ profileId, employeeNumber, userName }) {
+    return (
+        <AdminHomeComponent
+            profileId={profileId}
+            employeeNumber={employeeNumber}
+            userName={userName}
+        />
+    );
 }

@@ -87,11 +87,12 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
@@ -100,7 +101,7 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
                 return (
                     <Link
                         href={`${PERMISSION_SETS_ROUTE}/${id}`}
-                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
+                        className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
                         title={row.getValue('name')}
                     >
                         {row.getValue('name')}
@@ -111,21 +112,22 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
         {
             accessorKey: 'description',
             minSize: 150,
-            maxSize: 300, // Responsive size for account names
+            maxSize: 300,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Description
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('description')}>
+                <div className="truncate text-foreground/80" title={row.getValue('description')}>
                     {row.getValue('description')}
                 </div>
             ),
@@ -133,22 +135,26 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
         {
             accessorKey: 'id',
             minSize: 120,
-            maxSize: 200, // Responsive size for status
+            maxSize: 200,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Permission Set ID
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 return (
-                    <div className="truncate" title={row.getValue('id')}>
+                    <div
+                        className="truncate text-foreground/70 font-mono text-xs"
+                        title={row.getValue('id')}
+                    >
                         {row.getValue('id')}
                     </div>
                 );
@@ -163,7 +169,10 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                            >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
                             </Button>

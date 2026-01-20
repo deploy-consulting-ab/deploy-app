@@ -16,26 +16,24 @@ import { AppSidebarMenusComponent } from '@/components/application/sidebar/app-s
 
 export async function AppSidebarComponent({ user, location }) {
     return (
-        <Sidebar
-            variant="default"
-            collapsible="icon"
-            className="dark:[background:var(--haberdashery-gradient)] dark:border-r-0"
-        >
-            <SidebarHeader>
+        <Sidebar variant="borderless" collapsible="icon" className="bg-sidebar">
+            <SidebarHeader className="pb-4">
                 <AppSidebarLogoComponent />
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent className="px-2 py-4">
                 <SidebarGroup>
-                    <SidebarGroupLabel>Tilde</SidebarGroupLabel>
+                    <SidebarGroupLabel className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Tilde
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <AppSidebarMenusComponent user={user} location={location} />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="pt-4">
                 <AppSidebarUserComponent user={user} />
             </SidebarFooter>
-            <SidebarRail />
+            <SidebarRail variant="invisible" />
         </Sidebar>
     );
 }

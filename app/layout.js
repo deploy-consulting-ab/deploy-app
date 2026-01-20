@@ -49,7 +49,7 @@ export default async function RootLayout({ children }) {
                     content="width=device-width, initial-scale=1, maximum-scale=1"
                 />
             </head>
-            <body className={`${nunitoSans.className} antialiased h-full`}>
+            <body className={`${nunitoSans.className} antialiased h-full`} suppressHydrationWarning>
                 <SessionProvider session={session}>
                     <ThemeProvider
                         attribute="class"

@@ -11,6 +11,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+import { AlertTriangle } from 'lucide-react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getFiscalYear, isInFiscalYear, getUTCToday } from '@/lib/utils';
@@ -22,7 +23,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import {
     Select,
     SelectContent,
@@ -33,22 +34,16 @@ import {
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
-
-const chartConfig = {
-    rate: {
-        label: 'Occupancy',
-    },
-};
-
-const getOccupancyColor = (value) => {
-    if (!value && value !== 0) return '#a1a1aa';
-    const numValue = Number(value);
-    if (numValue > 120) return 'var(--occupancy-color-critical-high)';
-    if (numValue >= 100) return 'var(--occupancy-color-full)';
-    if (numValue >= 93) return 'var(--occupancy-color-optimal)';
-    if (numValue >= 85) return 'var(--occupancy-color-target)';
-    return 'var(--occupancy-color-critical-low)';
-};
+import {
+    chartConfig,
+    OCCUPANCY_LEVELS,
+    getOccupancyLevel,
+    OccupancyTooltip,
+    MetricsSummary,
+    OccupancyLegend,
+    getTimeRangeLabel,
+} from './occupancy-chart-shared';
+import { OccupancyChartPhone } from './occupancy-chart-phone';
 
 export function OccupancyChartComponent({ chartData, error }) {
     const isMobile = useIsMobile();
@@ -62,14 +57,22 @@ export function OccupancyChartComponent({ chartData, error }) {
 
     if (error) {
         return (
-            <div>
-                <ErrorDisplayComponent error={error} />
-            </div>
+            <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
+                <CardContent className="flex items-center justify-center h-full">
+                    <ErrorDisplayComponent error={error} />
+                </CardContent>
+            </Card>
         );
     }
 
     if (!chartData) {
-        return <NoDataComponent text="No occupancy data found" />;
+        return (
+            <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
+                <CardContent className="flex items-center justify-center h-full">
+                    <NoDataComponent text="No occupancy data found" />
+                </CardContent>
+            </Card>
+        );
     }
 
     const filteredData = chartData.filter((item) => {
@@ -81,13 +84,11 @@ export function OccupancyChartComponent({ chartData, error }) {
             const targetFiscalYear = timeRange === 'FY' ? currentFiscalYear : currentFiscalYear - 1;
             return isInFiscalYear(date, targetFiscalYear);
         } else if (timeRange === 'CURRENT_MONTH') {
-            // Current month: same year and month as current date (using UTC)
             return (
                 date.getUTCFullYear() === currentDate.getUTCFullYear() &&
                 date.getUTCMonth() === currentDate.getUTCMonth()
             );
         } else if (timeRange === 'LAST_MONTH') {
-            // Last month: get previous month (using UTC)
             const lastMonth = new Date(
                 Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth() - 1, 1)
             );
@@ -96,7 +97,6 @@ export function OccupancyChartComponent({ chartData, error }) {
                 date.getUTCMonth() === lastMonth.getUTCMonth()
             );
         } else if (timeRange === 'LAST_THREE_MONTHS') {
-            // Last 3 full months excluding current month (using UTC)
             const firstDayOfCurrentMonth = new Date(
                 Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), 1)
             );
@@ -105,53 +105,38 @@ export function OccupancyChartComponent({ chartData, error }) {
             );
             return date >= startDate && date < firstDayOfCurrentMonth;
         }
-        return true; // Default case: show all data
+        return true;
     });
 
+    const timeLabel = getTimeRangeLabel(timeRange);
+
+    // Mobile view
+    if (isMobile) {
+        return (
+            <OccupancyChartPhone
+                filteredData={filteredData}
+                allData={chartData}
+                timeRange={timeRange}
+                setTimeRange={setTimeRange}
+                timeLabel={timeLabel}
+            />
+        );
+    }
+
+    // Desktop view
     return (
         <Card className="@container/card h-[400px] sm:h-[calc(100vh-7rem)]" variant="shadow">
             <CardHeader>
                 <CardTitle>Occupancy Rate</CardTitle>
                 <CardDescription>
-                    {timeRange === 'FY' ? (
-                        <>
-                            <span className="hidden @[540px]/card:block">
-                                Total for current fiscal year (Feb-Jan)
-                            </span>
-                            <span className="@[540px]/card:hidden">Current FY</span>
-                        </>
-                    ) : timeRange === 'PFY' ? (
-                        <>
-                            <span className="hidden @[540px]/card:block">
-                                Total for previous fiscal year (Feb-Jan)
-                            </span>
-                            <span className="@[540px]/card:hidden">Previous FY</span>
-                        </>
-                    ) : (
-                        <>
-                            <span className="hidden @[540px]/card:block">
-                                Total for the{' '}
-                                {timeRange === 'LAST_THREE_MONTHS'
-                                    ? 'last 3 months'
-                                    : timeRange === 'LAST_MONTH'
-                                      ? 'last month'
-                                      : 'current month'}
-                            </span>
-                            <span className="@[540px]/card:hidden">
-                                {timeRange === 'LAST_THREE_MONTHS'
-                                    ? 'Last 3 months'
-                                    : timeRange === 'LAST_MONTH'
-                                      ? 'Last month'
-                                      : 'Current month'}
-                            </span>
-                        </>
-                    )}
+                    <span className="hidden @[540px]/card:block">{timeLabel.full}</span>
+                    <span className="@[540px]/card:hidden">{timeLabel.short}</span>
                 </CardDescription>
                 <CardAction>
                     <ToggleGroup
                         type="single"
                         value={timeRange}
-                        onValueChange={setTimeRange}
+                        onValueChange={(value) => value && setTimeRange(value)}
                         variant="outline"
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
@@ -189,56 +174,131 @@ export function OccupancyChartComponent({ chartData, error }) {
                     </Select>
                 </CardAction>
             </CardHeader>
-            <CardContent className="flex-1 h-[calc(100%-12rem)]">
+
+            <CardContent className="flex-1 h-[calc(100%-10rem)]">
                 {filteredData.length === 0 ? (
-                    <NoDataComponent text="No occupancy data found" />
+                    <div className="flex items-center justify-center h-full">
+                        <div className="text-center">
+                            <AlertTriangle className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
+                            <p className="text-muted-foreground">
+                                No occupancy data for this period
+                            </p>
+                        </div>
+                    </div>
                 ) : (
-                    <ChartContainer config={chartConfig} className="h-[calc(100%-2rem)] w-full">
-                        <BarChart
-                            accessibilityLayer
+                    <div className="flex flex-col h-full">
+                        <MetricsSummary
                             data={filteredData}
-                            barSize={(() => {
-                                // Dynamic bar size based on number of bars
-                                if (filteredData.length <= 1) return isMobile ? 40 : 80; // Single bar
-                                if (filteredData.length <= 3) return isMobile ? 30 : 100; // Few bars (quarterly)
-                                if (filteredData.length >= 10) return isMobile ? 20 : 80; // More than 10
-                                return isMobile ? 30 : 100; // Many bars but less than 10
-                            })()}
-                        >
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                tickMargin={10}
-                                axisLine={false}
-                                tickFormatter={(value) => {
-                                    return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
-                                }}
-                            />
-                            <YAxis
-                                domain={[0, 150]}
-                                tickLine={false}
-                                axisLine={false}
-                                ticks={[0, 50, 85, 100, 120, 150]}
-                                tickFormatter={(value) => `${value}%`}
-                                width={45}
-                            />
-                            <ChartTooltip
-                                cursor={false}
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value) => 'Occupancy: ' + value + '%'}
-                                    />
-                                }
-                            />
-                            <Bar dataKey="rate" radius={8}>
-                                {filteredData.map((entry, index) => (
-                                    <Cell
-                                        key={`cell-${index}`}
-                                        fill={getOccupancyColor(entry.rate)}
-                                    />
-                                ))}
-                                {!isMobile && (
+                            allData={chartData}
+                            timeRange={timeRange}
+                        />
+
+                        <ChartContainer config={chartConfig} className="flex-1 w-full min-h-0">
+                            <BarChart
+                                accessibilityLayer
+                                data={filteredData}
+                                margin={{ top: 20, right: 10, left: 0, bottom: 0 }}
+                                barSize={(() => {
+                                    if (filteredData.length <= 1) return 80;
+                                    if (filteredData.length <= 3) return 100;
+                                    if (filteredData.length >= 10) return 60;
+                                    return 80;
+                                })()}
+                            >
+                                <defs>
+                                    {OCCUPANCY_LEVELS.map((level, index) => (
+                                        <linearGradient
+                                            key={`gradient-${index}`}
+                                            id={`gradient-${index}`}
+                                            x1="0"
+                                            y1="0"
+                                            x2="0"
+                                            y2="1"
+                                        >
+                                            <stop
+                                                offset="0%"
+                                                stopColor={level.color}
+                                                stopOpacity={1}
+                                            />
+                                            <stop
+                                                offset="100%"
+                                                stopColor={level.color}
+                                                stopOpacity={0.6}
+                                            />
+                                        </linearGradient>
+                                    ))}
+                                </defs>
+
+                                <CartesianGrid
+                                    vertical={false}
+                                    strokeDasharray="3 3"
+                                    className="stroke-border/50"
+                                />
+
+                                <XAxis
+                                    dataKey="month"
+                                    tickLine={false}
+                                    tickMargin={10}
+                                    axisLine={false}
+                                    tickFormatter={(value) => {
+                                        return `${value.slice(0, 3)} ${value.slice(value.length - 4)}`;
+                                    }}
+                                />
+
+                                <YAxis
+                                    domain={[0, 150]}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    ticks={[0, 50, 85, 100, 120, 150]}
+                                    tickFormatter={(value) => `${value}%`}
+                                    width={45}
+                                />
+
+                                <ChartTooltip
+                                    cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 4 }}
+                                    content={<OccupancyTooltip />}
+                                />
+
+                                <ReferenceLine
+                                    y={85}
+                                    stroke="var(--muted-foreground)"
+                                    strokeDasharray="3 3"
+                                    label={{
+                                        value: 'Target (85%)',
+                                        position: 'insideTopRight',
+                                        fill: 'var(--muted-foreground)',
+                                        fontSize: 12,
+                                    }}
+                                />
+
+                                <ReferenceLine
+                                    y={120}
+                                    stroke="var(--muted-foreground)"
+                                    strokeDasharray="3 3"
+                                    label={{
+                                        value: 'Max',
+                                        position: 'insideTopRight',
+                                        fill: 'var(--muted-foreground)',
+                                        fontSize: 12,
+                                    }}
+                                />
+
+                                <Bar
+                                    dataKey="rate"
+                                    radius={[6, 6, 0, 0]}
+                                    className="drop-shadow-sm"
+                                >
+                                    {filteredData.map((entry, index) => {
+                                        const level = getOccupancyLevel(entry.rate);
+                                        const gradientIndex = OCCUPANCY_LEVELS.indexOf(level);
+                                        return (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={`url(#gradient-${gradientIndex})`}
+                                                className="hover:opacity-90 transition-opacity cursor-pointer"
+                                            />
+                                        );
+                                    })}
                                     <LabelList
                                         position="top"
                                         offset={8}
@@ -246,32 +306,12 @@ export function OccupancyChartComponent({ chartData, error }) {
                                         fontSize={12}
                                         formatter={(value) => `${value}%`}
                                     />
-                                )}
-                            </Bar>
-                            <ReferenceLine
-                                y={85}
-                                stroke="var(--muted-foreground)"
-                                strokeDasharray="3 3"
-                                label={{
-                                    value: 'Target (85%)',
-                                    position: 'insideTopRight',
-                                    fill: 'var(--muted-foreground)',
-                                    fontSize: 12,
-                                }}
-                            />
-                            <ReferenceLine
-                                y={120}
-                                stroke="var(--muted-foreground)"
-                                strokeDasharray="3 3"
-                                label={{
-                                    value: 'Max',
-                                    position: 'insideTopRight',
-                                    fill: 'var(--muted-foreground)',
-                                    fontSize: 12,
-                                }}
-                            />
-                        </BarChart>
-                    </ChartContainer>
+                                </Bar>
+                            </BarChart>
+                        </ChartContainer>
+
+                        <OccupancyLegend />
+                    </div>
                 )}
             </CardContent>
         </Card>

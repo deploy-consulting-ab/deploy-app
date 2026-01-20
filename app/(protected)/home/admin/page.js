@@ -4,7 +4,7 @@ import { CreateUserComponent } from '@/components/application/setup/users/create
 
 const AdminPage = async () => {
     return (
-        <div className="flex flex-col gap-8 p-6">
+        <div className="flex flex-col gap-8">
             <div className="w-full max-w-xl mx-auto">
                 <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 

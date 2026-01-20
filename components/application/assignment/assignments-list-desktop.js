@@ -96,11 +96,12 @@ export function AssignmentsListDesktopComponent({
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
@@ -110,8 +111,8 @@ export function AssignmentsListDesktopComponent({
                 return (
                     <Link
                         href={`${ASSIGNMENTS_ROUTE}/${id}`}
-                        className="cursor-pointer dark:text-deploy-ocean text-deploy-blue hover:underline truncate"
-                        title={row.getValue('name')} // Show full text on hover
+                        className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
+                        title={row.getValue('name')}
                     >
                         {row.getValue('name')}
                     </Link>
@@ -120,44 +121,48 @@ export function AssignmentsListDesktopComponent({
         },
         {
             accessorKey: 'projectName',
-            size: 300, // Larger size for project names
+            size: 300,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Project Name
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div className="truncate" title={row.getValue('projectName')}>
+                <div className="truncate text-foreground/80" title={row.getValue('projectName')}>
                     {row.getValue('projectName')}
                 </div>
             ),
         },
         {
             accessorKey: 'projectStatus',
-            size: 150, // Fixed size for status
+            size: 150,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Project Status
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 const projectStatus = row.getValue('projectStatus');
                 return (
-                    <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`}>
+                    <Badge
+                        className={`${getAssignmentStageColor(projectStatus)} text-white shadow-sm`}
+                    >
                         {projectStatus}
                     </Badge>
                 );
@@ -165,21 +170,22 @@ export function AssignmentsListDesktopComponent({
         },
         {
             accessorKey: 'startDate',
-            size: 120, // Fixed size for dates
+            size: 120,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Start Date
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div>
+                <div className="text-foreground/70 tabular-nums">
                     {row.getValue('startDate')
                         ? formatDateToSwedish(row.getValue('startDate'))
                         : '-'}
@@ -188,21 +194,22 @@ export function AssignmentsListDesktopComponent({
         },
         {
             accessorKey: 'endDate',
-            size: 120, // Fixed size for dates
+            size: 120,
             header: ({ column }) => {
                 return (
                     <Button
                         variant="ghost"
-                        size="large"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         End Date
-                        <ArrowUpDown />
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => (
-                <div>
+                <div className="text-foreground/70 tabular-nums">
                     {row.getValue('endDate') ? formatDateToSwedish(row.getValue('endDate')) : '-'}
                 </div>
             ),

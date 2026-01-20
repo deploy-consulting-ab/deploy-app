@@ -2,8 +2,6 @@
 
 import { auth } from '@/auth';
 import { getAbsenceApplications } from '@/actions/flex/flex-actions';
-import { timeReportingLinks } from '@/lib/external-links';
-import { UsefulLinksComponent } from '@/components/application/useful-links/useful-links-component';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
@@ -28,15 +26,13 @@ export default async function HolidaysPage() {
     }
 
     return (
-        <div className="h-full grid grid-rows-[auto_1fr] gap-4 pt-4">
+        <div className="h-full">
             <HolidaysWrapperComponent
                 initialData={data}
                 refreshAction={refreshHolidayData}
                 error={error}
+                isNavigationDisabled={true}
             />
-            <div className="self-start">
-                <UsefulLinksComponent links={timeReportingLinks} title="Flex" />
-            </div>
         </div>
     );
 }

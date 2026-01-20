@@ -1,39 +1,52 @@
-'use server';
-
-import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
-import { AssignmentsMetricsComponent } from '@/components/application/assignment/assignments-metrics';
+import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
 export async function SubcontractorHomeComponent({ employeeNumber }) {
-    let subcontractorAssignmentsMetrics = null;
+    let statsData = null;
     let error = null;
+
+    async function refreshStatistics() {
+        'use server';
+        try {
+            const metrics = await getAssignmentsMetrics(employeeNumber);
+            return transformStatisticsData(metrics);
+        } catch (err) {
+            throw new Error(err.message);
+        }
+    }
 
     try {
         const metrics = await getAssignmentsMetrics(employeeNumber);
-
-        subcontractorAssignmentsMetrics = metrics.map((assignment) => ({
-            ...assignment,
-            title: assignment.status + ' assignments',
-            description:
-                assignment.count === 0
-                    ? `No ${assignment.status} assignments yet`
-                    : `Click to view ${assignment.status} assignments`,
-        }));
-    } catch (error) {
-        error = error;
-    }
-
-    if (error) {
-        return <ErrorDisplayComponent error={error} />;
+        statsData = transformStatisticsData(metrics);
+    } catch (err) {
+        error = err.message || 'Failed to load statistics';
     }
 
     return (
         <div className="h-full py-4">
-            <h3 className="text-base md:text-lg font-medium">Assignments Metrics</h3>
-            <AssignmentsMetricsComponent
-                assignmentsMetrics={subcontractorAssignmentsMetrics}
-                className="grid-cols-2"
+            <StatisticsCardComponent
+                title="Assignments Overview"
+                description="Your current assignment metrics"
+                stats={statsData}
+                error={error}
+                refreshAction={refreshStatistics}
+                columns={2}
             />
         </div>
     );
+}
+
+// Transform raw metrics data to match StatisticsCardComponent expected format
+function transformStatisticsData(metrics) {
+    if (!metrics || metrics.length === 0) return [];
+
+    return metrics.map((metric) => ({
+        id: metric.status,
+        label: metric.status,
+        value: metric.count,
+        detail:
+            metric.count === 0
+                ? `No ${metric.status.toLowerCase()} assignments`
+                : `${metric.count} ${metric.status.toLowerCase()} assignment${metric.count > 1 ? 's' : ''}`,
+    }));
 }

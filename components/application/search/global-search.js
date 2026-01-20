@@ -125,8 +125,8 @@ export function GlobalSearch({ user }) {
                 <Input
                     ref={searchRef}
                     value={searchValue}
-                    placeholder="Search records..."
-                    className="pl-9 pr-8 text-base"
+                    placeholder="Search for records"
+                    className="pl-9 pr-8 text-sm border-transparent rounded-full h-9 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
                     onBlur={() => {
@@ -136,9 +136,9 @@ export function GlobalSearch({ user }) {
                 {searchValue && (
                     <button
                         onClick={handleClear}
-                        className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground hover:text-foreground"
+                        className="absolute right-2 top-2 h-5 w-5 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent flex items-center justify-center"
                     >
-                        <X className="h-4 w-4" />
+                        <X className="h-3.5 w-3.5" />
                     </button>
                 )}
             </div>

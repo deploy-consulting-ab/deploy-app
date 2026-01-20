@@ -14,11 +14,22 @@ export function buildMenu(systemPermissions) {
 
     for (const [key, menuItem] of Object.entries(MENU_ITEMS_MAP)) {
         if (systemPermissions.has(menuItem.systemPermission)) {
-            menu.push({
+            const item = {
                 title: menuItem.title,
                 url: menuItem.url,
                 icon: menuItem.icon,
-            });
+            };
+
+            // Include subitems if present
+            if (menuItem.items && menuItem.items.length > 0) {
+                item.items = menuItem.items.map((subItem) => ({
+                    title: subItem.title,
+                    url: subItem.url,
+                    icon: subItem.icon,
+                }));
+            }
+
+            menu.push(item);
         }
     }
 
