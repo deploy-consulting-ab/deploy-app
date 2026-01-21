@@ -252,14 +252,6 @@
     * {
         @apply border-border outline-ring/50;
     }
-
-    /* Prevent horizontal overflow on mobile */
-    html,
-    body {
-        overflow-x: hidden;
-        max-width: 100vw;
-    }
-
     body {
         @apply bg-background text-foreground;
 
@@ -273,15 +265,6 @@
             oklch(0.15 0.05 265) 0%,
             oklch(0.129 0.042 264.695) 100%
         );
-    }
-
-    /* Prevent iOS zoom on input focus - ensure 16px minimum */
-    @media screen and (max-width: 767px) {
-        input,
-        textarea,
-        select {
-            font-size: 16px !important;
-        }
     }
 }
 
