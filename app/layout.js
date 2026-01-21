@@ -1,10 +1,9 @@
 import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider } from '@/components/auth/form/theme-provider';
 import { Analytics } from '@vercel/analytics/next';
 import { auth } from '@/auth';
-import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
+import { AppProviders } from '@/components/navigation/app-providers';
 
 const nunitoSans = Nunito_Sans({ subsets: ['latin'] });
 
@@ -50,16 +49,7 @@ export default async function RootLayout({ children }) {
                 />
             </head>
             <body className={`${nunitoSans.className} antialiased h-full`} suppressHydrationWarning>
-                <SessionProvider session={session}>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="system"
-                        enableSystem
-                        disableTransitionOnChange
-                    >
-                        <div className="h-full bg-background">{children}</div>
-                    </ThemeProvider>
-                </SessionProvider>
+                <AppProviders session={session}>{children}</AppProviders>
                 <Analytics />
                 <Toaster />
             </body>
