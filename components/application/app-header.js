@@ -46,10 +46,6 @@ export async function AppHeaderComponent({ location }) {
                     <LogoutButtonComponent />
                 </div>
             </header>
-            {/* Mobile breadcrumb */}
-            <div className="md:hidden px-4 pt-2 pb-4">
-                <DynamicBreadcrumbComponent />
-            </div>
         </>
     );
 }
