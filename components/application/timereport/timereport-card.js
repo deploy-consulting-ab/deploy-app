@@ -13,7 +13,6 @@ import { HoursGridComponent } from '@/components/application/timereport/hours-gr
 import { Spinner } from '@/components/ui/spinner';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
-import chalk from 'chalk';
 
 /**
  * Main time report card component.
@@ -224,7 +223,6 @@ export function TimereportCardComponent({
 
     // Handle checkmark toggle
     const handleToggleCheckmark = useCallback(async () => {
-        console.log(chalk.green('handleToggleCheckmark'));
         try {
             const weekStart = getWeekMonday(selectedWeek);
             const newCheckmarkValue = await toggleCheckmarkAction(
