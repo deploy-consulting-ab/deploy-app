@@ -200,7 +200,7 @@ export function TimereportCard({
                 timeData: timeData,
             };
             await createTimecard(flexEmployeeId, timecard);
-            toastRichSuccess({ message: 'Time report saved successfully' });
+            toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
 
             // Re-fetch timereports to get the latest data from the server
             await refreshTimereports();
@@ -237,9 +237,12 @@ export function TimereportCard({
             setIsCheckmarked(newCheckmarkValue);
 
             if (newCheckmarkValue) {
-                toastRichSuccess({ message: 'Time report checkmarked successfully' });
+                toastRichSuccess({
+                    message: 'Time report checkmarked successfully',
+                    duration: 2000,
+                });
             } else {
-                toastRichSuccess({ message: 'Checkmark removed successfully' });
+                toastRichSuccess({ message: 'Checkmark removed successfully', duration: 2000 });
             }
         } catch (error) {
             toastRichError({
