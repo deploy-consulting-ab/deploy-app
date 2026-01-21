@@ -11,10 +11,7 @@ import {
 import { OccupancyCardPhoneComponent } from '@/components/application/occupancy/phone/occupancy-card-phone';
 import { useState, useEffect, useRef } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import {
-    getOccupancyLevel,
-    OCCUPANCY_LEVELS,
-} from '@/components/application/occupancy/occupancy-chart-shared';
+import { getOccupancyLevel, OCCUPANCY_LEVELS } from '@/components/application/occupancy/occupancy-chart-shared';
 
 const occupancyViews = [
     { value: 'all', label: 'All Records' },
