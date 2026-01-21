@@ -11,7 +11,7 @@ import {
     createTimereportCheckmarkAction,
     deleteTimereportCheckmarkAction,
 } from '@/actions/database/timereport-checkmark-actions';
-import { TimereportCard } from '@/components/application/timereport/timereport-card';
+import { TimereportCardComponent } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString, getUTCToday } from '@/lib/utils';
 
 /**
@@ -123,6 +123,7 @@ export default async function TimereportPage() {
     const session = await auth();
     const { user } = session;
     const employeeNumber = user.employeeNumber;
+    const employeeName = user.name;
     const flexEmployeeId = user.flexEmployeeId;
     const userId = user.sessionId;
 
@@ -149,7 +150,9 @@ export default async function TimereportPage() {
 
     return (
         <div>
-            <TimereportCard
+            <TimereportCardComponent
+                employeeNumber={employeeNumber}
+                employeeName={employeeName}
                 flexEmployeeId={flexEmployeeId}
                 initialProjects={initialProjects}
                 initialTimereports={initialTimereports}

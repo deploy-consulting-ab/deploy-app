@@ -15,7 +15,7 @@ alwaysApply: true
   - Structure files: exported component, subcomponents, helpers, static content.
 
   Standard.js Rules
-  - Use 2 space indentation.
+  - Use 4 space indentation.
   - Use single quotes for strings except to avoid escaping.
   - No semicolons (unless required to disambiguate statements).
   - No unused variables.

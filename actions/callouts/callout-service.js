@@ -3,7 +3,7 @@
  */
 'use server';
 
-import { HTTP_METHODS, STATUS_CODES } from './config.js';
+import { HTTP_METHODS } from './config.js';
 import { handleApiError, NetworkError, ApiError } from './errors.js';
 
 // Helper function for base64 encoding that works in both browser and Node.js

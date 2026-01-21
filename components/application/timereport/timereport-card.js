@@ -1,31 +1,27 @@
 'use client';
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import {
-    Clock,
-    Save,
-    RotateCcw,
-    RefreshCw,
-    ExternalLink,
-    CheckCircle,
-    XCircle,
-} from 'lucide-react';
+import { Clock, Save, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { createTimecard } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
-import { getWeekMonday, getUTCToday, formatDateToISOString } from '@/lib/utils';
+import { getWeekMonday, getWeekSunday, getUTCToday, formatDateToISOString, formatDateToSwedish } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { Spinner } from '@/components/ui/spinner';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
+import { postSlackTimereport } from '@/actions/slack/slack-actions';
+import chalk from 'chalk';
 
 /**
  * Main time report card component.
  * Manages the state for week selection, project selection, and hour entries.
  */
-export function TimereportCard({
+export function TimereportCardComponent({
+    employeeNumber,
+    employeeName,
     flexEmployeeId,
     initialProjects,
     initialTimereports,
@@ -228,6 +224,7 @@ export function TimereportCard({
 
     // Handle checkmark toggle
     const handleToggleCheckmark = useCallback(async () => {
+        console.log(chalk.green('handleToggleCheckmark'));
         try {
             const weekStart = getWeekMonday(selectedWeek);
             const newCheckmarkValue = await toggleCheckmarkAction(
@@ -236,20 +233,37 @@ export function TimereportCard({
             );
             setIsCheckmarked(newCheckmarkValue);
 
+            const weekStartDate = formatDateToSwedish(weekStart);
+            const weekEndDate = formatDateToSwedish(getWeekSunday(weekStart));
             if (newCheckmarkValue) {
+                await postSlackTimereport(
+                    employeeName,
+                    employeeNumber,
+                    weekStartDate,
+                    weekEndDate,
+                    'has checkmarked the hours for the week',
+                );
                 toastRichSuccess({
-                    message: 'Time report checkmarked successfully',
+                    message: 'Hours checkmarked successfully',
                     duration: 2000,
                 });
             } else {
+                await postSlackTimereport(
+                    employeeName,
+                    employeeNumber,
+                    weekStartDate,
+                    weekEndDate,
+                    'has removed the checkmark for the hours'
+                );
                 toastRichSuccess({ message: 'Checkmark removed successfully', duration: 2000 });
             }
         } catch (error) {
             toastRichError({
                 message: error.message || 'Failed to update checkmark status',
+                duration: 2000,
             });
         }
-    }, [isCheckmarked, selectedWeek, toggleCheckmarkAction]);
+    }, [isCheckmarked, selectedWeek, toggleCheckmarkAction, employeeName, employeeNumber]);
 
     // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {
