@@ -420,13 +420,10 @@ export function TimereportCardComponent({
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Loading state */}
-
-                    {/* Project Selector - only visible for current/future weeks */}
-                    {!isPastWeek && (
+                    {/* Empty state when no projects selected - only visible for current/future weeks */}
+                    {!isPastWeek && selectedProjects.size === 0 && (
                         <ProjectSelectorComponent
                             projects={projects}
-                            selectedProjects={selectedProjects}
                             onAddProject={handleAddProject}
                             onCopyFromLastWeek={handleCopyFromLastWeek}
                             isCopyingFromLastWeek={isCopyingFromLastWeek}
@@ -445,6 +442,7 @@ export function TimereportCardComponent({
                             selectedWeek={selectedWeek}
                             onTimeDataChange={handleTimeDataChange}
                             onRemoveProject={handleRemoveProject}
+                            onAddProject={handleAddProject}
                             projects={projects}
                             selectedProjects={selectedProjects}
                             disabled={isPastWeek || isCheckmarked}
