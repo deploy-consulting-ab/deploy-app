@@ -343,6 +343,9 @@ export function HoursGridComponent({
                     initialTimeData={initialTimeData}
                     timeData={timeData}
                     isCheckmarked={isCheckmarked}
+                    onAddProject={onAddProject}
+                    projects={projects}
+                    selectedProjects={selectedProjects}
                 />
             </div>
 

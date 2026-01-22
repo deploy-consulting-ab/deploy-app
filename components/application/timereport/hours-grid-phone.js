@@ -4,6 +4,7 @@ import { X, Clock, RotateCcw, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
+import { AddProjectDropdownComponent } from '@/components/application/timereport/add-project-dropdown';
 
 const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -26,6 +27,9 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
  * @param {Array} props.initialTimeData - Initial time data from Flex (for sync status)
  * @param {Array} props.timeData - Current time data
  * @param {boolean} props.isCheckmarked - Whether the timecard is checkmarked
+ * @param {Function} props.onAddProject - Callback when adding a new project
+ * @param {Array} props.projects - Array of available projects
+ * @param {Set} props.selectedProjects - Set of selected project IDs
  */
 export function HoursGridPhone({
     weekDates,
@@ -43,6 +47,9 @@ export function HoursGridPhone({
     initialTimeData = [],
     timeData = [],
     isCheckmarked = false,
+    onAddProject,
+    projects = [],
+    selectedProjects = new Set(),
 }) {
     const today = getUTCToday();
 
@@ -68,6 +75,18 @@ export function HoursGridPhone({
 
     return (
         <div className="space-y-4">
+            {/* Add project button - mobile */}
+            {!isPastWeek && onAddProject && (
+                <div className="flex items-center justify-center">
+                    <AddProjectDropdownComponent
+                        projects={projects}
+                        selectedProjects={selectedProjects}
+                        onAddProject={onAddProject}
+                        variant="compact"
+                    />
+                </div>
+            )}
+
             {/* Week summary header */}
             <div className="space-y-1">
                 <div className="flex items-center justify-between px-1">

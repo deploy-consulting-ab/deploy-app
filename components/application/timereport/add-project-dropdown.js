@@ -27,7 +27,7 @@ export function AddProjectDropdownComponent({ projects, selectedProjects, onAddP
     };
 
     return (
-        <Select onValueChange={handleProjectSelect}>
+        <Select value="" onValueChange={handleProjectSelect}>
             <SelectTrigger
                 className={
                     variant === 'compact'
