@@ -212,21 +212,6 @@ export function TimereportCardComponent({
         }
     };
 
-    // Handle reset
-    const handleReset = useCallback(() => {
-        setTimeData(JSON.parse(JSON.stringify(initialTimeData)));
-
-        // Recalculate selectedProjects from initialTimeData
-        const projectIds = new Set();
-        initialTimeData.forEach((dayEntry) => {
-            dayEntry.timeRows?.forEach((row) => {
-                projectIds.add(row.projectId);
-            });
-        });
-        setSelectedProjects(projectIds);
-        setHasChanges(false);
-    }, [initialTimeData]);
-
     // Handle checkmark toggle
     const handleToggleCheckmark = useCallback(async () => {
         try {
