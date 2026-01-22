@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Briefcase, Check } from 'lucide-react';
+import { Plus, Briefcase } from 'lucide-react';
 import {
     Select,
     SelectContent,
