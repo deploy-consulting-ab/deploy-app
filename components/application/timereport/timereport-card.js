@@ -424,6 +424,7 @@ export function TimereportCardComponent({
                     {!isPastWeek && selectedProjects.size === 0 && (
                         <ProjectSelectorComponent
                             projects={projects}
+                            selectedProjects={selectedProjects}
                             onAddProject={handleAddProject}
                             onCopyFromLastWeek={handleCopyFromLastWeek}
                             isCopyingFromLastWeek={isCopyingFromLastWeek}

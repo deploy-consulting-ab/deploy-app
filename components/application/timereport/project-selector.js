@@ -1,14 +1,8 @@
 'use client';
 
 import { Briefcase, Copy } from 'lucide-react';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { AddProjectDropdownComponent } from '@/components/application/timereport/add-project-dropdown';
 
 /**
  * Empty state component shown when no projects are selected.
@@ -16,18 +10,11 @@ import { Button } from '@/components/ui/button';
  */
 export function ProjectSelectorComponent({
     projects,
+    selectedProjects = new Set(),
     onAddProject,
     onCopyFromLastWeek,
     isCopyingFromLastWeek = false,
 }) {
-    const handleProjectSelect = (projectId) => {
-        if (projectId) {
-            onAddProject(projectId);
-        }
-    };
-
-    console.log('#### projects', projects);
-
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-muted/30 rounded-lg border border-dashed border-border">
             <div className="flex items-center gap-3 flex-1">
@@ -52,24 +39,12 @@ export function ProjectSelectorComponent({
                         {isCopyingFromLastWeek ? 'Copying...' : 'Copy from last week'}
                     </Button>
                 )}
-                <Select onValueChange={handleProjectSelect}>
-                    <SelectTrigger className="w-full sm:w-[200px]">
-                        <SelectValue placeholder="Add project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {projects.map((project) => (
-                            <SelectItem key={project.flexId} value={project.flexId}>
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-2 h-2 rounded-full shrink-0"
-                                        style={{ backgroundColor: project.color }}
-                                    />
-                                    <span className="truncate">{project.name}</span>
-                                </div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <AddProjectDropdownComponent
+                    projects={projects}
+                    selectedProjects={selectedProjects}
+                    onAddProject={onAddProject}
+                    variant="compact"
+                />
             </div>
         </div>
     );

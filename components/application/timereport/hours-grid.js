@@ -1,18 +1,12 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { X, Clock, RotateCcw, Save, Check, CheckCircle, XCircle, Plus } from 'lucide-react';
+import { X, Clock, RotateCcw, Save, Check, CheckCircle, XCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { cn, isHolidayDate, getUTCToday, formatDateToISOString } from '@/lib/utils';
 import { HoursGridPhone } from './hours-grid-phone';
+import { AddProjectDropdownComponent } from '@/components/application/timereport/add-project-dropdown';
 
 const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -360,46 +354,14 @@ export function HoursGridComponent({
                     <div className="flex items-center justify-between mb-6">
                         {/* Add project selector - only visible for current/future weeks */}
                         <div className="flex-1">
-                            {!isPastWeek && onAddProject && (() => {
-                                const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
-                                
-                                if (availableProjects.length === 0) return null;
-                                
-                                const handleProjectSelect = (projectId) => {
-                                    if (projectId && !selectedProjects.has(projectId)) {
-                                        onAddProject(projectId);
-                                    }
-                                };
-
-                                return (
-                                    <Select onValueChange={handleProjectSelect}>
-                                        <SelectTrigger className="w-full sm:w-auto gap-2 border-dashed hover:cursor-pointer">
-                                            <Plus className="h-4 w-4" />
-                                            <span className="text-muted-foreground">Add project</span>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {availableProjects.map((project) => (
-                                                <SelectItem
-                                                    key={project.flexId}
-                                                    value={project.flexId}
-                                                    className="hover:cursor-pointer"
-                                                >
-                                                    <div className="flex items-center gap-2">
-                                                        <div
-                                                            className="w-2 h-2 rounded-full shrink-0"
-                                                            style={{ backgroundColor: project.color }}
-                                                        />
-                                                        <span className="truncate">{project.name}</span>
-                                                        <span className="text-muted-foreground text-xs hidden sm:inline">
-                                                            {project.client}
-                                                        </span>
-                                                    </div>
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                );
-                            })()}
+                            {!isPastWeek && onAddProject && (
+                                <AddProjectDropdownComponent
+                                    projects={projects}
+                                    selectedProjects={selectedProjects}
+                                    onAddProject={onAddProject}
+                                    variant="compact"
+                                />
+                            )}
                         </div>
 
                         {/* Checkmark status - shown for both past and current weeks */}
