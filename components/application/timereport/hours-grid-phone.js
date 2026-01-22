@@ -82,21 +82,19 @@ export function HoursGridPhone({
                         {weekTotal}/40h
                     </span>
                 </div>
-                {!isPastWeek && (
-                    <div className="text-center">
-                        <span
-                            className={cn(
-                                'text-xs flex items-center justify-center gap-1.5',
-                                isCheckmarked
-                                    ? 'text-emerald-600 dark:text-emerald-500'
-                                    : 'text-muted-foreground'
-                            )}
-                        >
-                            <Check className="h-3 w-3" />
-                            {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
-                        </span>
-                    </div>
-                )}
+                <div className="text-center">
+                    <span
+                        className={cn(
+                            'text-xs flex items-center justify-center gap-1.5',
+                            isCheckmarked
+                                ? 'text-emerald-600 dark:text-emerald-500'
+                                : 'text-muted-foreground'
+                        )}
+                    >
+                        <Check className="h-3 w-3" />
+                        {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+                    </span>
+                </div>
             </div>
 
             {/* Daily totals row */}
