@@ -30,10 +30,9 @@ export function ProjectSelectorComponent({
                 {onCopyFromLastWeek && (
                     <Button
                         variant="outline"
-                        size="sm"
                         onClick={onCopyFromLastWeek}
                         disabled={isCopyingFromLastWeek}
-                        className="gap-2 hover:cursor-pointer"
+                        className="gap-2 hover:cursor-pointer h-9"
                     >
                         <Copy className="h-4 w-4" />
                         {isCopyingFromLastWeek ? 'Copying...' : 'Copy from last week'}
