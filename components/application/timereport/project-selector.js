@@ -97,19 +97,6 @@ export function ProjectSelectorComponent({
                     ))}
                 </SelectContent>
             </Select>
-
-            {/* Checkmark status */}
-            <span
-                className={cn(
-                    'flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg',
-                    isCheckmarked
-                        ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
-                        : 'text-muted-foreground bg-muted/50'
-                )}
-            >
-                <Check className="h-4 w-4" />
-                {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
-            </span>
         </div>
     );
 }
