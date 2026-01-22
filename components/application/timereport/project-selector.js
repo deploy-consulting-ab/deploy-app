@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Briefcase } from 'lucide-react';
+import { Plus, Briefcase, Copy } from 'lucide-react';
 import {
     Select,
     SelectContent,
@@ -8,6 +8,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 /**
  * Minimal project selector for adding projects to time report.
@@ -16,7 +17,8 @@ export function ProjectSelectorComponent({
     projects,
     selectedProjects,
     onAddProject,
-    isCheckmarked,
+    onCopyFromLastWeek,
+    isCopyingFromLastWeek = false,
 }) {
     // Filter out already selected projects
     const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
@@ -45,24 +47,38 @@ export function ProjectSelectorComponent({
                         </p>
                     </div>
                 </div>
-                <Select onValueChange={handleProjectSelect}>
-                    <SelectTrigger className="w-full sm:w-[200px]">
-                        <SelectValue placeholder="Add project" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {projects.map((project) => (
-                            <SelectItem key={project.flexId} value={project.flexId}>
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-2 h-2 rounded-full shrink-0"
-                                        style={{ backgroundColor: project.color }}
-                                    />
-                                    <span className="truncate">{project.name}</span>
-                                </div>
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                    {onCopyFromLastWeek && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onCopyFromLastWeek}
+                            disabled={isCopyingFromLastWeek}
+                            className="gap-2 hover:cursor-pointer"
+                        >
+                            <Copy className="h-4 w-4" />
+                            {isCopyingFromLastWeek ? 'Copying...' : 'Copy from last week'}
+                        </Button>
+                    )}
+                    <Select onValueChange={handleProjectSelect}>
+                        <SelectTrigger className="w-full sm:w-[200px]">
+                            <SelectValue placeholder="Add project" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {projects.map((project) => (
+                                <SelectItem key={project.flexId} value={project.flexId}>
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className="w-2 h-2 rounded-full shrink-0"
+                                            style={{ backgroundColor: project.color }}
+                                        />
+                                        <span className="truncate">{project.name}</span>
+                                    </div>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
         );
     }

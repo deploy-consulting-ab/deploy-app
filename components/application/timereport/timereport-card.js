@@ -19,6 +19,7 @@ import { HoursGridComponent } from '@/components/application/timereport/hours-gr
 import { Spinner } from '@/components/ui/spinner';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
+import chalk from 'chalk';
 
 /**
  * Main time report card component.
@@ -88,6 +89,7 @@ export function TimereportCardComponent({
     const [hasChanges, setHasChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [isCheckmarked, setIsCheckmarked] = useState(initialTimereports?.isCheckmarked || false);
+    const [isCopyingFromLastWeek, setIsCopyingFromLastWeek] = useState(false);
 
     /**
      * Fetch projects for the given week using the server action
@@ -190,6 +192,75 @@ export function TimereportCardComponent({
         });
         setHasChanges(true);
     }, []);
+
+    /**
+     * Copy time entries from the previous week.
+     * Fetches timereports for the week before the selected week and
+     * adjusts dates to match the current selected week.
+     * The copied data is NOT synced (initialTimeData remains empty).
+     */
+    const handleCopyFromLastWeek = useCallback(async () => {
+        setIsCopyingFromLastWeek(true);
+        try {
+            // Calculate the previous week's Monday
+            const previousWeekMonday = new Date(selectedWeek);
+            previousWeekMonday.setUTCDate(previousWeekMonday.getUTCDate() - 7);
+
+            // Fetch timereports for the previous week
+            const response = await refreshTimereportsAction(previousWeekMonday.toISOString());
+            const previousWeekData = response.timereportResponse || [];
+
+            if (previousWeekData.length === 0) {
+                toastRichError({ message: 'No time entries found in the previous week' });
+                return;
+            }
+
+            // Adjust dates from previous week to current week
+            const adjustedTimeData = previousWeekData.map((dayEntry) => {
+                // Extract date and calculate day of week (0=Mon, 1=Tue, ..., 6=Sun)
+                const datePart = formatDateToISOString(dayEntry.date);
+                const previousDate = new Date(datePart + 'T00:00:00Z');
+                const dayOfWeek = (previousDate.getUTCDay() + 6) % 7;
+
+                // Create the new date by adding the day offset to the current week's Monday
+                const newDate = new Date(selectedWeek);
+                newDate.setUTCDate(newDate.getUTCDate() + dayOfWeek);
+
+                return {
+                    ...dayEntry,
+                    date: `${formatDateToISOString(newDate)}T00:00:00`,
+                    timeRows: dayEntry.timeRows?.map((row) => ({
+                        ...row,
+                    })),
+                };
+            });
+
+            // Set the copied time data (but NOT initialTimeData, so isSynced will be false)
+            setTimeData(adjustedTimeData);
+
+            // Update selected projects with the project IDs from the copied data
+            const copiedProjectIds = new Set();
+            adjustedTimeData.forEach((dayEntry) => {
+                dayEntry.timeRows?.forEach((row) => {
+                    copiedProjectIds.add(row.projectId);
+                });
+            });
+            setSelectedProjects(copiedProjectIds);
+
+            // Mark as having changes since this data is not synced
+            setHasChanges(true);
+
+            toastRichSuccess({
+                message: 'Time entries copied from last week',
+                duration: 2000,
+            });
+        } catch (error) {
+            console.error('Failed to copy from last week:', error);
+            toastRichError({ message: 'Failed to copy time entries from last week', duration: 2000 });
+        } finally {
+            setIsCopyingFromLastWeek(false);
+        }
+    }, [selectedWeek, refreshTimereportsAction]);
 
     // Handle save
     const handleSave = async () => {
@@ -354,7 +425,8 @@ export function TimereportCardComponent({
                             projects={projects}
                             selectedProjects={selectedProjects}
                             onAddProject={handleAddProject}
-                            isCheckmarked={isCheckmarked}
+                            onCopyFromLastWeek={handleCopyFromLastWeek}
+                            isCopyingFromLastWeek={isCopyingFromLastWeek}
                         />
                     )}
 
