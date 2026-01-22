@@ -256,7 +256,10 @@ export function TimereportCardComponent({
             });
         } catch (error) {
             console.error('Failed to copy from last week:', error);
-            toastRichError({ message: 'Failed to copy time entries from last week', duration: 2000 });
+            toastRichError({
+                message: 'Failed to copy time entries from last week',
+                duration: 2000,
+            });
         } finally {
             setIsCopyingFromLastWeek(false);
         }
