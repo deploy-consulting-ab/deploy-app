@@ -357,8 +357,17 @@ export function HoursGridComponent({
                                     : 'text-muted-foreground bg-muted/50'
                             )}
                         >
-                            <Check className="h-4 w-4" />
-                            {isCheckmarked ? 'All Checkmarked' : 'Not checkmarked'}
+                            {isCheckmarked ? (
+                                <>
+                                    <Check className="h-4 w-4" />
+                                    All Checkmarked
+                                </>
+                            ) : (
+                                <>
+                                    <X className="h-4 w-4" />
+                                    Not checkmarked
+                                </>
+                            )}
                         </span>
                     </div>
 

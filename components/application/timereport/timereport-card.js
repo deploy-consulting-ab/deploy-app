@@ -7,7 +7,13 @@ import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
-import { getWeekMonday, getWeekSunday, getUTCToday, formatDateToISOString, formatDateToSwedish } from '@/lib/utils';
+import {
+    getWeekMonday,
+    getWeekSunday,
+    getUTCToday,
+    formatDateToISOString,
+    formatDateToSwedish,
+} from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import { Spinner } from '@/components/ui/spinner';
@@ -239,7 +245,7 @@ export function TimereportCardComponent({
                     employeeNumber,
                     weekStartDate,
                     weekEndDate,
-                    'has checkmarked the hours for the week',
+                    'has checkmarked the hours for the week'
                 );
                 toastRichSuccess({
                     message: 'Hours checkmarked successfully',
