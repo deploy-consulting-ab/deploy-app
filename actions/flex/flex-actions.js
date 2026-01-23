@@ -69,6 +69,21 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
     }
 }
 
+/**
+ * Converts decimal hours to "HH:MM" time format string.
+ * Examples:
+ *   0 -> "00:00"
+ *   1 -> "01:00"
+ *   1.5 -> "01:30"
+ *   2.5 -> "02:30"
+ *   10.5 -> "10:30"
+ */
+function hoursToTimeString(decimalHours) {
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours % 1) * 60);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
 export async function createTimecard(flexEmployeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
@@ -76,10 +91,10 @@ export async function createTimecard(flexEmployeeId, timecard) {
             const date = formatDateToISOString(timereport.date);
 
             // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-            let previousTomTime = 0;
+            let previousTomHours = 0;
 
             const timeRows = timereport.timeRows.map((timeRow) => {
-                const tomTime = previousTomTime + timeRow.hours;
+                const tomHours = previousTomHours + timeRow.hours;
                 const body = {
                     accounts: [
                         {
@@ -88,13 +103,13 @@ export async function createTimecard(flexEmployeeId, timecard) {
                         },
                     ],
                     externalComment: '.', // Pass some external comment to prevent adding an extra row
-                    fromTime: previousTomTime,
-                    tomTime: tomTime,
+                    fromTime: hoursToTimeString(previousTomHours),
+                    tomTime: hoursToTimeString(tomHours),
                     timeCode: {
                         code: 'ARB',
                     },
                 };
-                previousTomTime = tomTime;
+                previousTomHours = tomHours;
                 return body;
             });
 

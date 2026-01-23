@@ -161,7 +161,9 @@ export function HoursGridComponent({
 
     const handleHourChange = useCallback(
         (projectId, dayIndex, value) => {
-            const numValue = parseFloat(value) || 0;
+            // Normalize comma to dot for locales that use comma as decimal separator
+            const normalizedValue = String(value).replace(',', '.');
+            const numValue = parseFloat(normalizedValue) || 0;
             const clampedValue = Math.max(0, Math.min(24, numValue));
 
             // Find the project info
