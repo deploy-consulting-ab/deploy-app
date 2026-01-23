@@ -16,6 +16,7 @@ import {
 } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
+import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
 import chalk from 'chalk';
@@ -431,31 +432,47 @@ export function TimereportCardComponent({
                     )}
 
                     {/* Hours Grid */}
-                    <div
-                        className={`transition-opacity duration-300 ease-in-out ${
-                            isLoadingProjects || isLoadingTimereports || isSaving
-                                ? 'opacity-0'
-                                : 'opacity-100'
-                        }`}
-                    >
-                        <HoursGridComponent
-                            timeData={timeData}
-                            initialTimeData={initialTimeData}
-                            selectedWeek={selectedWeek}
-                            onTimeDataChange={handleTimeDataChange}
-                            onRemoveProject={handleRemoveProject}
-                            onAddProject={handleAddProject}
-                            projects={projects}
-                            selectedProjects={selectedProjects}
-                            disabled={isPastWeek || isCheckmarked}
-                            holidays={holidays}
-                            isPastWeek={isPastWeek}
-                            hasChanges={hasChanges}
-                            isSaving={isSaving}
-                            onSave={handleSave}
-                            isCheckmarked={isCheckmarked}
-                            onToggleCheckmark={handleToggleCheckmark}
-                        />
+                    <div className="relative">
+                        {/* Loading Logo Overlay */}
+                        <div
+                            className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300 ease-in-out ${
+                                isLoadingProjects || isLoadingTimereports || isSaving
+                                    ? 'opacity-100'
+                                    : 'opacity-0 pointer-events-none'
+                            }`}
+                        >
+                            <div className="[&>div]:h-auto [&>div]:min-h-0 [&>div]:p-0">
+                                <LoadingLogo className="h-12 w-auto" />
+                            </div>
+                        </div>
+
+                        {/* Grid Content */}
+                        <div
+                            className={`transition-opacity duration-300 ease-in-out ${
+                                isLoadingProjects || isLoadingTimereports || isSaving
+                                    ? 'opacity-0'
+                                    : 'opacity-100'
+                            }`}
+                        >
+                            <HoursGridComponent
+                                timeData={timeData}
+                                initialTimeData={initialTimeData}
+                                selectedWeek={selectedWeek}
+                                onTimeDataChange={handleTimeDataChange}
+                                onRemoveProject={handleRemoveProject}
+                                onAddProject={handleAddProject}
+                                projects={projects}
+                                selectedProjects={selectedProjects}
+                                disabled={isPastWeek || isCheckmarked}
+                                holidays={holidays}
+                                isPastWeek={isPastWeek}
+                                hasChanges={hasChanges}
+                                isSaving={isSaving}
+                                onSave={handleSave}
+                                isCheckmarked={isCheckmarked}
+                                onToggleCheckmark={handleToggleCheckmark}
+                            />
+                        </div>
                     </div>
                 </CardContent>
             </Card>
