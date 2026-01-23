@@ -361,7 +361,7 @@ export function TimereportCardComponent({
 
                 <div className="hidden sm:flex items-center gap-2">
                     <div className="flex items-center gap-2">
-                        <AbsenceCardComponent />
+                        <AbsenceCardComponent employmentNumber={employeeNumber} />
                     </div>
                     <a
                         href={FLEX_TIMEREPORT_URL}

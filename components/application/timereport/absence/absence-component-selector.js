@@ -2,11 +2,9 @@ import { HolidaysRequestComponent } from '@/components/application/timereport/ab
 import { SickRequestComponent } from '@/components/application/timereport/absence/sick-request'
 
 const ABSENCE_COMPONENT_MAP = {
-    'project-1': HolidaysRequestComponent,
-    'project-2': SickRequestComponent,
-    'project-3': HolidaysRequestComponent,
+    'holiday-absence-request': HolidaysRequestComponent,
 }
 
-export function getAbsenceComponentForProject(projectId) {
-    return ABSENCE_COMPONENT_MAP[projectId] || SickRequestComponent
+export function getAbsenceComponentForAbsenceApplicationType(absenceApplicationType) {
+    return ABSENCE_COMPONENT_MAP[absenceApplicationType] || SickRequestComponent
 }

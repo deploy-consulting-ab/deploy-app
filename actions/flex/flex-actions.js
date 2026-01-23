@@ -8,7 +8,7 @@ import {
     getUTCToday,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
-import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
+import { PROJECT_TYPE_ID, WORKING_TYPE_ID, HOLIDAY_TYPE_ID, COMPANY_ID } from './constants.js';
 import { formatDateToISOString } from '@/lib/utils.js';
 import chalk from 'chalk';
 
@@ -186,6 +186,42 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
             timereportResponse,
             selectedProjects,
         };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function createAbsenceApplication(
+    employmentNumber,
+    absenceApplicationType,
+    absenceApplicationData
+) {
+    try {
+        switch (absenceApplicationType) {
+            case 'holiday-absence-request':
+                return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
+            default:
+                throw new Error('Invalid absence application type');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+    try {
+        const absenceApplication = {
+            absenceTypeId: HOLIDAY_TYPE_ID,
+            companyId: COMPANY_ID,
+            employmentNumber: employmentNumber,
+            fromDate: absenceApplicationData.startDate,
+            toDate: absenceApplicationData.endDate,
+            ...(absenceApplicationData.isSameDay && { hours: absenceApplicationData.hours }),
+        };
+
+        console.log('## absenceApplication', absenceApplication);
+
+        return absenceApplication;
     } catch (error) {
         throw error;
     }

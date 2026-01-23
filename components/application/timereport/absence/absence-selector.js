@@ -6,16 +6,16 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-export function AbsenceSelectorComponent({ projects, handleProjectSelected}) {
+export function AbsenceSelectorComponent({ absenceApplicationTypes, handleAbsenceApplicationTypeSelected}) {
     return (
-        <Select onValueChange={handleProjectSelected}>
+        <Select onValueChange={handleAbsenceApplicationTypeSelected}>
             <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a project" />
+                <SelectValue placeholder="Select an absence type" />
             </SelectTrigger>
             <SelectContent>
-                {projects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                        {project.name}
+                {absenceApplicationTypes.map((absenceApplicationType) => (
+                    <SelectItem key={absenceApplicationType.id} value={absenceApplicationType.id}>
+                        {absenceApplicationType.name}
                     </SelectItem>
                 ))}
             </SelectContent>

@@ -1,101 +1,121 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CalendarIcon, Clock, ArrowRight, CalendarDays } from 'lucide-react'
-import { enGB } from 'react-day-picker/locale'
-import { cn } from '@/lib/utils'
+import { useState, useEffect, useImperativeHandle, forwardRef, useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon, Clock, ArrowRight, CalendarDays } from 'lucide-react';
+import { enGB } from 'react-day-picker/locale';
+import { cn } from '@/lib/utils';
 
 /**
  * Format a local Date object to YYYY-MM-DD string using local timezone.
  * Use this for dates from the calendar picker to avoid UTC timezone shifts.
  */
 const formatLocalDate = (date) => {
-    if (!date) return ''
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
-}
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
 
 /**
  * Format a local Date object to a friendly display format (e.g., "23 Jan 2026")
  */
 const formatDisplayDate = (date) => {
-    if (!date) return ''
-    const day = date.getDate()
-    const month = date.toLocaleDateString('en-GB', { month: 'short' })
-    const year = date.getFullYear()
-    return `${day} ${month} ${year}`
-}
+    if (!date) return '';
+    const day = date.getDate();
+    const month = date.toLocaleDateString('en-GB', { month: 'short' });
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+};
 
-export function HolidaysRequestComponent() {
-    const [startDate, setStartDate] = useState(null)
-    const [endDate, setEndDate] = useState(null)
-    const [hours, setHours] = useState(8)
-    const [startDateOpen, setStartDateOpen] = useState(false)
-    const [endDateOpen, setEndDateOpen] = useState(false)
+export const HolidaysRequestComponent = forwardRef(function HolidaysRequestComponent(props, ref) {
+    const [startDate, setStartDate] = useState(() => new Date());
+    const [endDate, setEndDate] = useState(null);
+    const [hours, setHours] = useState(8);
+    const [startDateOpen, setStartDateOpen] = useState(false);
+    const [endDateOpen, setEndDateOpen] = useState(false);
 
-    const isSameDay = startDate && endDate &&
-        formatLocalDate(startDate) === formatLocalDate(endDate)
+    const isSameDay =
+        startDate && endDate && formatLocalDate(startDate) === formatLocalDate(endDate);
 
-    const calculateDays = () => {
-        if (!startDate || !endDate) return 0
-        if (isSameDay) return 1
+    const calculateDays = useCallback(() => {
+        if (!startDate || !endDate) return 0;
+        if (isSameDay) return 1;
 
-        const start = new Date(startDate)
-        const end = new Date(endDate)
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
         // Calculate the difference in days
-        const diffTime = Math.abs(end - start)
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-        return diffDays
-    }
+        return diffDays;
+    }, [startDate, endDate, isSameDay]);
+
+    // Expose form data and validation to parent via ref
+    useImperativeHandle(
+        ref,
+        () => ({
+            getFormData: () => ({
+                startDate: startDate ? formatLocalDate(startDate) : null,
+                endDate: endDate ? formatLocalDate(endDate) : null,
+                hours: isSameDay ? hours : 8,
+                isSameDay,
+                numberOfDays: calculateDays(),
+            }),
+            isValid: () => startDate !== null && endDate !== null && hours > 0,
+            reset: () => {
+                setStartDate(new Date());
+                setEndDate(null);
+                setHours(8);
+            },
+        }),
+        [startDate, endDate, hours, isSameDay, calculateDays]
+    );
 
     const handleStartDateSelect = (date) => {
-        setStartDate(date)
-        setStartDateOpen(false)
+        setStartDate(date);
+        setStartDateOpen(false);
 
         // If end date is before start date, reset it
         if (endDate && date && formatLocalDate(date) > formatLocalDate(endDate)) {
-            setEndDate(date)
+            setEndDate(date);
         }
-    }
+    };
 
     const handleEndDateSelect = (date) => {
-        setEndDate(date)
-        setEndDateOpen(false)
-    }
+        setEndDate(date);
+        setEndDateOpen(false);
+    };
 
     const handleHoursChange = (e) => {
-        let value = parseFloat(e.target.value)
+        let value = parseFloat(e.target.value);
 
         if (isNaN(value) || value < 0) {
-            setHours('')
-            return
+            setHours('');
+            return;
         }
 
         // Auto-set to 8 if value exceeds 8
         if (value > 8) {
-            value = 8
+            value = 8;
         }
 
-        setHours(value)
-    }
+        setHours(value);
+    };
 
     // Reset hours to 8 when switching to multi-day selection
     useEffect(() => {
         if (!isSameDay && startDate && endDate) {
-            setHours(8)
+            setHours(8);
         }
-    }, [isSameDay, startDate, endDate])
+    }, [isSameDay, startDate, endDate]);
 
-    const numberOfDays = calculateDays()
+    const numberOfDays = calculateDays();
 
     return (
         <div className="space-y-6">
@@ -123,7 +143,9 @@ export function HolidaysRequestComponent() {
                                     <div className="flex flex-col items-start">
                                         <span className="text-xs text-muted-foreground">From</span>
                                         <span className="truncate">
-                                            {startDate ? formatDisplayDate(startDate) : 'Select start date'}
+                                            {startDate
+                                                ? formatDisplayDate(startDate)
+                                                : 'Select start date'}
                                         </span>
                                     </div>
                                 </Button>
@@ -162,7 +184,9 @@ export function HolidaysRequestComponent() {
                                     <div className="flex flex-col items-start">
                                         <span className="text-xs text-muted-foreground">To</span>
                                         <span className="truncate">
-                                            {endDate ? formatDisplayDate(endDate) : 'Select end date'}
+                                            {endDate
+                                                ? formatDisplayDate(endDate)
+                                                : 'Select end date'}
                                         </span>
                                     </div>
                                 </Button>
@@ -224,27 +248,36 @@ export function HolidaysRequestComponent() {
                             <p className="text-sm text-muted-foreground">
                                 {isSameDay ? (
                                     <>
-                                        <span className="font-medium text-foreground">{hours || 0} hour{hours !== 1 ? 's' : ''}</span>
-                                        {' '}on {formatDisplayDate(startDate)}
+                                        <span className="font-medium text-foreground">
+                                            {hours || 0} hour{hours !== 1 ? 's' : ''}
+                                        </span>{' '}
+                                        on {formatDisplayDate(startDate)}
                                     </>
                                 ) : (
                                     <>
-                                        {formatDisplayDate(startDate)} — {formatDisplayDate(endDate)}
+                                        {formatDisplayDate(startDate)} —{' '}
+                                        {formatDisplayDate(endDate)}
                                     </>
                                 )}
                             </p>
                         </div>
                         <div className="flex flex-col items-end">
                             <span className="text-2xl font-semibold">
-                                {isSameDay ? (hours || 0) : numberOfDays}
+                                {isSameDay ? hours || 0 : numberOfDays}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                                {isSameDay ? (hours === 1 ? 'hour' : 'hours') : (numberOfDays === 1 ? 'day' : 'days')}
+                                {isSameDay
+                                    ? hours === 1
+                                        ? 'hour'
+                                        : 'hours'
+                                    : numberOfDays === 1
+                                      ? 'day'
+                                      : 'days'}
                             </span>
                         </div>
                     </div>
                 </div>
             )}
         </div>
-    )
-}
+    );
+});
