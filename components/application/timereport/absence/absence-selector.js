@@ -9,7 +9,7 @@ import {
 export function AbsenceSelectorComponent({ projects, handleProjectSelected}) {
     return (
         <Select onValueChange={handleProjectSelected}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a project" />
             </SelectTrigger>
             <SelectContent>
