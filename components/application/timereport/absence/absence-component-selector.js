@@ -1,12 +1,12 @@
-import { HolidaysRequest } from '@/components/application/timereport/absence/absence-components';
+import { HolidaysRequestComponent } from '@/components/application/timereport/absence/holidays-request'
+import { SickRequestComponent } from '@/components/application/timereport/absence/sick-request'
 
 const ABSENCE_COMPONENT_MAP = {
-    'project-1': HolidaysRequest,
-    'project-2': <div>Project 2 layout</div>,
-    'project-3': <div>Project 3 layout</div>,
-    default: <div>Default absence layout</div>,
-};
+    'project-1': HolidaysRequestComponent,
+    'project-2': SickRequestComponent,
+    'project-3': HolidaysRequestComponent,
+}
 
 export function getAbsenceComponentForProject(projectId) {
-    return ABSENCE_COMPONENT_MAP[projectId] || <div>Default absence layout</div>;
+    return ABSENCE_COMPONENT_MAP[projectId] || SickRequestComponent
 }

@@ -26,7 +26,7 @@ export function AbsenceCardComponent() {
         setSelectedProjectId(projectId);
     };
 
-    const AbsenceLayoutComponent = getAbsenceComponentForProject(selectedProjectId);
+    const AbsenceComponent = getAbsenceComponentForProject(selectedProjectId);
 
     return (
         <Dialog>
@@ -35,14 +35,14 @@ export function AbsenceCardComponent() {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Absence Card</DialogTitle>
+                    <DialogTitle>Request Absence</DialogTitle>
                     <DialogDescription>Select a project to request an absence.</DialogDescription>
                 </DialogHeader>
                 <AbsenceSelectorComponent
-                    projects={projects}
-                    handleProjectSelected={handleProjectSelected}
-                />
-                <AbsenceLayoutComponent />
+                        projects={projects}
+                        handleProjectSelected={handleProjectSelected}
+                    />
+                <AbsenceComponent />
                 <DialogFooter className="border-t pt-4">
                     <DialogClose asChild>
                         <Button type="button" variant="secondary">
