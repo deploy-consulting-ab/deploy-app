@@ -19,7 +19,7 @@ import { HoursGridComponent } from '@/components/application/timereport/hours-gr
 import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
-import chalk from 'chalk';
+import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
 
 /**
  * Main time report card component.
@@ -360,6 +360,9 @@ export function TimereportCardComponent({
                 </div>
 
                 <div className="hidden sm:flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        <AbsenceCardComponent />
+                    </div>
                     <a
                         href={FLEX_TIMEREPORT_URL}
                         target="_blank"
