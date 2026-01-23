@@ -16,7 +16,6 @@ import {
 } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
-import { Spinner } from '@/components/ui/spinner';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
 import chalk from 'chalk';
@@ -432,11 +431,13 @@ export function TimereportCardComponent({
                     )}
 
                     {/* Hours Grid */}
-                    {isLoadingProjects || isLoadingTimereports ? (
-                        <div className="flex items-center justify-center py-8">
-                            <Spinner size="lg" label="Loading..." />
-                        </div>
-                    ) : (
+                    <div
+                        className={`transition-opacity duration-300 ease-in-out ${
+                            isLoadingProjects || isLoadingTimereports || isSaving
+                                ? 'opacity-0'
+                                : 'opacity-100'
+                        }`}
+                    >
                         <HoursGridComponent
                             timeData={timeData}
                             initialTimeData={initialTimeData}
@@ -455,7 +456,7 @@ export function TimereportCardComponent({
                             isCheckmarked={isCheckmarked}
                             onToggleCheckmark={handleToggleCheckmark}
                         />
-                    )}
+                    </div>
                 </CardContent>
             </Card>
 
