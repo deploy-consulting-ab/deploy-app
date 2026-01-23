@@ -5,14 +5,29 @@ import {
     DialogTrigger,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogFooter,
     DialogClose,
 } from '@/components/ui/dialog';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { AbsenceSelectorComponent } from '@/components/application/timereport/absence/absence-selector';
+import { getAbsenceComponentForProject } from '@/components/application/timereport/absence/absence-component-selector';
 
 export function AbsenceCardComponent() {
+    const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const projects = [
+        { id: 'project-1', name: 'Project 1' },
+        { id: 'project-2', name: 'Project 2' },
+        { id: 'project-3', name: 'Project 3' },
+    ];
+
+    const handleProjectSelected = (projectId) => {
+        setSelectedProjectId(projectId);
+    };
+
+    const AbsenceLayoutComponent = getAbsenceComponentForProject(selectedProjectId);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -21,20 +36,18 @@ export function AbsenceCardComponent() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Absence Card</DialogTitle>
+                    <DialogDescription>Select a project to request an absence.</DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4">
-                    <div className="grid gap-3">
-                        <Label htmlFor="name-1">Name</Label>
-                        <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-                    </div>
-                    <div className="grid gap-3">
-                        <Label htmlFor="username-1">Username</Label>
-                        <Input id="username-1" name="username" defaultValue="@peduarte" />
-                    </div>
-                </div>
+                <AbsenceSelectorComponent
+                    projects={projects}
+                    handleProjectSelected={handleProjectSelected}
+                />
+                <AbsenceLayoutComponent />
                 <DialogFooter className="border-t pt-4">
                     <DialogClose asChild>
-                        <Button type="button" variant="secondary">Close</Button>
+                        <Button type="button" variant="secondary">
+                            Close
+                        </Button>
                     </DialogClose>
                 </DialogFooter>
             </DialogContent>
