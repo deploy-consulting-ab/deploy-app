@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import {
     Dialog,
     DialogContent,
@@ -8,21 +8,26 @@ import {
     DialogDescription,
     DialogFooter,
     DialogClose,
-} from '@/components/ui/dialog';
-import { useState, useTransition, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { AbsenceSelectorComponent } from '@/components/application/timereport/absence/absence-selector';
-import { getAbsenceComponentForAbsenceApplicationType } from '@/components/application/timereport/absence/absence-component-selector';
-import { Separator } from '@/components/ui/separator';
-import { createAbsenceApplication } from '@/actions/flex/flex-actions';
-import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
+} from '@/components/ui/dialog'
+import { useState, useTransition, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { AbsenceSelectorComponent } from '@/components/application/timereport/absence/absence-selector'
+import {
+    getAbsenceComponentForAbsenceApplicationType,
+    getAbsenceRequestedListComponentForAbsenceApplicationType,
+} from '@/components/application/timereport/absence/absence-component-selector'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { createAbsenceApplication } from '@/actions/flex/flex-actions'
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library'
 
 export function AbsenceCardComponent({ employmentNumber }) {
-    const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null);
-    const [isSubmitting, startTransition] = useTransition();
-    const [isOpen, setIsOpen] = useState(false);
-    const [isFormValid, setIsFormValid] = useState(false);
-    const formRef = useRef(null);
+    const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null)
+    const [isSubmitting, startTransition] = useTransition()
+    const [isOpen, setIsOpen] = useState(false)
+    const [isFormValid, setIsFormValid] = useState(false)
+    const [activeTab, setActiveTab] = useState('new-request')
+    const formRef = useRef(null)
 
     const absenceApplicationTypes = [
         { id: 'holiday-absence-request', name: 'Holiday Absence Request' },
@@ -33,13 +38,14 @@ export function AbsenceCardComponent({ employmentNumber }) {
     };
 
     const handleOpenChange = (open) => {
-        setIsOpen(open);
+        setIsOpen(open)
         if (!open) {
-            setSelectedAbsenceApplicationType(null);
-            setIsFormValid(false);
-            formRef.current?.reset?.();
+            setSelectedAbsenceApplicationType(null)
+            setIsFormValid(false)
+            setActiveTab('new-request')
+            formRef.current?.reset?.()
         }
-    };
+    }
 
     const handleSubmit = () => {
         if (!formRef.current?.isValid?.()) {
@@ -74,7 +80,10 @@ export function AbsenceCardComponent({ employmentNumber }) {
 
     const AbsenceComponent = getAbsenceComponentForAbsenceApplicationType(
         selectedAbsenceApplicationType
-    );
+    )
+    const AbsenceRequestedListComponent = getAbsenceRequestedListComponentForAbsenceApplicationType(
+        selectedAbsenceApplicationType
+    )
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -98,9 +107,24 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     {selectedAbsenceApplicationType && (
                         <>
                             <Separator />
-                            <div className="flex flex-col gap-2 py-6">
-                                <AbsenceComponent ref={formRef} onValidityChange={setIsFormValid} />
-                            </div>
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                                <TabsList className="w-full">
+                                    <TabsTrigger value="new-request" className="flex-1">
+                                        New Request
+                                    </TabsTrigger>
+                                    <TabsTrigger value="requested" className="flex-1">
+                                        Requested
+                                    </TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="new-request" className="py-6">
+                                    <AbsenceComponent ref={formRef} onValidityChange={setIsFormValid} />
+                                </TabsContent>
+                                <TabsContent value="requested" className="py-6">
+                                    {AbsenceRequestedListComponent && (
+                                        <AbsenceRequestedListComponent employmentNumber={employmentNumber} />
+                                    )}
+                                </TabsContent>
+                            </Tabs>
                         </>
                     )}
                     <DialogFooter className="border-t pt-4">
@@ -109,7 +133,7 @@ export function AbsenceCardComponent({ employmentNumber }) {
                                 Close
                             </Button>
                         </DialogClose>
-                        {selectedAbsenceApplicationType && (
+                        {activeTab === 'new-request' && selectedAbsenceApplicationType && (
                             <Button
                                 type="button"
                                 onClick={handleSubmit}
