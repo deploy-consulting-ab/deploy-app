@@ -6,10 +6,17 @@ import {
     calculateNextResetDate,
     generateDateRange,
     getUTCToday,
+    formatDateToISOString,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
-import { PROJECT_TYPE_ID, WORKING_TYPE_ID, HOLIDAY_TYPE_ID, COMPANY_ID, SICK_LEAVE_TYPE_ID } from './constants.js';
-import { formatDateToISOString } from '@/lib/utils.js';
+import {
+    PROJECT_TYPE_ID,
+    WORKING_TYPE_ID,
+    HOLIDAY_TYPE_ID,
+    COMPANY_ID,
+    SICK_LEAVE_TYPE_ID,
+    ABSENCE_STATUS_CODE,
+} from './constants.js';
 
 /**
  * Get the holidays for a given employee number
@@ -23,7 +30,10 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
 
-        const response = await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID);
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            HOLIDAY_TYPE_ID
+        );
 
         console.log('### holidays response', response);
 
@@ -86,7 +96,21 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
 export async function getHolidayRequests(employeeNumber, currentDate) {
     try {
         const flexApiClient = await getFlexApiService();
-        return await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID);
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            HOLIDAY_TYPE_ID
+        );
+
+        const currentDateISO = formatDateToISOString(currentDate);
+
+        const filteredResponse = response.Result.filter(
+            (request) => formatDateToISOString(request.FromDate) >= currentDateISO
+        ).map((request) => ({
+            ...request,
+            status: ABSENCE_STATUS_CODE[request.CurrentStatus.Status],
+        }));
+
+        return filteredResponse || [];
     } catch (error) {
         throw error;
     }
