@@ -2,8 +2,9 @@ import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { revalidatePath } from 'next/cache';
 import { transformHolidaysData } from '@/lib/utils';
-import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
 export async function SalesHomeComponent({ profileId, employeeNumber }) {
@@ -20,12 +21,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshHolidays() {
         'use server';
-        try {
-            const rawData = await getHolidays(employeeNumber);
-            return transformHolidaysData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
@@ -62,7 +58,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
     return (
         <div className="h-full grid gap-4">
             {/* Holidays Card */}
-            <HolidaysCardComponent
+            <HolidaysCardWithRefresh
                 holidays={data.holidays}
                 error={errors.holidays}
                 isNavigationDisabled={false}

@@ -5,9 +5,10 @@ import {
     getAssignmentsMetrics,
     getRecentOccupancyRate,
 } from '@/actions/salesforce/salesforce-actions';
+import { revalidatePath } from 'next/cache';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
@@ -30,12 +31,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshHolidays() {
         'use server';
-        try {
-            const rawData = await getHolidays(employeeNumber);
-            return transformHolidaysData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     async function refreshOccupancy() {
@@ -67,8 +63,8 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
     // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getHolidays(employeeNumber);
-            data.holidays = transformHolidaysData(rawHolidays);
+            const absences = await getHolidays(employeeNumber);
+            data.holidays = transformHolidaysData(absences.holidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';
         }
@@ -138,7 +134,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
                 {/* Right Sidebar */}
                 <div className="space-y-6">
                     {/* Holidays Card */}
-                    <HolidaysCardComponent
+                    <HolidaysCardWithRefresh
                         holidays={data.holidays}
                         error={errors.holidays}
                         refreshAction={refreshHolidays}

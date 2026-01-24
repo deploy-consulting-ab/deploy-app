@@ -3,11 +3,45 @@
 import { Card, CardTitle } from '@/components/ui/card';
 import { Calendar, RefreshCw, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTransition } from 'react';
 import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import Link from 'next/link';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+/**
+ * Wrapper component for use from Server Components.
+ * Handles useTransition internally so parent doesn't need to manage refresh state.
+ */
+export function HolidaysCardWithRefresh({
+    holidays,
+    error,
+    refreshAction,
+    isNavigationDisabled = false,
+}) {
+    const [isPending, startTransition] = useTransition();
+
+    function handleRefresh() {
+        startTransition(async () => {
+            await refreshAction();
+        });
+    }
+
+    return (
+        <HolidaysCardComponent
+            holidays={holidays}
+            error={error}
+            onRefresh={refreshAction ? handleRefresh : undefined}
+            isRefreshing={isPending}
+            isNavigationDisabled={isNavigationDisabled}
+        />
+    );
+}
+
+/**
+ * Pure presentational component.
+ * Use HolidaysCardWithRefresh when you need refresh functionality from a Server Component.
+ */
 export function HolidaysCardComponent({
     holidays,
     onRefresh,

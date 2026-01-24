@@ -2,9 +2,10 @@ import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions';
+import { revalidatePath } from 'next/cache';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
@@ -24,12 +25,7 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshHolidays() {
         'use server';
-        try {
-            const rawData = await getHolidays(employeeNumber);
-            return transformHolidaysData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     async function refreshOccupancy() {
@@ -92,7 +88,7 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
         <div className="h-full grid gap-4">
             {/* Top row: Holidays and Occupancy Rates */}
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
+                <HolidaysCardWithRefresh
                     holidays={data.holidays}
                     error={errors.holidays}
                     isNavigationDisabled={false}
