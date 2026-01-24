@@ -3,6 +3,9 @@ export const PROJECT_TYPE_ID = '7a21a56d-c4b9-4625-93e0-d9d8c8e2cddf';
 export const WORKING_TYPE_ID = '87c61adf-09f4-4a48-b993-4bfa1dc0aa43';
 export const COMPANY_ID = 'b4253a61-f229-4ca9-9831-ad931d9a75a6';
 
+export const ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST = 'holiday-absence-request';
+export const ABSENCE_APPLICATION_TYPE_ID_SICK_ABSENCE_REQUEST = 'sick-absence-request';
+
 /**
  * Pre-calculated Set of all Swedish bank holidays from 2024 to 2030.
  * Each date is stored as an ISO date string (YYYY-MM-DD).
