@@ -180,6 +180,7 @@ export function HolidaysRequestedListComponent({ employmentNumber }) {
             columns={columns}
             placeholder="Filter by date..."
             searchKey="FromDate"
+            pageSize={5}
         />
     )
 }
