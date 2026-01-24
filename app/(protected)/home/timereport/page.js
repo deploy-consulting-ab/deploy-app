@@ -3,7 +3,7 @@
 import { auth } from '@/auth';
 import {
     getCurrentAssignmentsByEmployeeNumber,
-    getHolidays,
+    getSalesforcePublicHolidays,
 } from '@/actions/salesforce/salesforce-actions';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import {
@@ -61,8 +61,8 @@ async function fetchTimereportsForWeek(flexEmployeeId, weekStart) {
     };
 }
 
-async function fetchHolidays() {
-    return await getHolidays();
+async function fetchSalesforcePublicHolidays() {
+    return await getSalesforcePublicHolidays();
 }
 
 /**
@@ -135,7 +135,7 @@ export default async function TimereportPage() {
     try {
         const today = getUTCToday();
         const [holidaysData, projects, timereports, isCheckmarked] = await Promise.all([
-            fetchHolidays(),
+            fetchSalesforcePublicHolidays(),
             fetchProjectsForWeek(employeeNumber, today),
             fetchTimereportsForWeek(flexEmployeeId, today),
             fetchCheckmarkStatus(userId, today),

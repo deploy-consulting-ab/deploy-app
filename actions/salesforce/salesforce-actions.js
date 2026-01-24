@@ -15,7 +15,7 @@ import {
     getOpportunityByIdQuery,
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
-    getHolidaysQuery,
+    getSalesforcePublicHolidaysQuery,
 } from './queries';
 import { PROJECT_TYPE_INTERNAL } from './constants';
 
@@ -277,9 +277,9 @@ export async function getAssignmentsMetrics(employeeNumber) {
     }
 }
 
-export async function getHolidays() {
+export async function getSalesforcePublicHolidays() {
     try {
-        const result = await queryCachedData(getHolidaysQuery(), {
+        const result = await queryCachedData(getSalesforcePublicHolidaysQuery(), {
             tags: ['holidays'],
             cacheKey: 'holidays-list',
             revalidate: 86400, // 24 hours
