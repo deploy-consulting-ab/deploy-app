@@ -105,6 +105,16 @@ class FlexApiService extends CalloutService {
         return response.status;
     }
 
+    async updateAbsenceApplication(absenceRequestId, absenceApplicationPayload) {
+        console.log('#### absenceApplicationPayload', absenceApplicationPayload);
+        const response = await this.put(
+            `${FLEX_API_CONFIG.endpoints.absenceApplications}/${absenceRequestId}`,
+            absenceApplicationPayload
+        );
+
+        return await response.json();
+    }
+
     async createTimecard(employeeId, date, body) {
         const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,

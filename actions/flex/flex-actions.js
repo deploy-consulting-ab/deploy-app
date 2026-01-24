@@ -126,6 +126,11 @@ export async function getSickLeaveRequests(employeeNumber, currentDate) {
     }
 }
 
+/**
+ * Delete an absence request
+ * @param {string} absenceRequestId - The ID of the absence request to delete
+ * @returns {Promise<Object>} The deleted absence request
+ */
 export async function deleteAbsenceRequest(absenceRequestId) {
     try {
         const flexApiClient = await getFlexApiService();
@@ -280,8 +285,68 @@ export async function createAbsenceApplication(
 }
 
 /**
+ * Update an absence request
+ * @param {string} absenceApplicationType - The type of absence application
+ * @param {string} absenceRequestId - The ID of the absence request to update
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @param {string} absenceApplicationData.FromDate - The new from date (YYYY-MM-DD)
+ * @param {string} absenceApplicationData.ToDate - The new to date (YYYY-MM-DD)
+ * @param {number|null} absenceApplicationData.Hours - The hours (only for same-day requests)
+ */
+export async function updateAbsenceRequest(
+    absenceApplicationType,
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        switch (absenceApplicationType) {
+            case 'holiday-absence-request':
+                return updateHolidayAbsenceApplication(
+                    absenceRequestId,
+                    employmentNumber,
+                    absenceApplicationData
+                );
+            default:
+                throw new Error('Invalid absence application type');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * Utils methods
  */
+
+/**
+ * Update a holiday absence application for a given employee number
+ * @param {string} absenceRequestId - The ID of the absence request to update
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The updated absence application
+ */
+async function updateHolidayAbsenceApplication(
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        const payload = {
+            fromDate: absenceApplicationData.FromDate,
+            toDate: absenceApplicationData.ToDate,
+            employmentNumber: employmentNumber,
+            absenceTypeId: HOLIDAY_TYPE_ID,
+            companyId: COMPANY_ID,
+        };
+
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
+    } catch (error) {
+        throw error;
+    }
+}
 
 /**
  * Create a holiday absence application for a given employee number
