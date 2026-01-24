@@ -4,7 +4,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { revalidatePath } from 'next/cache';
 import { transformHolidaysData } from '@/lib/utils';
-import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
 export async function SalesHomeComponent({ profileId, employeeNumber }) {
@@ -58,7 +58,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
     return (
         <div className="h-full grid gap-4">
             {/* Holidays Card */}
-            <HolidaysCardWithRefresh
+            <HolidaysCardComponent
                 holidays={data.holidays}
                 error={errors.holidays}
                 isNavigationDisabled={false}

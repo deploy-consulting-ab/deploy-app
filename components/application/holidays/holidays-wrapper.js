@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useTransition } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { HolidaysCalendarComponent } from '@/components/application/holidays/holidays-calendar';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
@@ -16,7 +16,6 @@ export function HolidaysWrapperComponent({
     isNavigationDisabled = false,
 }) {
     const [currentError, setCurrentError] = useState(error);
-    const [isPending, startTransition] = useTransition();
 
     // Transform holidays data for HolidaysCardComponent
     const transformedHolidays = useMemo(() => {
@@ -38,16 +37,15 @@ export function HolidaysWrapperComponent({
         setCurrentError(error);
     }, [error]);
 
-    function handleRefresh() {
-        startTransition(async () => {
-            try {
-                await refreshAction();
-                setCurrentError(null);
-            } catch (err) {
-                console.error('Error refreshing data:', err);
-                setCurrentError(err);
-            }
-        });
+    // Wrap refreshAction to handle errors
+    async function handleRefresh() {
+        try {
+            await refreshAction();
+            setCurrentError(null);
+        } catch (err) {
+            console.error('Error refreshing data:', err);
+            setCurrentError(err);
+        }
     }
 
     return (
@@ -60,8 +58,7 @@ export function HolidaysWrapperComponent({
                         holidays={transformedHolidays}
                         error={currentError}
                         isNavigationDisabled={isNavigationDisabled}
-                        onRefresh={handleRefresh}
-                        isRefreshing={isPending}
+                        refreshAction={handleRefresh}
                     />
                 </div>
                 {/* Right side - 1/3 width on large screens */}

@@ -9,16 +9,13 @@ import Link from 'next/link';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-/**
- * Wrapper component for use from Server Components.
- * Handles useTransition internally so parent doesn't need to manage refresh state.
- */
-export function HolidaysCardWithRefresh({
+export function HolidaysCardComponent({
     holidays,
-    error,
     refreshAction,
+    error,
     isNavigationDisabled = false,
 }) {
+    const isMobile = useIsMobile();
     const [isPending, startTransition] = useTransition();
 
     function handleRefresh() {
@@ -26,30 +23,6 @@ export function HolidaysCardWithRefresh({
             await refreshAction();
         });
     }
-
-    return (
-        <HolidaysCardComponent
-            holidays={holidays}
-            error={error}
-            onRefresh={refreshAction ? handleRefresh : undefined}
-            isRefreshing={isPending}
-            isNavigationDisabled={isNavigationDisabled}
-        />
-    );
-}
-
-/**
- * Pure presentational component.
- * Use HolidaysCardWithRefresh when you need refresh functionality from a Server Component.
- */
-export function HolidaysCardComponent({
-    holidays,
-    onRefresh,
-    isRefreshing = false,
-    error,
-    isNavigationDisabled = false,
-}) {
-    const isMobile = useIsMobile();
 
     // Get upcoming holidays from data
     const upcomingHolidays = holidays?.upcomingHolidays || [];
@@ -73,13 +46,13 @@ export function HolidaysCardComponent({
                     Upcoming Time Off
                 </CardTitle>
                 <div className="flex items-center gap-1">
-                    {onRefresh && (
+                    {refreshAction && (
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={onRefresh}
-                            disabled={isRefreshing}
-                            className={isRefreshing ? 'animate-spin' : ''}
+                            onClick={handleRefresh}
+                            disabled={isPending}
+                            className={isPending ? 'animate-spin' : ''}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>

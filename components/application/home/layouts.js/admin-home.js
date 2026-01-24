@@ -8,7 +8,7 @@ import {
 import { revalidatePath } from 'next/cache';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
@@ -134,7 +134,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
                 {/* Right Sidebar */}
                 <div className="space-y-6">
                     {/* Holidays Card */}
-                    <HolidaysCardWithRefresh
+                    <HolidaysCardComponent
                         holidays={data.holidays}
                         error={errors.holidays}
                         refreshAction={refreshHolidays}

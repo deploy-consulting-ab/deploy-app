@@ -5,7 +5,7 @@ import { getRecentOccupancyRate } from '@/actions/salesforce/salesforce-actions'
 import { revalidatePath } from 'next/cache';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
-import { HolidaysCardWithRefresh } from '@/components/application/home/dashboard-cards/holidays-card';
+import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
@@ -88,7 +88,7 @@ export async function ManagementHomeComponent({ profileId, employeeNumber }) {
         <div className="h-full grid gap-4">
             {/* Top row: Holidays and Occupancy Rates */}
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardWithRefresh
+                <HolidaysCardComponent
                     holidays={data.holidays}
                     error={errors.holidays}
                     isNavigationDisabled={false}
