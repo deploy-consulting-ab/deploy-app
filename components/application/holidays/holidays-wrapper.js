@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useTransition } from 'react';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { HolidaysCalendarComponent } from '@/components/application/holidays/holidays-calendar';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
@@ -15,13 +15,13 @@ export function HolidaysWrapperComponent({
     error,
     isNavigationDisabled = false,
 }) {
-    const [rawData, setRawData] = useState(holidays);
     const [currentError, setCurrentError] = useState(error);
+    const [isPending, startTransition] = useTransition();
 
-    // Transform raw data for HolidaysCardComponent
+    // Transform holidays data for HolidaysCardComponent
     const transformedHolidays = useMemo(() => {
-        return transformHolidaysData(rawData);
-    }, [rawData]);
+        return transformHolidaysData(holidays);
+    }, [holidays]);
 
     // Transform links for QuickLinksCard
     const quickLinks = useMemo(() => {
@@ -38,24 +38,16 @@ export function HolidaysWrapperComponent({
         setCurrentError(error);
     }, [error]);
 
-    // Update state when props change
-    useEffect(() => {
-        if (holidays) {
-            setRawData(holidays);
-        }
-    }, [holidays]);
-
-    async function handleRefresh() {
-        try {
-            const newData = await refreshAction();
-            if (newData) {
-                setRawData(newData);
+    function handleRefresh() {
+        startTransition(async () => {
+            try {
+                await refreshAction();
                 setCurrentError(null);
+            } catch (err) {
+                console.error('Error refreshing data:', err);
+                setCurrentError(err);
             }
-        } catch (err) {
-            console.error('Error refreshing data:', err);
-            setCurrentError(err);
-        }
+        });
     }
 
     return (
@@ -68,13 +60,14 @@ export function HolidaysWrapperComponent({
                         holidays={transformedHolidays}
                         error={currentError}
                         isNavigationDisabled={isNavigationDisabled}
-                        refreshAction={handleRefresh}
+                        onRefresh={handleRefresh}
+                        isRefreshing={isPending}
                     />
                 </div>
                 {/* Right side - 1/3 width on large screens */}
                 <div className="space-y-4">
                     <HolidaysCalendarComponent
-                        holidays={rawData}
+                        holidays={holidays}
                         error={currentError}
                         isNavigationDisabled={isNavigationDisabled}
                     />

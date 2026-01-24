@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
 import { getHolidays } from '@/actions/flex/flex-actions';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
@@ -7,10 +8,7 @@ import { HolidaysWrapperComponent } from '@/components/application/holidays/holi
 // Server action for refreshing data
 async function refreshHolidayData() {
     'use server';
-    const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
-    const data = await getHolidays(employeeNumber);
-    return data?.holidays;
+    revalidatePath('/home/holidays');
 }
 
 export default async function HolidaysPage() {

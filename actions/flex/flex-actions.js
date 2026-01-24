@@ -167,12 +167,11 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
 
-        const response = await flexApiClient.getAbsenceApplications(
-            employeeNumber,
-            HOLIDAY_TYPE_ID
-        );
+        const response = await flexApiClient.getAbsenceApplications(employeeNumber);
 
-        const holidaysResponse = response.Result.filter((absence) => absence.AbsenceTypeId === HOLIDAY_TYPE_ID);
+        const holidaysResponse = response.Result.filter(
+            (absence) => absence.AbsenceTypeId === HOLIDAY_TYPE_ID
+        );
 
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
@@ -390,7 +389,6 @@ export async function deleteAbsenceRequest(absenceRequestId) {
         throw error;
     }
 }
-
 
 /**
  * Utils methods
