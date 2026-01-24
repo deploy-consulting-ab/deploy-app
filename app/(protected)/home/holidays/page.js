@@ -13,23 +13,17 @@ async function refreshHolidayData() {
     return data;
 }
 
-// Server action for fetching all absences
-async function fetchAllAbsences() {
-    'use server';
-    const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
-    const data = await getAllAbsence(employeeNumber);
-    return data;
-}
-
 export default async function HolidaysPage() {
     let data = null;
     let error = null;
+    let absences = null;
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     try {
         data = await getHolidays(employeeNumber);
+        const absencesResponse = await getAllAbsence(employeeNumber);
+        absences = absencesResponse.Result;
     } catch (err) {
         error = err;
     }
@@ -39,7 +33,7 @@ export default async function HolidaysPage() {
             <HolidaysWrapperComponent
                 initialData={data}
                 refreshAction={refreshHolidayData}
-                fetchAllAbsences={fetchAllAbsences}
+                absences={absences}
                 error={error}
                 isNavigationDisabled={true}
             />

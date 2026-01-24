@@ -11,7 +11,7 @@ import { timeReportingLinks } from '@/lib/external-links';
 export function HolidaysWrapperComponent({
     initialData,
     refreshAction,
-    fetchAllAbsences,
+    absences,
     error,
     isNavigationDisabled = false,
 }) {
@@ -85,10 +85,10 @@ export function HolidaysWrapperComponent({
                 </div>
             </div>
             {/* All Absences Datatable - Hidden on mobile */}
-            {fetchAllAbsences && (
+            {absences && (
                 <div className="hidden md:block mt-6">
                     <h2 className="text-lg font-semibold mb-4">All Absences</h2>
-                    <AllAbsencesDatatableComponent fetchAllAbsences={fetchAllAbsences} />
+                    <AllAbsencesDatatableComponent absences={absences} />
                 </div>
             )}
         </div>

@@ -41,11 +41,7 @@ const columns = [
             const statusText = ABSENCE_STATUS_CODE[statusCode] || 'Unknown';
             const colorClass = getAbsenceStatusColor(statusText);
 
-            return (
-                <Badge className={`${colorClass} text-white`}>
-                    {statusText}
-                </Badge>
-            );
+            return <Badge className={`${colorClass} text-white`}>{statusText}</Badge>;
         },
     },
     {
@@ -53,50 +49,12 @@ const columns = [
         header: 'Absence Type',
         cell: ({ row }) => {
             const absenceTypeId = row.getValue('AbsenceTypeId');
-            console.log('### absenceTypeId', absenceTypeId);
             return getAbsenceStatusText(absenceTypeId) || '-';
         },
     },
 ];
 
-export function AllAbsencesDatatableComponent({ fetchAllAbsences }) {
-    const [absences, setAbsences] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        async function loadAbsences() {
-            try {
-                setIsLoading(true);
-                const data = await fetchAllAbsences();
-                setAbsences(data?.Result || data || []);
-            } catch (err) {
-                console.error('Error fetching absences:', err);
-                setError(err);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        loadAbsences();
-    }, [fetchAllAbsences]);
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center h-48">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="flex items-center justify-center h-48 text-destructive">
-                Failed to load absences
-            </div>
-        );
-    }
-
+export function AllAbsencesDatatableComponent({ absences }) {
     return (
         <div className="w-full">
             <DatatableWrapperComponent
