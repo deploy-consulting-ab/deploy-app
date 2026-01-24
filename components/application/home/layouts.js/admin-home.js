@@ -36,14 +36,7 @@ export async function AdminHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshOccupancy() {
         'use server';
-        try {
-            const today = getUTCToday();
-            const formattedToday = formatDateToISOString(today);
-            const rawData = await getRecentOccupancyRate(employeeNumber, formattedToday);
-            return transformOccupancyData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     async function refreshStatistics() {
