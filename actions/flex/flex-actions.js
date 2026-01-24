@@ -116,11 +116,20 @@ export async function getHolidayRequests(employeeNumber, currentDate) {
     }
 }
 
-// IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> handle this
+// @TODO: IMPLEMENT THIS: IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> IMPLEMENT THIS
 export async function getSickLeaveRequests(employeeNumber, currentDate) {
     try {
         const flexApiClient = await getFlexApiService();
         return await flexApiClient.getAbsenceApplications(employeeNumber, SICK_LEAVE_TYPE_ID);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteAbsenceRequest(absenceRequestId) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.deleteAbsenceApplication(absenceRequestId);
     } catch (error) {
         throw error;
     }

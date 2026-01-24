@@ -53,6 +53,10 @@ class FlexApiService extends CalloutService {
         return super.post(endpoint, body, flexOptions);
     }
 
+    async delete(endpoint) {
+        return super.delete(endpoint);
+    }
+
     // Specialized methods for Flex API endpoints
     async getAbsenceApplications(employeeNumber, absenceTypeId) {
         const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
@@ -69,11 +73,15 @@ class FlexApiService extends CalloutService {
     }
 
     async createAbsenceApplication(employeeNumber, absenceApplicationPayload) {
-        const response = await this.post(FLEX_API_CONFIG.endpoints.absenceApplications, absenceApplicationPayload,{
-            params: {
-                employmentnumber: employeeNumber,
-            },
-        });
+        const response = await this.post(
+            FLEX_API_CONFIG.endpoints.absenceApplications,
+            absenceApplicationPayload,
+            {
+                params: {
+                    employmentnumber: employeeNumber,
+                },
+            }
+        );
 
         return await response.json();
     }
@@ -87,6 +95,14 @@ class FlexApiService extends CalloutService {
         });
 
         return await response.json();
+    }
+
+    async deleteAbsenceApplication(absenceRequestId) {
+        const response = await this.delete(
+            `${FLEX_API_CONFIG.endpoints.absenceApplications}/${absenceRequestId}`
+        );
+
+        return response.status;
     }
 
     async createTimecard(employeeId, date, body) {

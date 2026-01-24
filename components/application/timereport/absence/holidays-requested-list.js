@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getHolidayRequests } from '@/actions/flex/flex-actions';
+import { getHolidayRequests, deleteAbsenceRequest } from '@/actions/flex/flex-actions';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -14,6 +14,7 @@ import {
 import { formatDateToISOString } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { getAbsenceStatusColor } from '@/lib/utils';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 
 export function HolidaysRequestedListComponent({ employmentNumber }) {
     const [requests, setRequests] = useState([]);
@@ -36,14 +37,25 @@ export function HolidaysRequestedListComponent({ employmentNumber }) {
         fetchRequests();
     }, [employmentNumber]);
 
-    const handleEdit = (id) => {
+    const handleEdit = async (id) => {
         // TODO: Implement edit functionality
         console.log('Edit holiday request:', id);
     };
 
-    const handleDelete = (id) => {
-        // TODO: Implement delete functionality
-        console.log('Delete holiday request:', id);
+    const handleDelete = async (id) => {
+        try {
+            await deleteAbsenceRequest(id);
+            setRequests(requests.filter((request) => request.Id !== id));
+            toastRichSuccess({
+                message: 'Holiday request deleted successfully',
+                duration: 2000,
+            });
+        } catch (error) {
+            toastRichError({
+                message: 'Error deleting holiday request',
+                duration: 2000,
+            });
+        }
     };
 
     const columns = [
@@ -135,7 +147,11 @@ export function HolidaysRequestedListComponent({ employmentNumber }) {
             },
             cell: ({ row }) => {
                 const status = row.original.status;
-                return <Badge className={`${getAbsenceStatusColor(status)} text-white shadow-sm`}>{status}</Badge>;
+                return (
+                    <Badge className={`${getAbsenceStatusColor(status)} text-white shadow-sm`}>
+                        {status}
+                    </Badge>
+                );
             },
         },
         {
