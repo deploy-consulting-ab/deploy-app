@@ -9,13 +9,13 @@ import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
 
 export function HolidaysWrapperComponent({
-    initialData,
-    refreshAction,
+    holidays,
     absences,
+    refreshAction,
     error,
     isNavigationDisabled = false,
 }) {
-    const [rawData, setRawData] = useState(initialData);
+    const [rawData, setRawData] = useState(holidays);
     const [currentError, setCurrentError] = useState(error);
 
     // Transform raw data for HolidaysCardComponent
@@ -34,16 +34,16 @@ export function HolidaysWrapperComponent({
         }));
     }, []);
 
-    // Update state when props change
-    useEffect(() => {
-        if (initialData) {
-            setRawData(initialData);
-        }
-    }, [initialData]);
-
     useEffect(() => {
         setCurrentError(error);
     }, [error]);
+
+    // Update state when props change
+    useEffect(() => {
+        if (holidays) {
+            setRawData(holidays);
+        }
+    }, [holidays]);
 
     async function handleRefresh() {
         try {
@@ -60,9 +60,10 @@ export function HolidaysWrapperComponent({
 
     return (
         <div className="space-y-6">
-            <div className="relative">
-                {/* Left side - determines the height */}
-                <div className="lg:w-2/3 lg:pr-2">
+            {/* Top section - HolidaysCard left, Calendar + QuickLinks right */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Left side - 2/3 width on large screens */}
+                <div className="lg:col-span-2">
                     <HolidaysCardComponent
                         holidays={transformedHolidays}
                         error={currentError}
@@ -70,8 +71,8 @@ export function HolidaysWrapperComponent({
                         refreshAction={handleRefresh}
                     />
                 </div>
-                {/* Right side - positioned independently on large screens */}
-                <div className="mt-4 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:w-1/3 lg:pl-2 space-y-4">
+                {/* Right side - 1/3 width on large screens */}
+                <div className="space-y-4">
                     <HolidaysCalendarComponent
                         holidays={rawData}
                         error={currentError}
@@ -84,9 +85,9 @@ export function HolidaysWrapperComponent({
                     />
                 </div>
             </div>
-            {/* All Absences Datatable - Hidden on mobile */}
+            {/* All Absences Datatable */}
             {absences && (
-                <div className="hidden md:block mt-6">
+                <div>
                     <h2 className="text-lg font-semibold mb-4">All Absences</h2>
                     <AllAbsencesDatatableComponent absences={absences} />
                 </div>

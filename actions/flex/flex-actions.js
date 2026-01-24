@@ -172,11 +172,13 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
             HOLIDAY_TYPE_ID
         );
 
+        const holidaysResponse = response.Result.filter((absence) => absence.AbsenceTypeId === HOLIDAY_TYPE_ID);
+
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
         }
 
-        const holidays = calculateHolidays(response.Result);
+        const holidays = calculateHolidays(holidaysResponse);
 
         holidays.totalHolidays = 30; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
@@ -197,7 +199,10 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
             holidays.allHolidaysRange.push(...range.map((date) => date.toISOString()));
         }
 
-        return holidays;
+        return {
+            holidays,
+            absences: response.Result,
+        };
     } catch (error) {
         console.error('Error in getAbsenceApplications:', {
             name: error.name,
