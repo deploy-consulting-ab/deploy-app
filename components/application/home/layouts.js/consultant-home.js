@@ -1,4 +1,4 @@
-import { getHolidays } from '@/actions/flex/flex-actions';
+import { getAllAbsenceWithHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import {
@@ -51,7 +51,8 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
     // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getHolidays(employeeNumber);
+            const absences = await getAllAbsenceWithHolidays(employeeNumber);
+            const rawHolidays = absences.holidays;
             data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';

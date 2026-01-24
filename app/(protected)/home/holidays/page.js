@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
-import { getHolidays } from '@/actions/flex/flex-actions';
+import { getAllAbsenceWithHolidays } from '@/actions/flex/flex-actions';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
@@ -19,7 +19,7 @@ export default async function HolidaysPage() {
     const employeeNumber = session.user.employeeNumber;
 
     try {
-        const absencesData = await getHolidays(employeeNumber);   
+        const absencesData = await getAllAbsenceWithHolidays(employeeNumber);   
         holidays = absencesData.holidays;
         absences = absencesData.absences;
     } catch (err) {

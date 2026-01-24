@@ -162,7 +162,7 @@ export async function getAllAbsence(employeeNumber) {
  * @param {string} options.cache - The cache mode for the request
  * @returns {Promise<Object>} The holidays
  */
-export async function getHolidays(employeeNumber, options = { cache: 'no-store' }) {
+export async function getAllAbsenceWithHolidays(employeeNumber, options = { cache: 'no-store' }) {
     try {
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
