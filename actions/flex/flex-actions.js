@@ -158,8 +158,6 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
             HOLIDAY_TYPE_ID
         );
 
-        console.log('### holidays response', response);
-
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
         }

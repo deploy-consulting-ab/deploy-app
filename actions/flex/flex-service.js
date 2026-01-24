@@ -106,7 +106,6 @@ class FlexApiService extends CalloutService {
     }
 
     async updateAbsenceApplication(absenceRequestId, absenceApplicationPayload) {
-        console.log('#### absenceApplicationPayload', absenceApplicationPayload);
         const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.absenceApplications}/${absenceRequestId}`,
             absenceApplicationPayload
