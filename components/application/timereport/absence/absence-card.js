@@ -111,7 +111,7 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     {selectedAbsenceApplicationType && (
                         <>
                             <Separator />
-                            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                            <Tabs defaultValue="new-request" value={activeTab} onValueChange={setActiveTab} className="w-full">
                                 <TabsList className="w-full">
                                     <TabsTrigger value="new-request" className="flex-1">
                                         New Request
