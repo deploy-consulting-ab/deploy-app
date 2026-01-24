@@ -142,6 +142,20 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
 // Absence applications methods
 
 /**
+ * Get all absence applications for a given employee number
+ * @param {string} employeeNumber - The employee number
+ * @returns {Promise<Object>} The absence applications
+ */
+export async function getAllAbsence(employeeNumber) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.getAbsenceApplications(employeeNumber);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * Get the holidays for a given employee number
  * @param {string} employeeNumber - The employee number
  * @param {Object} options - The options for the request

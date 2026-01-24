@@ -4,12 +4,14 @@ import { useState, useEffect, useMemo } from 'react';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { HolidaysCalendarComponent } from '@/components/application/holidays/holidays-calendar';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
+import { AllAbsencesDatatableComponent } from '@/components/application/holidays/all-absences-datatable';
 import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
 
 export function HolidaysWrapperComponent({
     initialData,
     refreshAction,
+    fetchAllAbsences,
     error,
     isNavigationDisabled = false,
 }) {
@@ -57,29 +59,38 @@ export function HolidaysWrapperComponent({
     }
 
     return (
-        <div className="relative">
-            {/* Left side - determines the height */}
-            <div className="lg:w-2/3 lg:pr-2">
-                <HolidaysCardComponent
-                    holidays={transformedHolidays}
-                    error={currentError}
-                    isNavigationDisabled={isNavigationDisabled}
-                    refreshAction={handleRefresh}
-                />
+        <div className="space-y-6">
+            <div className="relative">
+                {/* Left side - determines the height */}
+                <div className="lg:w-2/3 lg:pr-2">
+                    <HolidaysCardComponent
+                        holidays={transformedHolidays}
+                        error={currentError}
+                        isNavigationDisabled={isNavigationDisabled}
+                        refreshAction={handleRefresh}
+                    />
+                </div>
+                {/* Right side - positioned independently on large screens */}
+                <div className="mt-4 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:w-1/3 lg:pl-2 space-y-4">
+                    <HolidaysCalendarComponent
+                        holidays={rawData}
+                        error={currentError}
+                        isNavigationDisabled={isNavigationDisabled}
+                    />
+                    <QuickLinksCardComponent
+                        title="Flex"
+                        description="Time reporting resources"
+                        links={quickLinks}
+                    />
+                </div>
             </div>
-            {/* Right side - positioned independently on large screens */}
-            <div className="mt-4 lg:mt-0 lg:absolute lg:top-0 lg:right-0 lg:w-1/3 lg:pl-2 space-y-4">
-                <HolidaysCalendarComponent
-                    holidays={rawData}
-                    error={currentError}
-                    isNavigationDisabled={isNavigationDisabled}
-                />
-                <QuickLinksCardComponent
-                    title="Flex"
-                    description="Time reporting resources"
-                    links={quickLinks}
-                />
-            </div>
+            {/* All Absences Datatable - Hidden on mobile */}
+            {fetchAllAbsences && (
+                <div className="hidden md:block mt-6">
+                    <h2 className="text-lg font-semibold mb-4">All Absences</h2>
+                    <AllAbsencesDatatableComponent fetchAllAbsences={fetchAllAbsences} />
+                </div>
+            )}
         </div>
     );
 }

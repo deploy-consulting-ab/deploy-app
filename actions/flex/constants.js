@@ -11,6 +11,11 @@ export const ABSENCE_STATUS_CODE = {
     3: 'Rejected',
 }
 
+export const ABSENCE_STATUS_TYPE_TEXT = {
+    [HOLIDAY_TYPE_ID] : 'Holiday',
+    [SICK_LEAVE_TYPE_ID] : 'Sick leave',
+}
+
 export const ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST = 'holiday-absence-request';
 export const ABSENCE_APPLICATION_TYPE_ID_SICK_ABSENCE_REQUEST = 'sick-absence-request';
 
