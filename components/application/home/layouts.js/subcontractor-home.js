@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
@@ -7,12 +8,7 @@ export async function SubcontractorHomeComponent({ employeeNumber }) {
 
     async function refreshStatistics() {
         'use server';
-        try {
-            const metrics = await getAssignmentsMetrics(employeeNumber);
-            return transformStatisticsData(metrics);
-        } catch (err) {
-            throw new Error(err.message);
-        }
+        revalidatePath('/home');
     }
 
     try {

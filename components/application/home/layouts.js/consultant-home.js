@@ -41,12 +41,7 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshStatistics() {
         'use server';
-        try {
-            const metrics = await getAssignmentsMetrics(employeeNumber);
-            return transformStatisticsData(metrics);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     // Determine what data this profile needs
