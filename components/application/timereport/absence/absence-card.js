@@ -94,7 +94,9 @@ export function AbsenceCardComponent({ employmentNumber }) {
             <DialogTrigger asChild>
                 <Button variant="outline">Request Absence</Button>
             </DialogTrigger>
-            <DialogContent className="w-full max-h-[90vh] overflow-y-auto sm:max-w-xl">
+            <DialogContent
+                className={`w-full max-h-[90vh] overflow-y-auto transition-all duration-300 ${activeTab === 'requested' ? 'sm:max-w-3xl' : 'sm:max-w-xl'}`}
+            >
                 <DialogHeader>
                     <DialogTitle>Request Absence</DialogTitle>
                     <DialogDescription>Select a project to request an absence.</DialogDescription>
@@ -111,7 +113,12 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     {selectedAbsenceApplicationType && (
                         <>
                             <Separator />
-                            <Tabs defaultValue="new-request" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                            <Tabs
+                                defaultValue="new-request"
+                                value={activeTab}
+                                onValueChange={setActiveTab}
+                                className="w-full"
+                            >
                                 <TabsList className="w-full">
                                     <TabsTrigger value="new-request" className="flex-1">
                                         New Request
