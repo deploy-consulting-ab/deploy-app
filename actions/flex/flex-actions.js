@@ -18,6 +18,129 @@ import {
     ABSENCE_STATUS_CODE,
 } from './constants.js';
 
+// Timecard methods
+/**
+ * Create a timecard for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {Object} timecard - The timecard to create
+ * @returns {Promise<Object>} The timecard
+ */
+export async function createTimereport(flexEmployeeId, timecard) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        const promises = timecard.timeData.map(async (timereport) => {
+            const date = formatDateToISOString(timereport.date);
+
+            // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+            let previousTomHours = 0;
+
+            const timeRows = timereport.timeRows.map((timeRow) => {
+                const tomHours = previousTomHours + timeRow.hours;
+                const body = {
+                    accounts: [
+                        {
+                            accountDistributionId: PROJECT_TYPE_ID,
+                            id: timeRow.projectId,
+                        },
+                    ],
+                    externalComment: '.', // Pass some external comment to prevent adding an extra row
+                    fromTime: hoursToTimeString(previousTomHours),
+                    tomTime: hoursToTimeString(tomHours),
+                    timeCode: {
+                        code: 'ARB',
+                    },
+                };
+                previousTomHours = tomHours;
+                return body;
+            });
+
+            const body = {
+                timeRows: timeRows,
+            };
+
+            return await flexApiClient.createTimereport(flexEmployeeId, date, body);
+        });
+
+        return await Promise.all(promises);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get the timereports for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {string} weekStartDate - The start date of the week
+ * @param {string} weekEndDate - The end date of the week
+ * @returns {Promise<Object>} The timereports
+ */
+export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
+    const flexApiClient = await getFlexApiService();
+    flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
+
+    try {
+        const timereports = await flexApiClient.getTimereports(
+            flexEmployeeId,
+            weekStartDate,
+            weekEndDate
+        );
+
+        const selectedProjects = new Set();
+
+        const timereportResponse = timereports
+            .filter((timereport) => timereport.TimeRows?.length > 0)
+            .map((timereport) => ({
+                date: timereport.Date,
+                timeRows: timereport.TimeRows.map((timeRow) => {
+                    if (timeRow.TimeCode.Id === WORKING_TYPE_ID) {
+                        const projectAccount = timeRow.Accounts.find(
+                            (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+                        );
+                        if (!projectAccount) {
+                            return null;
+                        }
+
+                        selectedProjects.add(projectAccount.Id);
+
+                        // We do not have a project type in Flex, so we use a regex to determine the color
+                        const regex = /deploy/i;
+                        const isInternalProject = regex.test(projectAccount.Name);
+                        const color = isInternalProject ? '#6b7280' : '#3b82f6';
+
+                        return {
+                            projectId: projectAccount.Id,
+                            projectName: projectAccount.Name,
+                            projectCode: projectAccount.Code,
+                            hours: timeRow.TimeInMinutes / 60,
+                            color: color,
+                            isWorkingTime: true,
+                        };
+
+                        // Other types of absences
+                    } else {
+                        return {
+                            projectId: timeRow.TimeCode.Id,
+                            projectName: timeRow.TimeCode.Name,
+                            projectCode: timeRow.TimeCode.Code,
+                            hours: timeRow.TimeInMinutes / 60,
+                            color: 'red',
+                            isWorkingTime: false,
+                        };
+                    }
+                }).filter(Boolean),
+            }));
+
+        return {
+            timereportResponse,
+            selectedProjects,
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Absence applications methods
+
 /**
  * Get the holidays for a given employee number
  * @param {string} employeeNumber - The employee number
@@ -127,140 +250,6 @@ export async function getSickLeaveRequests(employeeNumber, currentDate) {
 }
 
 /**
- * Delete an absence request
- * @param {string} absenceRequestId - The ID of the absence request to delete
- * @returns {Promise<Object>} The deleted absence request
- */
-export async function deleteAbsenceRequest(absenceRequestId) {
-    try {
-        const flexApiClient = await getFlexApiService();
-        return await flexApiClient.deleteAbsenceApplication(absenceRequestId);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Create a timecard for a given employee number
- * @param {string} flexEmployeeId - The employee number
- * @param {Object} timecard - The timecard to create
- * @returns {Promise<Object>} The timecard
- */
-export async function createTimecard(flexEmployeeId, timecard) {
-    try {
-        const flexApiClient = await getFlexApiService();
-        const promises = timecard.timeData.map(async (timereport) => {
-            const date = formatDateToISOString(timereport.date);
-
-            // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-            let previousTomHours = 0;
-
-            const timeRows = timereport.timeRows.map((timeRow) => {
-                const tomHours = previousTomHours + timeRow.hours;
-                const body = {
-                    accounts: [
-                        {
-                            accountDistributionId: PROJECT_TYPE_ID,
-                            id: timeRow.projectId,
-                        },
-                    ],
-                    externalComment: '.', // Pass some external comment to prevent adding an extra row
-                    fromTime: hoursToTimeString(previousTomHours),
-                    tomTime: hoursToTimeString(tomHours),
-                    timeCode: {
-                        code: 'ARB',
-                    },
-                };
-                previousTomHours = tomHours;
-                return body;
-            });
-
-            const body = {
-                timeRows: timeRows,
-            };
-
-            return await flexApiClient.createTimecard(flexEmployeeId, date, body);
-        });
-
-        return await Promise.all(promises);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Get the timereports for a given employee number
- * @param {string} flexEmployeeId - The employee number
- * @param {string} weekStartDate - The start date of the week
- * @param {string} weekEndDate - The end date of the week
- * @returns {Promise<Object>} The timereports
- */
-export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
-    const flexApiClient = await getFlexApiService();
-    flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
-
-    try {
-        const timereports = await flexApiClient.getTimereports(
-            flexEmployeeId,
-            weekStartDate,
-            weekEndDate
-        );
-
-        const selectedProjects = new Set();
-
-        const timereportResponse = timereports
-            .filter((timereport) => timereport.TimeRows?.length > 0)
-            .map((timereport) => ({
-                date: timereport.Date,
-                timeRows: timereport.TimeRows.map((timeRow) => {
-                    if (timeRow.TimeCode.Id === WORKING_TYPE_ID) {
-                        const projectAccount = timeRow.Accounts.find(
-                            (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
-                        );
-                        if (!projectAccount) {
-                            return null;
-                        }
-
-                        selectedProjects.add(projectAccount.Id);
-
-                        // We do not have a project type in Flex, so we use a regex to determine the color
-                        const regex = /deploy/i;
-                        const isInternalProject = regex.test(projectAccount.Name);
-                        const color = isInternalProject ? '#6b7280' : '#3b82f6';
-
-                        return {
-                            projectId: projectAccount.Id,
-                            projectName: projectAccount.Name,
-                            projectCode: projectAccount.Code,
-                            hours: timeRow.TimeInMinutes / 60,
-                            color: color,
-                            isWorkingTime: true,
-                        };
-
-                        // Other types of absences
-                    } else {
-                        return {
-                            projectId: timeRow.TimeCode.Id,
-                            projectName: timeRow.TimeCode.Name,
-                            projectCode: timeRow.TimeCode.Code,
-                            hours: timeRow.TimeInMinutes / 60,
-                            color: 'red',
-                            isWorkingTime: false,
-                        };
-                    }
-                }).filter(Boolean),
-            }));
-
-        return {
-            timereportResponse,
-            selectedProjects,
-        };
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Create an absence application for a given employee number
  * @param {string} employmentNumber - The employee number
  * @param {string} absenceApplicationType - The type of absence application
@@ -279,6 +268,33 @@ export async function createAbsenceApplication(
             default:
                 throw new Error('Invalid absence application type');
         }
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Create a holiday absence application for a given employee number
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The absence application
+ */
+async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+    try {
+        const absenceApplicationPayload = {
+            absenceTypeId: HOLIDAY_TYPE_ID,
+            companyId: COMPANY_ID,
+            employmentNumber: employmentNumber,
+            fromDate: absenceApplicationData.startDate,
+            toDate: absenceApplicationData.endDate,
+            ...(absenceApplicationData.isSameDay && { hours: absenceApplicationData.hours }),
+        };
+
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.createAbsenceApplication(
+            employmentNumber,
+            absenceApplicationPayload
+        );
     } catch (error) {
         throw error;
     }
@@ -317,10 +333,6 @@ export async function updateAbsenceRequest(
 }
 
 /**
- * Utils methods
- */
-
-/**
  * Update a holiday absence application for a given employee number
  * @param {string} absenceRequestId - The ID of the absence request to update
  * @param {string} employmentNumber - The employee number
@@ -349,32 +361,23 @@ async function updateHolidayAbsenceApplication(
 }
 
 /**
- * Create a holiday absence application for a given employee number
- * @param {string} employmentNumber - The employee number
- * @param {Object} absenceApplicationData - The data for the absence application
- * @returns {Promise<Object>} The absence application
+ * Delete an absence request
+ * @param {string} absenceRequestId - The ID of the absence request to delete
+ * @returns {Promise<Object>} The deleted absence request
  */
-async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+export async function deleteAbsenceRequest(absenceRequestId) {
     try {
-        const absenceApplicationPayload = {
-            absenceTypeId: HOLIDAY_TYPE_ID,
-            companyId: COMPANY_ID,
-            employmentNumber: employmentNumber,
-            fromDate: absenceApplicationData.startDate,
-            toDate: absenceApplicationData.endDate,
-            ...(absenceApplicationData.isSameDay && { hours: absenceApplicationData.hours }),
-        };
-
         const flexApiClient = await getFlexApiService();
-        return await flexApiClient.createAbsenceApplication(
-            employmentNumber,
-            absenceApplicationPayload
-        );
+        return await flexApiClient.deleteAbsenceApplication(absenceRequestId);
     } catch (error) {
         throw error;
     }
 }
 
+
+/**
+ * Utils methods
+ */
 /**
  * Converts decimal hours to "HH:MM" time format string.
  * Examples:

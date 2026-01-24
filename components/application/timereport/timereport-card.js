@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, Save, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
-import { createTimecard } from '@/actions/flex/flex-actions';
+import { createTimereport } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -274,7 +274,7 @@ export function TimereportCardComponent({
                 week: formatDateToISOString(selectedWeek),
                 timeData: timeData,
             };
-            await createTimecard(flexEmployeeId, timecard);
+            await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
 
             // Re-fetch timereports to get the latest data from the server

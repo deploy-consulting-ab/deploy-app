@@ -115,7 +115,7 @@ class FlexApiService extends CalloutService {
         return await response.json();
     }
 
-    async createTimecard(employeeId, date, body) {
+    async createTimereport(employeeId, date, body) {
         const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
             body
