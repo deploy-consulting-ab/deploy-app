@@ -8,16 +8,24 @@ import {
     getUTCToday,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
-import { PROJECT_TYPE_ID, WORKING_TYPE_ID, HOLIDAY_TYPE_ID, COMPANY_ID } from './constants.js';
+import { PROJECT_TYPE_ID, WORKING_TYPE_ID, HOLIDAY_TYPE_ID, COMPANY_ID, SICK_LEAVE_TYPE_ID } from './constants.js';
 import { formatDateToISOString } from '@/lib/utils.js';
-import chalk from 'chalk';
 
-export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
+/**
+ * Get the holidays for a given employee number
+ * @param {string} employeeNumber - The employee number
+ * @param {Object} options - The options for the request
+ * @param {string} options.cache - The cache mode for the request
+ * @returns {Promise<Object>} The holidays
+ */
+export async function getHolidays(employeeNumber, options = { cache: 'no-store' }) {
     try {
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
 
-        const response = await flexApiClient.getAbsenceApplications(employeeNumber);
+        const response = await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID);
+
+        console.log('### holidays response', response);
 
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
@@ -70,20 +78,36 @@ export async function getAbsenceApplications(employeeNumber, options = { cache: 
 }
 
 /**
- * Converts decimal hours to "HH:MM" time format string.
- * Examples:
- *   0 -> "00:00"
- *   1 -> "01:00"
- *   1.5 -> "01:30"
- *   2.5 -> "02:30"
- *   10.5 -> "10:30"
+ * Get the holiday requests for a given employee number. Only future requests are returned.
+ * @param {string} employeeNumber - The employee number
+ * @param {string} currentDate - The current date
+ * @returns {Promise<Object>} The holiday requests
  */
-function hoursToTimeString(decimalHours) {
-    const hours = Math.floor(decimalHours);
-    const minutes = Math.round((decimalHours % 1) * 60);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+export async function getHolidayRequests(employeeNumber, currentDate) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID);
+    } catch (error) {
+        throw error;
+    }
 }
 
+// IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> handle this
+export async function getSickLeaveRequests(employeeNumber, currentDate) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.getAbsenceApplications(employeeNumber, SICK_LEAVE_TYPE_ID);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Create a timecard for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {Object} timecard - The timecard to create
+ * @returns {Promise<Object>} The timecard
+ */
 export async function createTimecard(flexEmployeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
@@ -126,6 +150,13 @@ export async function createTimecard(flexEmployeeId, timecard) {
     }
 }
 
+/**
+ * Get the timereports for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {string} weekStartDate - The start date of the week
+ * @param {string} weekEndDate - The end date of the week
+ * @returns {Promise<Object>} The timereports
+ */
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
@@ -191,6 +222,13 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
     }
 }
 
+/**
+ * Create an absence application for a given employee number
+ * @param {string} employmentNumber - The employee number
+ * @param {string} absenceApplicationType - The type of absence application
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The absence application
+ */
 export async function createAbsenceApplication(
     employmentNumber,
     absenceApplicationType,
@@ -208,6 +246,16 @@ export async function createAbsenceApplication(
     }
 }
 
+/**
+ * Utils methods
+ */
+
+/**
+ * Create a holiday absence application for a given employee number
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The absence application
+ */
 async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
     try {
         const absenceApplicationPayload = {
@@ -227,4 +275,21 @@ async function createHolidayAbsenceApplication(employmentNumber, absenceApplicat
     } catch (error) {
         throw error;
     }
+}
+
+/**
+ * Converts decimal hours to "HH:MM" time format string.
+ * Examples:
+ *   0 -> "00:00"
+ *   1 -> "01:00"
+ *   1.5 -> "01:30"
+ *   2.5 -> "02:30"
+ *   10.5 -> "10:30"
+ * @param {number} decimalHours - The decimal hours to convert
+ * @returns {string} The time string in "HH:MM" format
+ */
+function hoursToTimeString(decimalHours) {
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours % 1) * 60);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }

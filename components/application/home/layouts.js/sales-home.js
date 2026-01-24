@@ -1,4 +1,4 @@
-import { getAbsenceApplications } from '@/actions/flex/flex-actions';
+import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
@@ -21,7 +21,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
     async function refreshHolidays() {
         'use server';
         try {
-            const rawData = await getAbsenceApplications(employeeNumber);
+            const rawData = await getHolidays(employeeNumber);
             return transformHolidaysData(rawData);
         } catch (error) {
             throw new Error(error.message);
@@ -33,7 +33,7 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
 
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getAbsenceApplications(employeeNumber);
+            const rawHolidays = await getHolidays(employeeNumber);
             data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';

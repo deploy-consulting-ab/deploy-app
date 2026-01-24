@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getAbsenceApplications } from '@/actions/flex/flex-actions';
+import { getHolidays } from '@/actions/flex/flex-actions';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
@@ -9,7 +9,7 @@ async function refreshHolidayData() {
     'use server';
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
-    const data = await getAbsenceApplications(employeeNumber);
+    const data = await getHolidays(employeeNumber);
     return data;
 }
 
@@ -20,7 +20,7 @@ export default async function HolidaysPage() {
     const employeeNumber = session.user.employeeNumber;
 
     try {
-        data = await getAbsenceApplications(employeeNumber);
+        data = await getHolidays(employeeNumber);
     } catch (err) {
         error = err;
     }

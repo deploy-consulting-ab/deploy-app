@@ -50,18 +50,18 @@ class FlexApiService extends CalloutService {
                 'Service-Version': '1.0',
             },
         };
-        console.log('## flexOptions', flexOptions);
-        console.log('## endpoint', endpoint);
         return super.post(endpoint, body, flexOptions);
     }
 
     // Specialized methods for Flex API endpoints
-    async getAbsenceApplications(employeeNumber) {
+    async getAbsenceApplications(employeeNumber, absenceTypeId) {
         const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
                 instance: ENV.FLEX_API_INSTANCE,
                 companynumber: ENV.FLEX_API_COMPANY_NUMBER,
+                ...(absenceTypeId && { absenceTypeId: absenceTypeId }),
+                pageSize: 100,
             },
         });
 
