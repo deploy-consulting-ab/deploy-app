@@ -15,11 +15,13 @@ import { AbsenceSelectorComponent } from '@/components/application/timereport/ab
 import { getAbsenceComponentForAbsenceApplicationType } from '@/components/application/timereport/absence/absence-component-selector';
 import { Separator } from '@/components/ui/separator';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
+import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 
 export function AbsenceCardComponent({ employmentNumber }) {
     const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null);
     const [isSubmitting, startTransition] = useTransition();
     const [isOpen, setIsOpen] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
     const formRef = useRef(null);
 
     const absenceApplicationTypes = [
@@ -34,6 +36,7 @@ export function AbsenceCardComponent({ employmentNumber }) {
         setIsOpen(open);
         if (!open) {
             setSelectedAbsenceApplicationType(null);
+            setIsFormValid(false);
             formRef.current?.reset?.();
         }
     };
@@ -47,17 +50,31 @@ export function AbsenceCardComponent({ employmentNumber }) {
 
         startTransition(async () => {
             try {
-                await createAbsenceApplication(employmentNumber, selectedAbsenceApplicationType, formData);
+                const response = await createAbsenceApplication(
+                    employmentNumber,
+                    selectedAbsenceApplicationType,
+                    formData
+                );
                 // Close dialog on success
                 setIsOpen(false);
                 setSelectedAbsenceApplicationType(null);
+                toastRichSuccess({
+                    message: 'Absence application created successfully',
+                    duration: 2000,
+                });
             } catch (error) {
+                toastRichError({
+                    message: 'Error creating absence application',
+                    duration: 2000,
+                });
                 console.error('Error creating absence application:', error);
             }
         });
     };
 
-    const AbsenceComponent = getAbsenceComponentForAbsenceApplicationType(selectedAbsenceApplicationType);
+    const AbsenceComponent = getAbsenceComponentForAbsenceApplicationType(
+        selectedAbsenceApplicationType
+    );
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -73,14 +90,16 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     <div className="flex flex-col gap-2 pb-4">
                         <AbsenceSelectorComponent
                             absenceApplicationTypes={absenceApplicationTypes}
-                            handleAbsenceApplicationTypeSelected={handleAbsenceApplicationTypeSelected}
+                            handleAbsenceApplicationTypeSelected={
+                                handleAbsenceApplicationTypeSelected
+                            }
                         />
                     </div>
                     {selectedAbsenceApplicationType && (
                         <>
                             <Separator />
                             <div className="flex flex-col gap-2 py-6">
-                                <AbsenceComponent ref={formRef} />
+                                <AbsenceComponent ref={formRef} onValidityChange={setIsFormValid} />
                             </div>
                         </>
                     )}
@@ -91,7 +110,11 @@ export function AbsenceCardComponent({ employmentNumber }) {
                             </Button>
                         </DialogClose>
                         {selectedAbsenceApplicationType && (
-                            <Button type="button" onClick={handleSubmit} disabled={isSubmitting}>
+                            <Button
+                                type="button"
+                                onClick={handleSubmit}
+                                disabled={isSubmitting || !isFormValid}
+                            >
                                 {isSubmitting ? 'Submitting...' : 'Submit Request'}
                             </Button>
                         )}

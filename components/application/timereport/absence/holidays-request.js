@@ -32,7 +32,10 @@ const formatDisplayDate = (date) => {
     return `${day} ${month} ${year}`;
 };
 
-export const HolidaysRequestComponent = forwardRef(function HolidaysRequestComponent(props, ref) {
+export const HolidaysRequestComponent = forwardRef(function HolidaysRequestComponent(
+    { onValidityChange },
+    ref
+) {
     const [startDate, setStartDate] = useState(() => new Date());
     const [endDate, setEndDate] = useState(null);
     const [hours, setHours] = useState(8);
@@ -41,6 +44,13 @@ export const HolidaysRequestComponent = forwardRef(function HolidaysRequestCompo
 
     const isSameDay =
         startDate && endDate && formatLocalDate(startDate) === formatLocalDate(endDate);
+
+    const isFormValid = startDate !== null && endDate !== null && hours > 0;
+
+    // Notify parent when validity changes
+    useEffect(() => {
+        onValidityChange?.(isFormValid);
+    }, [isFormValid, onValidityChange]);
 
     const calculateDays = useCallback(() => {
         if (!startDate || !endDate) return 0;
@@ -67,14 +77,14 @@ export const HolidaysRequestComponent = forwardRef(function HolidaysRequestCompo
                 isSameDay,
                 numberOfDays: calculateDays(),
             }),
-            isValid: () => startDate !== null && endDate !== null && hours > 0,
+            isValid: () => isFormValid,
             reset: () => {
                 setStartDate(new Date());
                 setEndDate(null);
                 setHours(8);
             },
         }),
-        [startDate, endDate, hours, isSameDay, calculateDays]
+        [startDate, endDate, hours, isSameDay, isFormValid, calculateDays]
     );
 
     const handleStartDateSelect = (date) => {

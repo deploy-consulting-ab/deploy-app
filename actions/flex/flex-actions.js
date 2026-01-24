@@ -208,9 +208,9 @@ export async function createAbsenceApplication(
     }
 }
 
-function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
     try {
-        const absenceApplication = {
+        const absenceApplicationPayload = {
             absenceTypeId: HOLIDAY_TYPE_ID,
             companyId: COMPANY_ID,
             employmentNumber: employmentNumber,
@@ -219,9 +219,11 @@ function createHolidayAbsenceApplication(employmentNumber, absenceApplicationDat
             ...(absenceApplicationData.isSameDay && { hours: absenceApplicationData.hours }),
         };
 
-        console.log('## absenceApplication', absenceApplication);
-
-        return absenceApplication;
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.createAbsenceApplication(
+            employmentNumber,
+            absenceApplicationPayload
+        );
     } catch (error) {
         throw error;
     }
