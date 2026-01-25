@@ -1,11 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToISOString, getAbsenceStatusColor, getAbsenceStatusText } from '@/lib/utils';
-import { ABSENCE_STATUS_CODE } from '@/actions/flex/constants';
-import { Loader2 } from 'lucide-react';
+import { ABSENCE_STATUS_CODE, ABSENCE_STATUS_TYPE_TEXT, HOLIDAY_TYPE_ID, SICK_LEAVE_TYPE_ID } from '@/actions/flex/constants';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+
+const absenceTypeViews = [
+    { value: 'all', label: 'All Types' },
+    { value: HOLIDAY_TYPE_ID, label: 'Holiday' },
+    { value: SICK_LEAVE_TYPE_ID, label: 'Sick Leave' },
+];
 
 const columns = [
     {
@@ -55,14 +67,48 @@ const columns = [
 ];
 
 export function AllAbsencesDatatableComponent({ absences }) {
+    const [absencesData, setAbsencesData] = useState(absences);
+    const [view, setView] = useState('all');
+
+    const handleFilterAbsences = (value) => {
+        let filteredData = null;
+
+        if (value === 'all') {
+            filteredData = absences;
+        } else {
+            filteredData = absences.filter((absence) => absence.AbsenceTypeId === value);
+        }
+
+        setAbsencesData(filteredData);
+        setView(value);
+    };
+
+    const viewByAbsenceType = (
+        <Select value={view} onValueChange={handleFilterAbsences} key="view-by-absence-type">
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+                {absenceTypeViews.map((viewOption) => (
+                    <SelectItem key={viewOption.value} value={viewOption.value}>
+                        {viewOption.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    const views = [viewByAbsenceType];
+
     return (
         <div className="w-full">
             <DatatableWrapperComponent
-                data={absences}
+                data={absencesData}
                 columns={columns}
                 placeholder="Search by date..."
                 searchKey="FromDate"
                 pageSize={10}
+                views={views}
             />
         </div>
     );
