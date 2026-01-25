@@ -58,14 +58,14 @@ class FlexApiService extends CalloutService {
     }
 
     // Specialized methods for Flex API endpoints
-    async getAbsenceApplications(employeeNumber, absenceTypeId) {
+    async getAbsenceApplications(employeeNumber, absenceTypeId, pageSize = 100) {
         const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
                 instance: ENV.FLEX_API_INSTANCE,
                 companynumber: ENV.FLEX_API_COMPANY_NUMBER,
                 ...(absenceTypeId && { absenceTypeId: absenceTypeId }),
-                pageSize: 100,
+                pageSize: pageSize,
             },
         });
 

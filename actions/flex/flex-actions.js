@@ -162,22 +162,18 @@ export async function getAllAbsence(employeeNumber) {
  * @param {string} options.cache - The cache mode for the request
  * @returns {Promise<Object>} The holidays
  */
-export async function getAllAbsenceWithHolidays(employeeNumber, options = { cache: 'no-store' }) {
+export async function getHolidays(employeeNumber, options = { cache: 'no-store' }) {
     try {
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
 
-        const response = await flexApiClient.getAbsenceApplications(employeeNumber);
-
-        const holidaysResponse = response.Result.filter(
-            (absence) => absence.AbsenceTypeId === HOLIDAY_TYPE_ID
-        );
+        const response = await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID, 30);
 
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
         }
 
-        const holidays = calculateHolidays(holidaysResponse);
+        const holidays = calculateHolidays(response.Result);
 
         holidays.totalHolidays = 30; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
@@ -198,10 +194,7 @@ export async function getAllAbsenceWithHolidays(employeeNumber, options = { cach
             holidays.allHolidaysRange.push(...range.map((date) => date.toISOString()));
         }
 
-        return {
-            holidays,
-            absences: response.Result,
-        };
+        return holidays;
     } catch (error) {
         console.error('Error in getAbsenceApplications:', {
             name: error.name,
