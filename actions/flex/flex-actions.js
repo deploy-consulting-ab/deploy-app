@@ -28,38 +28,61 @@ import {
 export async function createTimereport(flexEmployeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
-        const promises = timecard.timeData.map(async (timereport) => {
-            const date = formatDateToISOString(timereport.date);
+        const promises = timecard.timeData
+            .map((timereport) => {
+                const date = formatDateToISOString(timereport.date);
 
-            // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-            let previousTomHours = 0;
+                // Skip entire day if it contains any absence entries (holidays, sick leave, etc.)
+                // The API rejects updates to days that already have absence entries
+                const hasAbsenceEntry = timereport.timeRows?.some(
+                    (row) => row.isWorkingTime === false
+                );
+                if (hasAbsenceEntry) {
+                    return null;
+                }
 
-            const timeRows = timereport.timeRows.map((timeRow) => {
-                const tomHours = previousTomHours + timeRow.hours;
-                const body = {
-                    accounts: [
-                        {
-                            accountDistributionId: PROJECT_TYPE_ID,
-                            id: timeRow.projectId,
+                // Get working time entries only
+                const workingTimeRows = timereport.timeRows?.filter(
+                    (row) => row.isWorkingTime !== false
+                ) || [];
+
+                // Skip days with no working time entries
+                if (workingTimeRows.length === 0) {
+                    return null;
+                }
+
+                // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+                let previousTomHours = 0;
+
+                const timeRows = workingTimeRows.map((timeRow) => {
+                    const tomHours = previousTomHours + timeRow.hours;
+                    const body = {
+                        accounts: [
+                            {
+                                accountDistributionId: PROJECT_TYPE_ID,
+                                id: timeRow.projectId,
+                            },
+                        ],
+                        externalComment: '.', // Pass some external comment to prevent adding an extra row
+                        fromTime: hoursToTimeString(previousTomHours),
+                        tomTime: hoursToTimeString(tomHours),
+                        timeCode: {
+                            code: 'ARB',
                         },
-                    ],
-                    externalComment: '.', // Pass some external comment to prevent adding an extra row
-                    fromTime: hoursToTimeString(previousTomHours),
-                    tomTime: hoursToTimeString(tomHours),
-                    timeCode: {
-                        code: 'ARB',
-                    },
+                    };
+                    previousTomHours = tomHours;
+                    return body;
+                });
+
+                const body = {
+                    timeRows: timeRows,
                 };
-                previousTomHours = tomHours;
-                return body;
-            });
 
-            const body = {
-                timeRows: timeRows,
-            };
+                console.log('## timereport', JSON.stringify(timereport, null, 2));
 
-            return await flexApiClient.createTimereport(flexEmployeeId, date, body);
-        });
+                return flexApiClient.createTimereport(flexEmployeeId, date, body);
+            })
+            .filter(Boolean); // Remove null entries (days with no working time)
 
         return await Promise.all(promises);
     } catch (error) {
