@@ -441,9 +441,9 @@ export function AbsenceRequestedListComponent({
                 const id = row.original.Id;
                 const status = row.original.status;
 
-                // Hide actions for 'Registered' (code 0) or 'Applied for' (code 1) statuses
+                // Hide actions for other statuses than 'Registered' or 'Applied for'
                 const isActionHidden =
-                    status === ABSENCE_STATUS_REGISTERED || status === ABSENCE_STATUS_APPLIED_FOR;
+                    status !== ABSENCE_STATUS_REGISTERED && status !== ABSENCE_STATUS_APPLIED_FOR;
 
                 if (isActionHidden && !isEditing) {
                     return null;
