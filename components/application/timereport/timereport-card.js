@@ -351,8 +351,8 @@ export function TimereportCardComponent({
 
     return (
         <div className="space-y-4 md:space-y-6">
-            {/* Header */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Header - Desktop only */}
+            <div className="hidden sm:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-xl md:text-2xl font-bold tracking-tight">Time Report</h1>
                     <p className="text-muted-foreground text-sm md:text-base mt-1">
@@ -360,7 +360,7 @@ export function TimereportCardComponent({
                     </p>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2">
                         <AbsenceCardComponent employmentNumber={employeeNumber} />
                     </div>
@@ -386,6 +386,11 @@ export function TimereportCardComponent({
                         <span className="sr-only">Refresh data</span>
                     </Button>
                 </div>
+            </div>
+
+            {/* Header - Mobile only */}
+            <div className="flex sm:hidden items-center justify-end">
+                <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
             </div>
 
             {/* Week Navigation */}
@@ -560,7 +565,6 @@ export function TimereportCardComponent({
                                 className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
                             />
                         </Button>
-                        <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
                     </div>
                 </div>
             )}

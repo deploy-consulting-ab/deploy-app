@@ -101,8 +101,9 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
     return (
         <Sheet open={isOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
-                <Button variant="outline" size="lg" className="gap-2">
-                    <CalendarOff className="h-5 w-5" />
+                <Button variant="outline" className="gap-2">
+                    <CalendarOff className="h-4 w-4" />
+                    <span>Request Absence</span>
                 </Button>
             </SheetTrigger>
             <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-xl">
