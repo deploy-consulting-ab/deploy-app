@@ -198,6 +198,7 @@ export function TimereportCardComponent({
      * Copy time entries from the previous week.
      * Fetches timereports for the week before the selected week and
      * adjusts dates to match the current selected week.
+     * Preserves non-working time entries (absences/holidays) from the current week.
      * The copied data is NOT synced (initialTimeData remains empty).
      */
     const handleCopyFromLastWeek = useCallback(async () => {
@@ -211,13 +212,29 @@ export function TimereportCardComponent({
             const response = await refreshTimereportsAction(previousWeekMonday.toISOString());
             const previousWeekData = response.timereportResponse || [];
 
-            if (previousWeekData.length === 0) {
-                toastRichError({ message: 'No time entries found in the previous week' });
+            // Filter to only get working time entries from previous week
+            const previousWeekWorkingTime = previousWeekData
+                .map((dayEntry) => ({
+                    ...dayEntry,
+                    timeRows: dayEntry.timeRows?.filter((row) => row.isWorkingTime !== false) || [],
+                }))
+                .filter((dayEntry) => dayEntry.timeRows.length > 0);
+
+            if (previousWeekWorkingTime.length === 0) {
+                toastRichError({ message: 'No working time entries found in the previous week' });
                 return;
             }
 
+            // Extract current week's non-working time entries (absences/holidays) to preserve
+            const currentWeekAbsences = timeData
+                .map((dayEntry) => ({
+                    ...dayEntry,
+                    timeRows: dayEntry.timeRows?.filter((row) => row.isWorkingTime === false) || [],
+                }))
+                .filter((dayEntry) => dayEntry.timeRows.length > 0);
+
             // Adjust dates from previous week to current week
-            const adjustedTimeData = previousWeekData.map((dayEntry) => {
+            const adjustedWorkingTimeData = previousWeekWorkingTime.map((dayEntry) => {
                 // Extract date and calculate day of week (0=Mon, 1=Tue, ..., 6=Sun)
                 const datePart = formatDateToISOString(dayEntry.date);
                 const previousDate = new Date(datePart + 'T00:00:00Z');
@@ -236,14 +253,40 @@ export function TimereportCardComponent({
                 };
             });
 
-            // Set the copied time data (but NOT initialTimeData, so isSynced will be false)
-            setTimeData(adjustedTimeData);
+            // Merge adjusted working time with current absences
+            const mergedTimeData = [...adjustedWorkingTimeData];
 
-            // Update selected projects with the project IDs from the copied data
+            currentWeekAbsences.forEach((absenceDay) => {
+                const absenceDateStr = formatDateToISOString(absenceDay.date);
+                const existingDayIndex = mergedTimeData.findIndex(
+                    (day) => formatDateToISOString(day.date) === absenceDateStr
+                );
+
+                if (existingDayIndex >= 0) {
+                    // Merge absence rows into existing day
+                    mergedTimeData[existingDayIndex] = {
+                        ...mergedTimeData[existingDayIndex],
+                        timeRows: [
+                            ...mergedTimeData[existingDayIndex].timeRows,
+                            ...absenceDay.timeRows,
+                        ],
+                    };
+                } else {
+                    // Add the absence day as-is
+                    mergedTimeData.push(absenceDay);
+                }
+            });
+
+            // Set the merged time data (but NOT initialTimeData, so isSynced will be false)
+            setTimeData(mergedTimeData);
+
+            // Update selected projects with the project IDs from working time only
             const copiedProjectIds = new Set();
-            adjustedTimeData.forEach((dayEntry) => {
+            adjustedWorkingTimeData.forEach((dayEntry) => {
                 dayEntry.timeRows?.forEach((row) => {
-                    copiedProjectIds.add(row.projectId);
+                    if (row.isWorkingTime !== false) {
+                        copiedProjectIds.add(row.projectId);
+                    }
                 });
             });
             setSelectedProjects(copiedProjectIds);
@@ -264,7 +307,7 @@ export function TimereportCardComponent({
         } finally {
             setIsCopyingFromLastWeek(false);
         }
-    }, [selectedWeek, refreshTimereportsAction]);
+    }, [selectedWeek, refreshTimereportsAction, timeData]);
 
     // Handle save
     const handleSave = async () => {
@@ -349,6 +392,13 @@ export function TimereportCardComponent({
         return projectIds.size;
     }, [timeData]);
 
+    // Check if there are any working time projects in timeData (not absences)
+    const hasWorkingTimeProjects = useMemo(() => {
+        return timeData.some((dayEntry) =>
+            dayEntry.timeRows?.some((row) => row.isWorkingTime !== false)
+        );
+    }, [timeData]);
+
     return (
         <div className="space-y-4 md:space-y-6">
             {/* Header - Desktop only */}
@@ -429,8 +479,8 @@ export function TimereportCardComponent({
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Empty state when no projects selected - only visible for current/future weeks */}
-                    {!isPastWeek && selectedProjects.size === 0 && (
+                    {/* Empty state when no working time projects - only visible for current/future weeks */}
+                    {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
                         <ProjectSelectorComponent
                             projects={projects}
                             selectedProjects={selectedProjects}
