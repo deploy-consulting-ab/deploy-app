@@ -484,7 +484,7 @@ export function TimereportCardComponent({
                         {/* Loading Logo Overlay */}
                         <div
                             className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300 ease-in-out ${
-                                isLoadingProjects || isLoadingTimereports || isSaving
+                                isSaving
                                     ? 'opacity-100'
                                     : 'opacity-0 pointer-events-none'
                             }`}
