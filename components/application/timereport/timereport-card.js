@@ -20,6 +20,7 @@ import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
 import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
+import { AbsenceCardPhoneComponent } from '@/components/application/timereport/absence/absence-card-phone';
 
 /**
  * Main time report card component.
@@ -559,6 +560,7 @@ export function TimereportCardComponent({
                                 className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
                             />
                         </Button>
+                        <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
                     </div>
                 </div>
             )}
