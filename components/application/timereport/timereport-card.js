@@ -479,17 +479,6 @@ export function TimereportCardComponent({
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Empty state when no working time projects - only visible for current/future weeks */}
-                    {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
-                        <ProjectSelectorComponent
-                            projects={projects}
-                            selectedProjects={selectedProjects}
-                            onAddProject={handleAddProject}
-                            onCopyFromLastWeek={handleCopyFromLastWeek}
-                            isCopyingFromLastWeek={isCopyingFromLastWeek}
-                        />
-                    )}
-
                     {/* Hours Grid */}
                     <div className="relative">
                         {/* Loading Logo Overlay */}
@@ -505,7 +494,28 @@ export function TimereportCardComponent({
                             </div>
                         </div>
 
-                        {/* Grid Content */}
+                        {/* Empty state - rendered separately to maintain consistent sizing during loading */}
+                        {!isPastWeek &&
+                            selectedProjects.size === 0 &&
+                            !hasWorkingTimeProjects && (
+                                <div
+                                    className={`transition-opacity duration-300 ease-in-out ${
+                                        isLoadingProjects || isLoadingTimereports
+                                            ? 'opacity-0'
+                                            : 'opacity-100'
+                                    }`}
+                                >
+                                    <ProjectSelectorComponent
+                                        projects={projects}
+                                        selectedProjects={selectedProjects}
+                                        onAddProject={handleAddProject}
+                                        onCopyFromLastWeek={handleCopyFromLastWeek}
+                                        isCopyingFromLastWeek={isCopyingFromLastWeek}
+                                    />
+                                </div>
+                            )}
+
+                        {/* Grid Content - fades in as logo fades out */}
                         <div
                             className={`transition-opacity duration-300 ease-in-out ${
                                 isLoadingProjects || isLoadingTimereports || isSaving
@@ -513,6 +523,7 @@ export function TimereportCardComponent({
                                     : 'opacity-100'
                             }`}
                         >
+
                             <HoursGridComponent
                                 timeData={timeData}
                                 initialTimeData={initialTimeData}
