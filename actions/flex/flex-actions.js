@@ -32,12 +32,12 @@ export async function createTimereport(flexEmployeeId, timecard) {
             .map((timereport) => {
                 const date = formatDateToISOString(timereport.date);
 
-                // Skip entire day if it contains any absence entries (holidays, sick leave, etc.)
-                // The API rejects updates to days that already have absence entries
-                const hasAbsenceEntry = timereport.timeRows?.some(
-                    (row) => row.isWorkingTime === false
+                // Skip entire day if it contains a full-day absence (8+ hours)
+                // The API rejects updates to days that already have full-day absence entries
+                const hasFullDayAbsence = timereport.timeRows?.some(
+                    (row) => row.isWorkingTime === false && row.hours >= 8
                 );
-                if (hasAbsenceEntry) {
+                if (hasFullDayAbsence) {
                     return null;
                 }
 
