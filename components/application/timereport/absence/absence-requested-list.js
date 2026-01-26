@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
-import {
-    deleteAbsenceRequest,
-    updateAbsenceRequest,
-} from '@/actions/flex/flex-actions';
+import { deleteAbsenceRequest, updateAbsenceRequest } from '@/actions/flex/flex-actions';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { getAbsenceStatusColor } from '@/lib/utils';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { enGB } from 'react-day-picker/locale';
+import { ABSENCE_STATUS_REGISTERED, ABSENCE_STATUS_APPLIED_FOR } from '@/actions/flex/constants';
 
 /**
  * Inline editable hours input component that manages its own local state
@@ -179,16 +177,11 @@ export function AbsenceRequestedListComponent({
         // Read hours from ref if available (for same-day edits)
         const currentHours = hoursInputRef.current?.getValue?.() ?? editValues.Hours;
         try {
-            await updateAbsenceRequest(
-                absenceTypeId,
-                id,
-                employmentNumber,
-                {
-                    FromDate: formatLocalDate(editValues.FromDate),
-                    ToDate: formatLocalDate(editValues.ToDate),
-                    Hours: isSameDay ? currentHours : null,
-                }
-            );
+            await updateAbsenceRequest(absenceTypeId, id, employmentNumber, {
+                FromDate: formatLocalDate(editValues.FromDate),
+                ToDate: formatLocalDate(editValues.ToDate),
+                Hours: isSameDay ? currentHours : null,
+            });
 
             // Update local state
             setRequests(
@@ -446,6 +439,15 @@ export function AbsenceRequestedListComponent({
             cell: ({ row }) => {
                 const isEditing = editingId === row.original.Id;
                 const id = row.original.Id;
+                const status = row.original.status;
+
+                // Hide actions for 'Registered' (code 0) or 'Applied for' (code 1) statuses
+                const isActionHidden =
+                    status === ABSENCE_STATUS_REGISTERED || status === ABSENCE_STATUS_APPLIED_FOR;
+
+                if (isActionHidden && !isEditing) {
+                    return null;
+                }
 
                 if (isEditing) {
                     return (
