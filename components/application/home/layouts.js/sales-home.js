@@ -7,7 +7,12 @@ import { transformHolidaysData } from '@/lib/utils';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
-export async function SalesHomeComponent({ profileId, employeeNumber }) {
+export async function SalesHomeComponent({
+    profileId,
+    employeeNumber,
+    yearlyHolidays,
+    carriedOverHolidays,
+}) {
     // Initialize data and errors
     let loading = true;
 
@@ -29,7 +34,11 @@ export async function SalesHomeComponent({ profileId, employeeNumber }) {
 
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getHolidays(employeeNumber);
+            const rawHolidays = await getHolidays({
+                employeeNumber,
+                yearlyHolidays,
+                carriedOverHolidays,
+            });
             data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';

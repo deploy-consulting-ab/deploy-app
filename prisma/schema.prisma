@@ -51,6 +51,8 @@ model User {
     accounts        Account[]
     timereportCheckmarks TimereportCheckmark[]
     isActive        Boolean         @default(true)
+    yearlyHolidays  Float           @default(30)
+    carriedOverHolidays Float       @default(0)
 
     createdAt DateTime? @default(now())
     updatedAt DateTime? @updatedAt

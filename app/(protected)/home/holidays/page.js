@@ -17,9 +17,11 @@ export default async function HolidaysPage() {
     let absences = null;
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
+    const yearlyHolidays = session.user.yearlyHolidays;
+    const carriedOverHolidays = session.user.carriedOverHolidays;
 
     try {
-        holidays = await getHolidays(employeeNumber);
+        holidays = await getHolidays({ employeeNumber, yearlyHolidays, carriedOverHolidays });
         const absenceResponse = await getAllAbsence(employeeNumber);
         absences = absenceResponse.Result;
     } catch (err) {

@@ -63,8 +63,16 @@ export async function createUserAction(values) {
             throw new Error('Invalid fields');
         }
 
-        const { email, password, name, profileId, employeeNumber, flexEmployeeId } =
-            validatedFields.data;
+        const {
+            email,
+            password,
+            name,
+            profileId,
+            employeeNumber,
+            flexEmployeeId,
+            yearlyHolidays,
+            carriedOverHolidays,
+        } = validatedFields.data;
 
         const hashedPassword = await bcryptjs.hash(password, 10);
 
@@ -81,6 +89,8 @@ export async function createUserAction(values) {
             profileId,
             employeeNumber,
             flexEmployeeId,
+            yearlyHolidays,
+            carriedOverHolidays,
         });
 
         if (!createdUser) {

@@ -4,7 +4,12 @@ import { useState } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToISOString, getAbsenceStatusColor, getAbsenceStatusText } from '@/lib/utils';
-import { ABSENCE_STATUS_CODE, ABSENCE_STATUS_TYPE_TEXT, HOLIDAY_TYPE_ID, SICK_LEAVE_TYPE_ID } from '@/actions/flex/constants';
+import {
+    ABSENCE_STATUS_CODE,
+    ABSENCE_STATUS_TYPE_TEXT,
+    HOLIDAY_TYPE_ID,
+    SICK_LEAVE_TYPE_ID,
+} from '@/actions/flex/constants';
 import {
     Select,
     SelectContent,

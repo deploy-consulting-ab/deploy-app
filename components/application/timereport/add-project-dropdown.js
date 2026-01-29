@@ -13,7 +13,12 @@ import {
  * Reusable dropdown for adding projects.
  * Shows available projects that aren't already selected.
  */
-export function AddProjectDropdownComponent({ projects, selectedProjects, onAddProject, variant = 'default' }) {
+export function AddProjectDropdownComponent({
+    projects,
+    selectedProjects,
+    onAddProject,
+    variant = 'default',
+}) {
     const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
 
     if (availableProjects.length === 0) {

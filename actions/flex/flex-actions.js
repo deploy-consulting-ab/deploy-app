@@ -42,9 +42,8 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 }
 
                 // Get working time entries only
-                const workingTimeRows = timereport.timeRows?.filter(
-                    (row) => row.isWorkingTime !== false
-                ) || [];
+                const workingTimeRows =
+                    timereport.timeRows?.filter((row) => row.isWorkingTime !== false) || [];
 
                 // Skip days with no working time entries
                 if (workingTimeRows.length === 0) {
@@ -77,8 +76,6 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 const body = {
                     timeRows: timeRows,
                 };
-
-                console.log('## timereport', JSON.stringify(timereport, null, 2));
 
                 return flexApiClient.createTimereport(flexEmployeeId, date, body);
             })
@@ -180,17 +177,25 @@ export async function getAllAbsence(employeeNumber) {
 
 /**
  * Get the holidays for a given employee number
- * @param {string} employeeNumber - The employee number
+ * @param {Object} employeeInformation - The employee information
+ * @param {string} employeeInformation.employeeNumber - The employee number
+ * @param {number} employeeInformation.yearlyHolidays - The yearly holidays
+ * @param {number} employeeInformation.carriedOverHolidays - The carried over holidays
  * @param {Object} options - The options for the request
  * @param {string} options.cache - The cache mode for the request
  * @returns {Promise<Object>} The holidays
  */
-export async function getHolidays(employeeNumber, options = { cache: 'no-store' }) {
+export async function getHolidays(employeeInformation, options = { cache: 'no-store' }) {
+    const { employeeNumber, yearlyHolidays, carriedOverHolidays } = employeeInformation;
     try {
         const flexApiClient = await getFlexApiService();
         flexApiClient.config.cache = options.cache;
 
-        const response = await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID, 30);
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            HOLIDAY_TYPE_ID,
+            30
+        );
 
         if (!response?.Result) {
             throw new NoResultsError('No holidays found');
@@ -198,7 +203,7 @@ export async function getHolidays(employeeNumber, options = { cache: 'no-store' 
 
         const holidays = calculateHolidays(response.Result);
 
-        holidays.totalHolidays = 30; // Potentially get from flex
+        holidays.totalHolidays = yearlyHolidays + carriedOverHolidays; // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
 
         // Format dates as ISO strings before sending to client

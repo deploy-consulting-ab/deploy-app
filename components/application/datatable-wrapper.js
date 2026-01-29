@@ -21,7 +21,14 @@ import {
 } from '@/components/ui/table';
 import { NoDataComponent } from '@/components/errors/no-data';
 
-export function DatatableWrapperComponent({ data, columns, placeholder, searchKey, pageSize = 10, ...props }) {
+export function DatatableWrapperComponent({
+    data,
+    columns,
+    placeholder,
+    searchKey,
+    pageSize = 10,
+    ...props
+}) {
     const [sorting, setSorting] = useState([]);
     const table = useReactTable({
         data,

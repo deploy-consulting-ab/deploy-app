@@ -40,6 +40,8 @@ export async function startImpersonation(userId) {
                 systemPermissions: targetSystemPermissions,
                 image: targetUser.image,
                 isActive: targetUser.isActive,
+                yearlyHolidays: targetUser.yearlyHolidays,
+                carriedOverHolidays: targetUser.carriedOverHolidays,
             },
             originalUser: {
                 id: session.user.sessionId,
@@ -51,6 +53,8 @@ export async function startImpersonation(userId) {
                 systemPermissions: session.user.systemPermissions,
                 image: session.user.image,
                 isActive: session.user.isActive,
+                yearlyHolidays: session.user.yearlyHolidays,
+                carriedOverHolidays: session.user.carriedOverHolidays,
             },
         };
 

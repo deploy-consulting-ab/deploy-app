@@ -13,7 +13,12 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
-export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
+export async function ConsultantHomeComponent({
+    profileId,
+    employeeNumber,
+    yearlyHolidays,
+    carriedOverHolidays,
+}) {
     // Initialize data and errors
     let loading = true;
 
@@ -51,7 +56,11 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
     // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getHolidays(employeeNumber);
+            const rawHolidays = await getHolidays({
+                employeeNumber,
+                yearlyHolidays,
+                carriedOverHolidays,
+            });
             data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';

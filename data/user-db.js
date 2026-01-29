@@ -96,6 +96,8 @@ export async function getUsers() {
                 employeeNumber: true,
                 profileId: true,
                 isActive: true,
+                yearlyHolidays: true,
+                carriedOverHolidays: true,
             },
             orderBy: [
                 {
@@ -236,6 +238,8 @@ export const updateUserProfile = async (userId, profileId) => {
                 email: true,
                 employeeNumber: true,
                 profileId: true,
+                yearlyHolidays: true,
+                carriedOverHolidays: true,
             },
         });
         return updatedUser;
@@ -269,6 +273,8 @@ export async function searchUsers(searchTerm) {
                 email: true,
                 employeeNumber: true,
                 profileId: true,
+                yearlyHolidays: true,
+                carriedOverHolidays: true,
             },
             orderBy: {
                 name: 'asc',

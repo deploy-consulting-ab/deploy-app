@@ -39,10 +39,10 @@ When you open the Time Report page, you'll see:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-| Action | How to Do It |
-|--------|--------------|
-| **Previous Week** | Click the `◀` (left arrow) button |
-| **Next Week** | Click the `▶` (right arrow) button |
+| Action                     | How to Do It                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| **Previous Week**          | Click the `◀` (left arrow) button                                              |
+| **Next Week**              | Click the `▶` (right arrow) button                                             |
 | **Return to Current Week** | Click "Go to current week" button (only visible when viewing past/future weeks) |
 
 > **Note:** You can view past weeks in read-only mode, but you can only edit the current week and future weeks.
@@ -161,11 +161,11 @@ Located in the bottom-right corner (desktop) or bottom action bar (mobile):
 └─────────────────────────────────────────────────────────────┘
 ```
 
-| Button State | Meaning |
-|--------------|---------|
-| **Save** (active) | You have unsaved changes |
-| **Save** (disabled/grayed) | No changes to save |
-| **Saving...** | Currently syncing with Flex |
+| Button State               | Meaning                     |
+| -------------------------- | --------------------------- |
+| **Save** (active)          | You have unsaved changes    |
+| **Save** (disabled/grayed) | No changes to save          |
+| **Saving...**              | Currently syncing with Flex |
 
 ### When to Save
 
@@ -219,40 +219,40 @@ The time report uses colors and icons to help you understand the status of your 
 
 ### Cell Sync Status
 
-| Indicator | Meaning |
-|-----------|---------|
-| ✓ (green checkmark in cell) | Hours are synced with Flex |
-| Slightly faded cell | Hours entered but not yet saved |
+| Indicator                   | Meaning                         |
+| --------------------------- | ------------------------------- |
+| ✓ (green checkmark in cell) | Hours are synced with Flex      |
+| Slightly faded cell         | Hours entered but not yet saved |
 
 ### Daily Totals Colors
 
-| Color | Meaning |
-|-------|---------|
-| 🟢 **Green** (8h) | Perfect! You've logged exactly 8 hours |
-| 🟠 **Amber** (>8h) | Overtime - more than 8 hours logged |
-| 🔵 **Blue** (<8h) | Under hours - less than 8 hours (weekday) |
-| ⚫ **Gray** (0h) | No hours logged or weekend |
+| Color              | Meaning                                   |
+| ------------------ | ----------------------------------------- |
+| 🟢 **Green** (8h)  | Perfect! You've logged exactly 8 hours    |
+| 🟠 **Amber** (>8h) | Overtime - more than 8 hours logged       |
+| 🔵 **Blue** (<8h)  | Under hours - less than 8 hours (weekday) |
+| ⚫ **Gray** (0h)   | No hours logged or weekend                |
 
 ### Week Total Colors
 
-| Color | Meaning |
-|-------|---------|
-| 🟢 **Green** (40h+) | Target reached! Full week logged |
-| 🔵 **Blue** (<40h) | Hours logged but under weekly target |
+| Color               | Meaning                              |
+| ------------------- | ------------------------------------ |
+| 🟢 **Green** (40h+) | Target reached! Full week logged     |
+| 🔵 **Blue** (<40h)  | Hours logged but under weekly target |
 
 ### Special Day Indicators
 
-| Visual Style | Meaning |
-|--------------|---------|
-| 🔴 **Red background** | Bank holiday - special highlighting |
-| **Ring/highlight around cell** | Today's date |
-| **Faded/gray background** | Weekend (Saturday/Sunday) |
+| Visual Style                   | Meaning                             |
+| ------------------------------ | ----------------------------------- |
+| 🔴 **Red background**          | Bank holiday - special highlighting |
+| **Ring/highlight around cell** | Today's date                        |
+| **Faded/gray background**      | Weekend (Saturday/Sunday)           |
 
 ### Project Row Colors
 
-| Indicator | Meaning |
-|-----------|---------|
-| **Colored dot** (●) | Project color for easy identification |
+| Indicator                 | Meaning                                         |
+| ------------------------- | ----------------------------------------------- |
+| **Colored dot** (●)       | Project color for easy identification           |
 | **Red highlighted hours** | Non-working time project (e.g., leave, absence) |
 
 ---
@@ -296,12 +296,12 @@ The main actions are always accessible at the bottom of the screen:
 
 At the bottom of the page, you'll find summary statistics:
 
-| Stat | Description |
-|------|-------------|
-| **Total Hours** | Sum of all hours logged this week |
-| **Projects** | Number of projects with time entries |
-| **Avg per Day** | Average hours per working day (weekTotal / 5) |
-| **Target Progress** | Percentage toward 40-hour target |
+| Stat                | Description                                   |
+| ------------------- | --------------------------------------------- |
+| **Total Hours**     | Sum of all hours logged this week             |
+| **Projects**        | Number of projects with time entries          |
+| **Avg per Day**     | Average hours per working day (weekTotal / 5) |
+| **Target Progress** | Percentage toward 40-hour target              |
 
 ---
 
@@ -320,18 +320,22 @@ At the bottom of the page, you'll find summary statistics:
 ## Troubleshooting
 
 ### "Save button is disabled"
+
 - You have no unsaved changes
 - Check if hours are already synced (✓ indicator)
 
 ### "Cannot edit hours"
+
 - You may have checkmarked the week - click "Uncheckmark"
 - You may be viewing a past week (read-only)
 
 ### "Copy from last week shows no data"
+
 - The previous week has no time entries
 - Enter hours manually or check an earlier week
 
 ### "Hours not syncing"
+
 - Ensure you clicked Save
 - Check your internet connection
 - Refresh the page and try again
@@ -340,18 +344,18 @@ At the bottom of the page, you'll find summary statistics:
 
 ## Legend Summary
 
-| Icon | Name | Action |
-|------|------|--------|
-| ◀ ▶ | Navigation Arrows | Navigate between weeks |
-| 📅 | Calendar | Current week indicator |
-| ➕ | Plus | Add project dropdown |
-| 📋 | Copy | Copy from last week |
-| ⏰ | Clock | Fill 8h for Mon-Fri |
-| 🔄 | Rotate | Reset all hours for project |
-| ✕ | X | Remove project |
-| 💾 | Save | Save changes to Flex |
-| ✓ | Checkmark | Mark hours as final |
+| Icon  | Name              | Action                      |
+| ----- | ----------------- | --------------------------- |
+| ◀ ▶ | Navigation Arrows | Navigate between weeks      |
+| 📅    | Calendar          | Current week indicator      |
+| ➕    | Plus              | Add project dropdown        |
+| 📋    | Copy              | Copy from last week         |
+| ⏰    | Clock             | Fill 8h for Mon-Fri         |
+| 🔄    | Rotate            | Reset all hours for project |
+| ✕     | X                 | Remove project              |
+| 💾    | Save              | Save changes to Flex        |
+| ✓     | Checkmark         | Mark hours as final         |
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

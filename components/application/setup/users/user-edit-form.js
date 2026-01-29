@@ -36,6 +36,8 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
             flexEmployeeId: user.flexEmployeeId || '',
             profileId: user.profileId || '',
             isActive: user.isActive || true,
+            yearlyHolidays: user.yearlyHolidays || 30,
+            carriedOverHolidays: user.carriedOverHolidays || 0,
         },
     });
 
@@ -150,6 +152,46 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                                     <Switch
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Yearly Holidays */}
+                    <FormField
+                        control={form.control}
+                        name="yearlyHolidays"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Yearly Holidays</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        type="number"
+                                        step="0.5"
+                                        placeholder="Enter yearly holidays"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Carried Over Holidays */}
+                    <FormField
+                        control={form.control}
+                        name="carriedOverHolidays"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Carried Over Holidays</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        type="number"
+                                        step="0.5"
+                                        placeholder="Enter carried over holidays"
                                     />
                                 </FormControl>
                                 <FormMessage />

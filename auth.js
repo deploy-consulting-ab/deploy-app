@@ -116,6 +116,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.isActive = token.isActive;
             }
 
+            if (token.yearlyHolidays) {
+                session.user.yearlyHolidays = token.yearlyHolidays;
+            }
+
+            if (token.carriedOverHolidays) {
+                session.user.carriedOverHolidays = token.carriedOverHolidays;
+            }
+
             // Add impersonation data if present
             if (token.impersonating) {
                 session.user.impersonating = true;
@@ -130,6 +138,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;
                 session.user.image = token.impersonatedUser.image;
                 session.user.isActive = token.impersonatedUser.isActive;
+                session.user.yearlyHolidays = token.impersonatedUser.yearlyHolidays;
+                session.user.carriedOverHolidays = token.impersonatedUser.carriedOverHolidays;
             }
             return session;
         },
@@ -159,6 +169,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.sub = user.id;
                 token.profileId = user.profileId;
                 token.isActive = user.isActive;
+                token.yearlyHolidays = user.yearlyHolidays;
+                token.carriedOverHolidays = user.carriedOverHolidays;
             }
             return token;
         },

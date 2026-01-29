@@ -484,9 +484,7 @@ export function TimereportCardComponent({
                         {/* Loading Logo Overlay */}
                         <div
                             className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300 ease-in-out ${
-                                isSaving
-                                    ? 'opacity-100'
-                                    : 'opacity-0 pointer-events-none'
+                                isSaving ? 'opacity-100' : 'opacity-0 pointer-events-none'
                             }`}
                         >
                             <div className="[&>div]:h-auto [&>div]:min-h-0 [&>div]:p-0">
@@ -495,25 +493,23 @@ export function TimereportCardComponent({
                         </div>
 
                         {/* Empty state - rendered separately to maintain consistent sizing during loading */}
-                        {!isPastWeek &&
-                            selectedProjects.size === 0 &&
-                            !hasWorkingTimeProjects && (
-                                <div
-                                    className={`transition-opacity duration-300 ease-in-out ${
-                                        isLoadingProjects || isLoadingTimereports
-                                            ? 'opacity-0'
-                                            : 'opacity-100'
-                                    }`}
-                                >
-                                    <ProjectSelectorComponent
-                                        projects={projects}
-                                        selectedProjects={selectedProjects}
-                                        onAddProject={handleAddProject}
-                                        onCopyFromLastWeek={handleCopyFromLastWeek}
-                                        isCopyingFromLastWeek={isCopyingFromLastWeek}
-                                    />
-                                </div>
-                            )}
+                        {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
+                            <div
+                                className={`transition-opacity duration-300 ease-in-out ${
+                                    isLoadingProjects || isLoadingTimereports
+                                        ? 'opacity-0'
+                                        : 'opacity-100'
+                                }`}
+                            >
+                                <ProjectSelectorComponent
+                                    projects={projects}
+                                    selectedProjects={selectedProjects}
+                                    onAddProject={handleAddProject}
+                                    onCopyFromLastWeek={handleCopyFromLastWeek}
+                                    isCopyingFromLastWeek={isCopyingFromLastWeek}
+                                />
+                            </div>
+                        )}
 
                         {/* Grid Content - fades in as logo fades out */}
                         <div
@@ -523,7 +519,6 @@ export function TimereportCardComponent({
                                     : 'opacity-100'
                             }`}
                         >
-
                             <HoursGridComponent
                                 timeData={timeData}
                                 initialTimeData={initialTimeData}

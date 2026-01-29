@@ -38,6 +38,8 @@ export const CreateUserComponent = ({ fireSuccess }) => {
             employeeNumber: '',
             flexEmployeeId: '',
             profileId: CONSULTANT_PROFILE,
+            yearlyHolidays: 30,
+            carriedOverHolidays: 0,
         },
     });
 
@@ -189,6 +191,46 @@ export const CreateUserComponent = ({ fireSuccess }) => {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="yearlyHolidays"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Yearly Holidays</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        disabled={isSubmitting}
+                                        type="number"
+                                        step="0.5"
+                                        placeholder="30"
+                                        {...field}
+                                        className="input"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="carriedOverHolidays"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Carried Over Holidays</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        disabled={isSubmitting}
+                                        type="number"
+                                        step="0.5"
+                                        placeholder="0"
+                                        {...field}
+                                        className="input"
+                                    />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}

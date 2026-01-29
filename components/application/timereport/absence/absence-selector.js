@@ -6,7 +6,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-export function AbsenceSelectorComponent({ absenceApplicationTypes, handleAbsenceApplicationTypeSelected}) {
+export function AbsenceSelectorComponent({
+    absenceApplicationTypes,
+    handleAbsenceApplicationTypeSelected,
+}) {
     return (
         <Select onValueChange={handleAbsenceApplicationTypeSelected}>
             <SelectTrigger className="w-full">

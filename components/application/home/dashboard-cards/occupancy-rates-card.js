@@ -11,12 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import Link from 'next/link';
 import { OCCUPANCY_ROUTE } from '@/menus/routes';
 
-export function OccupancyRatesCardComponent({
-    occupancy,
-    error,
-    refreshAction,
-    target = 85,
-}) {
+export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, target = 85 }) {
     const isMobile = useIsMobile();
     const [isPending, startTransition] = useTransition();
 

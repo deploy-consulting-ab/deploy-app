@@ -59,7 +59,7 @@ export function HolidaysCardComponent({
                     )}
                     {!isNavigationDisabled && (
                         <Link href={HOLIDAYS_ROUTE} className="md:block hover:cursor-pointer">
-                            <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--deploy-accent-lime)] transition-colors" />
+                            <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-deploy-accent-lime transition-colors" />
                         </Link>
                     )}
                 </div>
@@ -69,13 +69,13 @@ export function HolidaysCardComponent({
             {holidays && (
                 <div className="grid grid-cols-3 gap-4 mb-6 p-4 rounded-lg bg-background/50 border border-border/50">
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-[var(--deploy-accent-lime)]">
+                        <div className="text-2xl font-bold text-deploy-accent-lime">
                             {holidays.availableDays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Available</div>
                     </div>
                     <div className="text-center border-x border-border/50">
-                        <div className="text-2xl font-bold text-[var(--deploy-accent-orange)]">
+                        <div className="text-2xl font-bold text-deploy-accent-orange">
                             {holidays.usedDays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Used</div>
@@ -98,7 +98,7 @@ export function HolidaysCardComponent({
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-gradient-to-r from-[var(--deploy-accent-lime)] to-[var(--deploy-accent-yellow)] transition-all duration-500"
+                            className="h-full bg-linear-to-r from-deploy-accent-lime to-deploy-accent-yellow transition-all duration-500"
                             style={{ width: `${(holidays.usedDays / holidays.totalDays) * 100}%` }}
                         />
                     </div>
@@ -130,7 +130,7 @@ export function HolidaysCardComponent({
                                         )}
                                     </div>
                                 </div>
-                                <div className="text-xs font-medium text-[var(--deploy-accent-lime)]">
+                                <div className="text-xs font-medium text-deploy-accent-lime">
                                     {holiday.days || 1} day{(holiday.days || 1) !== 1 ? 's' : ''}
                                 </div>
                             </div>
