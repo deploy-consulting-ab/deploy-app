@@ -107,40 +107,44 @@ export async function ConsultantHomeComponent({
     }
 
     return (
-        <div className="h-full grid gap-4">
-            {/* Top row: Holidays and Occupancy Rates */}
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                <HolidaysCardComponent
-                    holidays={data.holidays}
-                    error={errors.holidays}
-                    isNavigationDisabled={false}
-                    refreshAction={refreshHolidays}
-                />
-                <OccupancyRatesCardComponent
-                    occupancy={data.occupancyRates}
-                    error={errors.occupancyRates}
-                    refreshAction={refreshOccupancy}
-                    target={85}
-                />
+        <div className="min-h-screen space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Main Content - Left Side */}
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Occupancy Rate Card - Team Capacity */}
+                    <OccupancyRatesCardComponent
+                        occupancy={data.occupancyRates}
+                        error={errors.occupancyRates}
+                        refreshAction={refreshOccupancy}
+                        target={85}
+                    />
+
+                    {/* Assignments Card */}
+                    <StatisticsCardComponent
+                        title="Assignments"
+                        stats={data.assignmentsMetrics}
+                        error={errors.assignmentsMetrics}
+                        refreshAction={refreshStatistics}
+                    />
+                </div>
+
+                {/* Right Sidebar */}
+                <div className="space-y-6">
+                    {/* Holidays Card */}
+                    <HolidaysCardComponent
+                        holidays={data.holidays}
+                        error={errors.holidays}
+                        refreshAction={refreshHolidays}
+                    />
+
+                    {/* Quick Links */}
+                    <QuickLinksCardComponent
+                        title="Quick Access"
+                        description="Access resources and support anytime"
+                        links={quickLinks}
+                    />
+                </div>
             </div>
-
-            {/* Middle row: Statistics */}
-            <StatisticsCardComponent
-                title="Assignments Overview"
-                description="Your current assignment metrics"
-                stats={data.assignmentsMetrics}
-                error={errors.assignmentsMetrics}
-                refreshAction={refreshStatistics}
-                columns={2}
-            />
-
-            {/* Bottom row: Quick Links */}
-            <QuickLinksCardComponent
-                title="Quick Access"
-                description="Frequently used resources and tools"
-                links={quickLinks}
-                columns={4}
-            />
         </div>
     );
 }
