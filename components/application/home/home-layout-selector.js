@@ -61,9 +61,9 @@ export function getHomeRequiredDataForProfile(profileId) {
         case SUBCONTRACTOR_PROFILE:
             return {
                 ...dataRequirements,
-                occupancyRates: false,
+                occupancyRates: true,
                 holidays: false,
-                assignmentsMetrics: false,
+                assignmentsMetrics: true,
             };
         default:
             return dataRequirements;
