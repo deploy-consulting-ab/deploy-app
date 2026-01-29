@@ -6,7 +6,7 @@ import {
     getRecentOccupancyRate,
 } from '@/actions/salesforce/salesforce-actions';
 import { revalidatePath } from 'next/cache';
-import { formatDateToISOString, getUTCToday, transformHolidaysData, transformStatisticsData } from '@/lib/utils';
+import { formatDateToISOString, getUTCToday, transformHolidaysData, transformOccupancyData, transformStatisticsData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
@@ -147,19 +147,4 @@ export async function AdminHomeComponent({
             </div>
         </div>
     );
-}
-
-// Transform raw occupancy data to match OccupancyRatesCardComponent expected format
-function transformOccupancyData(rawData) {
-    if (!rawData) return null;
-
-    return {
-        currentRate: rawData.current ?? 0,
-        previousRate: rawData.history?.[0]?.rate ?? null,
-        history:
-            rawData.history?.map((item) => ({
-                period: item.month,
-                rate: item.rate,
-            })) ?? [],
-    };
 }
