@@ -3,7 +3,7 @@
 import { Card, CardTitle } from '@/components/ui/card';
 import { RefreshCw, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useTransition } from 'react';
 import { ProgressRing } from '@/components/application/home/progress-ring';
 import { MiniLineChart } from '@/components/application/home/mini-chart';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
@@ -12,29 +12,19 @@ import Link from 'next/link';
 import { OCCUPANCY_ROUTE } from '@/menus/routes';
 
 export function OccupancyRatesCardComponent({
-    occupancy: initialOccupancy,
-    error: initialError,
+    occupancy,
+    error,
     refreshAction,
     target = 85,
 }) {
     const isMobile = useIsMobile();
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [occupancy, setOccupancy] = useState(initialOccupancy);
-    const [error, setError] = useState(initialError);
+    const [isPending, startTransition] = useTransition();
 
-    const handleRefresh = async () => {
-        if (isRefreshing || !refreshAction) return;
-        setIsRefreshing(true);
-        try {
-            const freshData = await refreshAction();
-            setOccupancy(freshData);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Failed to refresh occupancy data');
-        } finally {
-            setIsRefreshing(false);
-        }
-    };
+    function handleRefresh() {
+        startTransition(async () => {
+            await refreshAction();
+        });
+    }
 
     const currentRate = occupancy?.currentRate ?? 0;
     const history = occupancy?.history ?? [];
@@ -69,8 +59,8 @@ export function OccupancyRatesCardComponent({
                             variant="ghost"
                             size="icon"
                             onClick={handleRefresh}
-                            disabled={isRefreshing}
-                            className={isRefreshing ? 'animate-spin' : ''}
+                            disabled={isPending}
+                            className={isPending ? 'animate-spin' : ''}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>

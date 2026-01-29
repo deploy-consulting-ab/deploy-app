@@ -1,6 +1,27 @@
 export const HOLIDAY_TYPE_ID = '948b233d-892e-4d98-9841-0f14a2e55597';
+export const SICK_LEAVE_TYPE_ID = '181fa471-c415-41f2-bb31-995bff0b99e5';
 export const PROJECT_TYPE_ID = '7a21a56d-c4b9-4625-93e0-d9d8c8e2cddf';
 export const WORKING_TYPE_ID = '87c61adf-09f4-4a48-b993-4bfa1dc0aa43';
+export const COMPANY_ID = 'b4253a61-f229-4ca9-9831-ad931d9a75a6';
+export const ABSENCE_STATUS_REGISTERED = 'Registered';
+export const ABSENCE_STATUS_APPLIED_FOR = 'Applied for';
+export const ABSENCE_STATUS_AUDITED = 'Audited';
+export const ABSENCE_STATUS_REJECTED = 'Rejected';
+
+export const ABSENCE_STATUS_CODE = {
+    0: ABSENCE_STATUS_REGISTERED,
+    1: ABSENCE_STATUS_APPLIED_FOR,
+    2: ABSENCE_STATUS_AUDITED,
+    3: ABSENCE_STATUS_REJECTED,
+}
+
+export const ABSENCE_STATUS_TYPE_TEXT = {
+    [HOLIDAY_TYPE_ID] : 'Holiday',
+    [SICK_LEAVE_TYPE_ID] : 'Sick leave',
+}
+
+export const ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST = 'holiday-absence-request';
+export const ABSENCE_APPLICATION_TYPE_ID_SICK_ABSENCE_REQUEST = 'sick-absence-request';
 
 /**
  * Pre-calculated Set of all Swedish bank holidays from 2024 to 2030.

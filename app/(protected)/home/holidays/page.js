@@ -1,26 +1,27 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { auth } from '@/auth';
-import { getAbsenceApplications } from '@/actions/flex/flex-actions';
+import { getAllAbsence, getHolidays } from '@/actions/flex/flex-actions';
 import { HolidaysWrapperComponent } from '@/components/application/holidays/holidays-wrapper';
 
 // Server action for refreshing data
 async function refreshHolidayData() {
     'use server';
-    const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
-    const data = await getAbsenceApplications(employeeNumber);
-    return data;
+    revalidatePath('/home/holidays');
 }
 
 export default async function HolidaysPage() {
-    let data = null;
+    let holidays = null;
     let error = null;
+    let absences = null;
     const session = await auth();
     const employeeNumber = session.user.employeeNumber;
 
     try {
-        data = await getAbsenceApplications(employeeNumber);
+        holidays = await getHolidays(employeeNumber);
+        const absenceResponse = await getAllAbsence(employeeNumber);
+        absences = absenceResponse.Result;
     } catch (err) {
         error = err;
     }
@@ -28,7 +29,8 @@ export default async function HolidaysPage() {
     return (
         <div className="h-full">
             <HolidaysWrapperComponent
-                initialData={data}
+                holidays={holidays}
+                absences={absences}
                 refreshAction={refreshHolidayData}
                 error={error}
                 isNavigationDisabled={true}

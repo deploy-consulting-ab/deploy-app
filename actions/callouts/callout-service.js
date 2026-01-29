@@ -172,6 +172,10 @@ class CalloutService {
             body: data,
         });
     }
+
+    async delete(endpoint, options = {}) {
+        return this.request(endpoint, { ...options, method: HTTP_METHODS.DELETE });
+    }
 }
 
 // Export the class for custom instances

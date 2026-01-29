@@ -6,119 +6,83 @@ import {
     calculateNextResetDate,
     generateDateRange,
     getUTCToday,
+    formatDateToISOString,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
-import { PROJECT_TYPE_ID, WORKING_TYPE_ID } from './constants.js';
-import { formatDateToISOString } from '@/lib/utils.js';
-import chalk from 'chalk';
+import {
+    PROJECT_TYPE_ID,
+    WORKING_TYPE_ID,
+    HOLIDAY_TYPE_ID,
+    COMPANY_ID,
+    SICK_LEAVE_TYPE_ID,
+    ABSENCE_STATUS_CODE,
+} from './constants.js';
 
-export async function getAbsenceApplications(employeeNumber, options = { cache: 'no-store' }) {
-    try {
-        const flexApiClient = await getFlexApiService();
-        flexApiClient.config.cache = options.cache;
-
-        const response = await flexApiClient.getAbsenceApplications(employeeNumber);
-
-        if (!response?.Result) {
-            throw new NoResultsError('No holidays found');
-        }
-
-        const holidays = calculateHolidays(response.Result);
-
-        holidays.totalHolidays = 30; // Potentially get from flex
-        holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
-
-        // Format dates as ISO strings before sending to client
-        holidays.recentHolidayPeriods = holidays.holidayPeriods.slice(0, 3).map((period) => ({
-            ...period,
-            fromDate: period.fromDate.toISOString().split('T')[0],
-            toDate: period.toDate.toISOString().split('T')[0],
-        }));
-
-        holidays.nextResetDate = calculateNextResetDate(getUTCToday()).toISOString().split('T')[0];
-
-        // Convert all holiday range dates to ISO strings
-        holidays.allHolidaysRange = [];
-        for (const holiday of holidays.holidayPeriods) {
-            const range = generateDateRange(holiday.fromDate, holiday.toDate);
-            holidays.allHolidaysRange.push(...range.map((date) => date.toISOString()));
-        }
-
-        return holidays;
-    } catch (error) {
-        console.error('Error in getAbsenceApplications:', {
-            name: error.name,
-            message: error.message,
-            status: error.status,
-            code: error.code,
-        });
-
-        if (error instanceof NoResultsError) {
-            throw error;
-        }
-
-        if (error instanceof NetworkError || error instanceof ApiError) {
-            throw error;
-        }
-
-        throw new ApiError(
-            error.message || 'Failed to fetch absence applications',
-            error.status,
-            error.code
-        );
-    }
-}
-
+// Timecard methods
 /**
- * Converts decimal hours to "HH:MM" time format string.
- * Examples:
- *   0 -> "00:00"
- *   1 -> "01:00"
- *   1.5 -> "01:30"
- *   2.5 -> "02:30"
- *   10.5 -> "10:30"
+ * Create a timecard for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {Object} timecard - The timecard to create
+ * @returns {Promise<Object>} The timecard
  */
-function hoursToTimeString(decimalHours) {
-    const hours = Math.floor(decimalHours);
-    const minutes = Math.round((decimalHours % 1) * 60);
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-}
-
-export async function createTimecard(flexEmployeeId, timecard) {
+export async function createTimereport(flexEmployeeId, timecard) {
     try {
         const flexApiClient = await getFlexApiService();
-        const promises = timecard.timeData.map(async (timereport) => {
-            const date = formatDateToISOString(timereport.date);
+        const promises = timecard.timeData
+            .map((timereport) => {
+                const date = formatDateToISOString(timereport.date);
 
-            // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-            let previousTomHours = 0;
+                // Skip entire day if it contains a full-day absence (8+ hours)
+                // The API rejects updates to days that already have full-day absence entries
+                const hasFullDayAbsence = timereport.timeRows?.some(
+                    (row) => row.isWorkingTime === false && row.hours >= 8
+                );
+                if (hasFullDayAbsence) {
+                    return null;
+                }
 
-            const timeRows = timereport.timeRows.map((timeRow) => {
-                const tomHours = previousTomHours + timeRow.hours;
-                const body = {
-                    accounts: [
-                        {
-                            accountDistributionId: PROJECT_TYPE_ID,
-                            id: timeRow.projectId,
+                // Get working time entries only
+                const workingTimeRows = timereport.timeRows?.filter(
+                    (row) => row.isWorkingTime !== false
+                ) || [];
+
+                // Skip days with no working time entries
+                if (workingTimeRows.length === 0) {
+                    return null;
+                }
+
+                // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+                let previousTomHours = 0;
+
+                const timeRows = workingTimeRows.map((timeRow) => {
+                    const tomHours = previousTomHours + timeRow.hours;
+                    const body = {
+                        accounts: [
+                            {
+                                accountDistributionId: PROJECT_TYPE_ID,
+                                id: timeRow.projectId,
+                            },
+                        ],
+                        externalComment: '.', // Pass some external comment to prevent adding an extra row
+                        fromTime: hoursToTimeString(previousTomHours),
+                        tomTime: hoursToTimeString(tomHours),
+                        timeCode: {
+                            code: 'ARB',
                         },
-                    ],
-                    externalComment: '.', // Pass some external comment to prevent adding an extra row
-                    fromTime: hoursToTimeString(previousTomHours),
-                    tomTime: hoursToTimeString(tomHours),
-                    timeCode: {
-                        code: 'ARB',
-                    },
+                    };
+                    previousTomHours = tomHours;
+                    return body;
+                });
+
+                const body = {
+                    timeRows: timeRows,
                 };
-                previousTomHours = tomHours;
-                return body;
-            });
 
-            const body = {
-                timeRows: timeRows,
-            };
+                console.log('## timereport', JSON.stringify(timereport, null, 2));
 
-            return await flexApiClient.createTimecard(flexEmployeeId, date, body);
-        });
+                return flexApiClient.createTimereport(flexEmployeeId, date, body);
+            })
+            .filter(Boolean); // Remove null entries (days with no working time)
 
         return await Promise.all(promises);
     } catch (error) {
@@ -126,6 +90,13 @@ export async function createTimecard(flexEmployeeId, timecard) {
     }
 }
 
+/**
+ * Get the timereports for a given employee number
+ * @param {string} flexEmployeeId - The employee number
+ * @param {string} weekStartDate - The start date of the week
+ * @param {string} weekEndDate - The end date of the week
+ * @returns {Promise<Object>} The timereports
+ */
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
@@ -189,4 +160,268 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
     } catch (error) {
         throw error;
     }
+}
+
+// Absence applications methods
+
+/**
+ * Get all absence applications for a given employee number
+ * @param {string} employeeNumber - The employee number
+ * @returns {Promise<Object>} The absence applications
+ */
+export async function getAllAbsence(employeeNumber) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.getAbsenceApplications(employeeNumber);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get the holidays for a given employee number
+ * @param {string} employeeNumber - The employee number
+ * @param {Object} options - The options for the request
+ * @param {string} options.cache - The cache mode for the request
+ * @returns {Promise<Object>} The holidays
+ */
+export async function getHolidays(employeeNumber, options = { cache: 'no-store' }) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        flexApiClient.config.cache = options.cache;
+
+        const response = await flexApiClient.getAbsenceApplications(employeeNumber, HOLIDAY_TYPE_ID, 30);
+
+        if (!response?.Result) {
+            throw new NoResultsError('No holidays found');
+        }
+
+        const holidays = calculateHolidays(response.Result);
+
+        holidays.totalHolidays = 30; // Potentially get from flex
+        holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
+
+        // Format dates as ISO strings before sending to client
+        holidays.recentHolidayPeriods = holidays.holidayPeriods.slice(0, 3).map((period) => ({
+            ...period,
+            fromDate: period.fromDate.toISOString().split('T')[0],
+            toDate: period.toDate.toISOString().split('T')[0],
+        }));
+
+        holidays.nextResetDate = calculateNextResetDate(getUTCToday()).toISOString().split('T')[0];
+
+        // Convert all holiday range dates to ISO strings
+        holidays.allHolidaysRange = [];
+        for (const holiday of holidays.holidayPeriods) {
+            const range = generateDateRange(holiday.fromDate, holiday.toDate);
+            holidays.allHolidaysRange.push(...range.map((date) => date.toISOString()));
+        }
+
+        return holidays;
+    } catch (error) {
+        console.error('Error in getAbsenceApplications:', {
+            name: error.name,
+            message: error.message,
+            status: error.status,
+            code: error.code,
+        });
+
+        if (error instanceof NoResultsError) {
+            throw error;
+        }
+
+        if (error instanceof NetworkError || error instanceof ApiError) {
+            throw error;
+        }
+
+        throw new ApiError(
+            error.message || 'Failed to fetch absence applications',
+            error.status,
+            error.code
+        );
+    }
+}
+
+/**
+ * Get the holiday requests for a given employee number. Only future requests are returned.
+ * @param {string} employeeNumber - The employee number
+ * @param {string} currentDate - The current date
+ * @returns {Promise<Object>} The holiday requests
+ */
+export async function getHolidayRequests(employeeNumber, currentDate) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            HOLIDAY_TYPE_ID
+        );
+
+        const currentDateISO = formatDateToISOString(currentDate);
+
+        const filteredResponse = response.Result.filter(
+            (request) => formatDateToISOString(request.FromDate) >= currentDateISO
+        ).map((request) => ({
+            ...request,
+            status: ABSENCE_STATUS_CODE[request.CurrentStatus.Status],
+        }));
+
+        return filteredResponse || [];
+    } catch (error) {
+        throw error;
+    }
+}
+
+// @TODO: IMPLEMENT THIS: IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> IMPLEMENT THIS
+export async function getSickLeaveRequests(employeeNumber, currentDate) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.getAbsenceApplications(employeeNumber, SICK_LEAVE_TYPE_ID);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Create an absence application for a given employee number
+ * @param {string} employmentNumber - The employee number
+ * @param {string} absenceApplicationType - The type of absence application
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The absence application
+ */
+export async function createAbsenceApplication(
+    employmentNumber,
+    absenceApplicationType,
+    absenceApplicationData
+) {
+    try {
+        switch (absenceApplicationType) {
+            case 'holiday-absence-request':
+                return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
+            default:
+                throw new Error('Invalid absence application type');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Create a holiday absence application for a given employee number
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The absence application
+ */
+async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+    try {
+        const absenceApplicationPayload = {
+            absenceTypeId: HOLIDAY_TYPE_ID,
+            companyId: COMPANY_ID,
+            employmentNumber: employmentNumber,
+            fromDate: absenceApplicationData.startDate,
+            toDate: absenceApplicationData.endDate,
+            ...(absenceApplicationData.isSameDay && { hours: absenceApplicationData.hours }),
+        };
+
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.createAbsenceApplication(
+            employmentNumber,
+            absenceApplicationPayload
+        );
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update an absence request
+ * @param {string} absenceApplicationType - The type of absence application
+ * @param {string} absenceRequestId - The ID of the absence request to update
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @param {string} absenceApplicationData.FromDate - The new from date (YYYY-MM-DD)
+ * @param {string} absenceApplicationData.ToDate - The new to date (YYYY-MM-DD)
+ * @param {number|null} absenceApplicationData.Hours - The hours (only for same-day requests)
+ */
+export async function updateAbsenceRequest(
+    absenceApplicationType,
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        switch (absenceApplicationType) {
+            case 'holiday-absence-request':
+                return updateHolidayAbsenceApplication(
+                    absenceRequestId,
+                    employmentNumber,
+                    absenceApplicationData
+                );
+            default:
+                throw new Error('Invalid absence application type');
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Update a holiday absence application for a given employee number
+ * @param {string} absenceRequestId - The ID of the absence request to update
+ * @param {string} employmentNumber - The employee number
+ * @param {Object} absenceApplicationData - The data for the absence application
+ * @returns {Promise<Object>} The updated absence application
+ */
+async function updateHolidayAbsenceApplication(
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        const payload = {
+            fromDate: absenceApplicationData.FromDate,
+            toDate: absenceApplicationData.ToDate,
+            employmentNumber: employmentNumber,
+            absenceTypeId: HOLIDAY_TYPE_ID,
+            companyId: COMPANY_ID,
+        };
+
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Delete an absence request
+ * @param {string} absenceRequestId - The ID of the absence request to delete
+ * @returns {Promise<Object>} The deleted absence request
+ */
+export async function deleteAbsenceRequest(absenceRequestId) {
+    try {
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.deleteAbsenceApplication(absenceRequestId);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Utils methods
+ */
+/**
+ * Converts decimal hours to "HH:MM" time format string.
+ * Examples:
+ *   0 -> "00:00"
+ *   1 -> "01:00"
+ *   1.5 -> "01:30"
+ *   2.5 -> "02:30"
+ *   10.5 -> "10:30"
+ * @param {number} decimalHours - The decimal hours to convert
+ * @returns {string} The time string in "HH:MM" format
+ */
+function hoursToTimeString(decimalHours) {
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours % 1) * 60);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }

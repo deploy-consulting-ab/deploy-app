@@ -3,40 +3,26 @@
 import { Card, CardTitle } from '@/components/ui/card';
 import { Calendar, RefreshCw, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useTransition } from 'react';
 import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import Link from 'next/link';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export function HolidaysCardComponent({
-    holidays: initialHolidays,
+    holidays,
     refreshAction,
-    error: initialError,
+    error,
     isNavigationDisabled = false,
 }) {
     const isMobile = useIsMobile();
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [holidays, setHolidays] = useState(initialHolidays);
-    const [error, setError] = useState(initialError);
+    const [isPending, startTransition] = useTransition();
 
-    useEffect(() => {
-        setHolidays(initialHolidays);
-    }, [initialHolidays]);
-
-    const handleRefresh = async () => {
-        if (isRefreshing || !refreshAction) return;
-        setIsRefreshing(true);
-        try {
-            const newData = await refreshAction();
-            setHolidays(newData);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Failed to refresh holidays');
-        } finally {
-            setIsRefreshing(false);
-        }
-    };
+    function handleRefresh() {
+        startTransition(async () => {
+            await refreshAction();
+        });
+    }
 
     // Get upcoming holidays from data
     const upcomingHolidays = holidays?.upcomingHolidays || [];
@@ -65,8 +51,8 @@ export function HolidaysCardComponent({
                             variant="ghost"
                             size="icon"
                             onClick={handleRefresh}
-                            disabled={isRefreshing}
-                            className={isRefreshing ? 'animate-spin' : ''}
+                            disabled={isPending}
+                            className={isPending ? 'animate-spin' : ''}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>

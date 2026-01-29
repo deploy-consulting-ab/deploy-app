@@ -1,10 +1,11 @@
-import { getAbsenceApplications } from '@/actions/flex/flex-actions';
+import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import {
     getAssignmentsMetrics,
     getRecentOccupancyRate,
 } from '@/actions/salesforce/salesforce-actions';
+import { revalidatePath } from 'next/cache';
 import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
@@ -30,34 +31,17 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
 
     async function refreshHolidays() {
         'use server';
-        try {
-            const rawData = await getAbsenceApplications(employeeNumber);
-            return transformHolidaysData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     async function refreshOccupancy() {
         'use server';
-        try {
-            const today = getUTCToday();
-            const formattedToday = formatDateToISOString(today);
-            const rawData = await getRecentOccupancyRate(employeeNumber, formattedToday);
-            return transformOccupancyData(rawData);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     async function refreshStatistics() {
         'use server';
-        try {
-            const metrics = await getAssignmentsMetrics(employeeNumber);
-            return transformStatisticsData(metrics);
-        } catch (error) {
-            throw new Error(error.message);
-        }
+        revalidatePath('/home');
     }
 
     // Determine what data this profile needs
@@ -67,7 +51,7 @@ export async function ConsultantHomeComponent({ profileId, employeeNumber }) {
     // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
-            const rawHolidays = await getAbsenceApplications(employeeNumber);
+            const rawHolidays = await getHolidays(employeeNumber);
             data.holidays = transformHolidaysData(rawHolidays);
         } catch (error) {
             errors.holidays = error.message || 'Failed to load holidays';

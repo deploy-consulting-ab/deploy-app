@@ -127,7 +127,7 @@ const getOccupancyHistoryCountQuery = (employeeNumber, today) => {
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}`;
 };
 
-const getHolidaysQuery = () => {
+const getSalesforcePublicHolidaysQuery = () => {
     return `SELECT Id, Name, ActivityDate FROM Holiday`;
 };
 
@@ -145,5 +145,5 @@ export {
     getOccupancyRateFromLastFiscalYearQuery,
     getOccupancyHistoryQuery,
     getOccupancyHistoryCountQuery,
-    getHolidaysQuery,
+    getSalesforcePublicHolidaysQuery,
 };

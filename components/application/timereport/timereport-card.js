@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Clock, Save, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
-import { createTimecard } from '@/actions/flex/flex-actions';
+import { createTimereport } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,8 @@ import { HoursGridComponent } from '@/components/application/timereport/hours-gr
 import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
-import chalk from 'chalk';
+import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
+import { AbsenceCardPhoneComponent } from '@/components/application/timereport/absence/absence-card-phone';
 
 /**
  * Main time report card component.
@@ -197,6 +198,7 @@ export function TimereportCardComponent({
      * Copy time entries from the previous week.
      * Fetches timereports for the week before the selected week and
      * adjusts dates to match the current selected week.
+     * Preserves non-working time entries (absences/holidays) from the current week.
      * The copied data is NOT synced (initialTimeData remains empty).
      */
     const handleCopyFromLastWeek = useCallback(async () => {
@@ -210,13 +212,29 @@ export function TimereportCardComponent({
             const response = await refreshTimereportsAction(previousWeekMonday.toISOString());
             const previousWeekData = response.timereportResponse || [];
 
-            if (previousWeekData.length === 0) {
-                toastRichError({ message: 'No time entries found in the previous week' });
+            // Filter to only get working time entries from previous week
+            const previousWeekWorkingTime = previousWeekData
+                .map((dayEntry) => ({
+                    ...dayEntry,
+                    timeRows: dayEntry.timeRows?.filter((row) => row.isWorkingTime !== false) || [],
+                }))
+                .filter((dayEntry) => dayEntry.timeRows.length > 0);
+
+            if (previousWeekWorkingTime.length === 0) {
+                toastRichError({ message: 'No working time entries found in the previous week' });
                 return;
             }
 
+            // Extract current week's non-working time entries (absences/holidays) to preserve
+            const currentWeekAbsences = timeData
+                .map((dayEntry) => ({
+                    ...dayEntry,
+                    timeRows: dayEntry.timeRows?.filter((row) => row.isWorkingTime === false) || [],
+                }))
+                .filter((dayEntry) => dayEntry.timeRows.length > 0);
+
             // Adjust dates from previous week to current week
-            const adjustedTimeData = previousWeekData.map((dayEntry) => {
+            const adjustedWorkingTimeData = previousWeekWorkingTime.map((dayEntry) => {
                 // Extract date and calculate day of week (0=Mon, 1=Tue, ..., 6=Sun)
                 const datePart = formatDateToISOString(dayEntry.date);
                 const previousDate = new Date(datePart + 'T00:00:00Z');
@@ -235,14 +253,40 @@ export function TimereportCardComponent({
                 };
             });
 
-            // Set the copied time data (but NOT initialTimeData, so isSynced will be false)
-            setTimeData(adjustedTimeData);
+            // Merge adjusted working time with current absences
+            const mergedTimeData = [...adjustedWorkingTimeData];
 
-            // Update selected projects with the project IDs from the copied data
+            currentWeekAbsences.forEach((absenceDay) => {
+                const absenceDateStr = formatDateToISOString(absenceDay.date);
+                const existingDayIndex = mergedTimeData.findIndex(
+                    (day) => formatDateToISOString(day.date) === absenceDateStr
+                );
+
+                if (existingDayIndex >= 0) {
+                    // Merge absence rows into existing day
+                    mergedTimeData[existingDayIndex] = {
+                        ...mergedTimeData[existingDayIndex],
+                        timeRows: [
+                            ...mergedTimeData[existingDayIndex].timeRows,
+                            ...absenceDay.timeRows,
+                        ],
+                    };
+                } else {
+                    // Add the absence day as-is
+                    mergedTimeData.push(absenceDay);
+                }
+            });
+
+            // Set the merged time data (but NOT initialTimeData, so isSynced will be false)
+            setTimeData(mergedTimeData);
+
+            // Update selected projects with the project IDs from working time only
             const copiedProjectIds = new Set();
-            adjustedTimeData.forEach((dayEntry) => {
+            adjustedWorkingTimeData.forEach((dayEntry) => {
                 dayEntry.timeRows?.forEach((row) => {
-                    copiedProjectIds.add(row.projectId);
+                    if (row.isWorkingTime !== false) {
+                        copiedProjectIds.add(row.projectId);
+                    }
                 });
             });
             setSelectedProjects(copiedProjectIds);
@@ -263,7 +307,7 @@ export function TimereportCardComponent({
         } finally {
             setIsCopyingFromLastWeek(false);
         }
-    }, [selectedWeek, refreshTimereportsAction]);
+    }, [selectedWeek, refreshTimereportsAction, timeData]);
 
     // Handle save
     const handleSave = async () => {
@@ -274,7 +318,7 @@ export function TimereportCardComponent({
                 week: formatDateToISOString(selectedWeek),
                 timeData: timeData,
             };
-            await createTimecard(flexEmployeeId, timecard);
+            await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
 
             // Re-fetch timereports to get the latest data from the server
@@ -348,10 +392,17 @@ export function TimereportCardComponent({
         return projectIds.size;
     }, [timeData]);
 
+    // Check if there are any working time projects in timeData (not absences)
+    const hasWorkingTimeProjects = useMemo(() => {
+        return timeData.some((dayEntry) =>
+            dayEntry.timeRows?.some((row) => row.isWorkingTime !== false)
+        );
+    }, [timeData]);
+
     return (
         <div className="space-y-4 md:space-y-6">
-            {/* Header */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {/* Header - Desktop only */}
+            <div className="hidden sm:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-xl md:text-2xl font-bold tracking-tight">Time Report</h1>
                     <p className="text-muted-foreground text-sm md:text-base mt-1">
@@ -359,7 +410,10 @@ export function TimereportCardComponent({
                     </p>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        <AbsenceCardComponent employmentNumber={employeeNumber} />
+                    </div>
                     <a
                         href={FLEX_TIMEREPORT_URL}
                         target="_blank"
@@ -382,6 +436,11 @@ export function TimereportCardComponent({
                         <span className="sr-only">Refresh data</span>
                     </Button>
                 </div>
+            </div>
+
+            {/* Header - Mobile only */}
+            <div className="flex sm:hidden items-center justify-end">
+                <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
             </div>
 
             {/* Week Navigation */}
@@ -420,23 +479,12 @@ export function TimereportCardComponent({
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {/* Empty state when no projects selected - only visible for current/future weeks */}
-                    {!isPastWeek && selectedProjects.size === 0 && (
-                        <ProjectSelectorComponent
-                            projects={projects}
-                            selectedProjects={selectedProjects}
-                            onAddProject={handleAddProject}
-                            onCopyFromLastWeek={handleCopyFromLastWeek}
-                            isCopyingFromLastWeek={isCopyingFromLastWeek}
-                        />
-                    )}
-
                     {/* Hours Grid */}
                     <div className="relative">
                         {/* Loading Logo Overlay */}
                         <div
                             className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-300 ease-in-out ${
-                                isLoadingProjects || isLoadingTimereports || isSaving
+                                isSaving
                                     ? 'opacity-100'
                                     : 'opacity-0 pointer-events-none'
                             }`}
@@ -446,7 +494,28 @@ export function TimereportCardComponent({
                             </div>
                         </div>
 
-                        {/* Grid Content */}
+                        {/* Empty state - rendered separately to maintain consistent sizing during loading */}
+                        {!isPastWeek &&
+                            selectedProjects.size === 0 &&
+                            !hasWorkingTimeProjects && (
+                                <div
+                                    className={`transition-opacity duration-300 ease-in-out ${
+                                        isLoadingProjects || isLoadingTimereports
+                                            ? 'opacity-0'
+                                            : 'opacity-100'
+                                    }`}
+                                >
+                                    <ProjectSelectorComponent
+                                        projects={projects}
+                                        selectedProjects={selectedProjects}
+                                        onAddProject={handleAddProject}
+                                        onCopyFromLastWeek={handleCopyFromLastWeek}
+                                        isCopyingFromLastWeek={isCopyingFromLastWeek}
+                                    />
+                                </div>
+                            )}
+
+                        {/* Grid Content - fades in as logo fades out */}
                         <div
                             className={`transition-opacity duration-300 ease-in-out ${
                                 isLoadingProjects || isLoadingTimereports || isSaving
@@ -454,6 +523,7 @@ export function TimereportCardComponent({
                                     : 'opacity-100'
                             }`}
                         >
+
                             <HoursGridComponent
                                 timeData={timeData}
                                 initialTimeData={initialTimeData}

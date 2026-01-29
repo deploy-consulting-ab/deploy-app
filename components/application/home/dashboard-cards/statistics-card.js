@@ -3,7 +3,7 @@
 import { Card, CardTitle } from '@/components/ui/card';
 import { Briefcase, ArrowUpRight, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useTransition } from 'react';
 import Link from 'next/link';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -12,26 +12,16 @@ export function StatisticsCardComponent({
     stats = [],
     title = 'Assignments',
     refreshAction,
-    error: initialError,
+    error,
 }) {
     const isMobile = useIsMobile();
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [statsData, setStatsData] = useState(stats);
-    const [error, setError] = useState(initialError);
+    const [isPending, startTransition] = useTransition();
 
-    const handleRefresh = async () => {
-        if (isRefreshing || !refreshAction) return;
-        setIsRefreshing(true);
-        try {
-            const freshData = await refreshAction();
-            setStatsData(freshData);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Failed to refresh statistics');
-        } finally {
-            setIsRefreshing(false);
-        }
-    };
+    function handleRefresh() {
+        startTransition(async () => {
+            await refreshAction();
+        });
+    }
 
     // Color mapping for different stat types
     const getStatColor = (label) => {
@@ -76,7 +66,7 @@ export function StatisticsCardComponent({
         );
     }
 
-    if (!statsData || statsData.length === 0) {
+    if (!stats || stats.length === 0) {
         return (
             <Card className="p-6 bg-card/50 backdrop-blur border-border/50">
                 <h2 className="text-xl font-semibold text-foreground mb-4">{title}</h2>
@@ -95,8 +85,8 @@ export function StatisticsCardComponent({
                             variant="ghost"
                             size="icon"
                             onClick={handleRefresh}
-                            disabled={isRefreshing}
-                            className={isRefreshing ? 'animate-spin' : ''}
+                            disabled={isPending}
+                            className={isPending ? 'animate-spin' : ''}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>
@@ -106,7 +96,7 @@ export function StatisticsCardComponent({
 
             {/* Assignment Stats Cards with Navigation */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t border-border/50">
-                {statsData.map((stat, index) => {
+                {stats.map((stat, index) => {
                     const viewFilter = getViewFilter(stat.label);
                     const href = `${ASSIGNMENTS_ROUTE}?view=${viewFilter}`;
 

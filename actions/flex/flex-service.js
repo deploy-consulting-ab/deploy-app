@@ -41,15 +41,47 @@ class FlexApiService extends CalloutService {
         return super.put(endpoint, body, flexOptions);
     }
 
+    async post(endpoint, body, options = {}) {
+        const flexOptions = {
+            ...options,
+            params: this.addFlexParams(options.params),
+            headers: {
+                ...options.headers,
+                'Service-Version': '1.0',
+            },
+        };
+        return super.post(endpoint, body, flexOptions);
+    }
+
+    async delete(endpoint) {
+        return super.delete(endpoint);
+    }
+
     // Specialized methods for Flex API endpoints
-    async getAbsenceApplications(employeeNumber) {
+    async getAbsenceApplications(employeeNumber, absenceTypeId, pageSize = 100) {
         const response = await this.get(FLEX_API_CONFIG.endpoints.absenceApplications, {
             params: {
                 employmentnumber: employeeNumber,
                 instance: ENV.FLEX_API_INSTANCE,
                 companynumber: ENV.FLEX_API_COMPANY_NUMBER,
+                ...(absenceTypeId && { absenceTypeId: absenceTypeId }),
+                pageSize: pageSize,
             },
         });
+
+        return await response.json();
+    }
+
+    async createAbsenceApplication(employeeNumber, absenceApplicationPayload) {
+        const response = await this.post(
+            FLEX_API_CONFIG.endpoints.absenceApplications,
+            absenceApplicationPayload,
+            {
+                params: {
+                    employmentnumber: employeeNumber,
+                },
+            }
+        );
 
         return await response.json();
     }
@@ -65,7 +97,24 @@ class FlexApiService extends CalloutService {
         return await response.json();
     }
 
-    async createTimecard(employeeId, date, body) {
+    async deleteAbsenceApplication(absenceRequestId) {
+        const response = await this.delete(
+            `${FLEX_API_CONFIG.endpoints.absenceApplications}/${absenceRequestId}`
+        );
+
+        return response.status;
+    }
+
+    async updateAbsenceApplication(absenceRequestId, absenceApplicationPayload) {
+        const response = await this.put(
+            `${FLEX_API_CONFIG.endpoints.absenceApplications}/${absenceRequestId}`,
+            absenceApplicationPayload
+        );
+
+        return await response.json();
+    }
+
+    async createTimereport(employeeId, date, body) {
         const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
             body
