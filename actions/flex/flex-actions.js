@@ -203,7 +203,7 @@ export async function getHolidays(employeeInformation, options = { cache: 'no-st
 
         const holidays = calculateHolidays(response.Result);
 
-        holidays.totalHolidays = yearlyHolidays + carriedOverHolidays; // Potentially get from flex
+        holidays.totalHolidays = yearlyHolidays + (carriedOverHolidays || 0); // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
 
         // Format dates as ISO strings before sending to client
