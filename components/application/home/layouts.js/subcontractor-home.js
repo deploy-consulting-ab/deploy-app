@@ -1,5 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
+import { transformStatisticsData } from '@/lib/utils';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
 export async function SubcontractorHomeComponent({ employeeNumber }) {
@@ -30,19 +31,4 @@ export async function SubcontractorHomeComponent({ employeeNumber }) {
             />
         </div>
     );
-}
-
-// Transform raw metrics data to match StatisticsCardComponent expected format
-function transformStatisticsData(metrics) {
-    if (!metrics || metrics.length === 0) return [];
-
-    return metrics.map((metric) => ({
-        id: metric.status,
-        label: metric.status,
-        value: metric.count,
-        detail:
-            metric.count === 0
-                ? `No ${metric.status.toLowerCase()} assignments`
-                : `${metric.count} ${metric.status.toLowerCase()} assignment${metric.count > 1 ? 's' : ''}`,
-    }));
 }

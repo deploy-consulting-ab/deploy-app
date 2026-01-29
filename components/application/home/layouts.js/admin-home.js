@@ -6,7 +6,7 @@ import {
     getRecentOccupancyRate,
 } from '@/actions/salesforce/salesforce-actions';
 import { revalidatePath } from 'next/cache';
-import { formatDateToISOString, getUTCToday, transformHolidaysData } from '@/lib/utils';
+import { formatDateToISOString, getUTCToday, transformHolidaysData, transformStatisticsData } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
@@ -162,19 +162,4 @@ function transformOccupancyData(rawData) {
                 rate: item.rate,
             })) ?? [],
     };
-}
-
-// Transform raw metrics data to match StatisticsCard expected format
-function transformStatisticsData(metrics) {
-    if (!metrics || metrics.length === 0) return [];
-
-    return metrics.map((metric) => ({
-        id: metric.status,
-        label: metric.status,
-        value: metric.count,
-        detail:
-            metric.count === 0
-                ? `No ${metric.status.toLowerCase()} assignments`
-                : `${metric.count} ${metric.status.toLowerCase()} assignment${metric.count > 1 ? 's' : ''}`,
-    }));
 }
