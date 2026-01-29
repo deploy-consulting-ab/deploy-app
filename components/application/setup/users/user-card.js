@@ -34,6 +34,10 @@ export async function UserCardComponent({ user }) {
                             </Link>
                         </div>
                         <div>
+                            <h3 className="text-sm font-medium">Flex Employee ID</h3>
+                            <p className="text-sm text-gray-500">{user.flexEmployeeId}</p>
+                        </div>
+                        <div>
                             <h3 className="text-sm font-medium pb-2">Active</h3>
                             <Checkbox id="toggle" checked={user.isActive} disabled={true} />
                         </div>
