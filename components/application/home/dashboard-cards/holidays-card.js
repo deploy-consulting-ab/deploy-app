@@ -67,14 +67,14 @@ export function HolidaysCardComponent({
 
             {/* Holiday Stats */}
             {holidays && (
-                <div className="grid grid-cols-4 gap-4 mb-6 p-4 rounded-lg bg-background/50 border border-border/50">
-                    <div className="text-center">
+                <div className="grid grid-cols-4 mb-6 p-4 rounded-lg bg-background/50 border border-border/50">
+                    <div className="text-center border-r border-border/50">
                         <div className="text-2xl font-bold text-deploy-accent-lime">
                             {holidays.availableDays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Available</div>
                     </div>
-                    <div className="text-center border-x border-border/50">
+                    <div className="text-center border-r border-border/50">
                         <div className="text-2xl font-bold text-deploy-accent-orange">
                             {holidays.usedDays ?? 0}
                         </div>
