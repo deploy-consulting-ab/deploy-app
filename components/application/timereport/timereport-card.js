@@ -495,7 +495,7 @@ export function TimereportCardComponent({
                         {/* Empty state - rendered separately to maintain consistent sizing during loading */}
                         {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
                             <div
-                                className={`transition-opacity duration-300 ease-in-out ${
+                                className={`mb-6 transition-opacity duration-300 ease-in-out ${
                                     isLoadingProjects || isLoadingTimereports
                                         ? 'opacity-0'
                                         : 'opacity-100'
@@ -536,6 +536,7 @@ export function TimereportCardComponent({
                                 onSave={handleSave}
                                 isCheckmarked={isCheckmarked}
                                 onToggleCheckmark={handleToggleCheckmark}
+                                hasWorkingTimeProjects={hasWorkingTimeProjects}
                             />
                         </div>
                     </div>

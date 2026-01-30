@@ -44,6 +44,7 @@ export function HoursGridComponent({
     onSave,
     isCheckmarked = false,
     onToggleCheckmark,
+    hasWorkingTimeProjects = false,
 }) {
     const today = getUTCToday();
 
@@ -357,9 +358,9 @@ export function HoursGridComponent({
                 <div>
                     {/* Header with Add Project button and Checkmark status */}
                     <div className="flex items-center justify-between mb-6">
-                        {/* Add project selector - only visible for current/future weeks */}
+                        {/* Add project selector - only visible for current/future weeks and when working time projects exist */}
                         <div className="flex-1">
-                            {!isPastWeek && onAddProject && (
+                            {!isPastWeek && onAddProject && hasWorkingTimeProjects && (
                                 <AddProjectDropdownComponent
                                     projects={projects}
                                     selectedProjects={selectedProjects}
