@@ -205,6 +205,7 @@ export async function getHolidays(employeeInformation, options = { cache: 'no-st
 
         holidays.totalHolidays = yearlyHolidays + (carriedOverHolidays || 0); // Potentially get from flex
         holidays.availableHolidays = holidays.totalHolidays - holidays.currentFiscalUsedHolidays;
+        holidays.carriedOverHolidays = carriedOverHolidays;
 
         // Format dates as ISO strings before sending to client
         holidays.recentHolidayPeriods = holidays.holidayPeriods.slice(0, 3).map((period) => ({
