@@ -360,14 +360,17 @@ export function HoursGridComponent({
                     <div className="flex items-center justify-between mb-6">
                         {/* Add project selector - only visible for current/future weeks, when working time projects exist, and not checkmarked */}
                         <div className="flex-1">
-                            {!isPastWeek && onAddProject && hasWorkingTimeProjects && !isCheckmarked && (
-                                <AddProjectDropdownComponent
-                                    projects={projects}
-                                    selectedProjects={selectedProjects}
-                                    onAddProject={onAddProject}
-                                    variant="compact"
-                                />
-                            )}
+                            {!isPastWeek &&
+                                onAddProject &&
+                                hasWorkingTimeProjects &&
+                                !isCheckmarked && (
+                                    <AddProjectDropdownComponent
+                                        projects={projects}
+                                        selectedProjects={selectedProjects}
+                                        onAddProject={onAddProject}
+                                        variant="compact"
+                                    />
+                                )}
                         </div>
 
                         {/* Checkmark status - shown for both past and current weeks */}

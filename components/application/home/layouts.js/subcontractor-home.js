@@ -56,7 +56,10 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
             const metrics = await getAssignmentsMetrics(employeeNumber);
             data.assignmentsMetrics = transformStatisticsData(metrics);
 
-            console.log('#### data.assignmentsMetrics', JSON.stringify(data.assignmentsMetrics, null, 2));
+            console.log(
+                '#### data.assignmentsMetrics',
+                JSON.stringify(data.assignmentsMetrics, null, 2)
+            );
         } catch (error) {
             errors.assignmentsMetrics = error.message || 'Failed to load statistics';
         }
@@ -67,19 +70,19 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
             <div className="grid grid-cols-1 gap-6">
                 {/* Main Content - Left Side */}
                 <OccupancyRatesCardComponent
-                        occupancy={data.occupancyRates}
-                        error={errors.occupancyRates}
-                        refreshAction={refreshOccupancy}
-                        target={85}
-                    />
+                    occupancy={data.occupancyRates}
+                    error={errors.occupancyRates}
+                    refreshAction={refreshOccupancy}
+                    target={85}
+                />
 
                 {/* Right Sidebar */}
                 <StatisticsCardComponent
-                        title="Assignments"
-                        stats={data.assignmentsMetrics}
-                        error={errors.assignmentsMetrics}
-                        refreshAction={refreshStatistics}
-                    />
+                    title="Assignments"
+                    stats={data.assignmentsMetrics}
+                    error={errors.assignmentsMetrics}
+                    refreshAction={refreshStatistics}
+                />
             </div>
         </div>
     );

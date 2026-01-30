@@ -5,13 +5,13 @@ export const WORKING_TYPE_ID = '87c61adf-09f4-4a48-b993-4bfa1dc0aa43';
 export const COMPANY_ID = 'b4253a61-f229-4ca9-9831-ad931d9a75a6';
 export const ABSENCE_STATUS_REGISTERED = 'Registered';
 export const ABSENCE_STATUS_APPLIED_FOR = 'Applied for';
-export const ABSENCE_STATUS_AUDITED = 'Audited';
+export const ABSENCE_STATUS_APPROVED = 'Approved';
 export const ABSENCE_STATUS_REJECTED = 'Rejected';
 
 export const ABSENCE_STATUS_CODE = {
     0: ABSENCE_STATUS_REGISTERED,
     1: ABSENCE_STATUS_APPLIED_FOR,
-    2: ABSENCE_STATUS_AUDITED,
+    2: ABSENCE_STATUS_APPROVED,
     3: ABSENCE_STATUS_REJECTED,
 };
 
