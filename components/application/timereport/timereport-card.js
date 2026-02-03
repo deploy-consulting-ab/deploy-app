@@ -37,6 +37,7 @@ export function TimereportCardComponent({
     toggleCheckmarkAction,
     initialError,
     holidays,
+    canRequestAbsence,
 }) {
     // Get Monday of current week as default (use UTC for consistent timezone handling)
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(getUTCToday()));
@@ -411,9 +412,11 @@ export function TimereportCardComponent({
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2">
-                        <AbsenceCardComponent employmentNumber={employeeNumber} />
-                    </div>
+                    {canRequestAbsence && (
+                        <div className="flex items-center gap-2">
+                            <AbsenceCardComponent employmentNumber={employeeNumber} />
+                        </div>
+                    )}
                     <a
                         href={FLEX_TIMEREPORT_URL}
                         target="_blank"
@@ -439,9 +442,11 @@ export function TimereportCardComponent({
             </div>
 
             {/* Header - Mobile only */}
-            <div className="flex sm:hidden items-center justify-end">
-                <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
-            </div>
+            {canRequestAbsence && (
+                <div className="flex sm:hidden items-center justify-end">
+                    <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
+                </div>
+            )}
 
             {/* Week Navigation */}
             <Card>
