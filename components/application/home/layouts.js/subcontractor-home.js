@@ -36,16 +36,12 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
 
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
 
-    console.log('#### dataRequirements', JSON.stringify(dataRequirements, null, 2));
-
     if (dataRequirements.occupancyRates) {
         try {
             const today = getUTCToday();
             const formattedToday = formatDateToISOString(today);
             const rawOccupancy = await getRecentOccupancyRate(employeeNumber, formattedToday);
             data.occupancyRates = transformOccupancyData(rawOccupancy);
-
-            console.log('#### data.occupancyRates', JSON.stringify(data.occupancyRates, null, 2));
         } catch (error) {
             errors.occupancyRates = error.message || 'Failed to load occupancy';
         }
@@ -55,11 +51,6 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
         try {
             const metrics = await getAssignmentsMetrics(employeeNumber);
             data.assignmentsMetrics = transformStatisticsData(metrics);
-
-            console.log(
-                '#### data.assignmentsMetrics',
-                JSON.stringify(data.assignmentsMetrics, null, 2)
-            );
         } catch (error) {
             errors.assignmentsMetrics = error.message || 'Failed to load statistics';
         }
