@@ -13,7 +13,6 @@ import {
 } from '@/actions/database/timereport-checkmark-actions';
 import { TimereportCardComponent } from '@/components/application/timereport/timereport-card';
 import { getWeekMonday, formatDateToISOString, getUTCToday } from '@/lib/utils';
-import { VIEW_TIMEREPORT_PERMISSION } from '@/lib/rba-constants';
 
 /**
  * Fetch projects for a given week
@@ -127,7 +126,6 @@ export default async function TimereportPage() {
     const employeeName = user.name;
     const flexEmployeeId = user.flexEmployeeId;
     const userId = user.sessionId;
-    const canRequestAbsence = user.systemPermissions?.includes(VIEW_TIMEREPORT_PERMISSION);
 
     // Fetch initial data for the current week
     let initialProjects = [];
@@ -163,7 +161,7 @@ export default async function TimereportPage() {
                 toggleCheckmarkAction={toggleCheckmarkData}
                 initialError={error}
                 holidays={holidays}
-                canRequestAbsence={canRequestAbsence}
+                systemPermissions={user.systemPermissions}
             />
         </div>
     );

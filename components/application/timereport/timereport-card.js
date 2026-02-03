@@ -21,6 +21,7 @@ import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
 import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
 import { AbsenceCardPhoneComponent } from '@/components/application/timereport/absence/absence-card-phone';
+import { REQUEST_ABSENCE_PERMISSION, VIEW_FLEX_PERMISSION } from '@/lib/rba-constants';
 
 /**
  * Main time report card component.
@@ -37,8 +38,12 @@ export function TimereportCardComponent({
     toggleCheckmarkAction,
     initialError,
     holidays,
-    canRequestAbsence,
+    systemPermissions,
 }) {
+    // Convert permissions array to Set for O(1) lookups
+    const permissionsSet = useMemo(() => new Set(systemPermissions || []), [systemPermissions]);
+    const canRequestAbsence = permissionsSet.has(REQUEST_ABSENCE_PERMISSION);
+    const canViewFlex = permissionsSet.has(VIEW_FLEX_PERMISSION);
     // Get Monday of current week as default (use UTC for consistent timezone handling)
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(getUTCToday()));
 
@@ -417,15 +422,17 @@ export function TimereportCardComponent({
                             <AbsenceCardComponent employmentNumber={employeeNumber} />
                         </div>
                     )}
-                    <a
-                        href={FLEX_TIMEREPORT_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                    >
-                        <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Flex</span>
-                    </a>
+                    {canViewFlex && (
+                        <a
+                            href={FLEX_TIMEREPORT_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-3"
+                        >
+                            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground">Flex</span>
+                        </a>
+                    )}
                     <Button
                         variant="ghost"
                         size="icon"

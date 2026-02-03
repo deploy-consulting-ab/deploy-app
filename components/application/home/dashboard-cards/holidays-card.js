@@ -68,25 +68,37 @@ export function HolidaysCardComponent({
             {/* Holiday Stats */}
             {holidays && (
                 <div className="grid grid-cols-4 mb-6 p-4 rounded-lg bg-background/50 border border-border/50">
-                    <div className="text-center border-r border-border/50 cursor-help" title="Days of holiday available to use this year">
+                    <div
+                        className="text-center border-r border-border/50 cursor-help"
+                        title="Days of holiday available to use this year"
+                    >
                         <div className="text-2xl font-bold text-deploy-accent-lime">
                             {holidays.availableDays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Available</div>
                     </div>
-                    <div className="text-center border-r border-border/50 cursor-help" title="Days of holiday already used this year">
+                    <div
+                        className="text-center border-r border-border/50 cursor-help"
+                        title="Days of holiday already used this year"
+                    >
                         <div className="text-2xl font-bold text-deploy-accent-orange">
                             {holidays.usedDays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Used</div>
                     </div>
-                    <div className="text-center border-r border-border/50 cursor-help" title="Days carried over from previous year">
+                    <div
+                        className="text-center border-r border-border/50 cursor-help"
+                        title="Days carried over from previous year"
+                    >
                         <div className="text-2xl font-bold text-deploy-accent-blue">
                             {holidays.carriedOverHolidays ?? 0}
                         </div>
                         <div className="text-xs text-muted-foreground">Carried</div>
                     </div>
-                    <div className="text-center cursor-help" title="Total holiday entitlement for this year, 30 days + carried over">
+                    <div
+                        className="text-center cursor-help"
+                        title="Total holiday entitlement for this year, 30 days + carried over"
+                    >
                         <div className="text-2xl font-bold text-foreground">
                             {holidays.totalDays ?? 0}
                         </div>
