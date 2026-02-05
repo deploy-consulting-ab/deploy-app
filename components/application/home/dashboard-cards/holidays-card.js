@@ -111,7 +111,7 @@ export function HolidaysCardComponent({
             {holidays && holidays.totalDays > 0 && (
                 <div className="mb-6">
                     <div className="flex justify-between text-xs text-muted-foreground mb-2">
-                        <span>Holiday usage</span>
+                        <span>Holiday Usage</span>
                         <span>{Math.round((holidays.usedDays / holidays.totalDays) * 100)}%</span>
                     </div>
                     <div className="h-2 bg-muted rounded-full overflow-hidden">
