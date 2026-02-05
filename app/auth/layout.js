@@ -6,9 +6,13 @@ const AuthLayout = ({ children }) => {
                 loop
                 muted
                 playsInline
+                preload="auto"
+                poster="/images/deploy-background-poster.jpg"
                 className="absolute inset-0 w-full h-full object-cover z-0"
             >
+                {/* MP4 is smaller in this case, WebM as fallback */}
                 <source src="/deploy-background.mp4" type="video/mp4" />
+                <source src="/deploy-background.webm" type="video/webm" />
             </video>
             <div className="relative z-10">{children}</div>
         </div>
