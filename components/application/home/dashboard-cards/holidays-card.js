@@ -88,7 +88,7 @@ export function HolidaysCardComponent({
                     </div>
                     <div
                         className="text-center border-r border-border/50 cursor-help"
-                        title="Days carried over from previous year"
+                        title="Days carried over from previous year(s)"
                     >
                         <div className="text-2xl font-bold text-deploy-accent-blue">
                             {holidays.carriedOverHolidays ?? 0}
