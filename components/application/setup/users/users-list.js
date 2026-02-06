@@ -11,6 +11,7 @@ import {
     SALES_PROFILE,
     CONSULTANT_PROFILE,
     MANAGEMENT_PROFILE,
+    SUBCONTRACTOR_PROFILE,
 } from '@/lib/rba-constants';
 import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 import {
@@ -127,6 +128,7 @@ export function UsersListComponent({ users, error: initialError }) {
         { value: SALES_PROFILE, label: 'Sales Users' },
         { value: CONSULTANT_PROFILE, label: 'Consultant Users' },
         { value: MANAGEMENT_PROFILE, label: 'Manager Users' },
+        { value: SUBCONTRACTOR_PROFILE, label: 'Subcontractor Users' },
     ];
 
     const columns = [
