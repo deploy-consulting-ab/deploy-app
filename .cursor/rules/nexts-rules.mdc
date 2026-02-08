@@ -53,6 +53,9 @@ alwaysApply: true
   - Use cleanup functions in useEffect to prevent memory leaks.
   - Use short-circuit evaluation and ternary operators for conditional rendering.
 
+  NextJS Best Practices
+  - Prefer server components over client components. Resort to client components when interactivity is needed.
+
   State Management
   - Use Zustand for global state management.
   - Lift state up when needed to share state between components.
