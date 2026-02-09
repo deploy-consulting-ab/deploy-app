@@ -115,6 +115,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(
             endDate: assignment.EndDate__c,
             projectType: assignment.ProjectType__c,
             flexId: assignment.Project__r.FlexID__c,
+            roleFlexId: assignment.Role__r.FlexID__c,
             projectStatus: assignment.ProjectStatus__c,
             color: assignment.ProjectType__c === PROJECT_TYPE_INTERNAL ? '#6b7280' : '#3b82f6',
         }));

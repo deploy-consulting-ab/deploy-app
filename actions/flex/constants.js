@@ -1,6 +1,7 @@
 export const HOLIDAY_TYPE_ID = '948b233d-892e-4d98-9841-0f14a2e55597';
 export const SICK_LEAVE_TYPE_ID = '181fa471-c415-41f2-bb31-995bff0b99e5';
 export const PROJECT_TYPE_ID = '7a21a56d-c4b9-4625-93e0-d9d8c8e2cddf';
+export const ARTICLE_TYPE_ID = 'e507c1c9-b353-4589-b024-ee130002c9a3';
 export const WORKING_TYPE_ID = '87c61adf-09f4-4a48-b993-4bfa1dc0aa43';
 export const COMPANY_ID = 'b4253a61-f229-4ca9-9831-ad931d9a75a6';
 export const ABSENCE_STATUS_REGISTERED = 'Registered';

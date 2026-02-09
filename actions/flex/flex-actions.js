@@ -16,6 +16,7 @@ import {
     COMPANY_ID,
     SICK_LEAVE_TYPE_ID,
     ABSENCE_STATUS_CODE,
+    ARTICLE_TYPE_ID,
 } from './constants.js';
 
 // Timecard methods
@@ -60,6 +61,10 @@ export async function createTimereport(flexEmployeeId, timecard) {
                             {
                                 accountDistributionId: PROJECT_TYPE_ID,
                                 id: timeRow.projectId,
+                            },
+                            {
+                                accountDistributionId: ARTICLE_TYPE_ID,
+                                id: timeRow.roleFlexId,
                             },
                         ],
                         externalComment: '.', // Pass some external comment to prevent adding an extra row
@@ -120,6 +125,14 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                             return null;
                         }
 
+                        const articleAccount = timeRow.Accounts.find(
+                            (account) => account.AccountDistribution.Id === ARTICLE_TYPE_ID
+                        );
+
+                        if (!articleAccount) {
+                            return null;
+                        }
+
                         selectedProjects.add(projectAccount.Id);
 
                         // We do not have a project type in Flex, so we use a regex to determine the color
@@ -128,9 +141,11 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                         const color = isInternalProject ? '#6b7280' : '#3b82f6';
 
                         return {
+                            articleId: articleAccount.Id,
                             projectId: projectAccount.Id,
                             projectName: projectAccount.Name,
                             projectCode: projectAccount.Code,
+                            roleFlexId: articleAccount.Id,
                             hours: timeRow.TimeInMinutes / 60,
                             color: color,
                             isWorkingTime: true,

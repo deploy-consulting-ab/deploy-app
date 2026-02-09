@@ -72,6 +72,7 @@ export function HoursGridComponent({
                         projectId: row.projectId,
                         projectName: row.projectName,
                         projectCode: row.projectCode,
+                        roleFlexId: row.roleFlexId ?? projectFromProps?.roleFlexId,
                         color: row.color || projectFromProps?.color || 'red',
                         isWorkingTime: row.isWorkingTime,
                     });
@@ -88,6 +89,7 @@ export function HoursGridComponent({
                         projectId: projectId,
                         projectName: projectFromProps.name,
                         projectCode: projectFromProps.projectCode || '',
+                        roleFlexId: projectFromProps.roleFlexId,
                         color: projectFromProps.color,
                         isWorkingTime: true, // Projects from dropdown are always working time
                     });
@@ -212,6 +214,7 @@ export function HoursGridComponent({
                     projectId: project.projectId,
                     projectName: project.projectName,
                     projectCode: project.projectCode,
+                    roleFlexId: project.roleFlexId,
                     hours: clampedValue,
                     color: project.color,
                     isWorkingTime: project.isWorkingTime,
@@ -291,6 +294,7 @@ export function HoursGridComponent({
                         projectId: project.projectId,
                         projectName: project.projectName,
                         projectCode: project.projectCode,
+                        roleFlexId: project.roleFlexId,
                         hours: 8,
                         color: project.color,
                         isWorkingTime: project.isWorkingTime,
