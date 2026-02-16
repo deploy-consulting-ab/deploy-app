@@ -68,59 +68,17 @@ export async function createTimereport(flexEmployeeId, timecard) {
     }
 }
 
-async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
-    const flexApiClient = await getFlexApiService();
-    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
-    let previousTomHours = 0;
-
-    const promises = workingTimeRows.map((timeRow) => {
-        const tomHours = previousTomHours + timeRow.hours;
-        const body = {
-            accounts: [
-                {
-                    accountDistributionId: PROJECT_TYPE_ID,
-                    id: timeRow.projectId,
-                },
-                {
-                    accountDistributionId: ARTICLE_TYPE_ID,
-                    id: timeRow.roleFlexId,
-                },
-            ],
-            externalComment: '.', // Pass some external comment to prevent adding an extra row
-            fromTime: hoursToTimeString(previousTomHours),
-            tomTime: hoursToTimeString(tomHours),
-            timeCode: {
-                code: 'ARB',
-            },
-            OriginFrom: {
-                Origin: 1,
-                SystemOrigin: 1,
-            },
-            OriginTom: {
-                Origin: 1,
-                SystemOrigin: 1,
-            },
-        };
-        previousTomHours = tomHours;
-        return flexApiClient.createTimerow(flexEmployeeId, date, body);
-    });
-
-    return promises;
-}
-
 async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
+    console.log('------ Blank Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
     // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
     let previousTomHours = 0;
 
     const timeRows = workingTimeRows.map((timeRow) => {
+        console.log('timeRow blankTimeRow :( ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
         const body = {
             accounts: [
-                {
-                    accountDistributionId: '806a9a28-17d2-4c5a-85df-ab1948424913', // Cost type ID
-                    id: '28fee491-4258-4625-b08d-b1100098337e',
-                },
                 {
                     accountDistributionId: PROJECT_TYPE_ID,
                     id: timeRow.projectId,
@@ -130,7 +88,7 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
                     id: timeRow.roleFlexId,
                 },
             ],
-            externalComment: '.', // Pass some external comment to prevent adding an extra row
+            // externalComment: '.', // Pass some external comment to prevent adding an extra row
             fromTime: 0, // Set to zero to blank the time row
             tomTime: 0, // Set to zero to blank the time row
             timeCode: {
@@ -145,7 +103,43 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
         timeRows: timeRows,
     };
 
+    console.log('body blankTimeRow :( ', JSON.stringify(body, null, 2));
+
     return flexApiClient.createTimereport(flexEmployeeId, date, body);
+}
+
+async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
+    console.log('------ Create Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
+    const flexApiClient = await getFlexApiService();
+    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
+    let previousTomHours = 0;
+
+    const promises = workingTimeRows.map((timeRow) => {
+        console.log('timeRow createTimeRow -> ', JSON.stringify(timeRow, null, 2));
+        const tomHours = previousTomHours + timeRow.hours;
+        const body = {
+            accounts: [
+                {
+                    accountDistributionId: PROJECT_TYPE_ID,
+                    id: timeRow.projectId,
+                },
+                {
+                    accountDistributionId: ARTICLE_TYPE_ID,
+                    id: timeRow.roleFlexId,
+                },
+            ],
+            fromTime: hoursToTimeString(previousTomHours),
+            tomTime: hoursToTimeString(tomHours),
+            TimeCode: {
+                Code: 'ARB',
+            },
+        };
+        previousTomHours = tomHours;
+        console.log('body createTimeRow -> ', JSON.stringify(body, null, 2));
+        return flexApiClient.createTimerow(flexEmployeeId, date, body);
+    });
+
+    return promises;
 }
 
 /**

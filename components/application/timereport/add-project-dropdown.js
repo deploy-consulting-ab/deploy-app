@@ -19,7 +19,7 @@ export function AddProjectDropdownComponent({
     onAddProject,
     variant = 'default',
 }) {
-    const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
+    const availableProjects = projects; // FIX THIS!!!!
 
     if (availableProjects.length === 0) {
         return null;
@@ -46,7 +46,6 @@ export function AddProjectDropdownComponent({
             <SelectContent>
                 {availableProjects.map(
                     (project) => (
-                        console.log(project),
                         (
                             <SelectItem
                                 key={project.flexId}
