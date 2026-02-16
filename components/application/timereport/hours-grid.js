@@ -497,9 +497,9 @@ export function HoursGridComponent({
                                             />
                                             <span
                                                 className="text-sm font-medium truncate"
-                                                title={project.projectName}
+                                                title={project.projectName + ' - ' + project.projectCode}
                                             >
-                                                {project.projectName}
+                                                {project.projectName} - {project.projectCode}
                                             </span>
                                         </div>
 
