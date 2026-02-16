@@ -78,10 +78,6 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
         const body = {
             accounts: [
                 {
-                    accountDistributionId: '806a9a28-17d2-4c5a-85df-ab1948424913', // Cost type ID
-                    id: '28fee491-4258-4625-b08d-b1100098337e',
-                },
-                {
                     accountDistributionId: PROJECT_TYPE_ID,
                     id: timeRow.projectId,
                 },

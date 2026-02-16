@@ -329,7 +329,7 @@ export function TimereportCardComponent({
 
             // Refetch after a short delay so the backend has time to make the write visible
             // (avoids reading empty data due to eventual consistency / replication lag)
-            await new Promise((resolve) => setTimeout(resolve, 400));
+            await new Promise((resolve) => setTimeout(resolve, 500));
             await refreshTimereports();
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });
