@@ -28,7 +28,6 @@ import {
  */
 export async function createTimereport(flexEmployeeId, timecard) {
     try {
-        const flexApiClient = await getFlexApiService();
         const promises = timecard.timeData
             .map((timereport) => {
                 const date = formatDateToISOString(timereport.date);
@@ -51,46 +50,67 @@ export async function createTimereport(flexEmployeeId, timecard) {
                     return null;
                 }
 
-                // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-                let previousTomHours = 0;
-
-                const timeRows = workingTimeRows.map((timeRow) => {
-                    const tomHours = previousTomHours + timeRow.hours;
-                    const body = {
-                        accounts: [
-                            {
-                                accountDistributionId: PROJECT_TYPE_ID,
-                                id: timeRow.projectId,
-                            },
-                            {
-                                accountDistributionId: ARTICLE_TYPE_ID,
-                                id: timeRow.roleFlexId,
-                            },
-                        ],
-                        externalComment: '.', // Pass some external comment to prevent adding an extra row
-                        fromTime: hoursToTimeString(previousTomHours),
-                        tomTime: hoursToTimeString(tomHours),
-                        timeCode: {
-                            code: 'ARB',
-                        },
-                    };
-                    previousTomHours = tomHours;
-                    return body;
-                });
-
-                const body = {
-                    timeRows: timeRows,
-                };
-
-                return flexApiClient.createTimereport(flexEmployeeId, date, body);
+                return createTimeRow(flexEmployeeId, date, workingTimeRows);
             })
             .filter(Boolean); // Remove null entries (days with no working time)
 
-        return await Promise.all(promises);
+        const promiseArrays = await Promise.all(promises);
+        return await Promise.all(promiseArrays.flat());
     } catch (error) {
         throw error;
     }
 }
+
+async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
+    const flexApiClient = await getFlexApiService();
+    // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+    let previousTomHours = 0;
+
+    const promises = workingTimeRows.map((timeRow) => {
+        console.log('Creating timereport for employee:', timeRow);
+        const tomHours = previousTomHours + timeRow.hours;
+        const body = {
+            accounts: [
+                {
+                    accountDistributionId: '806a9a28-17d2-4c5a-85df-ab1948424913', // Cost type ID
+                    id: '28fee491-4258-4625-b08d-b1100098337e',
+                },
+                {
+                    accountDistributionId: PROJECT_TYPE_ID,
+                    id: timeRow.projectId,
+                },
+                // {
+                //     accountDistributionId: 'e5703e58-1da8-4d78-b998-8ddd24378245', // Customer Type ID
+                //     id: '413172ca-9718-481d-874e-b22101047d5c',
+                // },
+                {
+                    accountDistributionId: ARTICLE_TYPE_ID,
+                    id: timeRow.roleFlexId,
+                },
+            ],
+            externalComment: '.', // Pass some external comment to prevent adding an extra row
+            fromTime: hoursToTimeString(previousTomHours),
+            tomTime: hoursToTimeString(tomHours),
+            timeCode: {
+                code: 'ARB',
+            },
+            OriginFrom: {
+                Origin: 1,
+                SystemOrigin: 1,
+            },
+            OriginTom: {
+                Origin: 1,
+                SystemOrigin: 1,
+            },
+        };
+        previousTomHours = tomHours;
+        return flexApiClient.createTimerow(flexEmployeeId, date, body);
+    });
+
+    return promises;
+}
+
+function updateTimeRow() {}
 
 /**
  * Get the timereports for a given employee number

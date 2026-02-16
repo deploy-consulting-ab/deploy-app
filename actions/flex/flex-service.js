@@ -114,9 +114,18 @@ class FlexApiService extends CalloutService {
         return await response.json();
     }
 
+    // Deprecated as it was creating duplicated rows
     async createTimereport(employeeId, date, body) {
         const response = await this.put(
             `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timereports/${date}`,
+            body
+        );
+        return response.status;
+    }
+
+    async createTimerow(employeeId, date, body) {
+        const response = await this.post(
+            `${FLEX_API_CONFIG.endpoints.employees}/${employeeId}/timerow/${date}`,
             body
         );
 
