@@ -27,6 +27,7 @@ import {
  * @returns {Promise<Object>} The timecard
  */
 export async function createTimereport(flexEmployeeId, timecard) {
+    console.log('------ Create Timereport ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const timeDataEntries = timecard.timeData;
     try {
         // Phase 1: blank all time rows first (must finish before creating new rows)
@@ -51,9 +52,12 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 }
 
                 const workingTimeRows =
-                    timereport.timeRows?.filter((row) => row.isWorkingTime !== false) || [];
+                    timereport.timeRows?.filter(
+                        (row) =>
+                            row.isWorkingTime !== false && (row.hours ?? 0) > 0
+                    ) || [];
 
-                // Skip days with no working time entries
+                // Skip days with no working time entries to create (0-hour rows are only blanked in phase 1)
                 if (workingTimeRows.length === 0) {
                     return null;
                 }
@@ -130,6 +134,14 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
             ],
             fromTime: hoursToTimeString(previousTomHours),
             tomTime: hoursToTimeString(tomHours),
+            OriginFrom: {
+                Origin: 1,
+                SystemOrigin: 1,
+            },
+            OriginTom: {
+                Origin: 1,
+                SystemOrigin: 1,
+            },
             TimeCode: {
                 Code: 'ARB',
             },
@@ -150,6 +162,7 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
  * @returns {Promise<Object>} The timereports
  */
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
+    console.log('------ Get Timereports ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 

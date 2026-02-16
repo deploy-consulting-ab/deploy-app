@@ -122,7 +122,9 @@ export function HoursGridComponent({
                     if (!lookup[row.projectId]) {
                         lookup[row.projectId] = {};
                     }
-                    lookup[row.projectId][dayIndex] = row.hours;
+                    // Sum hours when the same project has multiple time rows on the same day (Flex can return e.g. 2h + 1h)
+                    const current = lookup[row.projectId][dayIndex] ?? 0;
+                    lookup[row.projectId][dayIndex] = current + (row.hours ?? 0);
                 });
             }
         });
@@ -130,7 +132,7 @@ export function HoursGridComponent({
         return lookup;
     }, [timeData, weekDates]);
 
-    // Check if a cell's value matches the initial synced data from Flex
+    // Check if a cell's value matches the initial synced data from Flex (sum when multiple rows per project/day)
     const isCellSynced = useCallback(
         (projectId, dayIndex) => {
             const targetDate = weekDates[dayIndex];
@@ -139,16 +141,18 @@ export function HoursGridComponent({
             const initialDayEntry = initialTimeData.find(
                 (entry) => formatDateToISOString(entry.date) === targetDateStr
             );
-
             const currentDayEntry = timeData.find(
                 (entry) => formatDateToISOString(entry.date) === targetDateStr
             );
 
-            const initialRow = initialDayEntry?.timeRows?.find((r) => r.projectId === projectId);
-            const currentRow = currentDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+            const sumHours = (entry) =>
+                entry?.timeRows
+                    ?.filter((r) => r.projectId === projectId)
+                    .reduce((sum, r) => sum + (r.hours ?? 0), 0) ?? 0;
+            const initialTotal = sumHours(initialDayEntry);
+            const currentTotal = sumHours(currentDayEntry);
 
-            // Synced if values match the initial data from Flex
-            return (initialRow?.hours || 0) === (currentRow?.hours || 0);
+            return initialTotal === currentTotal;
         },
         [weekDates, initialTimeData, timeData]
     );
@@ -203,20 +207,14 @@ export function HoursGridComponent({
             const dayEntry = { ...newTimeData[dayEntryIndex] };
             const timeRows = [...(dayEntry.timeRows || [])];
 
-            // Find or create the time row for this project
-            const timeRowIndex = timeRows.findIndex((row) => row.projectId === projectId);
+            // Flex can return multiple time rows for the same project on the same day (e.g. 2h + 1h).
+            // Replace all of them with a single row with the new total so the cell shows and saves one value.
+            const existingRow = timeRows.find((row) => row.projectId === projectId);
+            const timeRowsWithoutThisProject = timeRows.filter((row) => row.projectId !== projectId);
+            const mergedRows = [...timeRowsWithoutThisProject];
 
-            if (timeRowIndex >= 0) {
-                // Update existing time row (including setting to 0)
-                // We keep zero values so they get submitted as timecards to delete existing entries
-                timeRows[timeRowIndex] = {
-                    ...timeRows[timeRowIndex],
-                    hours: clampedValue,
-                    projectType: project.projectType ?? timeRows[timeRowIndex].projectType ?? '',
-                };
-            } else if (clampedValue > 0) {
-                // Only add new rows for non-zero values
-                timeRows.push({
+            if (clampedValue > 0) {
+                mergedRows.push({
                     projectId: project.projectId,
                     projectName: project.projectName,
                     projectCode: project.projectCode,
@@ -224,11 +222,23 @@ export function HoursGridComponent({
                     hours: clampedValue,
                     color: project.color,
                     isWorkingTime: project.isWorkingTime,
-                    projectType: project.projectType ?? '',
+                    projectType: project.projectType ?? existingRow?.projectType ?? '',
+                });
+            } else {
+                // Keep one row with 0 so save can blank it in Flex
+                mergedRows.push({
+                    projectId: project.projectId,
+                    projectName: project.projectName,
+                    projectCode: project.projectCode,
+                    roleFlexId: project.roleFlexId,
+                    hours: 0,
+                    color: project.color,
+                    isWorkingTime: project.isWorkingTime,
+                    projectType: project.projectType ?? existingRow?.projectType ?? '',
                 });
             }
 
-            dayEntry.timeRows = timeRows;
+            dayEntry.timeRows = mergedRows;
             newTimeData[dayEntryIndex] = dayEntry;
 
             // Remove day entries with no time rows

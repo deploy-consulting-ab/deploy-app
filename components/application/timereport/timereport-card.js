@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Clock, Save, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { createTimereport } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
@@ -68,15 +68,10 @@ export function TimereportCardComponent({
         }
     }, [initialProjects]);
 
-    // Update timereports when initialTimereports prop changes
-    useEffect(() => {
-        if (initialTimereports) {
-            setTimeData(initialTimereports.timereportResponse || []);
-            setInitialTimeData(initialTimereports.timereportResponse || []);
-            setSelectedProjects(new Set(initialTimereports.selectedProjects || []));
-            setIsCheckmarked(initialTimereports.isCheckmarked || false);
-        }
-    }, [initialTimereports]);
+    // Do NOT sync initialTimereports to state in an effect. That would overwrite in-progress
+    // edits whenever the prop reference changes (e.g. parent re-render / RSC refetch), making
+    // the cell value appear to persist and not change. Initial data is set in useState above;
+    // week changes are handled by refreshTimereports() when selectedWeek changes.
 
     // Handle initial error
     useEffect(() => {
@@ -148,13 +143,20 @@ export function TimereportCardComponent({
         // The selectedWeek change will trigger refetch via useEffect
     }, []);
 
-    // Refetch when selectedWeek changes (after initial load)
+    // Refetch only when selectedWeek actually changes (not on initial mount, so we don't overwrite server data or cause races)
+    const prevSelectedWeekRef = useRef(null);
     useEffect(() => {
-        // Only refresh projects for current/future weeks, not past weeks
+        const weekChanged =
+            prevSelectedWeekRef.current !== null &&
+            prevSelectedWeekRef.current.getTime() !== getWeekMonday(selectedWeek).getTime();
+        prevSelectedWeekRef.current = getWeekMonday(selectedWeek);
+
         if (!isPastWeek) {
             refreshProjects();
         }
-        refreshTimereports();
+        if (weekChanged) {
+            refreshTimereports();
+        }
     }, [selectedWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle adding a project
