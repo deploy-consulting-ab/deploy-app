@@ -315,14 +315,42 @@ export function TimereportCardComponent({
         }
     }, [selectedWeek, refreshTimereportsAction, timeData]);
 
+    /**
+     * Returns only day entries whose working time rows differ from initial state.
+     * Used to send only changed timecard data to createTimereport.
+     */
+    const getChangedTimeData = useCallback((current, initial) => {
+        const initialByDate = new Map();
+        (initial || []).forEach((entry) => {
+            const key = formatDateToISOString(entry.date);
+            initialByDate.set(key, entry);
+        });
+
+        const workingRowsKey = (rows) => {
+            const working = (rows || []).filter((r) => r.isWorkingTime !== false);
+            return working
+                .map((r) => `${r.projectId}:${r.hours}:${r.roleFlexId || ''}`)
+                .sort()
+                .join('|');
+        };
+
+        return (current || []).filter((entry) => {
+            const key = formatDateToISOString(entry.date);
+            const initialEntry = initialByDate.get(key);
+            if (!initialEntry) return true;
+            return workingRowsKey(entry.timeRows) !== workingRowsKey(initialEntry.timeRows);
+        });
+    }, []);
+
     // Handle save
     const handleSave = async () => {
         setIsSaving(true);
 
         try {
+            const changedTimeData = getChangedTimeData(timeData, initialTimeData);
             const timecard = {
                 week: formatDateToISOString(selectedWeek),
-                timeData: timeData,
+                timeData: changedTimeData,
             };
             await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
@@ -507,7 +535,7 @@ export function TimereportCardComponent({
                         </div>
 
                         {/* Empty state - rendered separately to maintain consistent sizing during loading */}
-                        {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
+                        {selectedProjects.size === 0 && !hasWorkingTimeProjects && (
                             <div
                                 className={`mb-6 transition-opacity duration-300 ease-in-out ${
                                     isLoadingProjects || isLoadingTimereports
