@@ -327,7 +327,9 @@ export function TimereportCardComponent({
             await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
 
-            // Re-fetch timereports to get the latest data from the server
+            // Refetch after a short delay so the backend has time to make the write visible
+            // (avoids reading empty data due to eventual consistency / replication lag)
+            await new Promise((resolve) => setTimeout(resolve, 400));
             await refreshTimereports();
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });

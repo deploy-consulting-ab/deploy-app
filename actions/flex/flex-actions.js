@@ -27,19 +27,15 @@ import {
  * @returns {Promise<Object>} The timecard
  */
 export async function createTimereport(flexEmployeeId, timecard) {
-    console.log('Creating timereport for employee:', timecard);
-
     const timeDataEntries = timecard.timeData;
-
-    const promises = timeDataEntries.map((timeDataEntry) => {
-        return updateTimeRow(flexEmployeeId, timeDataEntry.date, timeDataEntry.timeRows);
-    });
-
-    // Blank - works fine.
-    const blankPromises = await Promise.all(promises);
-    // return await Promise.all(promiseArrays.flat());
-
     try {
+        // Phase 1: blank all time rows first (must finish before creating new rows)
+        const blankPromises = timeDataEntries.map((timeDataEntry) =>
+            blankTimeRow(flexEmployeeId, timeDataEntry.date, timeDataEntry.timeRows)
+        );
+        await Promise.all(blankPromises);
+
+        // Phase 2: create time rows after blanks are done
         const createPromises = timeDataEntries
             .map((timereport) => {
                 const date = formatDateToISOString(timereport.date);
@@ -65,8 +61,8 @@ export async function createTimereport(flexEmployeeId, timecard) {
             })
             .filter(Boolean); // Remove null entries (days with no working time)
 
-        const promisesArray = [...createPromises, ...blankPromises];
-        return await Promise.all(promisesArray);
+        // createTimeRow returns an array of promises per day, so flatten before Promise.all
+        return await Promise.all(createPromises.flat());
     } catch (error) {
         throw error;
     }
@@ -116,9 +112,7 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     return promises;
 }
 
-async function updateTimeRow(flexEmployeeId, date, workingTimeRows) {
-    console.log('Updating time row for employee:', workingTimeRows);
-
+async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
     const flexApiClient = await getFlexApiService();
     // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
     let previousTomHours = 0;
