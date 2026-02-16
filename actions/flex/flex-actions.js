@@ -121,6 +121,9 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     const promises = workingTimeRows.map((timeRow) => {
         console.log('timeRow createTimeRow -> ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
+        if (!timeRow.roleFlexId) {
+            return null;
+        }
         const body = {
             accounts: [
                 {
@@ -134,14 +137,6 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
             ],
             fromTime: hoursToTimeString(previousTomHours),
             tomTime: hoursToTimeString(tomHours),
-            OriginFrom: {
-                Origin: 1,
-                SystemOrigin: 1,
-            },
-            OriginTom: {
-                Origin: 1,
-                SystemOrigin: 1,
-            },
             TimeCode: {
                 Code: 'ARB',
             },
