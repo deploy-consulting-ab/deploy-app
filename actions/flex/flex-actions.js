@@ -27,8 +27,20 @@ import {
  * @returns {Promise<Object>} The timecard
  */
 export async function createTimereport(flexEmployeeId, timecard) {
+    console.log('Creating timereport for employee:', timecard);
+
+    const timeDataEntries = timecard.timeData;
+
+    const promises = timeDataEntries.map((timeDataEntry) => {
+        return updateTimeRow(flexEmployeeId, timeDataEntry.date, timeDataEntry.timeRows);
+    });
+
+    // Blank - works fine.
+    const blankPromises = await Promise.all(promises);
+    // return await Promise.all(promiseArrays.flat());
+
     try {
-        const promises = timecard.timeData
+        const createPromises = timeDataEntries
             .map((timereport) => {
                 const date = formatDateToISOString(timereport.date);
 
@@ -37,11 +49,11 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 const hasFullDayAbsence = timereport.timeRows?.some(
                     (row) => row.isWorkingTime === false && row.hours >= 8
                 );
+
                 if (hasFullDayAbsence) {
                     return null;
                 }
 
-                // Get working time entries only
                 const workingTimeRows =
                     timereport.timeRows?.filter((row) => row.isWorkingTime !== false) || [];
 
@@ -49,13 +61,12 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 if (workingTimeRows.length === 0) {
                     return null;
                 }
-
                 return createTimeRow(flexEmployeeId, date, workingTimeRows);
             })
             .filter(Boolean); // Remove null entries (days with no working time)
 
-        const promiseArrays = await Promise.all(promises);
-        return await Promise.all(promiseArrays.flat());
+        const promisesArray = [...createPromises, ...blankPromises];
+        return await Promise.all(promisesArray);
     } catch (error) {
         throw error;
     }
@@ -63,11 +74,10 @@ export async function createTimereport(flexEmployeeId, timecard) {
 
 async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     const flexApiClient = await getFlexApiService();
-    // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
+    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
     let previousTomHours = 0;
 
     const promises = workingTimeRows.map((timeRow) => {
-        console.log('Creating timereport for employee:', timeRow);
         const tomHours = previousTomHours + timeRow.hours;
         const body = {
             accounts: [
@@ -79,10 +89,6 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
                     accountDistributionId: PROJECT_TYPE_ID,
                     id: timeRow.projectId,
                 },
-                // {
-                //     accountDistributionId: 'e5703e58-1da8-4d78-b998-8ddd24378245', // Customer Type ID
-                //     id: '413172ca-9718-481d-874e-b22101047d5c',
-                // },
                 {
                     accountDistributionId: ARTICLE_TYPE_ID,
                     id: timeRow.roleFlexId,
@@ -110,7 +116,47 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     return promises;
 }
 
-function updateTimeRow() {}
+async function updateTimeRow(flexEmployeeId, date, workingTimeRows) {
+    console.log('Updating time row for employee:', workingTimeRows);
+
+    const flexApiClient = await getFlexApiService();
+    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
+    let previousTomHours = 0;
+
+    const timeRows = workingTimeRows.map((timeRow) => {
+        const tomHours = previousTomHours + timeRow.hours;
+        const body = {
+            accounts: [
+                {
+                    accountDistributionId: '806a9a28-17d2-4c5a-85df-ab1948424913', // Cost type ID
+                    id: '28fee491-4258-4625-b08d-b1100098337e',
+                },
+                {
+                    accountDistributionId: PROJECT_TYPE_ID,
+                    id: timeRow.projectId,
+                },
+                {
+                    accountDistributionId: ARTICLE_TYPE_ID,
+                    id: timeRow.roleFlexId,
+                },
+            ],
+            externalComment: '.', // Pass some external comment to prevent adding an extra row
+            fromTime: 0, // Set to zero to blank the time row
+            tomTime: 0, // Set to zero to blank the time row
+            timeCode: {
+                code: 'ARB',
+            },
+        };
+        previousTomHours = tomHours;
+        return body;
+    });
+
+    const body = {
+        timeRows: timeRows,
+    };
+
+    return flexApiClient.createTimereport(flexEmployeeId, date, body);
+}
 
 /**
  * Get the timereports for a given employee number
@@ -169,6 +215,7 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                             hours: timeRow.TimeInMinutes / 60,
                             color: color,
                             isWorkingTime: true,
+                            isExistingInFlex: true,
                         };
 
                         // Other types of absences
@@ -180,6 +227,7 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                             hours: timeRow.TimeInMinutes / 60,
                             color: 'red',
                             isWorkingTime: false,
+                            isExistingInFlex: true,
                         };
                     }
                 }).filter(Boolean),
