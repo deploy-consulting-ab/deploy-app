@@ -21,15 +21,30 @@ import {
 
 // Timecard methods
 /**
- * Create a timecard for a given employee number
- * @param {string} flexEmployeeId - The employee number
- * @param {Object} timecard - The timecard to create
- * @returns {Promise<Object>} The timecard
+ * Creates timereport entries in Flex for a timecard (multiple days).
+ *
+ * Processing is two-phase and distinguishes same-day vs different-day work:
+ * - **Different days**: Processed in parallel. Phase 1 blanks all days concurrently;
+ *   phase 2 creates rows for all days concurrently (each day is handled by createTimeRow).
+ * - **Same day**: Within a single day, rows are processed sequentially. Phase 1 sends
+ *   one PUT per day with all rows to blank. Phase 2 creates one row at a time for that
+ *   day (createTimeRow awaits each createTimerow) so the API can enforce non-overlapping times.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {Object} timecard - The timecard with timeData (array of { date, timeRows })
+ * @returns {Promise<number[]>} Flat array of HTTP status codes (one per created row across all days)
  */
 export async function createTimereport(flexEmployeeId, timecard) {
+    const timeDataEntries = timecard.timeData;
     try {
-        const flexApiClient = await getFlexApiService();
-        const promises = timecard.timeData
+        // Phase 1: blank all time rows first (must finish before creating new rows)
+        const blankPromises = timeDataEntries.map((timeDataEntry) =>
+            blankTimeRow(flexEmployeeId, timeDataEntry.date, timeDataEntry.timeRows)
+        );
+        await Promise.all(blankPromises);
+
+        // Phase 2: create time rows after blanks are done
+        const createPromises = timeDataEntries
             .map((timereport) => {
                 const date = formatDateToISOString(timereport.date);
 
@@ -38,58 +53,144 @@ export async function createTimereport(flexEmployeeId, timecard) {
                 const hasFullDayAbsence = timereport.timeRows?.some(
                     (row) => row.isWorkingTime === false && row.hours >= 8
                 );
+
                 if (hasFullDayAbsence) {
                     return null;
                 }
 
-                // Get working time entries only
                 const workingTimeRows =
-                    timereport.timeRows?.filter((row) => row.isWorkingTime !== false) || [];
+                    timereport.timeRows?.filter(
+                        (row) => row.isWorkingTime !== false && (row.hours ?? 0) > 0
+                    ) || [];
 
-                // Skip days with no working time entries
+                // Skip days with no working time entries to create (0-hour rows are only blanked in phase 1)
                 if (workingTimeRows.length === 0) {
                     return null;
                 }
-
-                // Rows can't overlap, so passing from 0 tom 9 and then from 0 tom 6, throws an error
-                let previousTomHours = 0;
-
-                const timeRows = workingTimeRows.map((timeRow) => {
-                    const tomHours = previousTomHours + timeRow.hours;
-                    const body = {
-                        accounts: [
-                            {
-                                accountDistributionId: PROJECT_TYPE_ID,
-                                id: timeRow.projectId,
-                            },
-                            {
-                                accountDistributionId: ARTICLE_TYPE_ID,
-                                id: timeRow.roleFlexId,
-                            },
-                        ],
-                        externalComment: '.', // Pass some external comment to prevent adding an extra row
-                        fromTime: hoursToTimeString(previousTomHours),
-                        tomTime: hoursToTimeString(tomHours),
-                        timeCode: {
-                            code: 'ARB',
-                        },
-                    };
-                    previousTomHours = tomHours;
-                    return body;
-                });
-
-                const body = {
-                    timeRows: timeRows,
-                };
-
-                return flexApiClient.createTimereport(flexEmployeeId, date, body);
+                return createTimeRow(flexEmployeeId, date, workingTimeRows);
             })
             .filter(Boolean); // Remove null entries (days with no working time)
 
-        return await Promise.all(promises);
+        // createTimeRow returns a promise that resolves to an array of statuses per day
+        const dayResults = await Promise.all(createPromises);
+        return dayResults.flat();
     } catch (error) {
         throw error;
     }
+}
+
+/**
+ * Returns whether a time row has valid project and role IDs for Flex (non-empty).
+ * @param {Object} timeRow - Row with projectId and roleFlexId
+ * @returns {boolean}
+ */
+function hasValidAccountIds(timeRow) {
+    const projectId = timeRow?.projectId;
+    const roleFlexId = timeRow?.roleFlexId;
+    return (
+        projectId != null &&
+        String(projectId).trim() !== '' &&
+        roleFlexId != null &&
+        String(roleFlexId).trim() !== ''
+    );
+}
+
+/**
+ * createTimerow does not allow updating rows, createTimereport does.
+ * However, createTimereport creates multiple rows so we can't use it.
+ * Therefore, we must use createTimerow for same day, but delete first and then re-create.
+ * Same day: one request with all rows for that date. Different days: called in parallel
+ * from createTimereport (one blankTimeRow per day), so multiple days are blanked concurrently.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string} date - Date for the day (YYYY-MM-DD)
+ * @param {Object[]} workingTimeRows - Rows to blank (only those with valid project/role IDs are used)
+ * @returns {Promise<number>} HTTP status of the PUT
+ */
+async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
+    const flexApiClient = await getFlexApiService();
+    // Only blank rows with valid project and role IDs; skip rows that would create empty Account/Project/Role in Flex
+    const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
+    if (validRows.length === 0) {
+        return;
+    }
+    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
+    let previousTomHours = 0;
+
+    const timeRows = validRows.map((timeRow) => {
+        const tomHours = previousTomHours + timeRow.hours;
+        const body = {
+            accounts: [
+                {
+                    accountDistributionId: PROJECT_TYPE_ID,
+                    id: timeRow.projectId,
+                },
+                {
+                    accountDistributionId: ARTICLE_TYPE_ID,
+                    id: timeRow.roleFlexId,
+                },
+            ],
+            // externalComment: '.', // Pass some external comment to prevent adding an extra row
+            fromTime: 0, // Set to zero to blank the time row
+            tomTime: 0, // Set to zero to blank the time row
+            timeCode: {
+                code: 'ARB',
+            },
+        };
+        previousTomHours = tomHours;
+        return body;
+    });
+
+    const body = {
+        timeRows: timeRows,
+    };
+    return flexApiClient.createTimereport(flexEmployeeId, date, body);
+}
+
+/**
+ * Creates time rows for a single day in Flex. Same day: rows are created sequentially
+ * (one POST per row, awaited in order) so the API can enforce non-overlapping times.
+ * Different days: createTimereport calls this once per day and awaits all days with
+ * Promise.all, so multiple days are processed in parallel.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string} date - Date for the day (YYYY-MM-DD)
+ * @param {Object[]} workingTimeRows - Working-time rows to create (valid project/role only)
+ * @returns {Promise<number[]>} Array of HTTP status codes (one per created row)
+ */
+async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
+    const flexApiClient = await getFlexApiService();
+    // Rows can't overlap; create them sequentially so the API can validate ordering
+    let previousTomHours = 0;
+
+    // Only create rows with valid project and role IDs to avoid Flex rows with empty Account/Project/Role
+    const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
+    const results = [];
+    // Await each createTimerow in a loop so for a given day rows are created one by one (API validates ordering).
+    for (const timeRow of validRows) {
+        const tomHours = previousTomHours + timeRow.hours;
+        const body = {
+            accounts: [
+                {
+                    accountDistributionId: PROJECT_TYPE_ID,
+                    id: timeRow.projectId,
+                },
+                {
+                    accountDistributionId: ARTICLE_TYPE_ID,
+                    id: timeRow.roleFlexId,
+                },
+            ],
+            fromTime: hoursToTimeString(previousTomHours),
+            tomTime: hoursToTimeString(tomHours),
+            TimeCode: {
+                Code: 'ARB',
+            },
+        };
+        previousTomHours = tomHours;
+        const status = await flexApiClient.createTimerow(flexEmployeeId, date, body);
+        results.push(status);
+    }
+    return results;
 }
 
 /**
@@ -149,6 +250,7 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                             hours: timeRow.TimeInMinutes / 60,
                             color: color,
                             isWorkingTime: true,
+                            isExistingInFlex: true,
                         };
 
                         // Other types of absences
@@ -160,6 +262,7 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
                             hours: timeRow.TimeInMinutes / 60,
                             color: 'red',
                             isWorkingTime: false,
+                            isExistingInFlex: true,
                         };
                     }
                 }).filter(Boolean),

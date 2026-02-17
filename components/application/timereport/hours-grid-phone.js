@@ -53,7 +53,7 @@ export function HoursGridPhone({
 }) {
     const today = getUTCToday();
 
-    // Check if a cell's value matches the initial synced data from Flex
+    // Check if a cell's value matches the initial synced data from Flex (sum when multiple rows per project/day)
     const isCellSynced = (projectId, dayIndex) => {
         const targetDate = weekDates[dayIndex];
         const targetDateStr = formatDateToISOString(targetDate);
@@ -61,16 +61,18 @@ export function HoursGridPhone({
         const initialDayEntry = initialTimeData.find(
             (entry) => formatDateToISOString(entry.date) === targetDateStr
         );
-
         const currentDayEntry = timeData.find(
             (entry) => formatDateToISOString(entry.date) === targetDateStr
         );
 
-        const initialRow = initialDayEntry?.timeRows?.find((r) => r.projectId === projectId);
-        const currentRow = currentDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+        const sumHours = (entry) =>
+            entry?.timeRows
+                ?.filter((r) => r.projectId === projectId)
+                .reduce((sum, r) => sum + (r.hours ?? 0), 0) ?? 0;
+        const initialTotal = sumHours(initialDayEntry);
+        const currentTotal = sumHours(currentDayEntry);
 
-        // Synced if values match the initial data from Flex
-        return (initialRow?.hours || 0) === (currentRow?.hours || 0);
+        return initialTotal === currentTotal;
     };
 
     return (

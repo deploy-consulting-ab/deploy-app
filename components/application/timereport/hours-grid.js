@@ -58,15 +58,36 @@ export function HoursGridComponent({
         });
     }, [selectedWeek]);
 
-    // Extract unique projects from timeData and selectedProjects
+    // Extract unique projects from timeData and selectedProjects.
+    // Row order: selectedProjects first (insertion order = order user added), then any from timeData not in selectedProjects (e.g. absences).
+    // This prevents re-ordering when adding a new project row.
     const uniqueProjects = useMemo(() => {
         const projectMap = new Map();
 
-        // First, add projects from timeData
+        // First, add selected projects in Set order so row order stays stable when adding projects
+        selectedProjects.forEach((projectId) => {
+            if (!projectMap.has(projectId)) {
+                // Prefer data from timeData if we have it (e.g. projectName from API), else from projects prop
+                const rowFromTimeData = timeData
+                    .flatMap((d) => d.timeRows || [])
+                    .find((r) => r.projectId === projectId);
+                const projectFromProps = projects.find((p) => p.flexId === projectId);
+                projectMap.set(projectId, {
+                    projectId: projectId,
+                    projectName: rowFromTimeData?.projectName ?? projectFromProps?.name ?? '',
+                    projectCode: rowFromTimeData?.projectCode ?? projectFromProps?.projectCode ?? '',
+                    roleFlexId: rowFromTimeData?.roleFlexId ?? projectFromProps?.roleFlexId,
+                    color: rowFromTimeData?.color ?? projectFromProps?.color ?? 'red',
+                    isWorkingTime: rowFromTimeData?.isWorkingTime ?? true,
+                    projectType: rowFromTimeData?.projectType ?? projectFromProps?.projectType ?? '',
+                });
+            }
+        });
+
+        // Then, add any projects that appear only in timeData (e.g. absence rows)
         timeData.forEach((dayEntry) => {
             dayEntry.timeRows?.forEach((row) => {
                 if (!projectMap.has(row.projectId)) {
-                    // Try to find color from projects prop, fallback to generated color
                     const projectFromProps = projects.find((p) => p.flexId === row.projectId);
                     projectMap.set(row.projectId, {
                         projectId: row.projectId,
@@ -75,26 +96,10 @@ export function HoursGridComponent({
                         roleFlexId: row.roleFlexId ?? projectFromProps?.roleFlexId,
                         color: row.color || projectFromProps?.color || 'red',
                         isWorkingTime: row.isWorkingTime,
+                        projectType: row.projectType ?? projectFromProps?.projectType ?? '',
                     });
                 }
             });
-        });
-
-        // Then, add selected projects that aren't in timeData yet
-        selectedProjects.forEach((projectId) => {
-            if (!projectMap.has(projectId)) {
-                const projectFromProps = projects.find((p) => p.flexId === projectId);
-                if (projectFromProps) {
-                    projectMap.set(projectId, {
-                        projectId: projectId,
-                        projectName: projectFromProps.name,
-                        projectCode: projectFromProps.projectCode || '',
-                        roleFlexId: projectFromProps.roleFlexId,
-                        color: projectFromProps.color,
-                        isWorkingTime: true, // Projects from dropdown are always working time
-                    });
-                }
-            }
         });
 
         return Array.from(projectMap.values());
@@ -117,7 +122,9 @@ export function HoursGridComponent({
                     if (!lookup[row.projectId]) {
                         lookup[row.projectId] = {};
                     }
-                    lookup[row.projectId][dayIndex] = row.hours;
+                    // Sum hours when the same project has multiple time rows on the same day (Flex can return e.g. 2h + 1h)
+                    const current = lookup[row.projectId][dayIndex] ?? 0;
+                    lookup[row.projectId][dayIndex] = current + (row.hours ?? 0);
                 });
             }
         });
@@ -125,7 +132,7 @@ export function HoursGridComponent({
         return lookup;
     }, [timeData, weekDates]);
 
-    // Check if a cell's value matches the initial synced data from Flex
+    // Check if a cell's value matches the initial synced data from Flex (sum when multiple rows per project/day)
     const isCellSynced = useCallback(
         (projectId, dayIndex) => {
             const targetDate = weekDates[dayIndex];
@@ -134,16 +141,18 @@ export function HoursGridComponent({
             const initialDayEntry = initialTimeData.find(
                 (entry) => formatDateToISOString(entry.date) === targetDateStr
             );
-
             const currentDayEntry = timeData.find(
                 (entry) => formatDateToISOString(entry.date) === targetDateStr
             );
 
-            const initialRow = initialDayEntry?.timeRows?.find((r) => r.projectId === projectId);
-            const currentRow = currentDayEntry?.timeRows?.find((r) => r.projectId === projectId);
+            const sumHours = (entry) =>
+                entry?.timeRows
+                    ?.filter((r) => r.projectId === projectId)
+                    .reduce((sum, r) => sum + (r.hours ?? 0), 0) ?? 0;
+            const initialTotal = sumHours(initialDayEntry);
+            const currentTotal = sumHours(currentDayEntry);
 
-            // Synced if values match the initial data from Flex
-            return (initialRow?.hours || 0) === (currentRow?.hours || 0);
+            return initialTotal === currentTotal;
         },
         [weekDates, initialTimeData, timeData]
     );
@@ -198,19 +207,14 @@ export function HoursGridComponent({
             const dayEntry = { ...newTimeData[dayEntryIndex] };
             const timeRows = [...(dayEntry.timeRows || [])];
 
-            // Find or create the time row for this project
-            const timeRowIndex = timeRows.findIndex((row) => row.projectId === projectId);
+            // Flex can return multiple time rows for the same project on the same day (e.g. 2h + 1h).
+            // Replace all of them with a single row with the new total so the cell shows and saves one value.
+            const existingRow = timeRows.find((row) => row.projectId === projectId);
+            const timeRowsWithoutThisProject = timeRows.filter((row) => row.projectId !== projectId);
+            const mergedRows = [...timeRowsWithoutThisProject];
 
-            if (timeRowIndex >= 0) {
-                // Update existing time row (including setting to 0)
-                // We keep zero values so they get submitted as timecards to delete existing entries
-                timeRows[timeRowIndex] = {
-                    ...timeRows[timeRowIndex],
-                    hours: clampedValue,
-                };
-            } else if (clampedValue > 0) {
-                // Only add new rows for non-zero values
-                timeRows.push({
+            if (clampedValue > 0) {
+                mergedRows.push({
                     projectId: project.projectId,
                     projectName: project.projectName,
                     projectCode: project.projectCode,
@@ -218,10 +222,23 @@ export function HoursGridComponent({
                     hours: clampedValue,
                     color: project.color,
                     isWorkingTime: project.isWorkingTime,
+                    projectType: project.projectType ?? existingRow?.projectType ?? '',
+                });
+            } else {
+                // Keep one row with 0 so save can blank it in Flex
+                mergedRows.push({
+                    projectId: project.projectId,
+                    projectName: project.projectName,
+                    projectCode: project.projectCode,
+                    roleFlexId: project.roleFlexId,
+                    hours: 0,
+                    color: project.color,
+                    isWorkingTime: project.isWorkingTime,
+                    projectType: project.projectType ?? existingRow?.projectType ?? '',
                 });
             }
 
-            dayEntry.timeRows = timeRows;
+            dayEntry.timeRows = mergedRows;
             newTimeData[dayEntryIndex] = dayEntry;
 
             // Remove day entries with no time rows
@@ -288,7 +305,11 @@ export function HoursGridComponent({
                 const timeRowIndex = timeRows.findIndex((row) => row.projectId === projectId);
 
                 if (timeRowIndex >= 0) {
-                    timeRows[timeRowIndex] = { ...timeRows[timeRowIndex], hours: 8 };
+                    timeRows[timeRowIndex] = {
+                        ...timeRows[timeRowIndex],
+                        hours: 8,
+                        projectType: project.projectType ?? timeRows[timeRowIndex].projectType ?? '',
+                    };
                 } else {
                     timeRows.push({
                         projectId: project.projectId,
@@ -298,6 +319,7 @@ export function HoursGridComponent({
                         hours: 8,
                         color: project.color,
                         isWorkingTime: project.isWorkingTime,
+                        projectType: project.projectType ?? '',
                     });
                 }
 
@@ -364,7 +386,7 @@ export function HoursGridComponent({
                     <div className="flex items-center justify-between mb-6">
                         {/* Add project selector - only visible for current/future weeks, when working time projects exist, and not checkmarked */}
                         <div className="flex-1">
-                            {!isPastWeek &&
+                            {
                                 onAddProject &&
                                 hasWorkingTimeProjects &&
                                 !isCheckmarked && (
@@ -497,9 +519,9 @@ export function HoursGridComponent({
                                             />
                                             <span
                                                 className="text-sm font-medium truncate"
-                                                title={project.projectName}
+                                                title={project.projectName + ' - ' + project.projectCode}
                                             >
-                                                {project.projectName}
+                                                {project.projectName} - {project.projectCode}
                                             </span>
                                         </div>
 
@@ -532,7 +554,6 @@ export function HoursGridComponent({
                                                             )
                                                         }
                                                         placeholder="0"
-                                                        disabled={disabled}
                                                         title={
                                                             isBankHoliday
                                                                 ? 'Bank Holiday'
@@ -697,7 +718,7 @@ export function HoursGridComponent({
                         <span>Target: {weekTotal}/40h</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        {!isPastWeek && onToggleCheckmark && (
+                        {onToggleCheckmark && (
                             <Button
                                 onClick={onToggleCheckmark}
                                 variant={isCheckmarked ? 'destructive' : 'default'}
@@ -717,7 +738,7 @@ export function HoursGridComponent({
                                 )}
                             </Button>
                         )}
-                        {!isPastWeek && !isCheckmarked && onSave && (
+                        {!isCheckmarked && onSave && (
                             <Button
                                 onClick={onSave}
                                 disabled={!hasChanges || isSaving}

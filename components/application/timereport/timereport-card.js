@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Clock, Save, RefreshCw, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { createTimereport } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
@@ -68,15 +68,10 @@ export function TimereportCardComponent({
         }
     }, [initialProjects]);
 
-    // Update timereports when initialTimereports prop changes
-    useEffect(() => {
-        if (initialTimereports) {
-            setTimeData(initialTimereports.timereportResponse || []);
-            setInitialTimeData(initialTimereports.timereportResponse || []);
-            setSelectedProjects(new Set(initialTimereports.selectedProjects || []));
-            setIsCheckmarked(initialTimereports.isCheckmarked || false);
-        }
-    }, [initialTimereports]);
+    // Do NOT sync initialTimereports to state in an effect. That would overwrite in-progress
+    // edits whenever the prop reference changes (e.g. parent re-render / RSC refetch), making
+    // the cell value appear to persist and not change. Initial data is set in useState above;
+    // week changes are handled by refreshTimereports() when selectedWeek changes.
 
     // Handle initial error
     useEffect(() => {
@@ -148,13 +143,20 @@ export function TimereportCardComponent({
         // The selectedWeek change will trigger refetch via useEffect
     }, []);
 
-    // Refetch when selectedWeek changes (after initial load)
+    // Refetch only when selectedWeek actually changes (not on initial mount, so we don't overwrite server data or cause races)
+    const prevSelectedWeekRef = useRef(null);
     useEffect(() => {
-        // Only refresh projects for current/future weeks, not past weeks
+        const weekChanged =
+            prevSelectedWeekRef.current !== null &&
+            prevSelectedWeekRef.current.getTime() !== getWeekMonday(selectedWeek).getTime();
+        prevSelectedWeekRef.current = getWeekMonday(selectedWeek);
+
         if (!isPastWeek) {
             refreshProjects();
         }
-        refreshTimereports();
+        if (weekChanged) {
+            refreshTimereports();
+        }
     }, [selectedWeek]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle adding a project
@@ -315,19 +317,53 @@ export function TimereportCardComponent({
         }
     }, [selectedWeek, refreshTimereportsAction, timeData]);
 
+    /**
+     * Returns timeData filtered to only day entries where at least one cell (project hours)
+     * differs from initialTimeData. Used so createTimereport only blanks/creates changed days.
+     */
+    const getChangedDaysTimeData = useCallback((currentTimeData, initial) => {
+        const formatDate = (d) => formatDateToISOString(d);
+        const getProjectHoursMap = (dayEntry) => {
+            const map = {};
+            dayEntry?.timeRows?.forEach((row) => {
+                const id = row.projectId;
+                map[id] = (map[id] ?? 0) + (row.hours ?? 0);
+            });
+            return map;
+        };
+        const mapsEqual = (a, b) => {
+            const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+            for (const k of keys) {
+                if ((a[k] ?? 0) !== (b[k] ?? 0)) return false;
+            }
+            return true;
+        };
+
+        return currentTimeData.filter((dayEntry) => {
+            const dateStr = formatDate(dayEntry.date);
+            const initialDay = initial.find((e) => formatDate(e.date) === dateStr);
+            const currentMap = getProjectHoursMap(dayEntry);
+            const initialMap = getProjectHoursMap(initialDay || {});
+            return !mapsEqual(currentMap, initialMap);
+        });
+    }, []);
+
     // Handle save
     const handleSave = async () => {
         setIsSaving(true);
 
         try {
+            const changedTimeData = getChangedDaysTimeData(timeData, initialTimeData);
             const timecard = {
                 week: formatDateToISOString(selectedWeek),
-                timeData: timeData,
+                timeData: changedTimeData,
             };
             await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
 
-            // Re-fetch timereports to get the latest data from the server
+            // Refetch after a short delay so the backend has time to make the write visible
+            // (avoids reading empty data due to eventual consistency / replication lag)
+            await new Promise((resolve) => setTimeout(resolve, 500));
             await refreshTimereports();
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });
@@ -505,7 +541,7 @@ export function TimereportCardComponent({
                         </div>
 
                         {/* Empty state - rendered separately to maintain consistent sizing during loading */}
-                        {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
+                        {selectedProjects.size === 0 && !hasWorkingTimeProjects && (
                             <div
                                 className={`mb-6 transition-opacity duration-300 ease-in-out ${
                                     isLoadingProjects || isLoadingTimereports
