@@ -130,7 +130,6 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
                     id: timeRow.roleFlexId,
                 },
             ],
-            // externalComment: '.', // Pass some external comment to prevent adding an extra row
             fromTime: 0, // Set to zero to blank the time row
             tomTime: 0, // Set to zero to blank the time row
             timeCode: {
