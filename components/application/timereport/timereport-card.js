@@ -317,14 +317,46 @@ export function TimereportCardComponent({
         }
     }, [selectedWeek, refreshTimereportsAction, timeData]);
 
+    /**
+     * Returns timeData filtered to only day entries where at least one cell (project hours)
+     * differs from initialTimeData. Used so createTimereport only blanks/creates changed days.
+     */
+    const getChangedDaysTimeData = useCallback((currentTimeData, initial) => {
+        const formatDate = (d) => formatDateToISOString(d);
+        const getProjectHoursMap = (dayEntry) => {
+            const map = {};
+            dayEntry?.timeRows?.forEach((row) => {
+                const id = row.projectId;
+                map[id] = (map[id] ?? 0) + (row.hours ?? 0);
+            });
+            return map;
+        };
+        const mapsEqual = (a, b) => {
+            const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+            for (const k of keys) {
+                if ((a[k] ?? 0) !== (b[k] ?? 0)) return false;
+            }
+            return true;
+        };
+
+        return currentTimeData.filter((dayEntry) => {
+            const dateStr = formatDate(dayEntry.date);
+            const initialDay = initial.find((e) => formatDate(e.date) === dateStr);
+            const currentMap = getProjectHoursMap(dayEntry);
+            const initialMap = getProjectHoursMap(initialDay || {});
+            return !mapsEqual(currentMap, initialMap);
+        });
+    }, []);
+
     // Handle save
     const handleSave = async () => {
         setIsSaving(true);
 
         try {
+            const changedTimeData = getChangedDaysTimeData(timeData, initialTimeData);
             const timecard = {
                 week: formatDateToISOString(selectedWeek),
-                timeData,
+                timeData: changedTimeData,
             };
             await createTimereport(flexEmployeeId, timecard);
             toastRichSuccess({ message: 'Time report saved successfully', duration: 2000 });
