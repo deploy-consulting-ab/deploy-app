@@ -29,6 +29,7 @@ import {
 export async function createTimereport(flexEmployeeId, timecard) {
     console.log('------ Create Timereport ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const timeDataEntries = timecard.timeData;
+    console.log('timeDataEntries #### -> ', JSON.stringify(timeDataEntries, null, 2));
     try {
         // Phase 1: blank all time rows first (must finish before creating new rows)
         const blankPromises = timeDataEntries.map((timeDataEntry) =>
@@ -65,20 +66,37 @@ export async function createTimereport(flexEmployeeId, timecard) {
             })
             .filter(Boolean); // Remove null entries (days with no working time)
 
-        // createTimeRow returns an array of promises per day, so flatten before Promise.all
-        return await Promise.all(createPromises.flat());
+        // createTimeRow returns a promise that resolves to an array of statuses per day
+        const dayResults = await Promise.all(createPromises);
+        return dayResults.flat();
     } catch (error) {
         throw error;
     }
 }
 
+function hasValidAccountIds(timeRow) {
+    const projectId = timeRow?.projectId;
+    const roleFlexId = timeRow?.roleFlexId;
+    return (
+        projectId != null &&
+        String(projectId).trim() !== '' &&
+        roleFlexId != null &&
+        String(roleFlexId).trim() !== ''
+    );
+}
+
 async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
     console.log('------ Blank Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
+    // Only blank rows with valid project and role IDs; skip rows that would create empty Account/Project/Role in Flex
+    const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
+    if (validRows.length === 0) {
+        return;
+    }
     // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
     let previousTomHours = 0;
 
-    const timeRows = workingTimeRows.map((timeRow) => {
+    const timeRows = validRows.map((timeRow) => {
         console.log('timeRow blankTimeRow :( ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
         const body = {
@@ -109,21 +127,22 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
 
     console.log('body blankTimeRow :( ', JSON.stringify(body, null, 2));
 
+    // date is already YYYY-MM-DD when called from createTimereport
     return flexApiClient.createTimereport(flexEmployeeId, date, body);
 }
 
 async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     console.log('------ Create Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
-    // Rows can't overlap, so passing from 0 to 9 and then from 0 to 6 throws an error
+    // Rows can't overlap; create them sequentially so the API can validate ordering
     let previousTomHours = 0;
 
-    const promises = workingTimeRows.map((timeRow) => {
+    // Only create rows with valid project and role IDs to avoid Flex rows with empty Account/Project/Role
+    const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
+    const results = [];
+    for (const timeRow of validRows) {
         console.log('timeRow createTimeRow -> ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
-        if (!timeRow.roleFlexId) {
-            return null;
-        }
         const body = {
             accounts: [
                 {
@@ -143,10 +162,10 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
         };
         previousTomHours = tomHours;
         console.log('body createTimeRow -> ', JSON.stringify(body, null, 2));
-        return flexApiClient.createTimerow(flexEmployeeId, date, body);
-    });
-
-    return promises;
+        const status = await flexApiClient.createTimerow(flexEmployeeId, date, body);
+        results.push(status);
+    }
+    return results;
 }
 
 /**

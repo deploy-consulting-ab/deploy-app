@@ -38,10 +38,27 @@ export class ValidationError extends Error {
 }
 
 /**
- * Handles API response errors and throws appropriate custom errors
+ * Handles API response errors and throws appropriate custom errors.
+ * Parses the response body when available to surface the API's validation message.
  */
 export const handleApiError = async (response) => {
-    const message = response.statusText || `HTTP Error ${response.status}`;
+    let message = response.statusText || `HTTP Error ${response.status}`;
+    const contentType = response.headers.get('content-type');
+    try {
+        if (contentType?.includes('application/json')) {
+            const data = await response.clone().json();
+            if (data?.message) message = data.message;
+            else if (data?.error) message = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+            else if (data?.Message) message = data.Message;
+            else if (typeof data === 'string') message = data;
+            else if (Object.keys(data || {}).length > 0) message = JSON.stringify(data);
+        } else {
+            const text = await response.clone().text();
+            if (text?.trim()) message = text.trim();
+        }
+    } catch (_) {
+        // Keep default message if parsing fails
+    }
     throw new ApiError(message, response.status, response.code || 'UNKNOWN_ERROR', response);
 };
 
