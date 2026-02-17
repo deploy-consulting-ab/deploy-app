@@ -19,7 +19,7 @@ export function AddProjectDropdownComponent({
     onAddProject,
     variant = 'default',
 }) {
-    const availableProjects = projects; // FIX THIS!!!!
+    const availableProjects = projects.filter((p) => !selectedProjects.has(p.flexId));
 
     if (availableProjects.length === 0) {
         return null;
@@ -44,31 +44,27 @@ export function AddProjectDropdownComponent({
                 <SelectValue placeholder="Add project" />
             </SelectTrigger>
             <SelectContent>
-                {availableProjects.map(
-                    (project) => (
-                        (
-                            <SelectItem
-                                key={project.flexId}
-                                value={project.flexId}
-                                className="hover:cursor-pointer"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-2 h-2 rounded-full shrink-0"
-                                        style={{ backgroundColor: project.color }}
-                                    />
-                                    <span className="truncate">{project.name}</span>
-                                    <span className="text-muted-foreground text-xs hidden sm:inline">
-                                        {project.client}
-                                    </span>
-                                    <span className="text-muted-foreground text-xs hidden sm:inline">
-                                        ({project.projectCode})
-                                    </span>
-                                </div>
-                            </SelectItem>
-                        )
-                    )
-                )}
+                {availableProjects.map((project) => (
+                    <SelectItem
+                        key={project.flexId}
+                        value={project.flexId}
+                        className="hover:cursor-pointer"
+                    >
+                        <div className="flex items-center gap-2">
+                            <div
+                                className="w-2 h-2 rounded-full shrink-0"
+                                style={{ backgroundColor: project.color }}
+                            />
+                            <span className="truncate">{project.name}</span>
+                            <span className="text-muted-foreground text-xs hidden sm:inline">
+                                {project.client}
+                            </span>
+                            <span className="text-muted-foreground text-xs hidden sm:inline">
+                                ({project.projectCode})
+                            </span>
+                        </div>
+                    </SelectItem>
+                ))}
             </SelectContent>
         </Select>
     );
