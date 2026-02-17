@@ -21,15 +21,21 @@ import {
 
 // Timecard methods
 /**
- * Create a timecard for a given employee number
- * @param {string} flexEmployeeId - The employee number
- * @param {Object} timecard - The timecard to create
- * @returns {Promise<Object>} The timecard
+ * Creates timereport entries in Flex for a timecard (multiple days).
+ *
+ * Processing is two-phase and distinguishes same-day vs different-day work:
+ * - **Different days**: Processed in parallel. Phase 1 blanks all days concurrently;
+ *   phase 2 creates rows for all days concurrently (each day is handled by createTimeRow).
+ * - **Same day**: Within a single day, rows are processed sequentially. Phase 1 sends
+ *   one PUT per day with all rows to blank. Phase 2 creates one row at a time for that
+ *   day (createTimeRow awaits each createTimerow) so the API can enforce non-overlapping times.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {Object} timecard - The timecard with timeData (array of { date, timeRows })
+ * @returns {Promise<number[]>} Flat array of HTTP status codes (one per created row across all days)
  */
 export async function createTimereport(flexEmployeeId, timecard) {
-    console.log('------ Create Timereport ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const timeDataEntries = timecard.timeData;
-    console.log('timeDataEntries #### -> ', JSON.stringify(timeDataEntries, null, 2));
     try {
         // Phase 1: blank all time rows first (must finish before creating new rows)
         const blankPromises = timeDataEntries.map((timeDataEntry) =>
@@ -54,8 +60,7 @@ export async function createTimereport(flexEmployeeId, timecard) {
 
                 const workingTimeRows =
                     timereport.timeRows?.filter(
-                        (row) =>
-                            row.isWorkingTime !== false && (row.hours ?? 0) > 0
+                        (row) => row.isWorkingTime !== false && (row.hours ?? 0) > 0
                     ) || [];
 
                 // Skip days with no working time entries to create (0-hour rows are only blanked in phase 1)
@@ -74,6 +79,11 @@ export async function createTimereport(flexEmployeeId, timecard) {
     }
 }
 
+/**
+ * Returns whether a time row has valid project and role IDs for Flex (non-empty).
+ * @param {Object} timeRow - Row with projectId and roleFlexId
+ * @returns {boolean}
+ */
 function hasValidAccountIds(timeRow) {
     const projectId = timeRow?.projectId;
     const roleFlexId = timeRow?.roleFlexId;
@@ -85,8 +95,19 @@ function hasValidAccountIds(timeRow) {
     );
 }
 
+/**
+ * createTimerow does not allow updating rows, createTimereport does.
+ * However, createTimereport creates multiple rows so we can't use it.
+ * Therefore, we must use createTimerow for same day, but delete first and then re-create.
+ * Same day: one request with all rows for that date. Different days: called in parallel
+ * from createTimereport (one blankTimeRow per day), so multiple days are blanked concurrently.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string} date - Date for the day (YYYY-MM-DD)
+ * @param {Object[]} workingTimeRows - Rows to blank (only those with valid project/role IDs are used)
+ * @returns {Promise<number>} HTTP status of the PUT
+ */
 async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
-    console.log('------ Blank Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
     // Only blank rows with valid project and role IDs; skip rows that would create empty Account/Project/Role in Flex
     const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
@@ -97,7 +118,6 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
     let previousTomHours = 0;
 
     const timeRows = validRows.map((timeRow) => {
-        console.log('timeRow blankTimeRow :( ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
         const body = {
             accounts: [
@@ -124,15 +144,21 @@ async function blankTimeRow(flexEmployeeId, date, workingTimeRows) {
     const body = {
         timeRows: timeRows,
     };
-
-    console.log('body blankTimeRow :( ', JSON.stringify(body, null, 2));
-
-    // date is already YYYY-MM-DD when called from createTimereport
     return flexApiClient.createTimereport(flexEmployeeId, date, body);
 }
 
+/**
+ * Creates time rows for a single day in Flex. Same day: rows are created sequentially
+ * (one POST per row, awaited in order) so the API can enforce non-overlapping times.
+ * Different days: createTimereport calls this once per day and awaits all days with
+ * Promise.all, so multiple days are processed in parallel.
+ *
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string} date - Date for the day (YYYY-MM-DD)
+ * @param {Object[]} workingTimeRows - Working-time rows to create (valid project/role only)
+ * @returns {Promise<number[]>} Array of HTTP status codes (one per created row)
+ */
 async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
-    console.log('------ Create Time Row ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
     // Rows can't overlap; create them sequentially so the API can validate ordering
     let previousTomHours = 0;
@@ -140,8 +166,8 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
     // Only create rows with valid project and role IDs to avoid Flex rows with empty Account/Project/Role
     const validRows = (workingTimeRows || []).filter(hasValidAccountIds);
     const results = [];
+    // Await each createTimerow in a loop so for a given day rows are created one by one (API validates ordering).
     for (const timeRow of validRows) {
-        console.log('timeRow createTimeRow -> ', JSON.stringify(timeRow, null, 2));
         const tomHours = previousTomHours + timeRow.hours;
         const body = {
             accounts: [
@@ -161,7 +187,6 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
             },
         };
         previousTomHours = tomHours;
-        console.log('body createTimeRow -> ', JSON.stringify(body, null, 2));
         const status = await flexApiClient.createTimerow(flexEmployeeId, date, body);
         results.push(status);
     }
@@ -176,7 +201,6 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
  * @returns {Promise<Object>} The timereports
  */
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
-    console.log('------ Get Timereports ------', (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -3) );
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 
