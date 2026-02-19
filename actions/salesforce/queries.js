@@ -73,7 +73,7 @@ const getCurrentAssignmentsByEmployeeNumberQuery = (employeeNumber, startDate, e
  */
 
 const getOpportunitiesQuery = () => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
             FROM Opportunity 
             WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
@@ -82,7 +82,7 @@ const getOpportunitiesQuery = () => {
 };
 
 const getOpportunitiesByNameQuery = (name) => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
             FROM Opportunity WHERE Name LIKE '%${name}%' 
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
@@ -91,7 +91,7 @@ const getOpportunitiesByNameQuery = (name) => {
 };
 
 const getOpportunityByIdQuery = (opportunityId) => {
-    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode 
+    return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
             FROM Opportunity WHERE Id = '${opportunityId}' 
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'

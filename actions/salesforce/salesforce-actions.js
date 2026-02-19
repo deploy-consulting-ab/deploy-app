@@ -136,6 +136,7 @@ export async function getOpportunities() {
             amount: opportunity.Amount,
             accountName: opportunity.Account.Name,
             currency: opportunity.CurrencyIsoCode,
+            productType: opportunity.ProductType__c,
         }));
     } catch (error) {
         throw error;
@@ -153,6 +154,7 @@ export async function getOpportunitiesByName(name) {
             amount: opportunity.Amount,
             accountName: opportunity.Account.Name,
             currency: opportunity.CurrencyIsoCode,
+            productType: opportunity.ProductType__c,
             type: 'Opportunity',
         }));
     } catch (error) {
@@ -172,6 +174,7 @@ export async function getOpportunityById(opportunityId) {
             amount: result.Amount,
             accountName: result.Account.Name,
             currency: result.CurrencyIsoCode,
+            productType: result.ProductType__c,
         };
     } catch (error) {
         throw error;
