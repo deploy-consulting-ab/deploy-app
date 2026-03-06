@@ -76,7 +76,8 @@ export function StatisticsCardComponent({
     }
 
     return (
-        <Card className="p-6 border-border/50">
+        <Card className="p-6 border-border/50 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-deploy-accent-orange to-deploy-accent-yellow" />
             <div className="flex items-center justify-between">
                 <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>{title}</CardTitle>
                 <div className="flex items-center gap-2">
@@ -105,7 +106,7 @@ export function StatisticsCardComponent({
                             <Card className="p-4 bg-muted/50 border-0 rounded-xl hover:bg-muted/80 transition-all cursor-pointer group">
                                 <div className="flex items-center justify-between mb-2">
                                     <Briefcase className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-[var(--deploy-accent-lime)] transition-colors" />
+                                    <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-deploy-accent-lime transition-colors" />
                                 </div>
                                 <div className="text-2xl font-bold">{stat.value}</div>
                                 <div className="text-sm text-muted-foreground">{stat.label}</div>

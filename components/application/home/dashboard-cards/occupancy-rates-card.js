@@ -43,7 +43,8 @@ export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, t
     }
 
     return (
-        <Card className="p-6 border-border/50">
+        <Card className="p-6 border-border/50 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-deploy-accent-lime via-deploy-accent-yellow to-deploy-accent-orange" />
             <div className="flex items-center justify-between">
                 <CardTitle className={`${isMobile ? 'text-sm' : 'text-xl'}`}>
                     Occupancy Rate
@@ -61,7 +62,7 @@ export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, t
                         </Button>
                     )}
                     <Link href={OCCUPANCY_ROUTE} className="md:block hover:cursor-pointer">
-                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-[var(--deploy-accent-lime)] transition-colors" />
+                        <ArrowUpRight className="h-5 w-5 text-muted-foreground hover:text-deploy-accent-lime transition-colors" />
                     </Link>
                 </div>
             </div>
