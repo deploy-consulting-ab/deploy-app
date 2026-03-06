@@ -1,5 +1,5 @@
 import { AssignmentCard } from '@/components/application/assignment/assignment-card';
-import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentById, getTimecardHoursCountByAssignmentId } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
 
 const AssignmentPage = async ({ params }) => {
@@ -9,18 +9,19 @@ const AssignmentPage = async ({ params }) => {
     const { user } = session;
 
     let assignment = null;
+    let timecardHours = null;
     let error = null;
 
     try {
         assignment = await getAssignmentById(assignmentId, user?.employeeNumber);
+        timecardHours = await getTimecardHoursCountByAssignmentId(assignmentId);
     } catch (err) {
-        console.error('#### err', err);
         error = err;
     }
 
     return (
         <div>
-            <AssignmentCard error={error} assignment={assignment} />
+            <AssignmentCard error={error} assignment={assignment} timecardHours={timecardHours} />
         </div>
     );
 };

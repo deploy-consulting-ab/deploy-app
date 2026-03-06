@@ -9,7 +9,7 @@ import {
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
     getOccupancyHistoryQuery,
-    getOccupancyHistoryCountQuery,
+    getTimecardHoursCountByAssignmentIdQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getOpportunityByIdQuery,
@@ -92,6 +92,25 @@ export async function getAssignmentTimecards(assignmentId, employeeNumber) {
                 timecard.SaturdayHours__c,
                 timecard.SundayHours__c,
             ],
+        }));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getTimecardHoursCountByAssignmentId(assignmentId) {
+    try {
+        const results = await queryData(getTimecardHoursCountByAssignmentIdQuery(assignmentId));
+
+        if (results?.length === 0) {
+            return null;
+        }
+
+        return results.map((timecard) => ({
+            id: timecard.Month + '-' + timecard.Year,
+            month: timecard.Month,
+            year: timecard.Year,
+            totalHours: timecard.Total,
         }));
     } catch (error) {
         throw error;

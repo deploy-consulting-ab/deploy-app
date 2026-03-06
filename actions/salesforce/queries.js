@@ -43,6 +43,16 @@ const getAssignmentTimecardsQuery = (assignmentId, employeeNumber) => {
             ORDER BY StartDate__c DESC`;
 };
 
+const getTimecardHoursCountByAssignmentIdQuery = (assignmentId) => {
+    return `SELECT CALENDAR_MONTH(TimecardDate__c) Month,
+            CALENDAR_YEAR(TimecardDate__c) Year,    
+            SUM(TotalWeeklyHours__c ) Total
+            FROM Timecard__c 
+            WHERE Assignment__c = '${assignmentId}' 
+            GROUP BY TimecardDate__c
+            ORDER BY TimecardDate__c DESC`;
+};
+
 const getAssignmentsMetricsQuery = (employeeNumber) => {
     return `SELECT Project__r.Status__c, StartDate__c, COUNT(Id) assignmentsMetrics
             FROM Assignment__c
@@ -146,4 +156,5 @@ export {
     getOccupancyHistoryQuery,
     getOccupancyHistoryCountQuery,
     getSalesforcePublicHolidaysQuery,
+    getTimecardHoursCountByAssignmentIdQuery,
 };
