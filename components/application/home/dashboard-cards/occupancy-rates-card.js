@@ -69,7 +69,7 @@ export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, t
 
             {/* Progress Ring */}
             <div className="flex items-center justify-center py-2">
-                <ProgressRing progress={currentRate} size={140} color="var(--deploy-accent-lime)">
+                <ProgressRing progress={currentRate} size={180} color="var(--deploy-accent-lime)">
                     <div className="text-center">
                         <div className="text-4xl font-bold">{currentRate}%</div>
                         <div className="text-sm text-muted-foreground mt-1">{currentMonth}</div>
