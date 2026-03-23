@@ -6,6 +6,14 @@ import { createTimereport } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from '@/components/ui/dialog';
 import { WeekNavigation } from '@/components/application/timereport/week-navigation';
 import {
     getWeekMonday,
@@ -92,6 +100,8 @@ export function TimereportCardComponent({
     const [isSaving, setIsSaving] = useState(false);
     const [isCheckmarked, setIsCheckmarked] = useState(initialTimereports?.isCheckmarked || false);
     const [isCopyingFromLastWeek, setIsCopyingFromLastWeek] = useState(false);
+    const [isUnsavedCheckmarkDialogOpen, setIsUnsavedCheckmarkDialogOpen] = useState(false);
+    const [isSaveAndCheckmarking, setIsSaveAndCheckmarking] = useState(false);
 
     /**
      * Fetch projects for the given week using the server action
@@ -349,7 +359,7 @@ export function TimereportCardComponent({
     }, []);
 
     // Handle save
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         setIsSaving(true);
 
         try {
@@ -365,15 +375,23 @@ export function TimereportCardComponent({
             // (avoids reading empty data due to eventual consistency / replication lag)
             await new Promise((resolve) => setTimeout(resolve, 500));
             await refreshTimereports();
+            return true;
         } catch (error) {
             toastRichError({ message: error.message || 'Failed to save time report' });
+            return false;
         } finally {
             setIsSaving(false);
         }
-    };
+    }, [
+        getChangedDaysTimeData,
+        timeData,
+        initialTimeData,
+        selectedWeek,
+        flexEmployeeId,
+        refreshTimereports,
+    ]);
 
-    // Handle checkmark toggle
-    const handleToggleCheckmark = useCallback(async () => {
+    const executeToggleCheckmark = useCallback(async () => {
         try {
             const weekStart = getWeekMonday(selectedWeek);
             const newCheckmarkValue = await toggleCheckmarkAction(
@@ -413,6 +431,31 @@ export function TimereportCardComponent({
             });
         }
     }, [isCheckmarked, selectedWeek, toggleCheckmarkAction, employeeName, employeeNumber]);
+
+    // Handle checkmark toggle
+    const handleToggleCheckmark = useCallback(async () => {
+        if (!isCheckmarked && hasChanges) {
+            setIsUnsavedCheckmarkDialogOpen(true);
+            return;
+        }
+
+        await executeToggleCheckmark();
+    }, [isCheckmarked, hasChanges, executeToggleCheckmark]);
+
+    const handleSaveAndCheckmark = useCallback(async () => {
+        setIsSaveAndCheckmarking(true);
+        try {
+            const isSaved = await handleSave();
+            if (!isSaved) {
+                return;
+            }
+
+            setIsUnsavedCheckmarkDialogOpen(false);
+            await executeToggleCheckmark();
+        } finally {
+            setIsSaveAndCheckmarking(false);
+        }
+    }, [executeToggleCheckmark, handleSave]);
 
     // Calculate total hours for the week from timeData
     const weekTotal = useMemo(() => {
@@ -631,7 +674,13 @@ export function TimereportCardComponent({
             {/* Mobile bottom action bar - fixed at the bottom for easy thumb access */}
             {!isPastWeek && (
                 <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-sm border-t border-border px-4 py-3 safe-area-pb">
-                    <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
+                    <div className="max-w-md mx-auto space-y-2">
+                        {!isCheckmarked && hasChanges && (
+                            <p className="text-xs text-amber-600 text-center">
+                                You have unsaved hours. Save before checkmarking.
+                            </p>
+                        )}
+                        <div className="flex items-center justify-center gap-2">
                         <Button
                             onClick={handleSave}
                             disabled={!hasChanges || isSaving || isCheckmarked}
@@ -670,9 +719,42 @@ export function TimereportCardComponent({
                                 className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
                             />
                         </Button>
+                        </div>
                     </div>
                 </div>
             )}
+
+            <Dialog
+                open={isUnsavedCheckmarkDialogOpen}
+                onOpenChange={setIsUnsavedCheckmarkDialogOpen}
+            >
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Unsaved hours</DialogTitle>
+                        <DialogDescription>
+                            You have unsaved changes for this week. Save your hours before
+                            checkmarking so everything is sent to Flex.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsUnsavedCheckmarkDialogOpen(false)}
+                            disabled={isSaving || isSaveAndCheckmarking}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="button"
+                            onClick={handleSaveAndCheckmark}
+                            disabled={isSaving || isSaveAndCheckmarking}
+                        >
+                            {isSaveAndCheckmarking ? 'Saving...' : 'Save and Checkmark'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
