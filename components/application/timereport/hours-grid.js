@@ -718,6 +718,9 @@ export function HoursGridComponent({
                         <span>Target: {weekTotal}/40h</span>
                     </div>
                     <div className="flex items-center gap-2">
+                        {!isCheckmarked && hasChanges && (
+                            <span className="text-amber-600">Unsaved changes - save before checkmarking.</span>
+                        )}
                         {onToggleCheckmark && (
                             <Button
                                 onClick={onToggleCheckmark}
