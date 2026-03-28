@@ -31,7 +31,7 @@ const getAssignmentsByEmployeeNumberAndProjectNameQuery = (employeeNumber, proje
 };
 
 const getAssignmentByIdQuery = (assignmentId, employeeNumber) => {
-    return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c 
+    return `SELECT Id, Project__r.FlexID__c, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c 
             FROM Assignment__c 
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
 };

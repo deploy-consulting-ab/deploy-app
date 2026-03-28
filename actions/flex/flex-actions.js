@@ -7,6 +7,9 @@ import {
     generateDateRange,
     getUTCToday,
     formatDateToISOString,
+    getWeekMonday,
+    getWeekSunday,
+    getDayOfWeekIndex,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 import {
@@ -190,6 +193,68 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
         results.push(status);
     }
     return results;
+}
+
+/**
+ * Get all timereports for a given employee, grouped into weeks.
+ * Returns the same shape as the Salesforce getAssignmentTimecards response:
+ * { weekStartDate, weekEndDate, hours: [mon, tue, wed, thu, fri, sat, sun] }
+ * sorted newest week first.
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string|null} flexProjectId - Optional Flex project ID to filter by
+ * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string, hours: number[]}>>}
+ */
+export async function getAssignmentTimereports(
+    flexEmployeeId,
+    flexProjectId = null,
+    startDate = null,
+    endDate = null
+) {
+    const flexApiClient = await getFlexApiService();
+    flexApiClient.config.cache = 'no-store';
+
+    try {
+        const timereports = await flexApiClient.getTimereports(flexEmployeeId, startDate, endDate);
+
+        const weekMap = new Map();
+
+        for (const timereport of timereports) {
+            if (!timereport.TimeRows?.length) continue;
+
+            const date = formatDateToISOString(timereport.Date);
+            const workingRows = timereport.TimeRows.filter((row) => {
+                if (row.TimeCode.Id !== WORKING_TYPE_ID) return false;
+                if (!flexProjectId) return true;
+                const projectAccount = row.Accounts?.find(
+                    (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+                );
+                return projectAccount?.Id === flexProjectId;
+            });
+
+            const totalMinutes = workingRows.reduce((sum, row) => sum + row.TimeInMinutes, 0);
+
+            if (totalMinutes === 0) continue;
+
+            const mondayDate = formatDateToISOString(getWeekMonday(date));
+            const dayIndex = getDayOfWeekIndex(date);
+
+            if (!weekMap.has(mondayDate)) {
+                weekMap.set(mondayDate, {
+                    weekStartDate: mondayDate,
+                    weekEndDate: formatDateToISOString(getWeekSunday(getWeekMonday(date))),
+                    hours: [0, 0, 0, 0, 0, 0, 0],
+                });
+            }
+
+            weekMap.get(mondayDate).hours[dayIndex] = totalMinutes / 60;
+        }
+
+        return Array.from(weekMap.values()).sort((a, b) =>
+            b.weekStartDate.localeCompare(a.weekStartDate)
+        );
+    } catch (error) {
+        throw error;
+    }
 }
 
 /**

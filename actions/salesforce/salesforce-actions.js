@@ -64,6 +64,7 @@ export async function getAssignmentById(assignmentId, employeeNumber) {
         return {
             id: result.Id,
             name: result.Name,
+            flexId: result.Project__r.FlexID__c,
             startDate: result.StartDate__c,
             endDate: result.EndDate__c,
             projectStatus: result.ProjectStatus__c,
