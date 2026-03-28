@@ -10,7 +10,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentTimecardsDatatable } from '@/components/application/assignment/assignment-timecards-datatable';
 
-export function AssignmentCard({ assignment, timecardHours, error }) {
+export function AssignmentCard({ assignment, timecardHours, actualHours, error }) {
     const isMobile = useIsMobile();
 
     if (!assignment) {
@@ -21,8 +21,7 @@ export function AssignmentCard({ assignment, timecardHours, error }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const { name, startDate, endDate, projectStatus, projectName, projectedHours, actualHours } =
-        assignment;
+    const { name, startDate, endDate, projectStatus, projectName, projectedHours } = assignment;
 
     return (
         <>
