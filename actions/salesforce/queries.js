@@ -137,6 +137,15 @@ const getOccupancyHistoryCountQuery = (employeeNumber, today) => {
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}`;
 };
 
+const getOccupancyByDateRangeQuery = (employeeNumber, startDate, endDate) => {
+    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c
+            FROM HistoricalHour__c 
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
+            AND Date__c >= ${startDate}
+            AND Date__c <= ${endDate}
+            ORDER BY Date__c ASC`;
+};
+
 const getSalesforcePublicHolidaysQuery = () => {
     return `SELECT Id, Name, ActivityDate FROM Holiday`;
 };
@@ -155,6 +164,7 @@ export {
     getOccupancyRateFromLastFiscalYearQuery,
     getOccupancyHistoryQuery,
     getOccupancyHistoryCountQuery,
+    getOccupancyByDateRangeQuery,
     getSalesforcePublicHolidaysQuery,
     getTimecardHoursCountByAssignmentIdQuery,
 };

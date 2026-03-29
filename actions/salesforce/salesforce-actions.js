@@ -16,7 +16,15 @@ import {
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
     getSalesforcePublicHolidaysQuery,
+    getOccupancyByDateRangeQuery,
 } from './queries';
+import {
+    getCurrentFiscalYear,
+    getPreviousFiscalYear,
+    getFiscalYearStartDate,
+    getFiscalYearEndDate,
+    formatDateToISOString,
+} from '@/lib/utils';
 import { PROJECT_TYPE_INTERNAL } from './constants';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
@@ -300,6 +308,82 @@ export async function getAssignmentsMetrics(employeeNumber) {
     } catch (error) {
         throw error;
     }
+}
+
+/**
+ * Compute a set of occupancy rate statistics for the stats page.
+ * Returns current month rate, current FY average, current FYTD average, and last FY average.
+ * @param {string} employeeNumber - The employee number
+ * @param {string} today - Today's date (YYYY-MM-DD)
+ * @returns {Promise<Object>} Stats object
+ */
+export async function getOccupancyStats(employeeNumber, today) {
+    const currentFY = getCurrentFiscalYear();
+    const previousFY = getPreviousFiscalYear();
+
+    const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
+    const currentFYEnd = formatDateToISOString(getFiscalYearEndDate(currentFY));
+    const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
+    const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
+
+    const [currentFYRecords, lastFYRecords] = await Promise.all([
+        queryData(getOccupancyByDateRangeQuery(employeeNumber, currentFYStart, today)),
+        queryData(getOccupancyByDateRangeQuery(employeeNumber, lastFYStart, lastFYEnd)),
+    ]);
+
+    const computeAverage = (records) => {
+        const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
+        if (rates.length === 0) return null;
+        const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
+        return Math.round(avg * 100) / 100;
+    };
+
+    const computeFYAverage = (records) => {
+        const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
+        if (rates.length === 0) return null;
+        const avg = rates.reduce((a, b) => a + b, 0) / 12;
+        return Math.round(avg * 100) / 100;
+    };
+
+    const currentRecord = currentFYRecords[currentFYRecords.length - 1];
+
+    return {
+        current: currentRecord?.OccupancyRate__c ?? null,
+        currentMonth: currentRecord?.Month__c ?? null,
+        currentFYTD: computeAverage(currentFYRecords),
+        lastFY: computeAverage(lastFYRecords),
+        currentFYYear: currentFY,
+        previousFYYear: previousFY,
+        currentFYMonthCount: currentFYRecords.length,
+        lastFYMonthCount: lastFYRecords.length,
+    };
+}
+
+/**
+ * Compute the average occupancy rate for a custom date range.
+ * @param {string} employeeNumber - The employee number
+ * @param {string} startDate - Start date (YYYY-MM-DD)
+ * @param {string} endDate - End date (YYYY-MM-DD)
+ * @returns {Promise<Object>} Average and record count
+ */
+export async function getOccupancyAverageByDateRange(employeeNumber, startDate, endDate) {
+    const records = await queryData(
+        getOccupancyByDateRangeQuery(employeeNumber, startDate, endDate)
+    );
+
+    const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
+    if (rates.length === 0) return { average: null, count: 0 };
+
+    const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
+    return {
+        average: Math.round(avg * 100) / 100,
+        count: rates.length,
+        months: records.map((r) => ({
+            month: r.Month__c,
+            year: r.Year__c,
+            rate: r.OccupancyRate__c,
+        })),
+    };
 }
 
 export async function getSalesforcePublicHolidays() {
