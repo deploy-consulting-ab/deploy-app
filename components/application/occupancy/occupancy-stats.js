@@ -34,7 +34,7 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 items-start">
                 <OccupancyStatCard
                     title="Current Occupancy Rate"
                     rate={stats?.current}
