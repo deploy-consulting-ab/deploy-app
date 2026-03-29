@@ -32,6 +32,7 @@ export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const OCCUPANCY_LIST_ROUTE = `${OCCUPANCY_ROUTE}/list`;
 export const OCCUPANCY_CHART_ROUTE = `${OCCUPANCY_ROUTE}/chart`;
+export const OCCUPANCY_STATS_ROUTE = `${OCCUPANCY_ROUTE}/stats`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const TIMEREPORT_ROUTE = `${HOME_ROUTE}/timereport`;
@@ -46,6 +47,7 @@ export const PROTECTED_ROUTES = [
     { path: OCCUPANCY_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_LIST_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_CHART_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
+    { path: OCCUPANCY_STATS_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: ASSIGNMENTS_ROUTE, systemPermission: VIEW_ASSIGNMENTS_PERMISSION },
     { path: OPPORTUNITIES_ROUTE, systemPermission: VIEW_OPPORTUNITIES_PERMISSION },
     { path: USERS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_USERS_PERMISSION

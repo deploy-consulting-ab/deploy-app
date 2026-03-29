@@ -12,6 +12,7 @@ import {
     Clock,
     List,
     BarChart3,
+    ChartPie,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -20,6 +21,7 @@ import {
     OCCUPANCY_ROUTE,
     OCCUPANCY_LIST_ROUTE,
     OCCUPANCY_CHART_ROUTE,
+    OCCUPANCY_STATS_ROUTE,
     ASSIGNMENTS_ROUTE,
     OPPORTUNITIES_ROUTE,
     USERS_ROUTE,
@@ -68,6 +70,11 @@ export const MENU_ITEMS_MAP = {
                 url: OCCUPANCY_CHART_ROUTE,
                 icon: BarChart3,
             },
+            {
+                title: 'Stats',
+                url: OCCUPANCY_STATS_ROUTE,
+                icon: ChartPie,
+            }
         ],
     },
     assignments: {
