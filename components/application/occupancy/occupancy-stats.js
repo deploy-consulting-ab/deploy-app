@@ -54,7 +54,7 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
                 />
             </div>
 
-            <div className="max-w-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 <OccupancyDynamicAverageComponent
                     employeeNumber={employeeNumber}
                     defaultStartDate={defaultStartDate}

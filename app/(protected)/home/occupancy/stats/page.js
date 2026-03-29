@@ -6,7 +6,7 @@ export default async function OccupancyStatsPage() {
     const employeeNumber = session.user.employeeNumber;
 
     return (
-        <div className="p-4 md:p-6">
+        <div className="space-y-6">
             <div className="mb-6">
                 <h2 className="text-lg font-semibold">Occupancy Statistics</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
