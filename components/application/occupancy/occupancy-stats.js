@@ -52,9 +52,6 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
                     subtitle={`Feb ${previousFY} – Jan ${previousFY + 1}`}
                     monthCount={stats?.lastFYMonthCount}
                 />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 <OccupancyDynamicAverageComponent
                     employeeNumber={employeeNumber}
                     defaultStartDate={defaultStartDate}

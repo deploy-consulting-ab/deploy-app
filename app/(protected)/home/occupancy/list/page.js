@@ -1,7 +1,6 @@
-'use server';
-
 import { auth } from '@/auth';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
+import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
 import { formatDateToISOString, getUTCToday } from '@/lib/utils';
 import { getOccupancyHistory } from '@/actions/salesforce/salesforce-actions';
 
@@ -22,7 +21,8 @@ export default async function OccupancyListPage() {
     }
 
     return (
-        <div>
+        <div className="flex flex-col space-y-6">
+            <OccupancyStatsComponent employeeNumber={employeeNumber} />
             <OccupancyListComponent
                 occupancyData={occupancyData}
                 employeeNumber={employeeNumber}

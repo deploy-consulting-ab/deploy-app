@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { format, parseISO } from 'date-fns';
+import { CalendarIcon, Loader2, CalendarSearch } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { getOccupancyAverageByDateRange } from '@/actions/salesforce/salesforce-actions';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
-import { Loader2, CalendarSearch } from 'lucide-react';
 
 function OccupancyRateBadge({ rate }) {
     const level = getOccupancyLevel(rate);
@@ -25,8 +27,8 @@ function OccupancyRateBadge({ rate }) {
 }
 
 export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartDate, defaultEndDate }) {
-    const [startDate, setStartDate] = useState(defaultStartDate);
-    const [endDate, setEndDate] = useState(defaultEndDate);
+    const [startDate, setStartDate] = useState(defaultStartDate ? parseISO(defaultStartDate) : undefined);
+    const [endDate, setEndDate] = useState(defaultEndDate ? parseISO(defaultEndDate) : undefined);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const [isPending, startTransition] = useTransition();
@@ -40,8 +42,8 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                 setError(null);
                 const data = await getOccupancyAverageByDateRange(
                     employeeNumber,
-                    startDate,
-                    endDate
+                    format(startDate, 'yyyy-MM-dd'),
+                    format(endDate, 'yyyy-MM-dd')
                 );
                 setResult(data);
             } catch (err) {
@@ -67,32 +69,52 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <div className="grid grid-cols-2 gap-3">
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="occupancy-start-date" className="text-xs text-muted-foreground">
-                                From
-                            </Label>
-                            <Input
-                                id="occupancy-start-date"
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                max={endDate || undefined}
-                                required
-                                className="h-8 text-sm"
-                            />
+                            <Label className="text-xs text-muted-foreground">From</Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        data-empty={!startDate}
+                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground"
+                                    >
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
+                                        {startDate ? format(startDate, 'MMM d, yyyy') : 'Pick a date'}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={startDate}
+                                        onSelect={setStartDate}
+                                        disabled={(date) => endDate ? date > endDate : false}
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <Label htmlFor="occupancy-end-date" className="text-xs text-muted-foreground">
-                                To
-                            </Label>
-                            <Input
-                                id="occupancy-end-date"
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                min={startDate || undefined}
-                                required
-                                className="h-8 text-sm"
-                            />
+                            <Label className="text-xs text-muted-foreground">To</Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        data-empty={!endDate}
+                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground"
+                                    >
+                                        <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
+                                        {endDate ? format(endDate, 'MMM d, yyyy') : 'Pick a date'}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={endDate}
+                                        onSelect={setEndDate}
+                                        disabled={(date) => startDate ? date < startDate : false}
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
                         </div>
                     </div>
 
