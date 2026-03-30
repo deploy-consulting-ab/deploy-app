@@ -21,7 +21,7 @@ const DAYS_SINGLE = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
  * @param {Function} props.onRemoveProject - Callback (projectId) => void
  * @param {Function} props.onFillFullTime - Callback (projectId) => void
  * @param {Function} props.onResetProject - Callback (projectId) => void
- * @param {boolean} props.disabled - Whether inputs are disabled
+ * @param {boolean} props.disabled - Whether the grid inputs are read-only
  * @param {Set} props.holidays - Set of holiday date strings (YYYY-MM-DD format)
  * @param {boolean} props.isPastWeek - Whether the selected week is in the past
  * @param {Array} props.initialTimeData - Initial time data from Flex (for sync status)

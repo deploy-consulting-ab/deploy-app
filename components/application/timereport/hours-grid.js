@@ -22,7 +22,7 @@ const DAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
  * @param {Function} props.onRemoveProject - Callback when removing a project
  * @param {Array} props.projects - Optional array of projects for color lookup (with flexId and color properties)
  * @param {Set} props.selectedProjects - Set of selected project IDs to display even without time entries
- * @param {boolean} props.disabled - Whether the grid inputs are disabled (read-only mode)
+ * @param {boolean} props.gridReadOnly - Whether the grid inputs are read-only
  * @param {boolean} props.isCheckmarked - Whether the timecard is checkmarked
  * @param {Function} props.onToggleCheckmark - Callback to toggle checkmark status
  * @param {Function} props.onAddProject - Callback when adding a new project
@@ -38,7 +38,7 @@ export function HoursGridComponent({
     holidays,
     projects = [],
     selectedProjects = new Set(),
-    disabled = false,
+    gridReadOnly = false,
     hasChanges = false,
     isSaving = false,
     onSave,
@@ -366,7 +366,7 @@ export function HoursGridComponent({
                     onRemoveProject={handleRemoveProject}
                     onFillFullTime={handleFillFullTime}
                     onResetProject={handleResetProject}
-                    disabled={disabled}
+                    disabled={gridReadOnly}
                     holidays={holidays}
                     isPastWeek={isPastWeek}
                     initialTimeData={initialTimeData}
@@ -502,7 +502,7 @@ export function HoursGridComponent({
                                     >
                                         {/* Project name with remove button */}
                                         <div className="flex items-center gap-2 pr-2">
-                                            {!disabled && (
+                                            {!gridReadOnly && (
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
@@ -555,7 +555,7 @@ export function HoursGridComponent({
                                                             )
                                                         }
                                                         placeholder="0"
-                                                        disabled={disabled}
+                                                        disabled={gridReadOnly}
                                                         title={
                                                             isBankHoliday
                                                                 ? 'Bank Holiday'
@@ -569,7 +569,7 @@ export function HoursGridComponent({
                                                             'text-center h-9 text-sm px-1 text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-none transition-opacity',
                                                             !isSynced &&
                                                                 hasHours &&
-                                                                !disabled &&
+                                                                !gridReadOnly &&
                                                                 'opacity-70',
                                                             isBankHoliday &&
                                                                 'bg-red-100 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300',
@@ -580,7 +580,7 @@ export function HoursGridComponent({
                                                                 !isBankHoliday &&
                                                                 'bg-muted/50 text-muted-foreground',
                                                             isToday &&
-                                                                !disabled &&
+                                                                !gridReadOnly &&
                                                                 !isBankHoliday &&
                                                                 'ring-1 ring-primary/30',
                                                             isPastWeek &&
@@ -588,11 +588,11 @@ export function HoursGridComponent({
                                                                 !isWeekendDay &&
                                                                 isWorkingTime &&
                                                                 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30',
-                                                            disabled &&
+                                                            gridReadOnly &&
                                                                 !isBankHoliday &&
                                                                 !(!isWorkingTime && hasHours) &&
                                                                 'cursor-not-allowed bg-muted/40 text-muted-foreground disabled:opacity-100',
-                                                            disabled &&
+                                                            gridReadOnly &&
                                                                 (isBankHoliday ||
                                                                     (!isWorkingTime && hasHours)) &&
                                                                 'cursor-not-allowed disabled:opacity-100'
@@ -620,7 +620,7 @@ export function HoursGridComponent({
                                         </div>
 
                                         {/* Action buttons */}
-                                        {!disabled && (
+                                        {!gridReadOnly && (
                                             <div className="flex items-center gap-0.5">
                                                 <Button
                                                     variant="ghost"
@@ -646,7 +646,7 @@ export function HoursGridComponent({
                                                 </Button>
                                             </div>
                                         )}
-                                        {disabled && <div />}
+                                        {gridReadOnly && <div />}
                                     </div>
                                 );
                             })}
@@ -720,10 +720,10 @@ export function HoursGridComponent({
                         <span>Target: {weekTotal}/40h</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        {!isCheckmarked && hasChanges && (
+                        {!isPastWeek && !isCheckmarked && hasChanges && (
                             <span className="text-amber-600">Unsaved changes - save before checkmarking.</span>
                         )}
-                        {onToggleCheckmark && (
+                        {!isPastWeek && onToggleCheckmark && (
                             <Button
                                 onClick={onToggleCheckmark}
                                 variant={isCheckmarked ? 'destructive' : 'default'}
@@ -743,7 +743,7 @@ export function HoursGridComponent({
                                 )}
                             </Button>
                         )}
-                        {!isCheckmarked && onSave && (
+                        {!isPastWeek && !isCheckmarked && onSave && (
                             <Button
                                 onClick={onSave}
                                 disabled={!hasChanges || isSaving}

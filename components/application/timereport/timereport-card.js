@@ -619,7 +619,7 @@ export function TimereportCardComponent({
                                 onAddProject={handleAddProject}
                                 projects={projects}
                                 selectedProjects={selectedProjects}
-                                disabled={isPastWeek || isCheckmarked}
+                                gridReadOnly={isPastWeek || isCheckmarked}
                                 holidays={holidays}
                                 isPastWeek={isPastWeek}
                                 hasChanges={hasChanges}
