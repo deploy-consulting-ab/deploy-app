@@ -21,6 +21,7 @@ import {
     getUTCToday,
     formatDateToISOString,
     formatDateToSwedish,
+    getPreviousWeekGraceDeadline,
 } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
@@ -88,11 +89,27 @@ export function TimereportCardComponent({
         }
     }, [initialError]);
 
-    // Check if the selected week is in the past (use UTC for consistent timezone handling)
+    // Check if the selected week is read-only.
+    // The previous week has a grace period: it remains editable until Monday 22:00 Stockholm time.
+    // Any week older than the previous week is always read-only.
     const isPastWeek = useMemo(() => {
         const currentWeekMonday = getWeekMonday(getUTCToday());
         const selectedWeekMonday = getWeekMonday(selectedWeek);
-        return selectedWeekMonday.getTime() < currentWeekMonday.getTime();
+
+        // Current or future week — always editable
+        if (selectedWeekMonday.getTime() >= currentWeekMonday.getTime()) {
+            return false;
+        }
+
+        // Previous week — editable until this Monday at 23:59 Stockholm time
+        const previousWeekMonday = new Date(currentWeekMonday);
+        previousWeekMonday.setUTCDate(previousWeekMonday.getUTCDate() - 7);
+        if (selectedWeekMonday.getTime() === previousWeekMonday.getTime()) {
+            return Date.now() >= getPreviousWeekGraceDeadline(currentWeekMonday).getTime();
+        }
+
+        // Anything older — always read-only
+        return true;
     }, [selectedWeek]);
 
     // Track if there are unsaved changes
@@ -681,44 +698,44 @@ export function TimereportCardComponent({
                             </p>
                         )}
                         <div className="flex items-center justify-center gap-2">
-                        <Button
-                            onClick={handleSave}
-                            disabled={!hasChanges || isSaving || isCheckmarked}
-                            size="lg"
-                            className="flex-1 gap-2"
-                        >
-                            <Save className="h-5 w-5" />
-                            {isSaving ? 'Saving...' : 'Save'}
-                        </Button>
-                        <Button
-                            variant={isCheckmarked ? 'destructive' : 'default'}
-                            size="lg"
-                            onClick={handleToggleCheckmark}
-                            className="gap-2"
-                        >
-                            {isCheckmarked ? (
-                                <>
-                                    <XCircle className="h-5 w-5" />
-                                    Uncheckmark
-                                </>
-                            ) : (
-                                <>
-                                    <CheckCircle className="h-5 w-5" />
-                                    Checkmark
-                                </>
-                            )}
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            onClick={refreshTimereports}
-                            disabled={isLoadingTimereports}
-                            className="gap-2"
-                        >
-                            <RefreshCw
-                                className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
-                            />
-                        </Button>
+                            <Button
+                                onClick={handleSave}
+                                disabled={!hasChanges || isSaving || isCheckmarked}
+                                size="lg"
+                                className="flex-1 gap-2"
+                            >
+                                <Save className="h-5 w-5" />
+                                {isSaving ? 'Saving...' : 'Save'}
+                            </Button>
+                            <Button
+                                variant={isCheckmarked ? 'destructive' : 'default'}
+                                size="lg"
+                                onClick={handleToggleCheckmark}
+                                className="gap-2"
+                            >
+                                {isCheckmarked ? (
+                                    <>
+                                        <XCircle className="h-5 w-5" />
+                                        Uncheckmark
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle className="h-5 w-5" />
+                                        Checkmark
+                                    </>
+                                )}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                onClick={refreshTimereports}
+                                disabled={isLoadingTimereports}
+                                className="gap-2"
+                            >
+                                <RefreshCw
+                                    className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
+                                />
+                            </Button>
                         </div>
                     </div>
                 </div>
