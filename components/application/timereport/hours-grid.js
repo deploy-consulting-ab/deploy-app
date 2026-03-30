@@ -388,6 +388,7 @@ export function HoursGridComponent({
                         <div className="flex-1">
                             {
                                 onAddProject &&
+                                !isPastWeek &&
                                 hasWorkingTimeProjects &&
                                 !isCheckmarked && (
                                     <AddProjectDropdownComponent
@@ -554,6 +555,7 @@ export function HoursGridComponent({
                                                             )
                                                         }
                                                         placeholder="0"
+                                                        disabled={disabled}
                                                         title={
                                                             isBankHoliday
                                                                 ? 'Bank Holiday'

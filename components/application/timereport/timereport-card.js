@@ -584,7 +584,7 @@ export function TimereportCardComponent({
                         </div>
 
                         {/* Empty state - rendered separately to maintain consistent sizing during loading */}
-                        {selectedProjects.size === 0 && !hasWorkingTimeProjects && (
+                        {!isPastWeek && selectedProjects.size === 0 && !hasWorkingTimeProjects && (
                             <div
                                 className={`mb-6 transition-opacity duration-300 ease-in-out ${
                                     isLoadingProjects || isLoadingTimereports
