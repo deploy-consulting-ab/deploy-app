@@ -57,9 +57,10 @@ export async function GET(request) {
         const { weekday, hour } = getSwedishDateTime(now);
 
         const isWednesday = weekday === 'Wed';
-        const isRightHour = isWednesday && hour === 22;
+        const isRightHour = isWednesday;
 
         if (!isRightHour) {
+            console.log('Outside reminder time window', weekday, hour);
             return Response.json(
                 { message: 'Outside reminder time window', weekday, hour },
                 { status: 200 }
@@ -91,6 +92,7 @@ export async function GET(request) {
         });
 
         if (users.length === 0) {
+            console.log('No eligible users found');
             return Response.json({ message: 'No eligible users found' }, { status: 200 });
         }
 
@@ -118,6 +120,7 @@ export async function GET(request) {
         const weekEndStr = formatDateToISOString(getWeekSunday(weekStartDate));
 
         if (usersWithoutCheckmarkAndActiveAssignments.length === 0) {
+            console.log('All users have reported hours');
             return Response.json(
                 { message: 'All users have reported hours', weekStartDate: weekStartStr },
                 { status: 200 }
