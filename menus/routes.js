@@ -24,6 +24,7 @@ export const AUTH_ROUTES = [LOGIN_ROUTE];
  * Prefix for API authentication routes routes that start with this prefix are used for API Authentication
  */
 export const API_AUTH_PREFIX = '/api/auth';
+export const API_CRON_PREFIX = '/api/cron';
 
 /**
  * Default redirecting path

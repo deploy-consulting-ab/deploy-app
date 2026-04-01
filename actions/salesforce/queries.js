@@ -150,6 +150,26 @@ const getSalesforcePublicHolidaysQuery = () => {
     return `SELECT Id, Name, ActivityDate FROM Holiday`;
 };
 
+/**
+ * Employees queries
+ */
+const getEmployeesWithActiveAssignmentsQuery = (employeeNumbers, date) => {
+    return `SELECT Id, EmployeeId__c
+            FROM Employee__c 
+            WHERE Id IN (
+                SELECT Resource__c 
+                FROM Assignment__c 
+                WHERE StartDate__c <= ${date} 
+                AND Resource__r.EmployeeId__c IN (${employeeNumbers})
+                AND (EndDate__c >= ${date} OR EndDate__c = NULL)
+                AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+                AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
+                AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
+            )
+
+            ORDER BY Name ASC`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -167,4 +187,5 @@ export {
     getOccupancyByDateRangeQuery,
     getSalesforcePublicHolidaysQuery,
     getTimecardHoursCountByAssignmentIdQuery,
+    getEmployeesWithActiveAssignmentsQuery,
 };

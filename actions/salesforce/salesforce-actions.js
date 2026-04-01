@@ -17,6 +17,7 @@ import {
     getCurrentAssignmentsByEmployeeNumberQuery,
     getSalesforcePublicHolidaysQuery,
     getOccupancyByDateRangeQuery,
+    getEmployeesWithActiveAssignmentsQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -398,6 +399,18 @@ export async function getSalesforcePublicHolidays() {
             holidaysSet.add(holiday.ActivityDate);
         }
         return holidaysSet;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
+    try {
+        const employeeNumbersString = employeeNumbers.map((num) => `'${num}'`).join(', ');
+        const result = await queryData(
+            getEmployeesWithActiveAssignmentsQuery(employeeNumbersString, date)
+        );
+        return new Set(result.map((employee) => employee.EmployeeId__c));
     } catch (error) {
         throw error;
     }
