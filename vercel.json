@@ -2,11 +2,19 @@
     "crons": [
         {
             "path": "/api/cron/slack-timereport-reminder",
-            "schedule": "30 20 * * 3"
+            "schedule": "0 15 * * 5"
         },
         {
             "path": "/api/cron/slack-timereport-reminder",
-            "schedule": "30 21 * * 3"
+            "schedule": "0 16 * * 5"
+        },
+        {
+            "path": "/api/cron/slack-timereport-reminder",
+            "schedule": "0 10 * * 1"
+        },
+        {
+            "path": "/api/cron/slack-timereport-reminder",
+            "schedule": "0 11 * * 1"
         }
     ]
 }

@@ -14,12 +14,20 @@ import { getEmployeesWithActiveAssignments } from '@/actions/salesforce/salesfor
  * Sends Slack reminders to active non-subcontractor users who have not yet
  * submitted a TimereportCheckmark for the relevant week.
  *
- * Trigger schedule (configured in vercel.json) — testing:
- *   Wednesday 22:30 Europe/Stockholm. Two UTC crons (20:30 and 21:30) cover CET/CEST;
- *   getSwedishDateTime ensures only the run that lands at Swedish hour 22 continues.
+ * Trigger schedule (configured in vercel.json):
+ *   Two cron entries per day handle Sweden's DST transition automatically.
+ *   Vercel crons run in UTC; the handler uses getSwedishDateTime to check the
+ *   actual Stockholm wall-clock hour and returns early if it is outside the
+ *   expected window — so exactly one of the two daily entries fires each week.
  *
- * Target week logic (testing):
- *   Wednesday → current week (weekStartDate = Monday of the current week)
+ *   Day     | UTC schedules        | Fires at (Stockholm)
+ *   --------|----------------------|----------------------
+ *   Friday  | 15:00 and 16:00 UTC  | 17:00 (CEST or CET)
+ *   Monday  | 10:00 and 11:00 UTC  | 12:00 (CEST or CET)
+ *
+ * Target week logic:
+ *   - Friday  → current week  (weekStartDate = Monday of the current week)
+ *   - Monday  → previous week (weekStartDate = Monday of the previous week)
  *
  * weekStartDate is stored in the DB as the Monday of the week at 00:00:00 UTC,
  * matching what TimereportCheckmark records use when created by users.
@@ -37,7 +45,7 @@ import { getEmployeesWithActiveAssignments } from '@/actions/salesforce/salesfor
  *
  * Responses:
  *   401  Unauthorized        – missing or invalid CRON_SECRET
- *   200  Outside time window – cron fired but Swedish weekday/hour is not Wed 22
+ *   200  Outside time window – cron fired but Swedish hour is not 17 or 12
  *   200  No eligible users   – no active non-subcontractor users in the DB
  *   200  All reported        – every eligible user already has a checkmark
  *   200  Reminders processed – list of sent / failed results per user
@@ -52,15 +60,16 @@ export async function GET(request) {
         }
 
         // Determine the current Stockholm wall-clock time.
-        // Two UTC crons cover CET/CEST; only the run at Swedish Wed 22:xx continues.
+        // Two cron entries per day cover DST; only the one that lands at the
+        // correct Swedish hour (17 on Friday, 12 on Monday) continues.
         const now = new Date();
         const { weekday, hour } = getSwedishDateTime(now);
 
-        const isWednesday = weekday === 'Wed';
-        const isRightHour = isWednesday;
+        const isFriday = weekday === 'Fri';
+        const isMonday = weekday === 'Mon';
+        const isRightHour = (isFriday && hour === 17) || (isMonday && hour === 12);
 
         if (!isRightHour) {
-            console.log('Outside reminder time window', weekday, hour);
             return Response.json(
                 { message: 'Outside reminder time window', weekday, hour },
                 { status: 200 }
@@ -73,7 +82,9 @@ export async function GET(request) {
             Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
         );
 
-        const weekStartDate = getWeekMonday(utcToday);
+        const weekStartDate = isFriday
+            ? getWeekMonday(utcToday) // current week's Monday
+            : getWeekMonday(new Date(utcToday.getTime() - 7 * 24 * 60 * 60 * 1000)); // previous week's Monday
 
         // Fetch all active users excluding subcontractors, who are not required
         // to submit timereports through this system.
@@ -92,7 +103,6 @@ export async function GET(request) {
         });
 
         if (users.length === 0) {
-            console.log('No eligible users found');
             return Response.json({ message: 'No eligible users found' }, { status: 200 });
         }
 
@@ -120,7 +130,6 @@ export async function GET(request) {
         const weekEndStr = formatDateToISOString(getWeekSunday(weekStartDate));
 
         if (usersWithoutCheckmarkAndActiveAssignments.length === 0) {
-            console.log('All users have reported hours');
             return Response.json(
                 { message: 'All users have reported hours', weekStartDate: weekStartStr },
                 { status: 200 }
