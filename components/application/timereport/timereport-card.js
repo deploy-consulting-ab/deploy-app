@@ -30,7 +30,11 @@ import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
 import { postSlackTimereport } from '@/actions/slack/slack-actions';
 import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
 import { AbsenceCardPhoneComponent } from '@/components/application/timereport/absence/absence-card-phone';
-import { REQUEST_ABSENCE_PERMISSION, VIEW_FLEX_PERMISSION } from '@/lib/rba-constants';
+import {
+    REQUEST_ABSENCE_PERMISSION,
+    VIEW_FLEX_PERMISSION,
+    EDIT_PAST_TIMEREPORT_ENTRIES_PERMISSION,
+} from '@/lib/rba-constants';
 
 /**
  * Main time report card component.
@@ -54,6 +58,9 @@ export function TimereportCardComponent({
     const permissionsSet = useMemo(() => new Set(systemPermissions || []), [systemPermissions]);
     const canRequestAbsence = permissionsSet.has(REQUEST_ABSENCE_PERMISSION);
     const canViewFlex = permissionsSet.has(VIEW_FLEX_PERMISSION);
+    const canEditPastTimereportEntries = permissionsSet.has(
+        EDIT_PAST_TIMEREPORT_ENTRIES_PERMISSION
+    );
     // Get Monday of current week as default (use UTC for consistent timezone handling)
     const [selectedWeek, setSelectedWeek] = useState(() => getWeekMonday(getUTCToday()));
 
@@ -93,7 +100,12 @@ export function TimereportCardComponent({
     // Check if the selected week is read-only.
     // The previous week has a grace period: it remains editable until Monday 22:00 Stockholm time.
     // Any week older than the previous week is always read-only.
+    // Users with perm_edit_past_timereport_entries can edit and checkmark any past week.
     const isPastWeek = useMemo(() => {
+        if (canEditPastTimereportEntries) {
+            return false;
+        }
+
         const currentWeekMonday = getWeekMonday(getUTCToday());
         const selectedWeekMonday = getWeekMonday(selectedWeek);
 
@@ -111,7 +123,7 @@ export function TimereportCardComponent({
 
         // Anything older — always read-only
         return true;
-    }, [selectedWeek]);
+    }, [selectedWeek, canEditPastTimereportEntries]);
 
     // Track if there are unsaved changes
     const [hasChanges, setHasChanges] = useState(false);
