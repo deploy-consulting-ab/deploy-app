@@ -143,9 +143,6 @@ export async function GET(request) {
         const results = [];
 
         for (const user of usersWithoutCheckmarkAndActiveAssignments) {
-            if (user.email !== 'agnieto@deployconsulting.se') {
-                continue;
-            }
             try {
                 await sendSlackTimereportReminder(user.email, weekStartStr, weekEndStr);
                 results.push({ userId: user.id, name: user.name, status: 'sent' });
