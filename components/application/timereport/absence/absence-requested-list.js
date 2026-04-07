@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
-import { formatDateToISOString, cn } from '@/lib/utils';
+import { formatDateToISOString, cn, countSwedishBusinessDaysLocalInclusive } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { getAbsenceStatusColor } from '@/lib/utils';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
@@ -88,6 +88,18 @@ const formatLocalDate = (date) => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+};
+
+const rowHasExplicitHours = (hours) => {
+    return hours != null && hours !== '' && !Number.isNaN(Number(hours));
+};
+
+const getHoursOrDaysSortValue = (row) => {
+    if (rowHasExplicitHours(row.Hours)) return Number(row.Hours);
+    return countSwedishBusinessDaysLocalInclusive(
+        parseToLocalDate(row.FromDate),
+        parseToLocalDate(row.ToDate)
+    );
 };
 
 /**
@@ -373,6 +385,8 @@ export function AbsenceRequestedListComponent({
             size: 100,
             minSize: 80,
             maxSize: 150,
+            sortingFn: (rowA, rowB) =>
+                getHoursOrDaysSortValue(rowA.original) - getHoursOrDaysSortValue(rowB.original),
             header: ({ column }) => {
                 return (
                     <Button
@@ -381,19 +395,28 @@ export function AbsenceRequestedListComponent({
                         className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
-                        Hours
+                        Hours / days
                         <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                     </Button>
                 );
             },
             cell: ({ row }) => {
                 const isEditing = editingId === row.original.Id;
-                const hours = row.getValue('Hours');
+                const hours = row.original.Hours;
 
                 if (isEditing) {
                     if (!isSameDay) {
+                        const days = countSwedishBusinessDaysLocalInclusive(
+                            editValues.FromDate,
+                            editValues.ToDate
+                        );
                         return (
-                            <div className="text-foreground/50 text-xs italic">N/A (multi-day)</div>
+                            <div className="text-foreground/80 tabular-nums text-xs">
+                                {days}{' '}
+                                <span className="text-muted-foreground font-normal">
+                                    {days === 1 ? 'day' : 'days'}
+                                </span>
+                            </div>
                         );
                     }
 
@@ -402,7 +425,23 @@ export function AbsenceRequestedListComponent({
                     );
                 }
 
-                return <div className="text-foreground/80 tabular-nums">{hours || '-'}</div>;
+                if (rowHasExplicitHours(hours)) {
+                    return <div className="text-foreground/80 tabular-nums">{hours}</div>;
+                }
+
+                const days = countSwedishBusinessDaysLocalInclusive(
+                    parseToLocalDate(row.original.FromDate),
+                    parseToLocalDate(row.original.ToDate)
+                );
+
+                return (
+                    <div className="text-foreground/80 tabular-nums">
+                        {days}{' '}
+                        <span className="text-muted-foreground text-xs font-normal">
+                            {days === 1 ? 'day' : 'days'}
+                        </span>
+                    </div>
+                );
             },
         },
         {

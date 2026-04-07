@@ -7,7 +7,7 @@ import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, Clock, ArrowRight, CalendarDays } from 'lucide-react';
 import { enGB } from 'react-day-picker/locale';
-import { cn } from '@/lib/utils';
+import { cn, countSwedishBusinessDaysLocalInclusive } from '@/lib/utils';
 
 /**
  * Format a local Date object to YYYY-MM-DD string using local timezone.
@@ -54,17 +54,8 @@ export const HolidaysRequestComponent = forwardRef(function HolidaysRequestCompo
 
     const calculateDays = useCallback(() => {
         if (!startDate || !endDate) return 0;
-        if (isSameDay) return 1;
-
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        // Calculate the difference in days
-        const diffTime = Math.abs(end - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-        return diffDays;
-    }, [startDate, endDate, isSameDay]);
+        return countSwedishBusinessDaysLocalInclusive(startDate, endDate);
+    }, [startDate, endDate]);
 
     // Expose form data and validation to parent via ref
     useImperativeHandle(
