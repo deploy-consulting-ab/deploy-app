@@ -34,7 +34,7 @@ export function AccessCreationWrapperComponent({
     const systemPermissions = useMemo(
         () =>
             totalSystemPermissions.map((systemPermission) =>
-                systemPermission.name === VIEW_HOME_PERMISSION
+                systemPermission.id === VIEW_HOME_PERMISSION
                     ? {
                           ...systemPermission,
                           assigned: true,

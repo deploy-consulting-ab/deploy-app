@@ -67,10 +67,10 @@ export const getUserByIdWithSystemPermissions = async (id) => {
 
         const allPermissions = [
             ...existingUser.profile.systemPermissions.map(
-                (systemPermission) => systemPermission.name
+                (systemPermission) => systemPermission.id
             ),
             ...existingUser.permissionSets.flatMap((set) =>
-                set.systemPermissions.map((systemPermission) => systemPermission.name)
+                set.systemPermissions.map((systemPermission) => systemPermission.id)
             ),
         ];
 
@@ -146,12 +146,12 @@ export async function getCombinedSystemPermissionsForUser(id) {
 
         // 2. Extract system permissions from the user's profile
         const profileSystemPermissions = (userWithPermissions.profile?.systemPermissions || []).map(
-            (systemPermission) => systemPermission.name
+            (systemPermission) => systemPermission.id
         );
 
         // 3. Extract system permissions from all assigned permission sets flatMap is used to merge the system permissions from multiple sets into one array
         const permissionSetSystemPermissions = userWithPermissions.permissionSets.flatMap((set) =>
-            set.systemPermissions.map((systemPermission) => systemPermission.name)
+            set.systemPermissions.map((systemPermission) => systemPermission.id)
         );
 
         // 4. Combine both lists
