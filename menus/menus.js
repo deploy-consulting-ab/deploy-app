@@ -29,6 +29,7 @@ import {
     PERMISSION_SETS_ROUTE,
     SYSTEM_PERMISSIONS_ROUTE,
     TIMEREPORT_ROUTE,
+    MANAGEMENT_ROUTE,
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -38,6 +39,7 @@ import {
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
     VIEW_TIMEREPORT_PERMISSION,
+    VIEW_MANAGEMENT_PERMISSION,
 } from '@/lib/rba-constants';
 
 // Map of menu items with their required permissions and configurations
@@ -94,6 +96,12 @@ export const MENU_ITEMS_MAP = {
         url: TIMEREPORT_ROUTE,
         icon: Clock,
         systemPermission: VIEW_TIMEREPORT_PERMISSION,
+    },
+    management: {
+        title: 'Management',
+        url: MANAGEMENT_ROUTE,
+        icon: Shield,
+        systemPermission: VIEW_MANAGEMENT_PERMISSION,
     },
 };
 
