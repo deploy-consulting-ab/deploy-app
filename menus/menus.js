@@ -49,6 +49,19 @@ export const MENU_ITEMS_MAP = {
         icon: Home,
         systemPermission: VIEW_HOME_PERMISSION,
     },
+    management: {
+        title: 'Management',
+        url: MANAGEMENT_ROUTE,
+        icon: Shield,
+        systemPermission: VIEW_MANAGEMENT_PERMISSION,
+        items: [
+            {
+                title: 'Employees',
+                url: EMPLOYEES_LIST_ROUTE,
+                icon: Users,
+            },
+        ],
+    },
     holidays: {
         title: 'Holidays',
         url: HOLIDAYS_ROUTE,
@@ -62,15 +75,15 @@ export const MENU_ITEMS_MAP = {
         systemPermission: VIEW_OCCUPANCY_PERMISSION,
         items: [
             {
+                title: 'Stats',
+                url: OCCUPANCY_STATS_ROUTE,
+                icon: ChartPie,
+            },
+            {
                 title: 'Chart',
                 url: OCCUPANCY_CHART_ROUTE,
                 icon: BarChart3,
             },
-            {
-                title: 'Stats',
-                url: OCCUPANCY_STATS_ROUTE,
-                icon: ChartPie,
-            }
         ],
     },
     assignments: {
@@ -90,19 +103,6 @@ export const MENU_ITEMS_MAP = {
         url: TIMEREPORT_ROUTE,
         icon: Clock,
         systemPermission: VIEW_TIMEREPORT_PERMISSION,
-    },
-    management: {
-        title: 'Management',
-        url: MANAGEMENT_ROUTE,
-        icon: Shield,
-        systemPermission: VIEW_MANAGEMENT_PERMISSION,
-        items: [
-            {
-                title: 'Employees',
-                url: EMPLOYEES_LIST_ROUTE,
-                icon: Users,
-            }
-        ],
     },
 };
 

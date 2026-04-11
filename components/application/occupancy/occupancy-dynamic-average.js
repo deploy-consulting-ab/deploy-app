@@ -88,6 +88,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                                         onSelect={setStartDate}
                                         disabled={(date) => endDate ? date > endDate : false}
                                         initialFocus
+                                        captionLayout="dropdown"
                                     />
                                 </PopoverContent>
                             </Popover>
@@ -112,6 +113,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                                         onSelect={setEndDate}
                                         disabled={(date) => startDate ? date < startDate : false}
                                         initialFocus
+                                        captionLayout="dropdown"
                                     />
                                 </PopoverContent>
                             </Popover>
@@ -130,7 +132,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                                 Calculating…
                             </>
                         ) : (
-                            'Calculate Average'
+                            'Calculate'
                         )}
                     </Button>
                 </form>

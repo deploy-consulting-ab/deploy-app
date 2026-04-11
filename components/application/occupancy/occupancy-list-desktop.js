@@ -251,7 +251,7 @@ export function OccupancyListDesktopComponent({
                     size="sm"
                     className="md:hover:cursor-pointer"
                 >
-                    Calculate
+                    Calculate Average
                     <BarChart2 className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
