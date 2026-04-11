@@ -170,6 +170,11 @@ const getEmployeesWithActiveAssignmentsQuery = (employeeNumbers, date) => {
             ORDER BY Name ASC`;
 };
 
+const getEmployeeByIdQuery = (employeeId) => {
+    return `SELECT Id, Name, EmployeeId__c
+            FROM Employee__c WHERE Id = '${employeeId}' LIMIT 1`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -188,4 +193,5 @@ export {
     getSalesforcePublicHolidaysQuery,
     getTimecardHoursCountByAssignmentIdQuery,
     getEmployeesWithActiveAssignmentsQuery,
+    getEmployeeByIdQuery
 };

@@ -18,6 +18,7 @@ import {
     getSalesforcePublicHolidaysQuery,
     getOccupancyByDateRangeQuery,
     getEmployeesWithActiveAssignmentsQuery,
+    getEmployeeByIdQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -411,6 +412,15 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
             getEmployeesWithActiveAssignmentsQuery(employeeNumbersString, date)
         );
         return new Set(result.map((employee) => employee.EmployeeId__c));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getEmployeeById(employeeId) {
+    try {
+        const result = await queryData(getEmployeeByIdQuery(employeeId));
+        return result[0];
     } catch (error) {
         throw error;
     }
