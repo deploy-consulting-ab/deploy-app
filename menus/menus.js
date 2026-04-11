@@ -30,6 +30,7 @@ import {
     SYSTEM_PERMISSIONS_ROUTE,
     TIMEREPORT_ROUTE,
     MANAGEMENT_ROUTE,
+    EMPLOYEES_LIST_ROUTE,
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -102,6 +103,13 @@ export const MENU_ITEMS_MAP = {
         url: MANAGEMENT_ROUTE,
         icon: Shield,
         systemPermission: VIEW_MANAGEMENT_PERMISSION,
+        items: [
+            {
+                title: 'Employees',
+                url: EMPLOYEES_LIST_ROUTE,
+                icon: Users,
+            }
+        ],
     },
 };
 

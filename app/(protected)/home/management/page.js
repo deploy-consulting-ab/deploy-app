@@ -1,3 +1,6 @@
+import { redirect } from 'next/navigation';
+import { MANAGEMENT_ROUTE } from '@/menus/routes';
+
 export default function ManagementPage() {
-    return <div>Management</div>;
+    redirect(MANAGEMENT_ROUTE);
 }

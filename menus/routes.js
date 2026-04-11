@@ -44,6 +44,7 @@ export const USERS_ROUTE = `${SETUP_ROUTE}/users`;
 export const PROFILES_ROUTE = `${SETUP_ROUTE}/profiles`;
 export const PERMISSION_SETS_ROUTE = `${SETUP_ROUTE}/permission-sets`;
 export const SYSTEM_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/system-permissions`;
+export const EMPLOYEES_LIST_ROUTE = `${MANAGEMENT_ROUTE}/employees`;
 
 export const PROTECTED_ROUTES = [
     { path: HOLIDAYS_ROUTE, systemPermission: VIEW_HOLIDAYS_PERMISSION },
@@ -59,6 +60,7 @@ export const PROTECTED_ROUTES = [
     { path: SYSTEM_PERMISSIONS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_SYSTEM_PERMISSIONS_PERMISSION
     { path: SETUP_ROUTE, systemPermission: VIEW_SETUP_PERMISSION },
     { path: MANAGEMENT_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
+    { path: EMPLOYEES_LIST_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
     { path: HOME_ROUTE, systemPermission: VIEW_HOME_PERMISSION }, // This always needs to be the last route
     { path: TIMEREPORT_ROUTE, systemPermission: VIEW_TIMEREPORT_PERMISSION },
 ];
