@@ -32,7 +32,6 @@ export const API_CRON_PREFIX = '/api/cron';
  */
 export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
-export const OCCUPANCY_LIST_ROUTE = `${OCCUPANCY_ROUTE}/list`;
 export const OCCUPANCY_CHART_ROUTE = `${OCCUPANCY_ROUTE}/chart`;
 export const OCCUPANCY_STATS_ROUTE = `${OCCUPANCY_ROUTE}/stats`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
@@ -49,7 +48,6 @@ export const EMPLOYEES_LIST_ROUTE = `${MANAGEMENT_ROUTE}/employees`;
 export const PROTECTED_ROUTES = [
     { path: HOLIDAYS_ROUTE, systemPermission: VIEW_HOLIDAYS_PERMISSION },
     { path: OCCUPANCY_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
-    { path: OCCUPANCY_LIST_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_CHART_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_STATS_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: ASSIGNMENTS_ROUTE, systemPermission: VIEW_ASSIGNMENTS_PERMISSION },

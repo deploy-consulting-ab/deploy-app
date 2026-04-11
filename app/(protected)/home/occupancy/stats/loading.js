@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function OccupancyListLoading() {
+export default function OccupancyStatsLoading() {
     return (
         <Card className="@container/card" variant="shadow">
             <CardHeader>

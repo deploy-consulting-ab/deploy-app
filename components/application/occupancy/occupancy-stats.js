@@ -1,13 +1,11 @@
 import {
     getCurrentFiscalYear,
     getPreviousFiscalYear,
-    getFiscalYearStartDate,
     formatDateToISOString,
     getUTCToday,
 } from '@/lib/utils';
 import { getOccupancyStats } from '@/actions/salesforce/salesforce-actions';
 import { OccupancyStatCard } from '@/components/application/occupancy/occupancy-stat-card';
-import { OccupancyDynamicAverageComponent } from '@/components/application/occupancy/occupancy-dynamic-average';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export async function OccupancyStatsComponent({ employeeNumber }) {
@@ -16,8 +14,6 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
 
     const currentFY = getCurrentFiscalYear();
     const previousFY = getPreviousFiscalYear();
-
-    const defaultStartDate = formatDateToISOString(getFiscalYearStartDate(currentFY));
 
     let stats = null;
     let error = null;
@@ -33,8 +29,8 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
     }
 
     return (
-        <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-4 items-start">
+        <div className="flex flex-col">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
                 <OccupancyStatCard
                     title="Current Occupancy Rate"
                     rate={stats?.current}
@@ -51,11 +47,6 @@ export async function OccupancyStatsComponent({ employeeNumber }) {
                     rate={stats?.lastFY}
                     subtitle={`Feb ${previousFY} – Jan ${previousFY + 1}`}
                     monthCount={stats?.lastFYMonthCount}
-                />
-                <OccupancyDynamicAverageComponent
-                    employeeNumber={employeeNumber}
-                    defaultStartDate={defaultStartDate}
-                    defaultEndDate={formattedToday}
                 />
             </div>
         </div>

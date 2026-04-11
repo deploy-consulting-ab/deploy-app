@@ -10,7 +10,6 @@ import {
     Box,
     Settings,
     Clock,
-    List,
     BarChart3,
     ChartPie,
 } from 'lucide-react';
@@ -19,7 +18,6 @@ import {
     SETUP_ROUTE,
     HOLIDAYS_ROUTE,
     OCCUPANCY_ROUTE,
-    OCCUPANCY_LIST_ROUTE,
     OCCUPANCY_CHART_ROUTE,
     OCCUPANCY_STATS_ROUTE,
     ASSIGNMENTS_ROUTE,
@@ -63,11 +61,6 @@ export const MENU_ITEMS_MAP = {
         icon: Percent,
         systemPermission: VIEW_OCCUPANCY_PERMISSION,
         items: [
-            {
-                title: 'List',
-                url: OCCUPANCY_LIST_ROUTE,
-                icon: List,
-            },
             {
                 title: 'Chart',
                 url: OCCUPANCY_CHART_ROUTE,
