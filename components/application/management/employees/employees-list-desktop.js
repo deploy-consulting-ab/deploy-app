@@ -10,11 +10,39 @@ import Link from 'next/link';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 import { Checkbox } from '@/components/ui/checkbox';
 import { formatDateToSwedish } from '@/lib/utils';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 export function EmployeesListDesktopComponent({ employees, error: initialError }) {
     const [employeesData, setEmployeesData] = useState(employees);
     const [error, setError] = useState(initialError);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [employmentType, setEmploymentType] = useState('all');
+
+    const employmentTypeViews = [
+        { value: 'all', label: 'All Types' },
+        { value: 'Full-Time', label: 'Full-Time' },
+        { value: 'Part-Time', label: 'Part-Time' },
+        { value: 'Subcontractor', label: 'Subcontractor' },
+        { value: 'Intern', label: 'Intern' },
+        { value: 'Non-Hired', label: 'Non-Hired' },
+    ];
+
+    const handleFilterEmploymentType = (value) => {
+        let filteredData = null;
+        if (value === 'all') {
+            filteredData = employees;
+        } else {
+            filteredData = employees.filter((item) => item.employmentType === value);
+        }
+        setEmployeesData(filteredData);
+        setEmploymentType(value);
+    };
 
     const handleRefresh = async () => {
         if (isRefreshing) {
@@ -159,7 +187,11 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                 );
             },
             cell: ({ row }) => (
-                <div className="text-foreground/70 tabular-nums">{row.getValue('employmentStartDate') ? formatDateToSwedish(row.getValue('employmentStartDate')) : '-'}</div>
+                <div className="text-foreground/70 tabular-nums">
+                    {row.getValue('employmentStartDate')
+                        ? formatDateToSwedish(row.getValue('employmentStartDate'))
+                        : '-'}
+                </div>
             ),
         },
         {
@@ -181,7 +213,11 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                 );
             },
             cell: ({ row }) => (
-                <div className="text-foreground/70 tabular-nums">{row.getValue('employmentEndDate') ? formatDateToSwedish(row.getValue('employmentEndDate')) : '-'}</div>
+                <div className="text-foreground/70 tabular-nums">
+                    {row.getValue('employmentEndDate')
+                        ? formatDateToSwedish(row.getValue('employmentEndDate'))
+                        : '-'}
+                </div>
             ),
         },
     ];
@@ -200,7 +236,27 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
         </Button>
     );
 
+    const viewByEmploymentType = (
+        <Select
+            value={employmentType}
+            onValueChange={handleFilterEmploymentType}
+            key="view-by-employment-type"
+        >
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select view" />
+            </SelectTrigger>
+            <SelectContent>
+                {employmentTypeViews.map((view) => (
+                    <SelectItem key={view.value} value={view.value}>
+                        {view.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
     const actions = [refreshEmployees];
+    const views = [viewByEmploymentType];
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
@@ -213,6 +269,8 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
             placeholder="Filter Employees..."
             searchKey="name"
             actions={actions}
+            views={views}
+            view={employmentType}
         />
     );
 }
