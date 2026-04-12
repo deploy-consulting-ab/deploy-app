@@ -10,9 +10,5 @@ export default async function PermissionSetsPage() {
         error = err;
     }
 
-    return (
-        <div className="py-4">
-            <PermissionSetListComponent permissionSets={permissionSets} error={error} />
-        </div>
-    );
+    return <PermissionSetListComponent permissionSets={permissionSets} error={error} />;
 }

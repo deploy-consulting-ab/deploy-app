@@ -12,8 +12,6 @@ export default async function ProfilesPage() {
     }
 
     return (
-        <div className="py-4">
-            <ProfilesListComponent profiles={profiles} error={error} />
-        </div>
+        <ProfilesListComponent profiles={profiles} error={error} />
     );
 }
