@@ -94,7 +94,19 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
             size: 100,
             minSize: 100,
             maxSize: 100,
-            header: 'Active',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Active
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
+                    </Button>
+                );
+            },
             cell: ({ row }) => {
                 const isActive = row.original.isActive;
                 return (
@@ -109,7 +121,19 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
             size: 100,
             minSize: 100,
             maxSize: 100,
-            header: 'Employment Type',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Employment Type
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
+                    </Button>
+                );
+            },
             cell: ({ row }) => (
                 <div className="text-foreground/70 tabular-nums">
                     {row.getValue('employmentType') ?? '-'}
@@ -121,7 +145,19 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
             size: 100,
             minSize: 100,
             maxSize: 100,
-            header: 'Employment Start Date',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Employment Start Date
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
+                    </Button>
+                );
+            },
             cell: ({ row }) => (
                 <div className="text-foreground/70 tabular-nums">{row.getValue('employmentStartDate') ? formatDateToSwedish(row.getValue('employmentStartDate')) : '-'}</div>
             ),
@@ -131,7 +167,19 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
             size: 100,
             minSize: 100,
             maxSize: 100,
-            header: 'Employment End Date',
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        Employment End Date
+                        <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
+                    </Button>
+                );
+            },
             cell: ({ row }) => (
                 <div className="text-foreground/70 tabular-nums">{row.getValue('employmentEndDate') ? formatDateToSwedish(row.getValue('employmentEndDate')) : '-'}</div>
             ),
