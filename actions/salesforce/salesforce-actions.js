@@ -325,7 +325,6 @@ export async function getOccupancyStats(employeeNumber, today) {
     const previousFY = getPreviousFiscalYear();
 
     const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
-    const currentFYEnd = formatDateToISOString(getFiscalYearEndDate(currentFY));
     const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
     const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
 
@@ -338,13 +337,6 @@ export async function getOccupancyStats(employeeNumber, today) {
         const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
         if (rates.length === 0) return null;
         const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
-        return Math.round(avg * 100) / 100;
-    };
-
-    const computeFYAverage = (records) => {
-        const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
-        if (rates.length === 0) return null;
-        const avg = rates.reduce((a, b) => a + b, 0) / 12;
         return Math.round(avg * 100) / 100;
     };
 
