@@ -18,6 +18,7 @@ import {
     getSalesforcePublicHolidaysQuery,
     getOccupancyByDateRangeQuery,
     getEmployeesWithActiveAssignmentsQuery,
+    getEmployeesQuery,
     getEmployeeByIdQuery,
 } from './queries';
 import {
@@ -400,6 +401,23 @@ export async function getSalesforcePublicHolidays() {
             holidaysSet.add(holiday.ActivityDate);
         }
         return holidaysSet;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getEmployees() {
+    try {
+        const result = await queryData(getEmployeesQuery());
+        return result.map((employee) => ({
+            id: employee.Id,
+            name: employee.Name,
+            employeeId: employee.EmployeeId__c,
+            isActive: employee.IsActive__c,
+            employmentType: employee.EmploymentType__c,
+            employmentStartDate: employee.EmploymentStartDate__c,
+            employmentEndDate: employee.EmploymentEndDate__c,
+        }));
     } catch (error) {
         throw error;
     }
