@@ -107,7 +107,7 @@ export function PermissionSetAssignmentsListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -138,7 +138,7 @@ export function PermissionSetAssignmentsListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Email
@@ -162,7 +162,7 @@ export function PermissionSetAssignmentsListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employee Number
@@ -189,7 +189,7 @@ export function PermissionSetAssignmentsListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Active
@@ -218,7 +218,7 @@ export function PermissionSetAssignmentsListComponent({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100 hover:cursor-pointer"
                             >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
@@ -246,7 +246,9 @@ export function PermissionSetAssignmentsListComponent({
             key="relate-user-to-permission-set"
         >
             <DialogTrigger asChild>
-                <Button size="sm">
+                <Button size="sm"
+                className="hover:cursor-pointer"
+            >
                     <CirclePlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

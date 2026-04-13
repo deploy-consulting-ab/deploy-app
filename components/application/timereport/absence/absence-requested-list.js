@@ -269,7 +269,7 @@ export function AbsenceRequestedListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         From Date
@@ -291,7 +291,7 @@ export function AbsenceRequestedListComponent({
                                     className={cn(
                                         'w-full h-8 justify-start text-left font-normal text-xs',
                                         !editValues.FromDate && 'text-muted-foreground'
-                                    )}
+                                    , "hover:cursor-pointer")}
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.FromDate
@@ -326,7 +326,7 @@ export function AbsenceRequestedListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         To Date
@@ -348,7 +348,7 @@ export function AbsenceRequestedListComponent({
                                     className={cn(
                                         'w-full h-8 justify-start text-left font-normal text-xs',
                                         !editValues.ToDate && 'text-muted-foreground'
-                                    )}
+                                    , "hover:cursor-pointer")}
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.ToDate
@@ -392,7 +392,7 @@ export function AbsenceRequestedListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Hours / days
@@ -454,7 +454,7 @@ export function AbsenceRequestedListComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Status
@@ -494,7 +494,7 @@ export function AbsenceRequestedListComponent({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-100"
+                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-100 hover:cursor-pointer"
                                 onClick={() => handleSaveEdit(id)}
                                 disabled={isSaving}
                             >
@@ -504,7 +504,7 @@ export function AbsenceRequestedListComponent({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-100"
+                                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-100 hover:cursor-pointer"
                                 onClick={handleCancelEdit}
                                 disabled={isSaving}
                             >
@@ -520,7 +520,7 @@ export function AbsenceRequestedListComponent({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100 hover:cursor-pointer"
                             >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />

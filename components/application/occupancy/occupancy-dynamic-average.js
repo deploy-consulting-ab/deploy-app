@@ -75,7 +75,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                                     <Button
                                         variant="outline"
                                         data-empty={!startDate}
-                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground"
+                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground hover:cursor-pointer"
                                     >
                                         <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
                                         {startDate ? format(startDate, 'MMM d, yyyy') : 'Pick a date'}
@@ -100,7 +100,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                                     <Button
                                         variant="outline"
                                         data-empty={!endDate}
-                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground"
+                                        className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground hover:cursor-pointer"
                                     >
                                         <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
                                         {endDate ? format(endDate, 'MMM d, yyyy') : 'Pick a date'}
@@ -124,7 +124,7 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
                         type="submit"
                         size="sm"
                         disabled={isPending || !startDate || !endDate}
-                        className="w-full"
+                        className="w-full hover:cursor-pointer"
                     >
                         {isPending ? (
                             <>

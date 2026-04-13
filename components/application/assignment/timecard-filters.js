@@ -24,7 +24,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
-                                className="w-[160px] sm:w-[200px] justify-start text-left font-normal"
+                                className="w-[160px] sm:w-[200px] justify-start text-left font-normal hover:cursor-pointer"
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
                                 <span className="truncate">
@@ -48,7 +48,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                             variant="ghost"
                             size="icon"
                             onClick={() => handleSelect(null)}
-                            className="text-muted-foreground h-9 w-9"
+                            className="text-muted-foreground h-9 w-9 hover:cursor-pointer"
                             title="Clear filter"
                         >
                             <svg
@@ -75,7 +75,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                         size="icon"
                         onClick={() => onPageChange(currentPage - 1)}
                         disabled={currentPage <= 1}
-                        className="h-9 w-9"
+                        className="h-9 w-9 hover:cursor-pointer"
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -87,7 +87,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                         size="icon"
                         onClick={() => onPageChange(currentPage + 1)}
                         disabled={currentPage >= totalPages}
-                        className="h-9 w-9"
+                        className="h-9 w-9 hover:cursor-pointer"
                     >
                         <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -100,7 +100,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                     size="icon"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage <= 1}
-                    className="h-9 w-9"
+                    className="h-9 w-9 hover:cursor-pointer"
                 >
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -112,7 +112,7 @@ export function TimecardFilters({ onDateChange, onPageChange, totalPages, curren
                     size="icon"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage >= totalPages}
-                    className="h-9 w-9"
+                    className="h-9 w-9 hover:cursor-pointer"
                 >
                     <ChevronRight className="h-4 w-4" />
                 </Button>

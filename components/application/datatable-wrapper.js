@@ -152,7 +152,7 @@ export function DatatableWrapperComponent({
                     size="sm"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
                 >
                     Previous
                 </Button>
@@ -161,7 +161,7 @@ export function DatatableWrapperComponent({
                     size="sm"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
                 >
                     Next
                 </Button>

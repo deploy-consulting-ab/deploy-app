@@ -104,14 +104,17 @@ export function SystemPermissionCardActionsComponent({ systemPermission }) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                        <Button variant="outline" onClick={() => setShowDeleteDialog(false)}
+                className="hover:cursor-pointer"
+            >
                             Cancel
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={() => deleteSystemPermission(systemPermission.id)}
                             disabled={isDeleting}
-                        >
+                className="hover:cursor-pointer"
+            >
                             {isDeleting ? (
                                 <div className="flex items-center gap-2">
                                     <Spinner size="sm" variant="white" />

@@ -8,6 +8,7 @@ import { formatDateToEnUSWithOptions } from '@/lib/utils';
 import Link from 'next/link';
 import { HOLIDAYS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 export function HolidaysCardComponent({
     holidays,
@@ -52,7 +53,7 @@ export function HolidaysCardComponent({
                             size="icon"
                             onClick={handleRefresh}
                             disabled={isPending}
-                            className={isPending ? 'animate-spin' : ''}
+                            className={cn(isPending ? 'animate-spin' : '', 'hover:cursor-pointer')}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>

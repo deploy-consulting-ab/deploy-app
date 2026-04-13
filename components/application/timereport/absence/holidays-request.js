@@ -138,7 +138,7 @@ export const HolidaysRequestComponent = forwardRef(function HolidaysRequestCompo
                                     className={cn(
                                         'w-full h-12 justify-start text-left font-normal',
                                         !startDate && 'text-muted-foreground'
-                                    )}
+                                    , "hover:cursor-pointer")}
                                 >
                                     <CalendarIcon className="mr-3 h-4 w-4 shrink-0 text-muted-foreground" />
                                     <div className="flex flex-col items-start">
@@ -179,7 +179,7 @@ export const HolidaysRequestComponent = forwardRef(function HolidaysRequestCompo
                                     className={cn(
                                         'w-full h-12 justify-start text-left font-normal',
                                         !endDate && 'text-muted-foreground'
-                                    )}
+                                    , "hover:cursor-pointer")}
                                 >
                                     <CalendarIcon className="mr-3 h-4 w-4 shrink-0 text-muted-foreground" />
                                     <div className="flex flex-col items-start">

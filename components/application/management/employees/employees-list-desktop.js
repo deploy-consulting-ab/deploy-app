@@ -72,7 +72,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -103,7 +103,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employee ID
@@ -127,7 +127,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Active
@@ -154,7 +154,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employment Type
@@ -178,7 +178,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employment Start Date
@@ -204,7 +204,7 @@ export function EmployeesListDesktopComponent({ employees, error: initialError }
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employment End Date

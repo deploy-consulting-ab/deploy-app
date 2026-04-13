@@ -127,7 +127,7 @@ export const LoginFormComponent = () => {
                                     dark:bg-primary
                                     dark:hover:bg-primary/70 
                                     dark:hover:text-white font-medium transition-all duration-300
-                                    border-none"
+                                    border-none hover:cursor-pointer"
                         disabled={isPending}
                         suppressHydrationWarning
                     >

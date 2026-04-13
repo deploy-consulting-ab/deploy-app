@@ -20,9 +20,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST } from '@/actions/flex/constants';
+import {
+    ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST,
+    ABSENCE_APPLICATION_TYPE_ID_MAP,
+} from '@/actions/flex/constants';
+import { sendSlackAbsence } from '@/actions/slack/slack-actions';
+import { getAbsenceStatusText } from '@/lib/utils';
 
-export function AbsenceCardComponent({ employmentNumber }) {
+export function AbsenceCardComponent({ employeeName, employmentNumber }) {
     const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null);
     const [isSubmitting, startTransition] = useTransition();
     const [isOpen, setIsOpen] = useState(false);
@@ -30,12 +35,9 @@ export function AbsenceCardComponent({ employmentNumber }) {
     const [activeTab, setActiveTab] = useState('new-request');
     const formRef = useRef(null);
 
-    const absenceApplicationTypes = [
-        {
-            id: ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST,
-            name: 'Holiday Absence Request',
-        },
-    ];
+    const absenceApplicationTypes = {
+        [ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST]: 'Holiday Absence Request',
+    };
 
     const handleAbsenceApplicationTypeSelected = (absenceApplicationTypeId) => {
         setSelectedAbsenceApplicationType(absenceApplicationTypeId);
@@ -73,8 +75,16 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     duration: 2000,
                 });
 
+                const absenceApplicationName = getAbsenceStatusText(
+                    ABSENCE_APPLICATION_TYPE_ID_MAP[selectedAbsenceApplicationType]
+                );
 
-                sendSlackMessage(response);
+                await sendSlackAbsence(
+                    employeeName,
+                    employmentNumber,
+                    absenceApplicationName,
+                    formData
+                );
             } catch (error) {
                 toastRichError({
                     message: 'Error creating absence application',
@@ -95,7 +105,9 @@ export function AbsenceCardComponent({ employmentNumber }) {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="outline">Request Absence</Button>
+                <Button variant="outline" className="hover:cursor-pointer">
+                    Request Absence
+                </Button>
             </DialogTrigger>
             <DialogContent
                 className={`w-full max-h-[90vh] overflow-y-auto transition-all duration-300 ${activeTab === 'requested' ? 'sm:max-w-3xl' : 'sm:max-w-xl'}`}
@@ -148,13 +160,19 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     )}
                     <DialogFooter className="border-t pt-4">
                         <DialogClose asChild>
-                            <Button type="button" variant="secondary" disabled={isSubmitting}>
+                            <Button
+                                type="button"
+                                className="hover:cursor-pointer"
+                                variant="secondary"
+                                disabled={isSubmitting}
+                            >
                                 Close
                             </Button>
                         </DialogClose>
                         {activeTab === 'new-request' && selectedAbsenceApplicationType && (
                             <Button
                                 type="button"
+                                className="hover:cursor-pointer"
                                 onClick={handleSubmit}
                                 disabled={isSubmitting || !isFormValid}
                             >

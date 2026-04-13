@@ -142,7 +142,7 @@ export function UsersListComponent({ users, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -173,7 +173,7 @@ export function UsersListComponent({ users, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Email
@@ -197,7 +197,7 @@ export function UsersListComponent({ users, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employee Number
@@ -224,7 +224,7 @@ export function UsersListComponent({ users, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Profile
@@ -250,7 +250,7 @@ export function UsersListComponent({ users, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Active
@@ -279,7 +279,7 @@ export function UsersListComponent({ users, error: initialError }) {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100 hover:cursor-pointer"
                             >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
@@ -309,7 +309,7 @@ export function UsersListComponent({ users, error: initialError }) {
     const createUserAction = (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} key="create-user">
             <DialogTrigger asChild>
-                <Button size="sm">
+                <Button size="sm" className="hover:cursor-pointer" variant="default">
                     <UserPlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
@@ -341,7 +341,7 @@ export function UsersListComponent({ users, error: initialError }) {
 
     const viewByProfiles = (
         <Select value={view} onValueChange={handleFilterProfiles} key="view-by-profiles">
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[180px] hover:cursor-pointer">
                 <SelectValue placeholder="Select view" />
             </SelectTrigger>
             <SelectContent>

@@ -527,7 +527,10 @@ export function TimereportCardComponent({
                 <div className="flex items-center gap-2">
                     {canRequestAbsence && (
                         <div className="flex items-center gap-2">
-                            <AbsenceCardComponent employmentNumber={employeeNumber} />
+                            <AbsenceCardComponent
+                                employmentNumber={employeeNumber}
+                                employeeName={employeeName}
+                            />
                         </div>
                     )}
                     {canViewFlex && (
@@ -559,7 +562,10 @@ export function TimereportCardComponent({
             {/* Header - Mobile only */}
             {canRequestAbsence && (
                 <div className="flex sm:hidden items-center justify-end">
-                    <AbsenceCardPhoneComponent employmentNumber={employeeNumber} />
+                    <AbsenceCardPhoneComponent
+                        employmentNumber={employeeNumber}
+                        employeeName={employeeName}
+                    />
                 </div>
             )}
 
@@ -714,7 +720,7 @@ export function TimereportCardComponent({
                                 onClick={handleSave}
                                 disabled={!hasChanges || isSaving || isCheckmarked}
                                 size="lg"
-                                className="flex-1 gap-2"
+                                className="flex-1 gap-2 hover:cursor-pointer"
                             >
                                 <Save className="h-5 w-5" />
                                 {isSaving ? 'Saving...' : 'Save'}
@@ -723,7 +729,7 @@ export function TimereportCardComponent({
                                 variant={isCheckmarked ? 'destructive' : 'default'}
                                 size="lg"
                                 onClick={handleToggleCheckmark}
-                                className="gap-2"
+                                className="gap-2 hover:cursor-pointer"
                             >
                                 {isCheckmarked ? (
                                     <>
@@ -742,7 +748,7 @@ export function TimereportCardComponent({
                                 size="lg"
                                 onClick={refreshTimereports}
                                 disabled={isLoadingTimereports}
-                                className="gap-2"
+                                className="gap-2 hover:cursor-pointer"
                             >
                                 <RefreshCw
                                     className={`h-5 w-5 ${isLoadingTimereports ? 'animate-spin' : ''}`}
@@ -771,6 +777,7 @@ export function TimereportCardComponent({
                             variant="outline"
                             onClick={() => setIsUnsavedCheckmarkDialogOpen(false)}
                             disabled={isSaving || isSaveAndCheckmarking}
+                            className="hover:cursor-pointer"
                         >
                             Cancel
                         </Button>
@@ -778,6 +785,7 @@ export function TimereportCardComponent({
                             type="button"
                             onClick={handleSaveAndCheckmark}
                             disabled={isSaving || isSaveAndCheckmarking}
+                            className="hover:cursor-pointer"
                         >
                             {isSaveAndCheckmarking ? 'Saving...' : 'Save and Checkmark'}
                         </Button>

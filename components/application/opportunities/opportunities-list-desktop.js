@@ -72,7 +72,7 @@ export function OpportunitiesListDesktopComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -103,7 +103,7 @@ export function OpportunitiesListDesktopComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Account Name
@@ -127,7 +127,7 @@ export function OpportunitiesListDesktopComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Stage
@@ -154,7 +154,7 @@ export function OpportunitiesListDesktopComponent({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Close Date
@@ -178,7 +178,7 @@ export function OpportunitiesListDesktopComponent({
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 -mr-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                            className="h-8 -mr-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                         >
                             Amount

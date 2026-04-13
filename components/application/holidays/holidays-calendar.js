@@ -222,7 +222,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                             variant="ghost"
                             size="sm"
                             onClick={goToToday}
-                            className="text-xs h-7 px-2"
+                            className="text-xs h-7 px-2 hover:cursor-pointer"
                         >
                             Today
                         </Button>

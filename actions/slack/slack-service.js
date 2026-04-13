@@ -17,6 +17,11 @@ class SlackService extends CalloutService {
         const response = await this.post(SLACK_API_CONFIG.endpoints.timereport, body);
         return response;
     }
+
+    async sendSlackAbsence(body) {
+        const response = await this.post(SLACK_API_CONFIG.endpoints.absenceApi, body);
+        return response;
+    }
 }
 
 let instance = null;

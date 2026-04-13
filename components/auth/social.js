@@ -18,7 +18,7 @@ export const SocialComponent = () => {
         <div className="flex items-center w-full gap-x-2">
             <Button
                 size="lg"
-                className="shadow-box dark:bg-white dark:hover:bg-white/60 flex-1"
+                className="shadow-box dark:bg-white dark:hover:bg-white/60 flex-1 hover:cursor-pointer"
                 variant="outline"
                 onClick={handleGoogleLogin}
             >

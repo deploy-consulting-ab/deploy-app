@@ -84,7 +84,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -114,7 +114,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Description
@@ -137,7 +137,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Profile ID
@@ -167,7 +167,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="ghost"
-                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100"
+                                className="h-8 w-8 p-0 opacity-50 hover:opacity-100 hover:cursor-pointer"
                             >
                                 <span className="sr-only">Open menu</span>
                                 <MoreHorizontal />
@@ -194,7 +194,9 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const createProfileButton = (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-profile">
             <DialogTrigger asChild>
-                <Button size="sm">
+                <Button size="sm"
+                className="hover:cursor-pointer"
+            >
                     <UserCircle className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

@@ -10,6 +10,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { useIsMobile } from '@/hooks/use-mobile';
 import Link from 'next/link';
 import { OCCUPANCY_ROUTE } from '@/menus/routes';
+import { cn } from '@/lib/utils';
 
 export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, target = 85 }) {
     const isMobile = useIsMobile();
@@ -55,7 +56,7 @@ export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, t
                             size="icon"
                             onClick={handleRefresh}
                             disabled={isPending}
-                            className={isPending ? 'animate-spin' : ''}
+                            className={cn(isPending ? 'animate-spin' : '', 'hover:cursor-pointer')}
                         >
                             <RefreshCw className="h-4 w-4 text-muted-foreground" />
                         </Button>

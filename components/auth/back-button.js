@@ -7,7 +7,7 @@ export const BackButtonComponent = ({ label, href }) => {
     return (
         <Button
             variant="link"
-            className="w-full font-normal text-black dark:text-black"
+            className="w-full font-normal text-black dark:text-black hover:cursor-pointer"
             size="sm"
             asChild
         >

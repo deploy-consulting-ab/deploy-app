@@ -26,6 +26,7 @@ export const SLACK_API_CONFIG = {
     timeout: 60000,
     endpoints: {
         timereport: ENV.SLACK_TIMEREPORT_API,
+        absenceApi: ENV.SLACK_ABSENCE_API,
     },
 };
 

@@ -21,8 +21,10 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST } from '@/actions/flex/constants';
+import { ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST, ABSENCE_APPLICATION_TYPE_ID_MAP } from '@/actions/flex/constants';
 import { CalendarOff } from 'lucide-react';
+import { getAbsenceStatusText } from '@/lib/utils';
+import { sendSlackAbsence } from '@/actions/slack/slack-actions';
 
 /**
  * Mobile-optimized absence card component using a bottom sheet.
@@ -31,7 +33,7 @@ import { CalendarOff } from 'lucide-react';
  * @param {Object} props
  * @param {string} props.employmentNumber - The employee's employment number
  */
-export function AbsenceCardPhoneComponent({ employmentNumber }) {
+export function AbsenceCardPhoneComponent({ employmentNumber, employeeName }) {
     const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null);
     const [isSubmitting, startTransition] = useTransition();
     const [isOpen, setIsOpen] = useState(false);
@@ -39,12 +41,9 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
     const [activeTab, setActiveTab] = useState('new-request');
     const formRef = useRef(null);
 
-    const absenceApplicationTypes = [
-        {
-            id: ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST,
-            name: 'Holiday Absence Request',
-        },
-    ];
+    const absenceApplicationTypes = {
+        [ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST]: 'Holiday Absence Request',
+    };
 
     const handleAbsenceApplicationTypeSelected = (absenceApplicationTypeId) => {
         setSelectedAbsenceApplicationType(absenceApplicationTypeId);
@@ -81,6 +80,17 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
                     message: 'Absence application created successfully',
                     duration: 2000,
                 });
+
+                const absenceApplicationName = getAbsenceStatusText(
+                    ABSENCE_APPLICATION_TYPE_ID_MAP[selectedAbsenceApplicationType]
+                );
+
+                await sendSlackAbsence(
+                    employeeName,
+                    employmentNumber,
+                    absenceApplicationName,
+                    formData
+                );
             } catch (error) {
                 toastRichError({
                     message: 'Error creating absence application',
@@ -101,7 +111,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
     return (
         <Sheet open={isOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2 hover:cursor-pointer">
                     <CalendarOff className="h-4 w-4" />
                     <span>Request Absence</span>
                 </Button>
@@ -164,7 +174,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
                                 type="button"
                                 variant="secondary"
                                 disabled={isSubmitting}
-                                className="flex-1"
+                                className="flex-1 hover:cursor-pointer"
                             >
                                 Close
                             </Button>
@@ -174,7 +184,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber }) {
                                 type="button"
                                 onClick={handleSubmit}
                                 disabled={isSubmitting || !isFormValid}
-                                className="flex-1"
+                                className="flex-1 hover:cursor-pointer"
                             >
                                 {isSubmitting ? 'Submitting...' : 'Submit Request'}
                             </Button>

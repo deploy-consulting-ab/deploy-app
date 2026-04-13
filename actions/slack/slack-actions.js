@@ -35,6 +35,26 @@ export async function sendSlackTimereport(
     }
 }
 
+export async function sendSlackAbsence(
+    employeeName,
+    employeeNumber,
+    absenceApplicationType,
+    absenceApplicationData
+) {
+    try {
+        const { startDate, endDate } = absenceApplicationData;
+        const body = {
+            text: `${employeeName} (${employeeNumber}) has requested ${absenceApplicationType} from ${startDate} to ${endDate}`,
+        };
+
+        const slackService = await getSlackService();
+        await slackService.sendSlackAbsence(body);
+    } catch (error) {
+        console.error('Error posting Slack absence:', error);
+        throw error;
+    }
+}
+
 /**
  * Send a direct message reminder to a user who has not yet submitted their
  * timereport for a given week. Uses the Slack Web API (Bot Token).

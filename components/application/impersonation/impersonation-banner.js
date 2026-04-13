@@ -20,7 +20,7 @@ export function ImpersonationBannerComponent() {
                 size="sm"
                 onClick={endImpersonation}
                 disabled={isLoading}
-                className="bg-yellow-200 dark:bg-yellow-800 border-yellow-300 dark:border-yellow-700"
+                className="bg-yellow-200 dark:bg-yellow-800 border-yellow-300 dark:border-yellow-700 hover:cursor-pointer"
             >
                 {isLoading ? 'Returning...' : 'Return to My Account'}
             </Button>

@@ -214,7 +214,7 @@ export function HoursGridPhone({
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onFillFullTime(project.projectId)}
-                                                className="h-8 w-8 text-muted-foreground hover:text-primary"
+                                                className="h-8 w-8 text-muted-foreground hover:text-primary hover:cursor-pointer"
                                                 title="Fill 8h for Mon-Fri"
                                             >
                                                 <Clock className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function HoursGridPhone({
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onResetProject(project.projectId)}
-                                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:cursor-pointer"
                                                 title="Reset all hours"
                                             >
                                                 <RotateCcw className="h-4 w-4" />
@@ -232,7 +232,7 @@ export function HoursGridPhone({
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onRemoveProject(project.projectId)}
-                                                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:cursor-pointer"
                                                 title="Remove project"
                                             >
                                                 <X className="h-4 w-4" />

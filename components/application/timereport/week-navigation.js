@@ -71,7 +71,7 @@ export function WeekNavigation({ selectedWeek, onWeekChange }) {
                     variant="ghost"
                     size="sm"
                     onClick={handleCurrentWeek}
-                    className="text-xs w-full sm:w-auto"
+                    className="text-xs w-full sm:w-auto hover:cursor-pointer"
                 >
                     Go to current week
                 </Button>

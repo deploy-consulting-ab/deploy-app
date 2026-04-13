@@ -16,9 +16,9 @@ export function AbsenceSelectorComponent({
                 <SelectValue placeholder="Select an absence type" />
             </SelectTrigger>
             <SelectContent>
-                {absenceApplicationTypes.map((absenceApplicationType) => (
-                    <SelectItem key={absenceApplicationType.id} value={absenceApplicationType.id}>
-                        {absenceApplicationType.name}
+                {Object.entries(absenceApplicationTypes).map(([id, name]) => (
+                    <SelectItem key={id} value={id}>
+                        {name}
                     </SelectItem>
                 ))}
             </SelectContent>

@@ -80,7 +80,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Name
@@ -111,7 +111,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Email
@@ -135,7 +135,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Employee Number
@@ -161,7 +161,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                    className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
                     Profile ID
@@ -187,7 +187,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent"
+                        className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                     >
                         Active
@@ -217,7 +217,9 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             key="create-profile-user-assignment"
         >
             <DialogTrigger asChild>
-                <Button size="sm">
+                <Button size="sm"
+                className="hover:cursor-pointer"
+            >
                     <CirclePlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

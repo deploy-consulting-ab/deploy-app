@@ -71,7 +71,12 @@ export function UserCardActionsComponent({ user }) {
 
     return (
         <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowEditDialog(true)} key="edit">
+            <Button
+                variant="outline"
+                onClick={() => setShowEditDialog(true)}
+                key="edit"
+                className="hover:cursor-pointer"
+            >
                 Edit User
             </Button>
 
@@ -80,11 +85,17 @@ export function UserCardActionsComponent({ user }) {
                     variant="outline"
                     onClick={() => handleImpersonation(user.id, user.name)}
                     key="impersonate"
+                    className="hover:cursor-pointer"
                 >
                     View As
                 </Button>
             )}
-            <Button variant="destructive" onClick={() => setShowDeleteDialog(true)} key="delete">
+            <Button
+                variant="destructive"
+                onClick={() => setShowDeleteDialog(true)}
+                key="delete"
+                className="hover:cursor-pointer"
+            >
                 Delete User
             </Button>
 
@@ -112,13 +123,18 @@ export function UserCardActionsComponent({ user }) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowDeleteDialog(false)}
+                            className="hover:cursor-pointer"
+                        >
                             Cancel
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={() => deleteUser(user.id)}
                             disabled={isDeleting}
+                            className="hover:cursor-pointer"
                         >
                             {isDeleting ? (
                                 <div className="flex items-center gap-2">

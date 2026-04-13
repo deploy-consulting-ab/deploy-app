@@ -242,13 +242,13 @@ export const CreateUserComponent = ({ fireSuccess }) => {
                     <Button
                         type="button"
                         variant="outline"
-                        className="flex-1"
+                        className="flex-1 hover:cursor-pointer"
                         onClick={resetForm}
                         disabled={isSubmitting}
                     >
                         Reset
                     </Button>
-                    <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                    <Button type="submit" className="flex-1 hover:cursor-pointer" disabled={isSubmitting}>
                         {isSubmitting ? 'Creating...' : 'Create'}
                     </Button>
                 </div>
