@@ -10,7 +10,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentTimecardsDatatable } from '@/components/application/assignment/assignment-timecards-datatable';
 
-export function AssignmentCard({ assignment, timecardHours, actualHours, error }) {
+export function AssignmentRecordCardComponent({ assignment, timecardHours, actualHours, error }) {
     const isMobile = useIsMobile();
 
     if (!assignment) {
@@ -41,42 +41,42 @@ export function AssignmentCard({ assignment, timecardHours, actualHours, error }
                         <div className="flex items-center space-x-2">
                             <Info className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Assignment Name</p>
+                                <p className="text-muted-foreground font-semibold tracking-wider text-xs uppercase">Assignment Name</p>
                                 <p className="font-medium">{name}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Briefcase className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Project Name</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">Project Name</p>
                                 <p className="font-medium">{projectName}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <CalendarDays className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Start Date</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
                                 <p className="font-medium">{formatDateToSwedish(startDate)}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <CalendarDays className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">End Date</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
                                 <p className="font-medium">{formatDateToSwedish(endDate)}</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Clock className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Projected Hours</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">Projected Hours</p>
                                 <p className="font-medium">{projectedHours} hours</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Clock className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Actual Hours</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">Actual Hours</p>
                                 <p className="font-medium">{actualHours} hours</p>
                             </div>
                         </div>

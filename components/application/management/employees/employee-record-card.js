@@ -29,28 +29,28 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
                     <div className="flex items-center space-x-2">
                         <Info className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Employee Name</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employee Name</p>
                             <p className="font-medium">{name}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         <User className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Employee ID</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employee ID</p>
                             <p className="font-medium">{employeeId}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Employment Type</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Type</p>
                             <p className="font-medium">{employmentType}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         <CalendarDays className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Employment Start Date</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Start Date</p>
                             <p className="font-medium">
                                 {formatDateToSwedish(employmentStartDate)}
                             </p>
@@ -60,7 +60,7 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
                         <div className="flex items-center space-x-2">
                             <Tag className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Employment End Date</p>
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">Employment End Date</p>
                                 <p className="font-medium">
                                     {formatDateToSwedish(employmentEndDate)}
                                 </p>

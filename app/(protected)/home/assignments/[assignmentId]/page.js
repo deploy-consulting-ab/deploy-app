@@ -1,5 +1,8 @@
-import { AssignmentCard } from '@/components/application/assignment/assignment-card';
-import { getAssignmentById, getTimecardHoursCountByAssignmentId } from '@/actions/salesforce/salesforce-actions';
+import { AssignmentRecordCardComponent } from '@/components/application/assignment/assignment-record-card';
+import {
+    getAssignmentById,
+    getTimecardHoursCountByAssignmentId,
+} from '@/actions/salesforce/salesforce-actions';
 import { getAssignmentTimereports } from '@/actions/flex/flex-actions';
 import { auth } from '@/auth';
 
@@ -32,9 +35,12 @@ const AssignmentPage = async ({ params }) => {
     }
 
     return (
-        <div>
-            <AssignmentCard error={error} assignment={assignment} timecardHours={timecardHours} actualHours={actualHours} />
-        </div>
+        <AssignmentRecordCardComponent
+            error={error}
+            assignment={assignment}
+            timecardHours={timecardHours}
+            actualHours={actualHours}
+        />
     );
 };
 
