@@ -22,7 +22,6 @@ import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { ABSENCE_TYPE_NAME, ABSENCE_STATUS_TYPE_TEXT } from '@/actions/flex/constants';
 import { sendSlackAbsence } from '@/actions/slack/slack-actions';
-import { getAbsenceStatusText } from '@/lib/utils';
 
 export function AbsenceCardComponent({ employeeName, employmentNumber }) {
     const [selectedAbsenceApplicationType, setSelectedAbsenceApplicationType] = useState(null);

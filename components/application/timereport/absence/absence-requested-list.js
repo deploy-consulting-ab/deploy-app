@@ -196,9 +196,11 @@ export function AbsenceRequestedListComponent({
         // Read hours from ref if available (for same-day edits)
         const currentHours = hoursInputRef.current?.getValue?.() ?? editValues.Hours;
         try {
+            const fromDate = formatLocalDate(editValues.FromDate);
+            const toDate = formatLocalDate(editValues.ToDate);
             await updateAbsenceRequest(absenceTypeId, id, employmentNumber, {
-                FromDate: formatLocalDate(editValues.FromDate),
-                ToDate: formatLocalDate(editValues.ToDate),
+                FromDate: fromDate,
+                ToDate: toDate,
                 Hours: isSameDay ? currentHours : null,
             });
 
@@ -208,8 +210,8 @@ export function AbsenceRequestedListComponent({
                     if (req.Id === id) {
                         return {
                             ...req,
-                            FromDate: formatLocalDate(editValues.FromDate) + 'T00:00:00',
-                            ToDate: formatLocalDate(editValues.ToDate) + 'T00:00:00',
+                            FromDate: fromDate,
+                            ToDate: toDate,
                             Hours: isSameDay ? currentHours : null,
                         };
                     }
@@ -223,10 +225,7 @@ export function AbsenceRequestedListComponent({
             });
             handleCancelEdit();
 
-            const { FromDate, ToDate } = editValues;
-            const formattedFromDate = formatLocalDateKey(FromDate);
-            const formattedToDate = formatLocalDateKey(ToDate);
-            const message = `${employeeName} (${employmentNumber}) has updated ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]} from ${formattedFromDate} to ${formattedToDate}`;
+            const message = `${employeeName} (${employmentNumber}) has updated ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]} from ${fromDate} to ${toDate}`;
             await sendSlackAbsence(message);
         } catch (error) {
             console.error('Error updating absence request:', error);
