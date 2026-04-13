@@ -1,4 +1,4 @@
-import { OpportunityCardComponent } from '@/components/application/opportunities/opportunity-card';
+import { OpportunityRecordCardComponent } from '@/components/application/opportunities/opportunity-record-card';
 import { getOpportunityById } from '@/actions/salesforce/salesforce-actions';
 
 const OpportunityPage = async ({ params }) => {
@@ -15,7 +15,7 @@ const OpportunityPage = async ({ params }) => {
 
     return (
         <div>
-            <OpportunityCardComponent error={error} opportunity={opportunity} />
+            <OpportunityRecordCardComponent error={error} opportunity={opportunity} />
         </div>
     );
 };

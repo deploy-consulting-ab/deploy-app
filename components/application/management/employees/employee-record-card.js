@@ -1,29 +1,26 @@
-'use client';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getOpportunityStageColor } from '@/lib/utils';
-import { Briefcase, Info, DollarSign, Building2, CalendarDays, Tag } from 'lucide-react';
+import { Info, Briefcase, CalendarDays, Tag, User } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
-export function OpportunityCardComponent({ opportunity, error }) {
-    const isMobile = useIsMobile();
-
+export async function EmployeeRecordCardComponent({ employee, error }) {
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const { name, stage, amount, currency, accountName, closeDate, productType } = opportunity;
+    const { name, isActive, employeeId, employmentType, employmentStartDate, employmentEndDate } =
+        employee;
+
+    console.log(employee);
 
     return (
         <Card className="w-full transition-all hover:shadow-md">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
-                    <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>{name}</CardTitle>
-                    <Badge className={`${getOpportunityStageColor(stage)} text-white`}>
-                        {stage}
+                    <CardTitle className="text-2xl">{name}</CardTitle>
+                    <Badge className={`${isActive ? 'bg-green-500' : 'bg-red-500'} text-white`}>
+                        {isActive ? 'Active' : 'Inactive'}
                     </Badge>
                 </div>
             </CardHeader>
@@ -32,47 +29,40 @@ export function OpportunityCardComponent({ opportunity, error }) {
                     <div className="flex items-center space-x-2">
                         <Info className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Opportunity Name</p>
+                            <p className="text-sm text-muted-foreground">Employee Name</p>
                             <p className="font-medium">{name}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <User className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Account Name</p>
-                            <p className="font-medium">{accountName}</p>
+                            <p className="text-sm text-muted-foreground">Employee ID</p>
+                            <p className="font-medium">{employeeId}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         <Briefcase className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Stage</p>
-                            <p className="font-medium">{stage}</p>
+                            <p className="text-sm text-muted-foreground">Employment Type</p>
+                            <p className="font-medium">{employmentType}</p>
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
                         <CalendarDays className="h-4 w-4 text-muted-foreground" />
                         <div className="space-y-1">
-                            <p className="text-sm text-muted-foreground">Close Date</p>
-                            <p className="font-medium">{formatDateToSwedish(closeDate)}</p>
+                            <p className="text-sm text-muted-foreground">Employment Start Date</p>
+                            <p className="font-medium">
+                                {formatDateToSwedish(employmentStartDate)}
+                            </p>
                         </div>
                     </div>
-                    {productType && (
+                    {employmentEndDate && (
                         <div className="flex items-center space-x-2">
                             <Tag className="h-4 w-4 text-muted-foreground" />
                             <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Product Type</p>
-                                <p className="font-medium">{productType}</p>
-                            </div>
-                        </div>
-                    )}
-                    {amount && (
-                        <div className="flex items-center space-x-2">
-                            <DollarSign className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-sm text-muted-foreground">Amount</p>
+                                <p className="text-sm text-muted-foreground">Employment End Date</p>
                                 <p className="font-medium">
-                                    {currency} {amount.toLocaleString()}
+                                    {formatDateToSwedish(employmentEndDate)}
                                 </p>
                             </div>
                         </div>

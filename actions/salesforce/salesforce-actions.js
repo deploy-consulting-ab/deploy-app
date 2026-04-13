@@ -430,7 +430,19 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
 export async function getEmployeeById(employeeId) {
     try {
         const result = await queryData(getEmployeeByIdQuery(employeeId));
-        return result[0];
+        if (result?.length === 0) {
+            return null;
+        }
+        const employee = result[0];
+        return {
+            id: employee.Id,
+            name: employee.Name,
+            employeeId: employee.EmployeeId__c,
+            isActive: employee.IsActive__c,
+            employmentType: employee.EmploymentType__c,
+            employmentStartDate: employee.EmploymentStartDate__c,
+            employmentEndDate: employee.EmploymentEndDate__c,
+        };
     } catch (error) {
         throw error;
     }
