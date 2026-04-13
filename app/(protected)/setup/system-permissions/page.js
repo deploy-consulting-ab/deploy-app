@@ -11,9 +11,5 @@ export default async function PermissionsPage() {
         error = err;
     }
 
-    return (
-        <div className="py-4">
-            <SystemPermissionsListComponent permissions={permissions} error={error} />
-        </div>
-    );
+    return <SystemPermissionsListComponent permissions={permissions} error={error} />;
 }

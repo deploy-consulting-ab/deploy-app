@@ -11,9 +11,5 @@ export default async function UsersPage() {
         error = err;
     }
 
-    return (
-        <div className="py-4">
-            <UsersListComponent users={users} error={error} />
-        </div>
-    );
+    return <UsersListComponent users={users} error={error} />;
 }

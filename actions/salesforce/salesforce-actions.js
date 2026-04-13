@@ -18,6 +18,8 @@ import {
     getSalesforcePublicHolidaysQuery,
     getOccupancyByDateRangeQuery,
     getEmployeesWithActiveAssignmentsQuery,
+    getEmployeesQuery,
+    getEmployeeByIdQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -323,7 +325,6 @@ export async function getOccupancyStats(employeeNumber, today) {
     const previousFY = getPreviousFiscalYear();
 
     const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
-    const currentFYEnd = formatDateToISOString(getFiscalYearEndDate(currentFY));
     const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
     const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
 
@@ -336,13 +337,6 @@ export async function getOccupancyStats(employeeNumber, today) {
         const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
         if (rates.length === 0) return null;
         const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
-        return Math.round(avg * 100) / 100;
-    };
-
-    const computeFYAverage = (records) => {
-        const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
-        if (rates.length === 0) return null;
-        const avg = rates.reduce((a, b) => a + b, 0) / 12;
         return Math.round(avg * 100) / 100;
     };
 
@@ -404,6 +398,23 @@ export async function getSalesforcePublicHolidays() {
     }
 }
 
+export async function getEmployees() {
+    try {
+        const result = await queryData(getEmployeesQuery());
+        return result.map((employee) => ({
+            id: employee.Id,
+            name: employee.Name,
+            employeeId: employee.EmployeeId__c,
+            isActive: employee.IsActive__c,
+            employmentType: employee.EmploymentType__c,
+            employmentStartDate: employee.EmploymentStartDate__c,
+            employmentEndDate: employee.EmploymentEndDate__c,
+        }));
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
     try {
         const employeeNumbersString = employeeNumbers.map((num) => `'${num}'`).join(', ');
@@ -411,6 +422,27 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
             getEmployeesWithActiveAssignmentsQuery(employeeNumbersString, date)
         );
         return new Set(result.map((employee) => employee.EmployeeId__c));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getEmployeeById(employeeId) {
+    try {
+        const result = await queryData(getEmployeeByIdQuery(employeeId));
+        if (result?.length === 0) {
+            return null;
+        }
+        const employee = result[0];
+        return {
+            id: employee.Id,
+            name: employee.Name,
+            employeeId: employee.EmployeeId__c,
+            isActive: employee.IsActive__c,
+            employmentType: employee.EmploymentType__c,
+            employmentStartDate: employee.EmploymentStartDate__c,
+            employmentEndDate: employee.EmploymentEndDate__c,
+        };
     } catch (error) {
         throw error;
     }

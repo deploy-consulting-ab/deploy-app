@@ -19,12 +19,10 @@ export default async function PermissionSetPage({ params }) {
     }
 
     return (
-        <div className="py-4">
-            <PermissionSetCardComponent
-                error={error}
-                permissionSet={permissionSet}
-                totalSystemPermissions={totalSystemPermissions}
-            />
-        </div>
+        <PermissionSetCardComponent
+            error={error}
+            permissionSet={permissionSet}
+            totalSystemPermissions={totalSystemPermissions}
+        />
     );
 }

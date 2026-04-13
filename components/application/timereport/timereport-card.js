@@ -22,6 +22,7 @@ import {
     formatDateToISOString,
     formatDateToSwedish,
     getPreviousWeekGraceDeadline,
+    toPermissionSet,
 } from '@/lib/utils';
 import { ProjectSelectorComponent } from '@/components/application/timereport/project-selector';
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
@@ -53,9 +54,7 @@ export function TimereportCardComponent({
     holidays,
     systemPermissions,
 }) {
-    console.log('systemPermissions', systemPermissions);
-    // Convert permissions array to Set for O(1) lookups
-    const permissionsSet = useMemo(() => new Set(systemPermissions || []), [systemPermissions]);
+    const permissionsSet = useMemo(() => toPermissionSet(systemPermissions), [systemPermissions]);
     const canRequestAbsence = permissionsSet.has(REQUEST_ABSENCE_PERMISSION);
     const canViewFlex = permissionsSet.has(VIEW_FLEX_PERMISSION);
     const canEditPastTimereportEntries = permissionsSet.has(

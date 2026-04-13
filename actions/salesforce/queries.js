@@ -170,6 +170,17 @@ const getEmployeesWithActiveAssignmentsQuery = (employeeNumbers, date) => {
             ORDER BY Name ASC`;
 };
 
+const getEmployeesQuery = () => {
+    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c
+            FROM Employee__c
+            ORDER BY IsActive__c DESC, CreatedDate ASC, Name ASC`;
+};
+
+const getEmployeeByIdQuery = (employeeId) => {
+    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c
+            FROM Employee__c WHERE Id = '${employeeId}' LIMIT 1`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -188,4 +199,6 @@ export {
     getSalesforcePublicHolidaysQuery,
     getTimecardHoursCountByAssignmentIdQuery,
     getEmployeesWithActiveAssignmentsQuery,
+    getEmployeesQuery,
+    getEmployeeByIdQuery
 };

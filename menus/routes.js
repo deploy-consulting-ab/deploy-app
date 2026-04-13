@@ -6,6 +6,7 @@ import {
     VIEW_OPPORTUNITIES_PERMISSION,
     VIEW_SETUP_PERMISSION,
     VIEW_TIMEREPORT_PERMISSION,
+    VIEW_MANAGEMENT_PERMISSION,
 } from '@/lib/rba-constants';
 
 export const LOGIN_ROUTE = '/auth/login';
@@ -31,22 +32,22 @@ export const API_CRON_PREFIX = '/api/cron';
  */
 export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
-export const OCCUPANCY_LIST_ROUTE = `${OCCUPANCY_ROUTE}/list`;
 export const OCCUPANCY_CHART_ROUTE = `${OCCUPANCY_ROUTE}/chart`;
 export const OCCUPANCY_STATS_ROUTE = `${OCCUPANCY_ROUTE}/stats`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const TIMEREPORT_ROUTE = `${HOME_ROUTE}/timereport`;
+export const MANAGEMENT_ROUTE = `${HOME_ROUTE}/management`;
 export const SETUP_ROUTE = `/setup`;
 export const USERS_ROUTE = `${SETUP_ROUTE}/users`;
 export const PROFILES_ROUTE = `${SETUP_ROUTE}/profiles`;
 export const PERMISSION_SETS_ROUTE = `${SETUP_ROUTE}/permission-sets`;
 export const SYSTEM_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/system-permissions`;
+export const EMPLOYEES_LIST_ROUTE = `${MANAGEMENT_ROUTE}/employees`;
 
 export const PROTECTED_ROUTES = [
     { path: HOLIDAYS_ROUTE, systemPermission: VIEW_HOLIDAYS_PERMISSION },
     { path: OCCUPANCY_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
-    { path: OCCUPANCY_LIST_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_CHART_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: OCCUPANCY_STATS_ROUTE, systemPermission: VIEW_OCCUPANCY_PERMISSION },
     { path: ASSIGNMENTS_ROUTE, systemPermission: VIEW_ASSIGNMENTS_PERMISSION },
@@ -56,6 +57,8 @@ export const PROTECTED_ROUTES = [
     { path: PERMISSION_SETS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PERMISSION_SETS_PERMISSION
     { path: SYSTEM_PERMISSIONS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_SYSTEM_PERMISSIONS_PERMISSION
     { path: SETUP_ROUTE, systemPermission: VIEW_SETUP_PERMISSION },
-    { path: HOME_ROUTE, systemPermission: VIEW_HOME_PERMISSION },
+    { path: MANAGEMENT_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
+    { path: EMPLOYEES_LIST_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
+    { path: HOME_ROUTE, systemPermission: VIEW_HOME_PERMISSION }, // This always needs to be the last route
     { path: TIMEREPORT_ROUTE, systemPermission: VIEW_TIMEREPORT_PERMISSION },
 ];

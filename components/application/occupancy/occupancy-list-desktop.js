@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
-import { ArrowUpDown, RefreshCw } from 'lucide-react';
+import { ArrowUpDown, RefreshCw, BarChart2 } from 'lucide-react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
 import { getOccupancyHistory } from '@/actions/salesforce/salesforce-actions';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { OccupancyDynamicAverageComponent } from '@/components/application/occupancy/occupancy-dynamic-average';
+import { getCurrentFiscalYear, getFiscalYearStartDate, formatDateToISOString } from '@/lib/utils';
 
 function OccupancyBadge({ rate }) {
     const level = getOccupancyLevel(rate);
@@ -38,6 +41,11 @@ export function OccupancyListDesktopComponent({
     const [data, setData] = useState(occupancyData);
     const [error, setError] = useState(initialError);
     const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const defaultStartDate = useMemo(() => {
+        const currentFY = getCurrentFiscalYear();
+        return formatDateToISOString(getFiscalYearStartDate(currentFY));
+    }, []);
 
     const handleRefresh = async () => {
         if (isRefreshing) {
@@ -235,7 +243,32 @@ export function OccupancyListDesktopComponent({
         </Button>
     );
 
-    const actions = [refreshOccupancy];
+    const statsModal = (
+        <Dialog key="stats-modal">
+            <DialogTrigger asChild>
+                <Button
+                    variant="default"
+                    size="sm"
+                    className="md:hover:cursor-pointer"
+                >
+                    Calculate Average
+                    <BarChart2 className="h-4 w-4" />
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>Custom Occupancy Average</DialogTitle>
+                </DialogHeader>
+                <OccupancyDynamicAverageComponent
+                    employeeNumber={employeeNumber}
+                    defaultStartDate={defaultStartDate}
+                    defaultEndDate={formattedToday}
+                />
+            </DialogContent>
+        </Dialog>
+    );
+
+    const actions = [statsModal, refreshOccupancy];
 
     return (
         <DatatableWrapperComponent

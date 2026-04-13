@@ -2,15 +2,17 @@
 
 import { auth } from '@/auth';
 import { getUserById, getCombinedSystemPermissionsForUser } from '@/data/user-db';
-import { ADMIN_PROFILE } from '@/lib/rba-constants';
 import { revalidatePath } from 'next/cache';
+import { toPermissionSet } from '@/lib/utils';
+import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
 
 export async function startImpersonation(userId) {
     try {
         const session = await auth();
+        const systemPermissions = toPermissionSet(session.user.systemPermissions);
 
         // Check if user is authenticated and is an admin
-        if (!session || session.user.profileId !== ADMIN_PROFILE) {
+        if (!session || !systemPermissions.has(VIEW_SETUP_PERMISSION)) {
             return { error: 'Unauthorized access' };
         }
 
