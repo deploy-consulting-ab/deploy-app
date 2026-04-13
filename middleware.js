@@ -11,6 +11,7 @@ import {
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
+import { toPermissionSet } from '@/lib/utils';
 
 /**
  * Edge-compatible auth instance for middleware
@@ -56,7 +57,7 @@ export default auth((req) => {
         );
     }
 
-    const allSystemPermissions = new Set(user?.systemPermissions);
+    const allSystemPermissions = toPermissionSet(user?.systemPermissions);
     return handleLoggedInUsers(nextUrl, allSystemPermissions);
 });
 

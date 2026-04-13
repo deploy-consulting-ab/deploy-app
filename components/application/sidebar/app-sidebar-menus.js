@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebar } from '@/components/ui/sidebar';
 import { getMenuForLocation } from '@/menus/menu-builder';
-import { cn } from '@/lib/utils';
+import { cn, toPermissionSet } from '@/lib/utils';
 
 export function AppSidebarMenusComponent({ user, location }) {
     const { isMobile, setOpenMobile } = useSidebar();
@@ -24,7 +24,7 @@ export function AppSidebarMenusComponent({ user, location }) {
     const sidebarMenuItems = getMenuForLocation(
         location,
         user?.profileId,
-        new Set(user?.systemPermissions)
+        toPermissionSet(user?.systemPermissions)
     );
 
     // Function to handle menu item clicks
