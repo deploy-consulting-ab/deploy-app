@@ -14,9 +14,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
-import { formatDateToISOString, cn, countSwedishBusinessDaysLocalInclusive } from '@/lib/utils';
+import {
+    formatDateToISOString,
+    cn,
+    countSwedishBusinessDaysLocalInclusive,
+    parseToLocalDate,
+    formatLocalDateKey,
+    getAbsenceStatusColor,
+} from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { getAbsenceStatusColor, formatLocalDateKey } from '@/lib/utils';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { enGB } from 'react-day-picker/locale';
 import {
@@ -71,29 +77,6 @@ const EditableHoursInput = forwardRef(function EditableHoursInput({ initialValue
         />
     );
 });
-
-/**
- * Parse a date string (YYYY-MM-DD or ISO) to a Date object in local timezone
- */
-const parseToLocalDate = (dateStr) => {
-    if (!dateStr) return null;
-    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (match) {
-        return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));
-    }
-    return new Date(dateStr);
-};
-
-/**
- * Format a local Date object to YYYY-MM-DD string
- */
-const formatLocalDate = (date) => {
-    if (!date) return '';
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-};
 
 const rowHasExplicitHours = (hours) => {
     return hours != null && hours !== '' && !Number.isNaN(Number(hours));
@@ -171,7 +154,7 @@ export function AbsenceRequestedListComponent({
     const isSameDay =
         editValues.FromDate &&
         editValues.ToDate &&
-        formatLocalDate(editValues.FromDate) === formatLocalDate(editValues.ToDate);
+        formatLocalDateKey(editValues.FromDate) === formatLocalDateKey(editValues.ToDate);
 
     const handleEdit = (row) => {
         const fromDate = parseToLocalDate(row.FromDate);
@@ -196,8 +179,8 @@ export function AbsenceRequestedListComponent({
         // Read hours from ref if available (for same-day edits)
         const currentHours = hoursInputRef.current?.getValue?.() ?? editValues.Hours;
         try {
-            const fromDate = formatLocalDate(editValues.FromDate);
-            const toDate = formatLocalDate(editValues.ToDate);
+            const fromDate = formatLocalDateKey(editValues.FromDate);
+            const toDate = formatLocalDateKey(editValues.ToDate);
             await updateAbsenceRequest(absenceTypeId, id, employmentNumber, {
                 FromDate: fromDate,
                 ToDate: toDate,
@@ -261,7 +244,7 @@ export function AbsenceRequestedListComponent({
         setEditValues((prev) => {
             const newValues = { ...prev, FromDate: date };
             // If ToDate is before new FromDate, update ToDate too
-            if (prev.ToDate && date && formatLocalDate(date) > formatLocalDate(prev.ToDate)) {
+            if (prev.ToDate && date && formatLocalDateKey(date) > formatLocalDateKey(prev.ToDate)) {
                 newValues.ToDate = date;
             }
             return newValues;
@@ -312,7 +295,7 @@ export function AbsenceRequestedListComponent({
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.FromDate
-                                        ? formatLocalDate(editValues.FromDate)
+                                        ? formatLocalDateKey(editValues.FromDate)
                                         : 'Select date'}
                                 </Button>
                             </PopoverTrigger>
@@ -370,7 +353,7 @@ export function AbsenceRequestedListComponent({
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.ToDate
-                                        ? formatLocalDate(editValues.ToDate)
+                                        ? formatLocalDateKey(editValues.ToDate)
                                         : 'Select date'}
                                 </Button>
                             </PopoverTrigger>
