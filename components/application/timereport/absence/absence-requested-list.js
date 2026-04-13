@@ -22,7 +22,7 @@ import { enGB } from 'react-day-picker/locale';
 import {
     ABSENCE_STATUS_REGISTERED,
     ABSENCE_STATUS_APPLIED_FOR,
-    ABSENCE_TYPE_NAME,
+    ABSENCE_STATUS_TYPE_TEXT,
 } from '@/actions/flex/constants';
 import { sendSlackAbsence } from '@/actions/slack/slack-actions';
 
@@ -226,7 +226,7 @@ export function AbsenceRequestedListComponent({
             const { FromDate, ToDate } = editValues;
             const formattedFromDate = formatLocalDateKey(FromDate);
             const formattedToDate = formatLocalDateKey(ToDate);
-            const message = `${employeeName} (${employmentNumber}) has updated ${ABSENCE_TYPE_NAME[absenceTypeId]} from ${formattedFromDate} to ${formattedToDate}`;
+            const message = `${employeeName} (${employmentNumber}) has updated ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]} from ${formattedFromDate} to ${formattedToDate}`;
             await sendSlackAbsence(message);
         } catch (error) {
             console.error('Error updating absence request:', error);
@@ -247,6 +247,9 @@ export function AbsenceRequestedListComponent({
                 message: mergedLabels.deleteSuccess,
                 duration: 2000,
             });
+
+            const message = `${employeeName} (${employmentNumber}) has deleted ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]}`;
+            sendSlackAbsence(message);
         } catch (error) {
             toastRichError({
                 message: mergedLabels.deleteError,

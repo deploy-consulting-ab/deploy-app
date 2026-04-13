@@ -20,7 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { HOLIDAY_TYPE_ID, ABSENCE_TYPE_NAME } from '@/actions/flex/constants';
+import { ABSENCE_TYPE_NAME, ABSENCE_STATUS_TYPE_TEXT } from '@/actions/flex/constants';
 import { sendSlackAbsence } from '@/actions/slack/slack-actions';
 import { getAbsenceStatusText } from '@/lib/utils';
 
@@ -69,7 +69,7 @@ export function AbsenceCardComponent({ employeeName, employmentNumber }) {
                 });
 
                 const { startDate, endDate } = formData;
-                const message = `${employeeName} (${employmentNumber}) has requested ${ABSENCE_TYPE_NAME[selectedAbsenceApplicationType]} from ${startDate} to ${endDate}`;
+                const message = `${employeeName} (${employmentNumber}) has requested ${ABSENCE_STATUS_TYPE_TEXT[selectedAbsenceApplicationType]} from ${startDate} to ${endDate}`;
                 await sendSlackAbsence(message);
             } catch (error) {
                 toastRichError({
