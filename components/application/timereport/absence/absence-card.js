@@ -20,10 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import {
-    ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST,
-    ABSENCE_APPLICATION_TYPE_ID_MAP,
-} from '@/actions/flex/constants';
+import { HOLIDAY_TYPE_ID } from '@/actions/flex/constants';
 import { sendSlackAbsence } from '@/actions/slack/slack-actions';
 import { getAbsenceStatusText } from '@/lib/utils';
 
@@ -36,7 +33,7 @@ export function AbsenceCardComponent({ employeeName, employmentNumber }) {
     const formRef = useRef(null);
 
     const absenceApplicationTypes = {
-        [ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST]: 'Holiday Absence Request',
+        [HOLIDAY_TYPE_ID]: 'Holiday Absence Request',
     };
 
     const handleAbsenceApplicationTypeSelected = (absenceApplicationTypeId) => {
@@ -75,9 +72,7 @@ export function AbsenceCardComponent({ employeeName, employmentNumber }) {
                     duration: 2000,
                 });
 
-                const absenceApplicationName = getAbsenceStatusText(
-                    ABSENCE_APPLICATION_TYPE_ID_MAP[selectedAbsenceApplicationType]
-                );
+                const absenceApplicationName = getAbsenceStatusText(selectedAbsenceApplicationType);
 
                 await sendSlackAbsence(
                     employeeName,
@@ -105,7 +100,7 @@ export function AbsenceCardComponent({ employeeName, employmentNumber }) {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="hover:cursor-pointer">
+                <Button variant="default" className="hover:cursor-pointer">
                     Request Absence
                 </Button>
             </DialogTrigger>

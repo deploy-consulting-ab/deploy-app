@@ -21,15 +21,6 @@ export const ABSENCE_STATUS_TYPE_TEXT = {
     [SICK_LEAVE_TYPE_ID]: 'Sick Leave',
 };
 
-// Internally used absence application type IDs
-export const ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST = 'holiday-absence-request';
-export const ABSENCE_APPLICATION_TYPE_ID_SICK_ABSENCE_REQUEST = 'sick-absence-request';
-
-export const ABSENCE_APPLICATION_TYPE_ID_MAP = {
-    [ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST] : HOLIDAY_TYPE_ID,
-    [ABSENCE_APPLICATION_TYPE_ID_SICK_ABSENCE_REQUEST] : SICK_LEAVE_TYPE_ID,
-}
-
 /**
  * Pre-calculated Set of all Swedish bank holidays from 2024 to 2030.
  * Each date is stored as an ISO date string (YYYY-MM-DD).

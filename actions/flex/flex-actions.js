@@ -482,8 +482,9 @@ export async function createAbsenceApplication(
     absenceApplicationData
 ) {
     try {
+        console.log('absenceApplicationType', absenceApplicationType);
         switch (absenceApplicationType) {
-            case 'holiday-absence-request':
+            case HOLIDAY_TYPE_ID:
                 return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
             default:
                 throw new Error('Invalid absence application type');
@@ -538,7 +539,7 @@ export async function updateAbsenceRequest(
 ) {
     try {
         switch (absenceApplicationType) {
-            case 'holiday-absence-request':
+            case HOLIDAY_TYPE_ID:
                 return updateHolidayAbsenceApplication(
                     absenceRequestId,
                     employmentNumber,

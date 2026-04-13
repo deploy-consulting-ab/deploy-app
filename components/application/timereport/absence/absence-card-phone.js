@@ -21,7 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { createAbsenceApplication } from '@/actions/flex/flex-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST, ABSENCE_APPLICATION_TYPE_ID_MAP } from '@/actions/flex/constants';
+import { HOLIDAY_TYPE_ID } from '@/actions/flex/constants';
 import { CalendarOff } from 'lucide-react';
 import { getAbsenceStatusText } from '@/lib/utils';
 import { sendSlackAbsence } from '@/actions/slack/slack-actions';
@@ -42,7 +42,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber, employeeName }) {
     const formRef = useRef(null);
 
     const absenceApplicationTypes = {
-        [ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST]: 'Holiday Absence Request',
+        [HOLIDAY_TYPE_ID]: 'Holiday Absence Request',
     };
 
     const handleAbsenceApplicationTypeSelected = (absenceApplicationTypeId) => {
@@ -81,9 +81,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber, employeeName }) {
                     duration: 2000,
                 });
 
-                const absenceApplicationName = getAbsenceStatusText(
-                    ABSENCE_APPLICATION_TYPE_ID_MAP[selectedAbsenceApplicationType]
-                );
+                const absenceApplicationName = getAbsenceStatusText(selectedAbsenceApplicationType);
 
                 await sendSlackAbsence(
                     employeeName,
@@ -111,7 +109,7 @@ export function AbsenceCardPhoneComponent({ employmentNumber, employeeName }) {
     return (
         <Sheet open={isOpen} onOpenChange={handleOpenChange}>
             <SheetTrigger asChild>
-                <Button variant="outline" className="gap-2 hover:cursor-pointer">
+                <Button variant="default" className="gap-2 hover:cursor-pointer">
                     <CalendarOff className="h-4 w-4" />
                     <span>Request Absence</span>
                 </Button>

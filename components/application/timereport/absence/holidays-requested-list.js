@@ -2,7 +2,7 @@
 
 import { getHolidayRequests } from '@/actions/flex/flex-actions';
 import { AbsenceRequestedListComponent } from './absence-requested-list';
-import { ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST } from '@/actions/flex/constants';
+import { HOLIDAY_TYPE_ID } from '@/actions/flex/constants';
 
 /**
  * Holiday-specific labels for the absence list
@@ -28,7 +28,7 @@ export function HolidaysRequestedListComponent({ employmentNumber }) {
     return (
         <AbsenceRequestedListComponent
             employmentNumber={employmentNumber}
-            absenceTypeId={ABSENCE_APPLICATION_TYPE_ID_HOLIDAY_ABSENCE_REQUEST}
+            absenceTypeId={HOLIDAY_TYPE_ID}
             fetchRequests={getHolidayRequests}
             labels={HOLIDAY_LABELS}
             pageSize={5}

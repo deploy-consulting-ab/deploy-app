@@ -121,7 +121,7 @@ const DEFAULT_LABELS = {
  *
  * @param {Object} props
  * @param {string} props.employmentNumber - The employee number
- * @param {string} props.absenceTypeId - The absence application type ID (e.g., 'holiday-absence-request')
+ * @param {string} props.absenceTypeId - The absence type ID (e.g., HOLIDAY_TYPE_ID)
  * @param {Function} props.fetchRequests - Function to fetch requests, receives (employmentNumber, currentDate)
  * @param {Object} props.labels - Custom labels for the component
  * @param {number} props.pageSize - Number of items per page (default: 5)
