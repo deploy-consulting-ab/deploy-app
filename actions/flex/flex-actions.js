@@ -482,7 +482,6 @@ export async function createAbsenceApplication(
     absenceApplicationData
 ) {
     try {
-        console.log('absenceApplicationType', absenceApplicationType);
         switch (absenceApplicationType) {
             case HOLIDAY_TYPE_ID:
                 return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
