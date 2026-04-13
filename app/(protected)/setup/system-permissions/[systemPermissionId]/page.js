@@ -15,9 +15,5 @@ export default async function SystemPermissionPage({ params }) {
         error = error;
     }
 
-    return (
-        <div className="py-4">
-            <SystemPermissionCardComponent error={error} systemPermission={systemPermission} />
-        </div>
-    );
+    return <SystemPermissionCardComponent error={error} systemPermission={systemPermission} />;
 }

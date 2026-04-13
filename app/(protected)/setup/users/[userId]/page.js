@@ -14,9 +14,5 @@ export default async function UserPage({ params }) {
         error = err;
     }
 
-    return (
-        <div className="py-4">
-            <UserCardComponent error={error} user={user} />
-        </div>
-    );
+    return <UserCardComponent error={error} user={user} />;
 }

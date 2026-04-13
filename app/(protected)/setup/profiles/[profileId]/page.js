@@ -19,12 +19,10 @@ export default async function ProfilePage({ params }) {
     }
 
     return (
-        <div className="py-4">
-            <ProfileCardComponent
-                error={error}
-                profile={profile}
-                totalSystemPermissions={totalSystemPermissions}
-            />
-        </div>
+        <ProfileCardComponent
+            error={error}
+            profile={profile}
+            totalSystemPermissions={totalSystemPermissions}
+        />
     );
 }

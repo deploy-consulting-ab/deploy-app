@@ -11,7 +11,5 @@ export default async function ProfilesPage() {
         error = err;
     }
 
-    return (
-        <ProfilesListComponent profiles={profiles} error={error} />
-    );
+    return <ProfilesListComponent profiles={profiles} error={error} />;
 }
