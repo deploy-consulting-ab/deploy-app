@@ -6,7 +6,7 @@
  *  1. Incoming Webhook (SLACK_API_CONFIG)
  *     Posts to a fixed channel configured at webhook-creation time.
  *     Simple – no auth header required; the secret is embedded in the URL.
- *     Used by: postSlackTimereport (timereport checkmark notifications)
+ *     Used by: sendSlackTimereport (timereport checkmark notifications)
  *
  *  2. Slack Web API (SLACK_WEB_API_CONFIG)
  *     Full REST API authenticated with a Bot Token (xoxb-...).

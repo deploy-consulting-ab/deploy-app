@@ -28,7 +28,7 @@ import { ProjectSelectorComponent } from '@/components/application/timereport/pr
 import { HoursGridComponent } from '@/components/application/timereport/hours-grid';
 import LoadingLogo from '@/components/application/loading-logo/loading-logo';
 import { FLEX_TIMEREPORT_URL } from '@/actions/flex/constants';
-import { postSlackTimereport } from '@/actions/slack/slack-actions';
+import { sendSlackTimereport } from '@/actions/slack/slack-actions';
 import { AbsenceCardComponent } from '@/components/application/timereport/absence/absence-card';
 import { AbsenceCardPhoneComponent } from '@/components/application/timereport/absence/absence-card-phone';
 import {
@@ -432,7 +432,7 @@ export function TimereportCardComponent({
             const weekStartDate = formatDateToSwedish(weekStart);
             const weekEndDate = formatDateToSwedish(getWeekSunday(weekStart));
             if (newCheckmarkValue) {
-                await postSlackTimereport(
+                await sendSlackTimereport(
                     employeeName,
                     employeeNumber,
                     weekStartDate,
@@ -444,7 +444,7 @@ export function TimereportCardComponent({
                     duration: 2000,
                 });
             } else {
-                await postSlackTimereport(
+                await sendSlackTimereport(
                     employeeName,
                     employeeNumber,
                     weekStartDate,

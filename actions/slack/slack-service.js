@@ -13,7 +13,7 @@ class SlackService extends CalloutService {
         super(SLACK_API_CONFIG);
     }
 
-    async postSlackTimereport(body) {
+    async sendSlackTimereport(body) {
         const response = await this.post(SLACK_API_CONFIG.endpoints.timereport, body);
         return response;
     }

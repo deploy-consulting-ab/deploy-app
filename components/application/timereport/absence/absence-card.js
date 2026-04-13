@@ -72,6 +72,9 @@ export function AbsenceCardComponent({ employmentNumber }) {
                     message: 'Absence application created successfully',
                     duration: 2000,
                 });
+
+
+                sendSlackMessage(response);
             } catch (error) {
                 toastRichError({
                     message: 'Error creating absence application',

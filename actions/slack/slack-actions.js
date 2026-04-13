@@ -15,7 +15,7 @@ import { getSlackService, getSlackWebApiService } from './slack-service.js';
  * @param {string} weekEndDate    Formatted date string, e.g. "2026-03-29"
  * @param {string} message        Action description, e.g. "has checkmarked the hours for the week"
  */
-export async function postSlackTimereport(
+export async function sendSlackTimereport(
     employeeName,
     employeeNumber,
     weekStartDate,
@@ -28,7 +28,7 @@ export async function postSlackTimereport(
         };
 
         const slackService = await getSlackService();
-        await slackService.postSlackTimereport(body);
+        await slackService.sendSlackTimereport(body);
     } catch (error) {
         console.error('Error posting Slack timereport:', error);
         throw error;
