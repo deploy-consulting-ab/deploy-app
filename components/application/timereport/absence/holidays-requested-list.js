@@ -23,11 +23,13 @@ const HOLIDAY_LABELS = {
  *
  * @param {Object} props
  * @param {string} props.employmentNumber - The employee number
+ * @param {string} props.employeeName - The employee name
  */
-export function HolidaysRequestedListComponent({ employmentNumber }) {
+export function HolidaysRequestedListComponent({ employmentNumber, employeeName }) {
     return (
         <AbsenceRequestedListComponent
             employmentNumber={employmentNumber}
+            employeeName={employeeName}
             absenceTypeId={HOLIDAY_TYPE_ID}
             fetchRequests={getHolidayRequests}
             labels={HOLIDAY_LABELS}
