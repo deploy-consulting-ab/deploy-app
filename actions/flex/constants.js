@@ -21,6 +21,10 @@ export const ABSENCE_STATUS_TYPE_TEXT = {
     [SICK_LEAVE_TYPE_ID]: 'Sick Leave',
 };
 
+export const ABSENCE_TYPE_NAME = {
+    [HOLIDAY_TYPE_ID]: 'Holiday Absence Request',
+};
+
 /**
  * Pre-calculated Set of all Swedish bank holidays from 2024 to 2030.
  * Each date is stored as an ISO date string (YYYY-MM-DD).

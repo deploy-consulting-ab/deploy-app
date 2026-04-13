@@ -16,10 +16,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ReadOnlyCalendar } from '@/components/ui/read-only-calendar';
 import { formatDateToISOString, cn, countSwedishBusinessDaysLocalInclusive } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { getAbsenceStatusColor } from '@/lib/utils';
+import { getAbsenceStatusColor, formatLocalDateKey } from '@/lib/utils';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { enGB } from 'react-day-picker/locale';
-import { ABSENCE_STATUS_REGISTERED, ABSENCE_STATUS_APPLIED_FOR } from '@/actions/flex/constants';
+import {
+    ABSENCE_STATUS_REGISTERED,
+    ABSENCE_STATUS_APPLIED_FOR,
+    ABSENCE_TYPE_NAME,
+} from '@/actions/flex/constants';
+import { sendSlackAbsence } from '@/actions/slack/slack-actions';
 
 /**
  * Inline editable hours input component that manages its own local state
@@ -121,6 +126,7 @@ const DEFAULT_LABELS = {
  *
  * @param {Object} props
  * @param {string} props.employmentNumber - The employee number
+ * @param {string} props.employeeName - The employee name
  * @param {string} props.absenceTypeId - The absence type ID (e.g., HOLIDAY_TYPE_ID)
  * @param {Function} props.fetchRequests - Function to fetch requests, receives (employmentNumber, currentDate)
  * @param {Object} props.labels - Custom labels for the component
@@ -128,6 +134,7 @@ const DEFAULT_LABELS = {
  */
 export function AbsenceRequestedListComponent({
     employmentNumber,
+    employeeName,
     absenceTypeId,
     fetchRequests,
     labels = {},
@@ -215,7 +222,14 @@ export function AbsenceRequestedListComponent({
                 duration: 2000,
             });
             handleCancelEdit();
+
+            const { FromDate, ToDate } = editValues;
+            const formattedFromDate = formatLocalDateKey(FromDate);
+            const formattedToDate = formatLocalDateKey(ToDate);
+            const message = `${employeeName} (${employmentNumber}) has updated ${ABSENCE_TYPE_NAME[absenceTypeId]} from ${formattedFromDate} to ${formattedToDate}`;
+            await sendSlackAbsence(message);
         } catch (error) {
+            console.error('Error updating absence request:', error);
             toastRichError({
                 message: mergedLabels.updateError,
                 duration: 2000,
@@ -290,8 +304,9 @@ export function AbsenceRequestedListComponent({
                                     size="sm"
                                     className={cn(
                                         'w-full h-8 justify-start text-left font-normal text-xs',
-                                        !editValues.FromDate && 'text-muted-foreground'
-                                    , "hover:cursor-pointer")}
+                                        !editValues.FromDate && 'text-muted-foreground',
+                                        'hover:cursor-pointer'
+                                    )}
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.FromDate
@@ -347,8 +362,9 @@ export function AbsenceRequestedListComponent({
                                     size="sm"
                                     className={cn(
                                         'w-full h-8 justify-start text-left font-normal text-xs',
-                                        !editValues.ToDate && 'text-muted-foreground'
-                                    , "hover:cursor-pointer")}
+                                        !editValues.ToDate && 'text-muted-foreground',
+                                        'hover:cursor-pointer'
+                                    )}
                                 >
                                     <CalendarIcon className="mr-1.5 h-3 w-3 shrink-0" />
                                     {editValues.ToDate

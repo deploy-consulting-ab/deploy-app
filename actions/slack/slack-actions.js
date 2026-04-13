@@ -35,16 +35,10 @@ export async function sendSlackTimereport(
     }
 }
 
-export async function sendSlackAbsence(
-    employeeName,
-    employeeNumber,
-    absenceApplicationType,
-    absenceApplicationData
-) {
+export async function sendSlackAbsence(message) {
     try {
-        const { startDate, endDate } = absenceApplicationData;
         const body = {
-            text: `${employeeName} (${employeeNumber}) has requested ${absenceApplicationType} from ${startDate} to ${endDate}`,
+            text: message,
         };
 
         const slackService = await getSlackService();
