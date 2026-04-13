@@ -28,24 +28,31 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
                         }
                         variant="outline"
                     >
-                        <span className={`mr-1 text-base leading-none ${isActive ? 'text-green-500' : 'text-red-500'}`}>•</span>
-                        {isActive ? 'ACTIVE' : 'INACTIVE'}
+                        <span className="uppercase">
+                            {isActive ? 'Active' : 'Inactive'}
+                        </span>
                     </Badge>
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-1">
-                        <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Type</p>
+                        <p className="text-muted-foreground font-semibold text-xs uppercase">
+                            Employment Type
+                        </p>
                         <p className="font-medium">{employmentType}</p>
                     </div>
                     <div className="space-y-1">
-                        <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
+                        <p className="text-muted-foreground font-semibold text-xs uppercase">
+                            Start Date
+                        </p>
                         <p className="font-medium">{formatDateToSwedish(employmentStartDate)}</p>
                     </div>
                     {employmentEndDate && (
                         <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                End Date
+                            </p>
                             <p className="font-medium">{formatDateToSwedish(employmentEndDate)}</p>
                         </div>
                     )}

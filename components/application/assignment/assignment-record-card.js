@@ -34,28 +34,38 @@ export function AssignmentRecordCardComponent({ assignment, timecardHours, actua
                             </CardTitle>
                             <p className="text-sm text-muted-foreground mt-0.5">{name}</p>
                         </div>
-                        <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`} variant="outline">
-                            <span className="mr-1 text-base leading-none">•</span>
-                            {projectStatus}
+                        <Badge
+                            className={`${getAssignmentStageColor(projectStatus)} text-white`}
+                            variant="outline"
+                        >
+                            <span className="uppercase">{projectStatus}</span>
                         </Badge>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                Start Date
+                            </p>
                             <p className="font-medium">{formatDateToSwedish(startDate)}</p>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                End Date
+                            </p>
                             <p className="font-medium">{formatDateToSwedish(endDate)}</p>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Projected Hours</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                Projected Hours
+                            </p>
                             <p className="font-medium">{projectedHours} hours</p>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Actual Hours</p>
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                Actual Hours
+                            </p>
                             <p className="font-medium">{actualHours} hours</p>
                         </div>
                     </div>
