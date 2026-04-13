@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Info, Briefcase, CalendarDays, Tag, User } from 'lucide-react';
+import { CalendarDays, Tag } from 'lucide-react';
 import { formatDateToSwedish } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
@@ -12,59 +12,41 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
     const { name, isActive, employeeId, employmentType, employmentStartDate, employmentEndDate } =
         employee;
 
-    console.log(employee);
-
     return (
-        <Card className="w-full transition-all hover:shadow-md">
+        <Card className="w-full transition-all hover:shadow-md border-l-4 border-l-deploy-blue">
             <CardHeader className="space-y-1 border-b">
                 <div className="flex items-start justify-between">
-                    <CardTitle className="text-2xl">{name}</CardTitle>
-                    <Badge className={`${isActive ? 'bg-green-500' : 'bg-red-500'} text-white`}>
-                        {isActive ? 'Active' : 'Inactive'}
+                    <div>
+                        <CardTitle className="text-2xl">{name}</CardTitle>
+                        <p className="text-sm text-muted-foreground mt-0.5">{employeeId}</p>
+                    </div>
+                    <Badge
+                        className={
+                            isActive
+                                ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-100'
+                                : 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100'
+                        }
+                        variant="outline"
+                    >
+                        <span className={`mr-1 text-base leading-none ${isActive ? 'text-green-500' : 'text-red-500'}`}>•</span>
+                        {isActive ? 'ACTIVE' : 'INACTIVE'}
                     </Badge>
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div className="flex items-center space-x-2">
-                        <Info className="h-4 w-4 text-muted-foreground" />
-                        <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employee Name</p>
-                            <p className="font-medium">{name}</p>
-                        </div>
+                    <div className="space-y-1">
+                        <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Type</p>
+                        <p className="font-medium">{employmentType}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employee ID</p>
-                            <p className="font-medium">{employeeId}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Briefcase className="h-4 w-4 text-muted-foreground" />
-                        <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Type</p>
-                            <p className="font-medium">{employmentType}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                        <div className="space-y-1">
-                            <p className="text-muted-foreground font-semibold text-xs uppercase">Employment Start Date</p>
-                            <p className="font-medium">
-                                {formatDateToSwedish(employmentStartDate)}
-                            </p>
-                        </div>
+                    <div className="space-y-1">
+                        <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
+                        <p className="font-medium">{formatDateToSwedish(employmentStartDate)}</p>
                     </div>
                     {employmentEndDate && (
-                        <div className="flex items-center space-x-2">
-                            <Tag className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">Employment End Date</p>
-                                <p className="font-medium">
-                                    {formatDateToSwedish(employmentEndDate)}
-                                </p>
-                            </div>
+                        <div className="space-y-1">
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
+                            <p className="font-medium">{formatDateToSwedish(employmentEndDate)}</p>
                         </div>
                     )}
                 </div>

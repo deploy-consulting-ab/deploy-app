@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
-import { CalendarDays, Briefcase, Info, Clock, ClipboardList } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
@@ -25,60 +25,38 @@ export function AssignmentRecordCardComponent({ assignment, timecardHours, actua
 
     return (
         <>
-            <Card className="w-full transition-all hover:shadow-md">
+            <Card className="w-full transition-all hover:shadow-md border-l-4 border-l-deploy-blue">
                 <CardHeader className="space-y-1 border-b">
                     <div className="flex items-start justify-between">
-                        <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
-                            {projectName}
-                        </CardTitle>
-                        <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`}>
+                        <div>
+                            <CardTitle className={`${isMobile ? 'text-sm' : 'text-2xl'}`}>
+                                {projectName}
+                            </CardTitle>
+                            <p className="text-sm text-muted-foreground mt-0.5">{name}</p>
+                        </div>
+                        <Badge className={`${getAssignmentStageColor(projectStatus)} text-white`} variant="outline">
+                            <span className="mr-1 text-base leading-none">•</span>
                             {projectStatus}
                         </Badge>
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="flex items-center space-x-2">
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold tracking-wider text-xs uppercase">Assignment Name</p>
-                                <p className="font-medium">{name}</p>
-                            </div>
+                        <div className="space-y-1">
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
+                            <p className="font-medium">{formatDateToSwedish(startDate)}</p>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <Briefcase className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">Project Name</p>
-                                <p className="font-medium">{projectName}</p>
-                            </div>
+                        <div className="space-y-1">
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
+                            <p className="font-medium">{formatDateToSwedish(endDate)}</p>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">Start Date</p>
-                                <p className="font-medium">{formatDateToSwedish(startDate)}</p>
-                            </div>
+                        <div className="space-y-1">
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Projected Hours</p>
+                            <p className="font-medium">{projectedHours} hours</p>
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">End Date</p>
-                                <p className="font-medium">{formatDateToSwedish(endDate)}</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">Projected Hours</p>
-                                <p className="font-medium">{projectedHours} hours</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <div className="space-y-1">
-                                <p className="text-muted-foreground font-semibold text-xs uppercase">Actual Hours</p>
-                                <p className="font-medium">{actualHours} hours</p>
-                            </div>
+                        <div className="space-y-1">
+                            <p className="text-muted-foreground font-semibold text-xs uppercase">Actual Hours</p>
+                            <p className="font-medium">{actualHours} hours</p>
                         </div>
                     </div>
 
