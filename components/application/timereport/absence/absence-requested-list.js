@@ -221,7 +221,8 @@ export function AbsenceRequestedListComponent({
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (row) => {
+        const id = row.Id;
         try {
             await deleteAbsenceRequest(id);
             setRequests(requests.filter((request) => request.Id !== id));
@@ -230,9 +231,13 @@ export function AbsenceRequestedListComponent({
                 duration: 2000,
             });
 
-            const message = `${employeeName} (${employmentNumber}) has deleted ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]}`;
+            const { FromDate, ToDate } = row;
+            const formattedFromDate = formatDateToISOString(FromDate);
+            const formattedToDate = formatDateToISOString(ToDate);
+            const message = `${employeeName} (${employmentNumber}) has deleted ${ABSENCE_STATUS_TYPE_TEXT[absenceTypeId]} from ${formattedFromDate} to ${formattedToDate}`;
             sendSlackAbsence(message);
         } catch (error) {
+            console.error('Error deleting absence request:', error);
             toastRichError({
                 message: mergedLabels.deleteError,
                 duration: 2000,
@@ -534,7 +539,7 @@ export function AbsenceRequestedListComponent({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 variant="destructive"
-                                onClick={() => handleDelete(id)}
+                                onClick={() => handleDelete(row.original)}
                             >
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete
