@@ -181,6 +181,13 @@ const getEmployeeByIdQuery = (employeeId) => {
             FROM Employee__c WHERE Id = '${employeeId}' LIMIT 1`;
 };
 
+const getEmployeesByNameOrEmployeeIdQuery = (query) => {
+    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c
+            FROM Employee__c
+            WHERE Name LIKE '%${query}%' OR EmployeeId__c LIKE '%${query}%'
+            ORDER BY IsActive__c DESC, Name ASC`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -200,5 +207,6 @@ export {
     getTimecardHoursCountByAssignmentIdQuery,
     getEmployeesWithActiveAssignmentsQuery,
     getEmployeesQuery,
-    getEmployeeByIdQuery
+    getEmployeeByIdQuery,
+    getEmployeesByNameOrEmployeeIdQuery,
 };

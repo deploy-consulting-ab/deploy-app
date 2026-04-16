@@ -3,8 +3,7 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import Link from 'next/link';
-import { ClipboardList, TrendingUp } from 'lucide-react';
-import { OPPORTUNITIES_ROUTE, ASSIGNMENTS_ROUTE } from '@/menus/routes';
+import { ROUTES_MAP, ICON_MAP } from '@/components/application/search/constants';
 
 function SearchResultsTable({ data, onNavigate }) {
     const columns = [
@@ -13,10 +12,10 @@ function SearchResultsTable({ data, onNavigate }) {
             header: 'Type',
             cell: ({ row }) => {
                 const type = row.getValue('type');
+                const SearchIcon = ICON_MAP[type];
                 return (
                     <div className="flex items-center gap-2">
-                        {type === 'Opportunity' && <TrendingUp className="h-4 w-4" />}
-                        {type === 'Assignment' && <ClipboardList className="h-4 w-4" />}
+                        {SearchIcon && <SearchIcon className="h-4 w-4" />}
                         <span>{type}</span>
                     </div>
                 );
@@ -29,11 +28,8 @@ function SearchResultsTable({ data, onNavigate }) {
                 const type = row.getValue('type');
                 const id = row.original.id;
                 const name = row.getValue('name');
-
-                const href =
-                    type === 'Opportunity'
-                        ? `${OPPORTUNITIES_ROUTE}/${id}`
-                        : `${ASSIGNMENTS_ROUTE}/${id}`;
+                const route = ROUTES_MAP[type];
+                const href = `${route}/${id}`;
 
                 return (
                     <Link

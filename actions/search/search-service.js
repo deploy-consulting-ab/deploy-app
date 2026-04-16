@@ -3,14 +3,19 @@
 import {
     getOpportunitiesByName,
     getAssignmentsByEmployeeNumberAndProjectName,
+    getEmployeesByNameOrEmployeeId,
 } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
-import { VIEW_OPPORTUNITIES_PERMISSION, VIEW_ASSIGNMENTS_PERMISSION } from '@/lib/rba-constants';
+import {
+    VIEW_OPPORTUNITIES_PERMISSION,
+    VIEW_ASSIGNMENTS_PERMISSION,
+    VIEW_MANAGEMENT_PERMISSION,
+} from '@/lib/rba-constants';
 import { toPermissionSet } from '@/lib/utils';
 
 export async function globalSearch(query, limit = 3, employeeNumber) {
     if (!query) {
-        return { opportunities: [], assignments: [] };
+        return { opportunities: [], assignments: [], employees: [] };
     }
 
     const session = await auth();
@@ -33,9 +38,15 @@ export async function globalSearch(query, limit = 3, employeeNumber) {
             promises.push([]);
         }
 
-        const [opportunities, assignments] = await Promise.all(promises);
+        if (permissionsSet.has(VIEW_MANAGEMENT_PERMISSION)) {
+            promises.push(searchEmployees(query));
+        } else {
+            promises.push([]);
+        }
 
-        const records = [...opportunities, ...assignments];
+        const [opportunities, assignments, employees] = await Promise.all(promises);
+
+        const records = [...opportunities, ...assignments, ...employees];
         const slicedRecords = records.slice(0, limit);
 
         return {
@@ -77,6 +88,21 @@ async function searchAssignments(projectName, employeeNumber, limit) {
         return assignments;
     } catch (error) {
         console.error('Search assignments error:', error);
+        return [];
+    }
+}
+
+async function searchEmployees(query) {
+    try {
+        const employees = await getEmployeesByNameOrEmployeeId(query);
+
+        if (employees?.length === 0) {
+            return [];
+        }
+
+        return employees;
+    } catch (error) {
+        console.error('Search employees error:', error);
         return [];
     }
 }

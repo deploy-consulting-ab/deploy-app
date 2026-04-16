@@ -1,13 +1,12 @@
 'use client';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { Search, X } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
+import { Search, X } from 'lucide-react';import { useRouter, usePathname } from 'next/navigation';
 import debounce from 'lodash/debounce';
 import { globalSearch } from '@/actions/search/search-service';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { SearchResultsSheet } from '@/components/application/search/search-results-sheet';
-import { ClipboardList, TrendingUp } from 'lucide-react';
+import { ROUTES_MAP, TYPE_MAP, ICON_MAP } from '@/components/application/search/constants'; 
 
 export function GlobalSearch({ user }) {
     const [open, setOpen] = useState(false);
@@ -106,11 +105,8 @@ export function GlobalSearch({ user }) {
     };
 
     const handleSelect = (type, item) => {
-        if (type === 'Opportunity') {
-            router.push(`/home/opportunities/${item.id}`);
-        } else if (type === 'Assignment') {
-            router.push(`/home/assignments/${item.id}`);
-        }
+        const route = ROUTES_MAP[type];
+        router.push(`${route}/${item.id}`);
     };
 
     const openSearchResults = () => {
@@ -156,30 +152,28 @@ export function GlobalSearch({ user }) {
                                 <div className="space-y-1">
                                     {results?.slicedRecords?.length > 0 && (
                                         <div>
-                                            {results.slicedRecords.map((record) => (
-                                                <div
-                                                    key={record.id}
-                                                    className="p-1.5 sm:p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                    onClick={() =>
-                                                        handleSelect(record.type, record)
-                                                    }
-                                                >
-                                                    <div className="text-xs sm:text-base font-medium truncate">
-                                                        {record.name}
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        {record.type === 'Opportunity' && (
-                                                            <TrendingUp className="h-4 w-4 flex-shrink-0" />
-                                                        )}
-                                                        {record.type === 'Assignment' && (
-                                                            <ClipboardList className="h-4 w-4 flex-shrink-0" />
-                                                        )}
-                                                        <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                                                            {record.type} - {record.accountName}
+                                            {results.slicedRecords.map((record) => {
+                                                const SearchIcon = ICON_MAP[record.type];
+                                                return (
+                                                    <div
+                                                        key={record.id}
+                                                        className="p-1.5 sm:p-2 hover:bg-accent rounded-md cursor-pointer"
+                                                        onClick={() =>
+                                                            handleSelect(record.type, record)
+                                                        }
+                                                    >
+                                                        <div className="text-xs sm:text-base font-medium truncate">
+                                                            {record.name}
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            {SearchIcon && <SearchIcon className="h-4 w-4 flex-shrink-0" />}
+                                                            <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                                                                {record.type} - {record.subType}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     )}
 

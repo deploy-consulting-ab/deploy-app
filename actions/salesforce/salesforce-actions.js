@@ -20,6 +20,7 @@ import {
     getEmployeesWithActiveAssignmentsQuery,
     getEmployeesQuery,
     getEmployeeByIdQuery,
+    getEmployeesByNameOrEmployeeIdQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -54,7 +55,7 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Project__r.Name,
-            accountName: assignment.Project__r.Account__r.Name,
+            subType: assignment.Project__r.Account__r.Name,
             type: 'Assignment',
         }));
     } catch (error) {
@@ -183,7 +184,7 @@ export async function getOpportunitiesByName(name) {
             stage: opportunity.StageName,
             closeDate: opportunity.CloseDate,
             amount: opportunity.Amount,
-            accountName: opportunity.Account.Name,
+            subType: opportunity.Account.Name,
             currency: opportunity.CurrencyIsoCode,
             productType: opportunity.ProductType__c,
             type: 'Opportunity',
@@ -422,6 +423,21 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
             getEmployeesWithActiveAssignmentsQuery(employeeNumbersString, date)
         );
         return new Set(result.map((employee) => employee.EmployeeId__c));
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getEmployeesByNameOrEmployeeId(query) {
+    try {
+        const result = await queryData(getEmployeesByNameOrEmployeeIdQuery(query));
+        return result.map((employee) => ({
+            id: employee.Id,
+            name: employee.Name,
+            employeeId: employee.EmployeeId__c,
+            subType: employee.EmployeeId__c,
+            type: 'Employee',
+        }));
     } catch (error) {
         throw error;
     }
