@@ -19,4 +19,18 @@ const ICON_MAP = {
     [TYPE_MAP.Employee]: Users,
 };
 
-export { ROUTES_MAP, TYPE_MAP, ICON_MAP };
+// Extra columns to show when a given type is present in the result set.
+// Each entry is a standard TanStack column definition.
+const EXTRA_COLUMNS_BY_TYPE = {
+    [TYPE_MAP.Opportunity]: [
+        { accessorKey: 'subType', header: 'Account' },
+    ],
+    [TYPE_MAP.Assignment]: [
+        { accessorKey: 'subType', header: 'Account' },
+    ],
+    [TYPE_MAP.Employee]: [
+        { accessorKey: 'subType', header: 'Employee ID' },
+    ],
+};
+
+export { ROUTES_MAP, TYPE_MAP, ICON_MAP, EXTRA_COLUMNS_BY_TYPE };
