@@ -14,6 +14,8 @@ import {
 import { toPermissionSet } from '@/lib/utils';
 import { searchUsersAction } from '@/actions/database/user-actions';
 import { searchProfilesAction } from '@/actions/database/profile-actions';
+import { searchPermissionSetsAction } from '@/actions/database/permissionset-actions';
+import { searchSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 
 export async function globalSearch(query, limit = 3, employeeNumber, location) {
     if (!query) {
@@ -76,9 +78,11 @@ async function searchByLocation(query, limit, location, permissionsSet, employee
 
         promises.push(searchUsers(query));
         promises.push(searchProfiles(query));
+        promises.push(searchPermissionSets(query));
+        promises.push(searchSystemPermissions(query));
 
-        const [users, profiles] = await Promise.all(promises);
-        const records = [...users, ...profiles];
+        const [users, profiles, permissionSets, systemPermissions] = await Promise.all(promises);
+        const records = [...users, ...profiles, ...permissionSets, ...systemPermissions];
         const slicedRecords = records.slice(0, limit);
 
         return {
@@ -149,7 +153,7 @@ async function searchUsers(query) {
         return users.map((user) => ({
             ...user,
             type: 'User',
-            subType: user.employeeNumber,
+            subType: user.id,
         }));
     } catch (error) {
         console.error('Search users error:', error);
@@ -168,10 +172,48 @@ async function searchProfiles(query) {
         return profiles.map((profile) => ({
             ...profile,
             type: 'Profile',
-            subType: profile.name,
+            subType: profile.id,
         }));
     } catch (error) {
         console.error('Search profiles error:', error);
+        return [];
+    }
+}
+
+async function searchPermissionSets(query) {
+    try {
+        const permissionSets = await searchPermissionSetsAction(query);
+
+        if (permissionSets?.length === 0) {
+            return [];
+        }
+
+        return permissionSets.map((permissionSet) => ({
+            ...permissionSet,
+            type: 'PermissionSet',
+            subType: permissionSet.id,
+        }));
+    } catch (error) {
+        console.error('Search permission sets error:', error);
+        return [];
+    }
+}
+
+async function searchSystemPermissions(query) {
+    try {
+        const systemPermissions = await searchSystemPermissionsAction(query);
+
+        if (systemPermissions?.length === 0) {
+            return [];
+        }
+
+        return systemPermissions.map((systemPermission) => ({
+            ...systemPermission,
+            type: 'SystemPermission',
+            subType: systemPermission.id,
+        }));
+    } catch (error) {
+        console.error('Search system permissions error:', error);
         return [];
     }
 }

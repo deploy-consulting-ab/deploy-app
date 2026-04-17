@@ -150,3 +150,26 @@ export async function getTotalSystemPermissionsCount() {
         throw error;
     }
 }
+
+/**
+ * Search system permissions by name or description
+ * @param {string} searchTerm
+ * @returns {Promise<SystemPermission[]>} System permissions matching the search term
+ * @throws {Error} If the system permissions are not found
+ */
+export async function searchSystemPermissions(searchTerm) {
+    try {
+        const systemPermissions = await db.systemPermission.findMany({
+            where: {
+                OR: [
+                    { name: { contains: searchTerm, mode: 'insensitive' } },
+                    { id: { contains: searchTerm, mode: 'insensitive' } },
+                ],
+            },
+            orderBy: { name: 'asc' },
+        });
+        return systemPermissions;
+    } catch (error) {
+        throw error;
+    }
+}

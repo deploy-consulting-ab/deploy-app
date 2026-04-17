@@ -7,6 +7,7 @@ import {
     getSystemPermissionById,
     getSystemPermissionAssignmentsById,
     getTotalSystemPermissionsCount,
+    searchSystemPermissions,
 } from '@/data/system-permissions-db';
 import { CreateSystemPermissionSchema, UpdateSystemPermissionSchema } from '@/schemas';
 /**
@@ -129,6 +130,17 @@ export async function updateSystemPermissionAction(id, data) {
 
         const payload = validatedFields.data;
         return await updateSystemPermission(id, payload);
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function searchSystemPermissionsAction(searchTerm) {
+    try {
+        if (!searchTerm || searchTerm.trim() === '') {
+            return [];
+        }
+        return await searchSystemPermissions(searchTerm);
     } catch (error) {
         throw error;
     }
