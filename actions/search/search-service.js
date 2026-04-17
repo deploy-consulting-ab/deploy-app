@@ -13,6 +13,7 @@ import {
 } from '@/lib/rba-constants';
 import { toPermissionSet } from '@/lib/utils';
 import { searchUsersAction } from '@/actions/database/user-actions';
+import { searchProfilesAction } from '@/actions/database/profile-actions';
 
 export async function globalSearch(query, limit = 3, employeeNumber, location) {
     if (!query) {
@@ -64,20 +65,22 @@ async function searchByLocation(query, limit, location, permissionsSet, employee
             slicedRecords,
         };
     } else if (location === 'setup') {
-        const promises = [];
-
-        if (permissionsSet.has(VIEW_MANAGEMENT_PERMISSION)) {
-            promises.push(searchUsers(query));
-        } else {
-            promises.push([]);
+        if (!permissionsSet.has(VIEW_MANAGEMENT_PERMISSION)) {
+            return {
+                records: [],
+                slicedRecords: [],
+            };
         }
 
-        const [users] = await Promise.all(promises);
-        const records = [...users];
+        const promises = [];
+
+        promises.push(searchUsers(query));
+        promises.push(searchProfiles(query));
+
+        const [users, profiles] = await Promise.all(promises);
+        const records = [...users, ...profiles];
         const slicedRecords = records.slice(0, limit);
 
-        console.log('records', records);
-        console.log('slicedRecords', slicedRecords);
         return {
             records,
             slicedRecords,
@@ -143,9 +146,32 @@ async function searchUsers(query) {
             return [];
         }
 
-        return users;
+        return users.map((user) => ({
+            ...user,
+            type: 'User',
+            subType: user.employeeNumber,
+        }));
     } catch (error) {
         console.error('Search users error:', error);
+        return [];
+    }
+}
+
+async function searchProfiles(query) {
+    try {
+        const profiles = await searchProfilesAction(query);
+
+        if (profiles?.length === 0) {
+            return [];
+        }
+
+        return profiles.map((profile) => ({
+            ...profile,
+            type: 'Profile',
+            subType: profile.name,
+        }));
+    } catch (error) {
+        console.error('Search profiles error:', error);
         return [];
     }
 }

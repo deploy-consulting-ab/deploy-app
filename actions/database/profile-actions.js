@@ -9,6 +9,7 @@ import {
     createProfile,
     deleteProfile,
     getTotalProfilesCount,
+    searchProfiles,
 } from '@/data/profile-db';
 
 /**
@@ -132,6 +133,17 @@ export async function deleteProfileAction(id) {
 export async function getTotalProfilesCountAction() {
     try {
         return await getTotalProfilesCount();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function searchProfilesAction(searchTerm) {
+    try {
+        if (!searchTerm || searchTerm.trim() === '') {
+            return [];
+        }
+        return await searchProfiles(searchTerm);
     } catch (error) {
         throw error;
     }

@@ -163,12 +163,8 @@ export async function searchUsersAction(searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];
         }
-        const users = await searchUsers(searchTerm);
-        return users.map((user) => ({
-            ...user,
-            type: 'User',
-            subType: user.employeeNumber,
-        }));
+        return await searchUsers(searchTerm);
+        
     } catch (error) {
         throw error;
     }

@@ -265,7 +265,6 @@ export async function searchUsers(searchTerm) {
             SELECT id, name, email, "employeeNumber", "profileId", "yearlyHolidays", "carriedOverHolidays"
             FROM "User"
             WHERE unaccent(name) ILIKE unaccent(${normalizedTerm})
-               OR unaccent(email) ILIKE unaccent(${normalizedTerm})
                OR unaccent("employeeNumber") ILIKE unaccent(${normalizedTerm})
             ORDER BY name ASC
         `;

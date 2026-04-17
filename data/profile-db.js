@@ -158,3 +158,26 @@ export async function getTotalProfilesCount() {
         throw error;
     }
 }
+
+/**
+ * Search profiles by name or description.
+ * @param {string} searchTerm
+ * @returns {Promise<Profile[]>} Profiles matching the search term
+ * @throws {Error} If the search fails
+ */
+export async function searchProfiles(searchTerm) {
+    try {
+        const profiles = await db.profile.findMany({
+            where: {
+                OR: [
+                    { name: { contains: searchTerm, mode: 'insensitive' } },
+                    { id: { contains: searchTerm, mode: 'insensitive' } },
+                ],
+            },
+            orderBy: { name: 'asc' },
+        });
+        return profiles;
+    } catch (error) {
+        throw error;
+    }
+}
