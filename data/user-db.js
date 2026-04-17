@@ -253,34 +253,22 @@ export const updateUserProfile = async (userId, profileId) => {
  */
 
 /**
- * Search users by name or email
+ * Search users by name or email. Raw query is used to apply unaccent function to the search term.
  * @param {string} searchTerm
  * @returns {Promise<User[]>} Users matching the search term
  * @throws {Error} If the search fails
  */
 export async function searchUsers(searchTerm) {
     try {
-        const users = await db.user.findMany({
-            where: {
-                OR: [
-                    { name: { contains: searchTerm, mode: 'insensitive' } },
-                    { email: { contains: searchTerm, mode: 'insensitive' } },
-                    { employeeNumber: { contains: searchTerm, mode: 'insensitive' } },
-                ],
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                employeeNumber: true,
-                profileId: true,
-                yearlyHolidays: true,
-                carriedOverHolidays: true,
-            },
-            orderBy: {
-                name: 'asc',
-            },
-        });
+        const normalizedTerm = `%${searchTerm}%`;
+        const users = await db.$queryRaw`
+            SELECT id, name, email, "employeeNumber", "profileId", "yearlyHolidays", "carriedOverHolidays"
+            FROM "User"
+            WHERE unaccent(name) ILIKE unaccent(${normalizedTerm})
+               OR unaccent(email) ILIKE unaccent(${normalizedTerm})
+               OR unaccent("employeeNumber") ILIKE unaccent(${normalizedTerm})
+            ORDER BY name ASC
+        `;
         return users;
     } catch (error) {
         throw error;
