@@ -16,6 +16,7 @@ import {
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
 import { UpdateUserSchema } from '@/schemas';
+import { sub } from 'date-fns';
 
 /**
  * Get all users
@@ -162,7 +163,12 @@ export async function searchUsersAction(searchTerm) {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];
         }
-        return await searchUsers(searchTerm);
+        const users = await searchUsers(searchTerm);
+        return users.map((user) => ({
+            ...user,
+            type: 'User',
+            subType: user.employeeNumber,
+        }));
     } catch (error) {
         throw error;
     }

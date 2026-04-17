@@ -265,6 +265,7 @@ export async function searchUsers(searchTerm) {
                 OR: [
                     { name: { contains: searchTerm, mode: 'insensitive' } },
                     { email: { contains: searchTerm, mode: 'insensitive' } },
+                    { employeeNumber: { contains: searchTerm, mode: 'insensitive' } },
                 ],
             },
             select: {

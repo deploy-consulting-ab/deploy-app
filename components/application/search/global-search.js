@@ -1,14 +1,17 @@
 'use client';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { Search, X } from 'lucide-react';import { useRouter, usePathname } from 'next/navigation';
+import { Search, X } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
 import debounce from 'lodash/debounce';
 import { globalSearch } from '@/actions/search/search-service';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { SearchResultsSheet } from '@/components/application/search/search-results-sheet';
-import { ROUTES_MAP, TYPE_MAP, ICON_MAP } from '@/components/application/search/constants'; 
+import { ROUTES_MAP, ICON_MAP } from '@/components/application/search/constants';
+import { HomeSearchResults } from '@/components/application/search/home-search-results';
+import { SetupSearchResults } from '@/components/application/search/setup-search-results';
 
-export function GlobalSearch({ user }) {
+export function GlobalSearch({ user, location }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
@@ -52,7 +55,7 @@ export function GlobalSearch({ user }) {
             }
 
             try {
-                const response = await globalSearch(query, 5, user?.employeeNumber);
+                const response = await globalSearch(query, 5, user?.employeeNumber, location);
                 setResults(response);
                 setOpen(true);
             } catch (error) {
@@ -147,50 +150,24 @@ export function GlobalSearch({ user }) {
                             </div>
                         )}
 
-                        {results && !loading && (
+                        {/* Results */}
+                        {results?.slicedRecords?.length > 0 && !loading && (
                             <>
-                                <div className="space-y-1">
-                                    {results?.slicedRecords?.length > 0 && (
-                                        <div>
-                                            {results.slicedRecords.map((record) => {
-                                                const SearchIcon = ICON_MAP[record.type];
-                                                return (
-                                                    <div
-                                                        key={record.id}
-                                                        className="p-1.5 sm:p-2 hover:bg-accent rounded-md cursor-pointer"
-                                                        onClick={() =>
-                                                            handleSelect(record.type, record)
-                                                        }
-                                                    >
-                                                        <div className="text-xs sm:text-base font-medium truncate">
-                                                            {record.name}
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            {SearchIcon && <SearchIcon className="h-4 w-4 flex-shrink-0" />}
-                                                            <div className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                                                                {record.type} - {record.subType}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-
-                                    {results?.records?.length > 5 && (
-                                        <button
-                                            onClick={openSearchResults}
-                                            className="w-full text-sm text-muted-foreground hover:text-foreground mt-4 p-2 hover:bg-accent rounded-md text-center"
-                                        >
-                                            View More
-                                        </button>
-                                    )}
-                                </div>
-
-                                {results?.records?.length === 0 && (
-                                    <div className="text-center text-muted-foreground">
-                                        No results found
-                                    </div>
+                                {location === 'home' && (
+                                    <HomeSearchResults
+                                        totalRecords={results.records}
+                                        slicedRecords={results.slicedRecords}
+                                        handleSelect={handleSelect}
+                                        openSearchResults={openSearchResults}
+                                    />
+                                )}
+                                {location === 'setup' && (
+                                    <SetupSearchResults
+                                        totalRecords={results.records}
+                                        slicedRecords={results.slicedRecords}
+                                        handleSelect={handleSelect}
+                                        openSearchResults={openSearchResults}
+                                    />
                                 )}
                             </>
                         )}

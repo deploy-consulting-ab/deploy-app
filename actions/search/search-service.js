@@ -12,8 +12,9 @@ import {
     VIEW_MANAGEMENT_PERMISSION,
 } from '@/lib/rba-constants';
 import { toPermissionSet } from '@/lib/utils';
+import { searchUsersAction } from '@/actions/database/user-actions';
 
-export async function globalSearch(query, limit = 3, employeeNumber) {
+export async function globalSearch(query, limit = 3, employeeNumber, location) {
     if (!query) {
         return { opportunities: [], assignments: [], employees: [] };
     }
@@ -23,6 +24,15 @@ export async function globalSearch(query, limit = 3, employeeNumber) {
     const permissionsSet = toPermissionSet(user?.systemPermissions);
 
     try {
+        return await searchByLocation(query, limit, location, permissionsSet, employeeNumber);
+    } catch (error) {
+        console.error('Global search error:', error);
+        throw new Error('Failed to perform global search');
+    }
+}
+
+async function searchByLocation(query, limit, location, permissionsSet, employeeNumber) {
+    if (location === 'home') {
         // Only fetch data that the user has permission to see
         const promises = [];
 
@@ -53,9 +63,27 @@ export async function globalSearch(query, limit = 3, employeeNumber) {
             records,
             slicedRecords,
         };
-    } catch (error) {
-        console.error('Global search error:', error);
-        throw new Error('Failed to perform global search');
+    } else if (location === 'setup') {
+        const promises = [];
+
+        if (permissionsSet.has(VIEW_MANAGEMENT_PERMISSION)) {
+            promises.push(searchUsers(query));
+        } else {
+            promises.push([]);
+        }
+
+        const [users] = await Promise.all(promises);
+        const records = [...users];
+        const slicedRecords = records.slice(0, limit);
+
+        console.log('records', records);
+        console.log('slicedRecords', slicedRecords);
+        return {
+            records,
+            slicedRecords,
+        };
+    } else {
+        return [];
     }
 }
 
@@ -103,6 +131,21 @@ async function searchEmployees(query) {
         return employees;
     } catch (error) {
         console.error('Search employees error:', error);
+        return [];
+    }
+}
+
+async function searchUsers(query) {
+    try {
+        const users = await searchUsersAction(query);
+
+        if (users?.length === 0) {
+            return [];
+        }
+
+        return users;
+    } catch (error) {
+        console.error('Search users error:', error);
         return [];
     }
 }

@@ -15,7 +15,6 @@ export async function AppHeaderComponent({ location }) {
     const { user } = session;
 
     const isHomePage = location === 'home';
-
     return (
         <>
             <ImpersonationBannerComponent />
@@ -29,13 +28,13 @@ export async function AppHeaderComponent({ location }) {
                 </div>
 
                 {/* Center section with search */}
-                {isHomePage && (
+                {/* {isHomePage && ( */}
                     <div className="flex-1 flex justify-center px-4">
                         <div className="w-full max-w-xl">
-                            <GlobalSearch user={user} />
+                            <GlobalSearch user={user} location={location} />
                         </div>
                     </div>
-                )}
+                {/* )} */}
 
                 {/* Right section with icons */}
                 <div className="flex items-center gap-2">
