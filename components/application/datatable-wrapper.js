@@ -28,6 +28,7 @@ export function DatatableWrapperComponent({
     searchKey,
     pageSize = 10,
     showPagination = true,
+    showSearch = true,
     ...props
 }) {
     const [sorting, setSorting] = useState([]);
@@ -60,14 +61,16 @@ export function DatatableWrapperComponent({
         <>
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center w-full">
-                    <Input
-                        placeholder={placeholder}
-                        value={table.getColumn(searchKey)?.getFilterValue() ?? ''}
-                        onChange={(event) =>
-                            table.getColumn(searchKey)?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm mr-2 bg-card border-border/50 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
-                    />
+                    {showSearch && (
+                        <Input
+                            placeholder={placeholder}
+                            value={table.getColumn(searchKey)?.getFilterValue() ?? ''}
+                            onChange={(event) =>
+                                table.getColumn(searchKey)?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm mr-2 bg-card border-border/50 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
+                        />
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     {props.views && props.views.map((view) => view)}

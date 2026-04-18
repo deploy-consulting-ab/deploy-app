@@ -81,7 +81,11 @@ function getAvailableFiscalYears(records) {
     return years;
 }
 
-export function FinancialsListComponent({ records: initialRecords, error: initialError, canManage }) {
+export function FinancialsListComponent({
+    records: initialRecords,
+    error: initialError,
+    canManage,
+}) {
     const [records, setRecords] = useState(initialRecords ?? []);
     const [error, setError] = useState(initialError);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -160,9 +164,9 @@ export function FinancialsListComponent({ records: initialRecords, error: initia
         }
 
         const sortKey = (q) => {
-            if (q >= 1 && q <= 4) return q;   // Q1–Q4 in natural order
-            if (q === 0) return 5;             // Total Year (stored)
-            return 6;                          // Total Year (computed, quarter=-1)
+            if (q >= 1 && q <= 4) return q; // Q1–Q4 in natural order
+            if (q === 0) return 5; // Total Year (stored)
+            return 6; // Total Year (computed, quarter=-1)
         };
         return rows.sort((a, b) => sortKey(a.quarter) - sortKey(b.quarter));
     })();
@@ -383,7 +387,11 @@ export function FinancialsListComponent({ records: initialRecords, error: initia
     );
 
     const createAction = canManage ? (
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} key="create-financial">
+        <Dialog
+            open={isCreateDialogOpen}
+            onOpenChange={setIsCreateDialogOpen}
+            key="create-financial"
+        >
             <DialogTrigger asChild>
                 <Button size="sm" className="hover:cursor-pointer">
                     <PlusCircle className="h-4 w-4" />
@@ -427,12 +435,11 @@ export function FinancialsListComponent({ records: initialRecords, error: initia
             <DatatableWrapperComponent
                 data={filteredRecords}
                 columns={columns}
-                placeholder="Filter records..."
-                searchKey="fiscalYear"
                 pageSize={10}
                 views={views}
                 actions={actions}
                 showPagination={false}
+                showSearch={false}
             />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
