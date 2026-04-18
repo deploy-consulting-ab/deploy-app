@@ -27,6 +27,7 @@ export function DatatableWrapperComponent({
     placeholder,
     searchKey,
     pageSize = 10,
+    showPagination = true,
     ...props
 }) {
     const [sorting, setSorting] = useState([]);
@@ -146,26 +147,28 @@ export function DatatableWrapperComponent({
                     </div>
                 )}
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
-                >
-                    Next
-                </Button>
-            </div>
+            {showPagination && (
+                <div className="flex items-center justify-end space-x-2 py-4">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </>
     );
 }

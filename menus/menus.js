@@ -12,6 +12,7 @@ import {
     Clock,
     BarChart3,
     ChartPie,
+    DollarSign,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -29,6 +30,7 @@ import {
     TIMEREPORT_ROUTE,
     MANAGEMENT_ROUTE,
     EMPLOYEES_LIST_ROUTE,
+    FINANCIALS_ROUTE,
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -59,6 +61,11 @@ export const MENU_ITEMS_MAP = {
                 title: 'Employees',
                 url: EMPLOYEES_LIST_ROUTE,
                 icon: Users,
+            },
+            {
+                title: 'Financials',
+                url: FINANCIALS_ROUTE,
+                icon: DollarSign,
             },
         ],
     },

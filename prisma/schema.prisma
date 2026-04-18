@@ -92,3 +92,20 @@ model TimereportCheckmark {
     @@index([userId])
     @@index([weekStartDate])
 }
+
+// Financial records by fiscal year and quarter (FY: Feb 1 – Jan 31)
+// quarter: 1-4 for Q1-Q4, 0 = Total Year (stored explicitly)
+model FinancialRecord {
+    id         String   @id @default(cuid())
+    fiscalYear Int
+    quarter    Int
+    revenue    Float
+    cost       Float
+    benefit    Float
+    taxes      Float
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@unique([fiscalYear, quarter])
+    @@index([fiscalYear])
+}
