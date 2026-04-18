@@ -4,10 +4,11 @@ import { auth } from '@/auth';
 import { getFinancialsAction } from '@/actions/database/financials-actions';
 import { FinancialsListComponent } from '@/components/application/management/financials/financials-list';
 import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
+import { toPermissionSet } from '@/lib/utils';
 
 export default async function FinancialsPage() {
     const session = await auth();
-    const canManage = session?.user?.systemPermissions?.includes(VIEW_SETUP_PERMISSION) ?? false;
+    const canManage = toPermissionSet(session?.user?.systemPermissions).has(VIEW_SETUP_PERMISSION);
 
     let records = null;
     let error = null;
@@ -18,11 +19,5 @@ export default async function FinancialsPage() {
         error = err;
     }
 
-    return (
-        <FinancialsListComponent
-            records={records ?? []}
-            error={error}
-            canManage={canManage}
-        />
-    );
+    return <FinancialsListComponent records={records ?? []} error={error} canManage={canManage} />;
 }
