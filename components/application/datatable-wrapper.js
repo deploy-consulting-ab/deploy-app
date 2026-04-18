@@ -29,6 +29,7 @@ export function DatatableWrapperComponent({
     pageSize = 10,
     showPagination = true,
     showSearch = true,
+    getRowClassName,
     ...props
 }) {
     const [sorting, setSorting] = useState([]);
@@ -124,6 +125,7 @@ export function DatatableWrapperComponent({
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && 'selected'}
+                                            className={getRowClassName ? getRowClassName(row) : undefined}
                                         >
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id}>

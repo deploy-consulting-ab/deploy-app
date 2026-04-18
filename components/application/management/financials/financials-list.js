@@ -100,8 +100,6 @@ export function FinancialsListComponent({
     const [selectedFY, setSelectedFY] = useState(String(defaultFY));
     const [selectedQuarter, setSelectedQuarter] = useState('all');
 
-    const router = useRouter();
-
     const handleRefresh = async () => {
         if (isRefreshing) return;
         setIsRefreshing(true);
@@ -190,11 +188,7 @@ export function FinancialsListComponent({
             ),
             cell: ({ row }) => {
                 const fy = row.getValue('fiscalYear');
-                return (
-                    <div className="font-medium tabular-nums">
-                        FY {fy}/{String(fy + 1).slice(-2)}
-                    </div>
-                );
+                return <div className="font-medium tabular-nums">FY{String(fy).slice(-2)}</div>;
             },
         },
         {
@@ -364,7 +358,7 @@ export function FinancialsListComponent({
             <SelectContent>
                 {fyOptions.map((fy) => (
                     <SelectItem key={fy} value={String(fy)}>
-                        FY {fy}/{String(fy + 1).slice(-2)}
+                        FY{String(fy).slice(-2)}
                     </SelectItem>
                 ))}
             </SelectContent>
@@ -440,6 +434,11 @@ export function FinancialsListComponent({
                 actions={actions}
                 showPagination={false}
                 showSearch={false}
+                getRowClassName={(row) =>
+                    row.original._isComputed
+                        ? 'bg-muted/80 hover:bg-muted/80 dark:bg-muted/100 dark:hover:bg-muted/100'
+                        : ''
+                }
             />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
