@@ -39,7 +39,6 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
             revenue: r.revenue,
             cost: r.cost,
             benefit: r.benefit,
-            taxes: r.taxes,
         }));
 
     return (
@@ -82,7 +81,25 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                             <ChartTooltip
                                 cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 4 }}
                                 content={
-                                    <ChartTooltipContent formatter={(value) => formatSEK(value)} />
+                                    <ChartTooltipContent
+                                        className="text-sm"
+                                        formatter={(value, name, item) => (
+                                            <>
+                                                <span
+                                                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                                                    style={{ backgroundColor: item.color }}
+                                                />
+                                                <div className="flex flex-1 justify-between leading-none items-center">
+                                                    <span className="text-muted-foreground">
+                                                        {CHART_CONFIG[name]?.label || name}
+                                                    </span>
+                                                    <span className="font-mono font-medium tabular-nums ml-2">
+                                                        {formatSEK(value)}
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+                                    />
                                 }
                             />
                             <ChartLegend content={<ChartLegendContent />} />
@@ -97,7 +114,6 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                                 fill="var(--color-benefit)"
                                 radius={[4, 4, 0, 0]}
                             />
-                            <Bar dataKey="taxes" fill="var(--color-taxes)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ChartContainer>
                 )}
@@ -153,9 +169,27 @@ export function FinancialsLineChartComponent({ records }) {
                                 width={90}
                             />
                             <ChartTooltip
+                                className="text-sm"
                                 cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1 }}
                                 content={
-                                    <ChartTooltipContent formatter={(value) => formatSEK(value)} />
+                                    <ChartTooltipContent
+                                        formatter={(value, name, item) => (
+                                            <>
+                                                <span
+                                                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                                                    style={{ backgroundColor: item.color }}
+                                                />
+                                                <div className="flex flex-1 justify-between leading-none items-center">
+                                                    <span className="text-muted-foreground">
+                                                        {CHART_CONFIG[name]?.label || name}
+                                                    </span>
+                                                    <span className="font-mono font-medium tabular-nums ml-2">
+                                                        {formatSEK(value)}
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+                                    />
                                 }
                             />
                             <ChartLegend content={<ChartLegendContent />} />
