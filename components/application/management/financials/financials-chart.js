@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useCallback } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -11,6 +12,32 @@ import {
 } from '@/components/ui/chart';
 import { formatSEK } from '@/lib/utils';
 import { NoDataComponent } from '@/components/errors/no-data';
+
+function useTouchToMouseEvents () {
+    const ref = useRef(null);
+
+    const handleTouchMove = useCallback((e) => {
+        const touch = e.touches[0];
+        if (!touch || !ref.current) return;
+        const svgEl = ref.current.querySelector('svg');
+        if (!svgEl) return;
+        svgEl.dispatchEvent(new MouseEvent('mousemove', {
+            bubbles: true,
+            cancelable: true,
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+        }));
+    }, []);
+
+    const handleTouchEnd = useCallback(() => {
+        if (!ref.current) return;
+        const svgEl = ref.current.querySelector('svg');
+        if (!svgEl) return;
+        svgEl.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    }, []);
+
+    return { ref, handleTouchMove, handleTouchEnd };
+}
 
 const CHART_CONFIG = {
     revenue: { label: 'Revenue', color: '#3b82f6' },
@@ -41,6 +68,8 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
             benefit: r.benefit,
         }));
 
+    const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
+
     return (
         <Card variant="shadow">
             <CardHeader>
@@ -56,6 +85,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                         <NoDataComponent text="No quarterly data for this fiscal year" />
                     </div>
                 ) : (
+                    <div ref={ref} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
                     <ChartContainer config={CHART_CONFIG} className="w-full h-72">
                         <BarChart
                             data={quarterRecords}
@@ -123,6 +153,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                             />
                         </BarChart>
                     </ChartContainer>
+                    </div>
                 )}
             </CardContent>
         </Card>
@@ -144,6 +175,8 @@ export function FinancialsLineChartComponent({ records }) {
             taxes: r.taxes,
         }));
 
+    const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
+
     return (
         <Card variant="shadow">
             <CardHeader>
@@ -158,6 +191,7 @@ export function FinancialsLineChartComponent({ records }) {
                         <NoDataComponent text="No Total Year records available yet" />
                     </div>
                 ) : (
+                    <div ref={ref} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
                     <ChartContainer config={CHART_CONFIG} className="w-full h-72">
                         <LineChart
                             data={totalYearRecords}
@@ -234,6 +268,7 @@ export function FinancialsLineChartComponent({ records }) {
                             />
                         </LineChart>
                     </ChartContainer>
+                    </div>
                 )}
             </CardContent>
         </Card>
