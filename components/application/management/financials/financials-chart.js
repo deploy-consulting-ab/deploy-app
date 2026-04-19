@@ -72,7 +72,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
 
     const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
     const yTickFormatter = compact ? formatSEKCompact : formatSEK;
-    const yWidth = compact ? 68 : 90;
+    const yWidth = compact ? 60 : 90;
 
     return (
         <Card variant="shadow">
