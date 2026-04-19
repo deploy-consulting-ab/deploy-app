@@ -30,35 +30,9 @@ import {
     deleteFinancialRecordAction,
 } from '@/actions/database/financials-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { formatSEK, getCurrentFiscalYear } from '@/lib/utils';
+import { formatSEK, getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears } from '@/lib/utils';
 import { QUARTER_FILTER_OPTIONS } from '../financials-constants';
 import { FinancialCardPhoneComponent } from './financial-card-phone';
-
-function buildComputedTotal(records, fiscalYear) {
-    const quarterRecords = records.filter(
-        (r) => r.fiscalYear === fiscalYear && r.quarter >= 1 && r.quarter <= 4
-    );
-    if (quarterRecords.length === 0) return null;
-
-    const fyRecord = records.find((r) => r.fiscalYear === fiscalYear && r.quarter === 0);
-    const taxes = fyRecord?.taxes ?? 0;
-
-    return {
-        id: `computed-total-${fiscalYear}`,
-        fiscalYear,
-        quarter: -1,
-        revenue: quarterRecords.reduce((sum, r) => sum + r.revenue, 0),
-        cost: quarterRecords.reduce((sum, r) => sum + r.cost, 0) + taxes,
-        benefit: quarterRecords.reduce((sum, r) => sum + r.benefit, 0) - taxes,
-        taxes,
-        _isComputed: true,
-    };
-}
-
-function getAvailableFiscalYears(records) {
-    const years = [...new Set(records.map((r) => r.fiscalYear))].sort((a, b) => b - a);
-    return years;
-}
 
 export function FinancialsListPhoneComponent({
     records: initialRecords,
@@ -73,7 +47,7 @@ export function FinancialsListPhoneComponent({
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
     const currentFY = getCurrentFiscalYear();
-    const availableFYs = getAvailableFiscalYears(records);
+    const availableFYs = getFinancialFiscalYears(records);
     const defaultFY = availableFYs.length > 0 ? availableFYs[0] : currentFY;
 
     const [selectedFY, setSelectedFY] = useState(String(defaultFY));
