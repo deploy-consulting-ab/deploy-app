@@ -215,8 +215,8 @@ export function FinancialsListPhoneComponent({
             </div>
 
             <div className="space-y-6">
-                <FinancialsBarChartComponent records={records} fiscalYear={fyNum} />
-                <FinancialsLineChartComponent records={records} />
+                <FinancialsBarChartComponent records={records} fiscalYear={fyNum} compact />
+                <FinancialsLineChartComponent records={records} compact />
             </div>
 
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>

@@ -10,7 +10,7 @@ import {
     ChartLegend,
     ChartLegendContent,
 } from '@/components/ui/chart';
-import { formatSEK } from '@/lib/utils';
+import { formatSEK, formatSEKCompact } from '@/lib/utils';
 import { NoDataComponent } from '@/components/errors/no-data';
 
 function useTouchToMouseEvents() {
@@ -59,7 +59,7 @@ const QUARTER_LABELS = {
 /**
  * Bar chart: Revenue / Cost / Benefit / Taxes grouped by quarter for the selected FY.
  */
-export function FinancialsBarChartComponent({ records, fiscalYear }) {
+export function FinancialsBarChartComponent({ records, fiscalYear, compact = false }) {
     const quarterRecords = records
         .filter((r) => r.fiscalYear === fiscalYear && r.quarter >= 1 && r.quarter <= 4)
         .sort((a, b) => a.quarter - b.quarter)
@@ -71,6 +71,8 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
         }));
 
     const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
+    const yTickFormatter = compact ? formatSEKCompact : formatSEK;
+    const yWidth = compact ? 68 : 90;
 
     return (
         <Card variant="shadow">
@@ -106,8 +108,8 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                                 <YAxis
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(v) => formatSEK(v)}
-                                    width={90}
+                                    tickFormatter={yTickFormatter}
+                                    width={yWidth}
                                 />
                                 <ChartTooltip
                                     cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 4 }}
@@ -164,7 +166,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
 /**
  * Line chart: Revenue / Cost / Benefit / Taxes trend across fiscal years (Total Year records).
  */
-export function FinancialsLineChartComponent({ records }) {
+export function FinancialsLineChartComponent({ records, compact = false }) {
     const totalYearRecords = records
         .filter((r) => r.quarter === 0)
         .sort((a, b) => a.fiscalYear - b.fiscalYear)
@@ -177,6 +179,8 @@ export function FinancialsLineChartComponent({ records }) {
         }));
 
     const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
+    const yTickFormatter = compact ? formatSEKCompact : formatSEK;
+    const yWidth = compact ? 68 : 90;
 
     return (
         <Card variant="shadow">
@@ -212,8 +216,8 @@ export function FinancialsLineChartComponent({ records }) {
                                 <YAxis
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(v) => formatSEK(v)}
-                                    width={90}
+                                    tickFormatter={yTickFormatter}
+                                    width={yWidth}
                                 />
                                 <ChartTooltip
                                     className="text-sm"
