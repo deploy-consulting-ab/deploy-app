@@ -85,7 +85,7 @@ export function FinancialsFormComponent({ record, onSubmit }) {
                                     <SelectContent>
                                         {FISCAL_YEAR_OPTIONS.map((year) => (
                                             <SelectItem key={year} value={String(year)}>
-                                                FY {year}/{String(year + 1).slice(-2)}
+                                                FY{String(year).slice(-2)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

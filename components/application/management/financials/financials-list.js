@@ -440,7 +440,7 @@ export function FinancialsListComponent({
                 }
             />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-1">
                 <FinancialsBarChartComponent records={records} fiscalYear={fyNum} />
                 <FinancialsLineChartComponent records={records} />
             </div>

@@ -107,12 +107,19 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                                 dataKey="revenue"
                                 fill="var(--color-revenue)"
                                 radius={[4, 4, 0, 0]}
+                                maxBarSize={48}
                             />
-                            <Bar dataKey="cost" fill="var(--color-cost)" radius={[4, 4, 0, 0]} />
+                            <Bar
+                                dataKey="cost"
+                                fill="var(--color-cost)"
+                                radius={[4, 4, 0, 0]}
+                                maxBarSize={48}
+                            />
                             <Bar
                                 dataKey="benefit"
                                 fill="var(--color-benefit)"
                                 radius={[4, 4, 0, 0]}
+                                maxBarSize={48}
                             />
                         </BarChart>
                     </ChartContainer>
