@@ -18,8 +18,8 @@ export function EmployeeCardPhoneComponent({ employee, onClick }) {
                 <div className="flex items-center space-x-2">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <div>
-                        <p className="text-sm text-gray-500">Employee ID</p>
-                        <p className="font-medium">{employee.employeeId ?? '-'}</p>
+                        <p className="text-sm text-gray-500 tracking-wide">Employee ID</p>
+                        <p className="font-medium tabular-nums">{employee.employeeId ?? '-'}</p>
                     </div>
                 </div>
             </CardContent>
