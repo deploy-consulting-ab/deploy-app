@@ -7,6 +7,7 @@ import { QuickLinksCardComponent } from '@/components/application/home/dashboard
 import { AllAbsencesDatatableComponent } from '@/components/application/holidays/all-absences-datatable';
 import { transformHolidaysData } from '@/lib/utils';
 import { timeReportingLinks } from '@/lib/external-links';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export function HolidaysWrapperComponent({
     holidays,
@@ -46,6 +47,14 @@ export function HolidaysWrapperComponent({
             console.error('Error refreshing data:', err);
             setCurrentError(err);
         }
+    }
+
+    if (error) {
+        return (
+            <div className="space-y-6">
+                <ErrorDisplayComponent error={error} />
+            </div>
+        );
     }
 
     return (
