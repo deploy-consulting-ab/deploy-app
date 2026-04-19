@@ -49,7 +49,7 @@ function buildComputedTotal(records, fiscalYear) {
         quarter: -1,
         revenue: quarterRecords.reduce((sum, r) => sum + r.revenue, 0),
         cost: quarterRecords.reduce((sum, r) => sum + r.cost, 0) + taxes,
-        benefit: quarterRecords.reduce((sum, r) => sum + r.benefit, 0),
+        benefit: quarterRecords.reduce((sum, r) => sum + r.benefit, 0) - taxes,
         taxes,
         _isComputed: true,
     };
