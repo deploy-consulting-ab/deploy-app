@@ -40,14 +40,17 @@ function buildComputedTotal(records, fiscalYear) {
     );
     if (quarterRecords.length === 0) return null;
 
+    const fyRecord = records.find((r) => r.fiscalYear === fiscalYear && r.quarter === 0);
+    const taxes = fyRecord?.taxes ?? 0;
+
     return {
         id: `computed-total-${fiscalYear}`,
         fiscalYear,
         quarter: -1,
         revenue: quarterRecords.reduce((sum, r) => sum + r.revenue, 0),
-        cost: quarterRecords.reduce((sum, r) => sum + r.cost, 0),
+        cost: quarterRecords.reduce((sum, r) => sum + r.cost, 0) + taxes,
         benefit: quarterRecords.reduce((sum, r) => sum + r.benefit, 0),
-        taxes: quarterRecords.reduce((sum, r) => sum + r.taxes, 0),
+        taxes,
         _isComputed: true,
     };
 }
