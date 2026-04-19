@@ -153,7 +153,7 @@ async function searchUsers(query) {
         return users.map((user) => ({
             ...user,
             type: 'User',
-            subType: user.id,
+            subType: user.email,
         }));
     } catch (error) {
         console.error('Search users error:', error);

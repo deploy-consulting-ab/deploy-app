@@ -110,3 +110,22 @@ export const CreateSystemPermissionSchema = z.object({
         message: 'Description is required',
     }),
 });
+
+const financialAmountField = z.coerce
+    .number({ invalid_type_error: 'Must be a number' })
+    .min(0, { message: 'Must be 0 or greater' });
+
+export const CreateFinancialRecordSchema = z.object({
+    fiscalYear: z.coerce.number().int().min(2000, { message: 'Fiscal year must be 2000 or later' }),
+    quarter: z.coerce
+        .number()
+        .int()
+        .min(0, { message: 'Quarter must be 0 (Total Year) or 1–4' })
+        .max(4, { message: 'Quarter must be 0 (Total Year) or 1–4' }),
+    revenue: financialAmountField,
+    cost: financialAmountField,
+    benefit: financialAmountField,
+    taxes: financialAmountField,
+});
+
+export const UpdateFinancialRecordSchema = CreateFinancialRecordSchema;

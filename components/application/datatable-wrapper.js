@@ -27,6 +27,9 @@ export function DatatableWrapperComponent({
     placeholder,
     searchKey,
     pageSize = 10,
+    showPagination = true,
+    showSearch = true,
+    getRowClassName,
     ...props
 }) {
     const [sorting, setSorting] = useState([]);
@@ -59,14 +62,16 @@ export function DatatableWrapperComponent({
         <>
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center w-full">
-                    <Input
-                        placeholder={placeholder}
-                        value={table.getColumn(searchKey)?.getFilterValue() ?? ''}
-                        onChange={(event) =>
-                            table.getColumn(searchKey)?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm mr-2 bg-card border-border/50 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
-                    />
+                    {showSearch && (
+                        <Input
+                            placeholder={placeholder}
+                            value={table.getColumn(searchKey)?.getFilterValue() ?? ''}
+                            onChange={(event) =>
+                                table.getColumn(searchKey)?.setFilterValue(event.target.value)
+                            }
+                            className="max-w-sm mr-2 bg-card border-border/50 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
+                        />
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     {props.views && props.views.map((view) => view)}
@@ -120,6 +125,7 @@ export function DatatableWrapperComponent({
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && 'selected'}
+                                            className={getRowClassName ? getRowClassName(row) : undefined}
                                         >
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id}>
@@ -146,26 +152,28 @@ export function DatatableWrapperComponent({
                     </div>
                 )}
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
-                >
-                    Previous
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                    className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
-                >
-                    Next
-                </Button>
-            </div>
+            {showPagination && (
+                <div className="flex items-center justify-end space-x-2 py-4">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </>
     );
 }
