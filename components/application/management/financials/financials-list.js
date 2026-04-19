@@ -39,7 +39,6 @@ import {
 } from '@/actions/database/financials-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
 import { formatSEK, getCurrentFiscalYear } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
 
 const QUARTER_LABELS = {
     0: 'Total Year',
