@@ -179,7 +179,6 @@ export function FinancialsFormComponent({ record, onSubmit }) {
                                         disabled={isSubmitting}
                                         type="number"
                                         step="any"
-                                        min="0"
                                         placeholder="0"
                                         {...field}
                                     />
