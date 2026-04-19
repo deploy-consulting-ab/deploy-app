@@ -13,7 +13,7 @@ import {
 import { formatSEK } from '@/lib/utils';
 import { NoDataComponent } from '@/components/errors/no-data';
 
-function useTouchToMouseEvents () {
+function useTouchToMouseEvents() {
     const ref = useRef(null);
 
     const handleTouchMove = useCallback((e) => {
@@ -21,12 +21,14 @@ function useTouchToMouseEvents () {
         if (!touch || !ref.current) return;
         const svgEl = ref.current.querySelector('svg');
         if (!svgEl) return;
-        svgEl.dispatchEvent(new MouseEvent('mousemove', {
-            bubbles: true,
-            cancelable: true,
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-        }));
+        svgEl.dispatchEvent(
+            new MouseEvent('mousemove', {
+                bubbles: true,
+                cancelable: true,
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+            })
+        );
     }, []);
 
     const handleTouchEnd = useCallback(() => {
@@ -75,8 +77,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
             <CardHeader>
                 <CardTitle>Quarterly Breakdown</CardTitle>
                 <CardDescription>
-                    Revenue, Cost, Benefit and Taxes for FY {fiscalYear}/
-                    {String(fiscalYear + 1).slice(-2)}
+                    Revenue, Cost, Benefit and Taxes for FY{String(fiscalYear).slice(-2)}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -86,73 +87,73 @@ export function FinancialsBarChartComponent({ records, fiscalYear }) {
                     </div>
                 ) : (
                     <div ref={ref} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-                    <ChartContainer config={CHART_CONFIG} className="w-full h-72">
-                        <BarChart
-                            data={quarterRecords}
-                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                        >
-                            <CartesianGrid
-                                vertical={false}
-                                strokeDasharray="3 3"
-                                className="stroke-border/50"
-                            />
-                            <XAxis
-                                dataKey="quarter"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                            />
-                            <YAxis
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(v) => formatSEK(v)}
-                                width={90}
-                            />
-                            <ChartTooltip
-                                cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 4 }}
-                                content={
-                                    <ChartTooltipContent
-                                        className="text-sm"
-                                        formatter={(value, name, item) => (
-                                            <>
-                                                <span
-                                                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
-                                                    style={{ backgroundColor: item.color }}
-                                                />
-                                                <div className="flex flex-1 justify-between leading-none items-center">
-                                                    <span className="text-muted-foreground">
-                                                        {CHART_CONFIG[name]?.label || name}
-                                                    </span>
-                                                    <span className="font-mono font-medium tabular-nums ml-2">
-                                                        {formatSEK(value)}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
-                                    />
-                                }
-                            />
-                            <ChartLegend content={<ChartLegendContent />} />
-                            <Bar
-                                dataKey="revenue"
-                                fill="var(--color-revenue)"
-                                radius={[4, 4, 0, 0]}
-                                maxBarSize={60}
-                            />
-                            <Bar
-                                dataKey="cost"
-                                fill="var(--color-cost)"
-                                radius={[4, 4, 0, 0]}
-                                maxBarSize={60}
-                            />
-                            <Bar
-                                dataKey="benefit"
-                                fill="var(--color-benefit)"
-                                radius={[4, 4, 0, 0]}
-                                maxBarSize={60}
-                            />
-                        </BarChart>
-                    </ChartContainer>
+                        <ChartContainer config={CHART_CONFIG} className="w-full h-72">
+                            <BarChart
+                                data={quarterRecords}
+                                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                            >
+                                <CartesianGrid
+                                    vertical={false}
+                                    strokeDasharray="3 3"
+                                    className="stroke-border/50"
+                                />
+                                <XAxis
+                                    dataKey="quarter"
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickMargin={8}
+                                />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(v) => formatSEK(v)}
+                                    width={90}
+                                />
+                                <ChartTooltip
+                                    cursor={{ fill: 'var(--muted)', opacity: 0.3, radius: 4 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            className="text-sm"
+                                            formatter={(value, name, item) => (
+                                                <>
+                                                    <span
+                                                        className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                                                        style={{ backgroundColor: item.color }}
+                                                    />
+                                                    <div className="flex flex-1 justify-between leading-none items-center">
+                                                        <span className="text-muted-foreground">
+                                                            {CHART_CONFIG[name]?.label || name}
+                                                        </span>
+                                                        <span className="font-mono font-medium tabular-nums ml-2">
+                                                            {formatSEK(value)}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        />
+                                    }
+                                />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Bar
+                                    dataKey="revenue"
+                                    fill="var(--color-revenue)"
+                                    radius={[4, 4, 0, 0]}
+                                    maxBarSize={80}
+                                />
+                                <Bar
+                                    dataKey="cost"
+                                    fill="var(--color-cost)"
+                                    radius={[4, 4, 0, 0]}
+                                    maxBarSize={80}
+                                />
+                                <Bar
+                                    dataKey="benefit"
+                                    fill="var(--color-benefit)"
+                                    radius={[4, 4, 0, 0]}
+                                    maxBarSize={80}
+                                />
+                            </BarChart>
+                        </ChartContainer>
                     </div>
                 )}
             </CardContent>
@@ -168,7 +169,7 @@ export function FinancialsLineChartComponent({ records }) {
         .filter((r) => r.quarter === 0)
         .sort((a, b) => a.fiscalYear - b.fiscalYear)
         .map((r) => ({
-            fy: `FY ${r.fiscalYear}/${String(r.fiscalYear + 1).slice(-2)}`,
+            fy: `FY${String(r.fiscalYear).slice(-2)}`,
             revenue: r.revenue,
             cost: r.cost,
             benefit: r.benefit,
@@ -192,82 +193,87 @@ export function FinancialsLineChartComponent({ records }) {
                     </div>
                 ) : (
                     <div ref={ref} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-                    <ChartContainer config={CHART_CONFIG} className="w-full h-72">
-                        <LineChart
-                            data={totalYearRecords}
-                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                        >
-                            <CartesianGrid
-                                vertical={false}
-                                strokeDasharray="3 3"
-                                className="stroke-border/50"
-                            />
-                            <XAxis dataKey="fy" tickLine={false} axisLine={false} tickMargin={8} />
-                            <YAxis
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(v) => formatSEK(v)}
-                                width={90}
-                            />
-                            <ChartTooltip
-                                className="text-sm"
-                                cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1 }}
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value, name, item) => (
-                                            <>
-                                                <span
-                                                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
-                                                    style={{ backgroundColor: item.color }}
-                                                />
-                                                <div className="flex flex-1 justify-between leading-none items-center">
-                                                    <span className="text-muted-foreground">
-                                                        {CHART_CONFIG[name]?.label || name}
-                                                    </span>
-                                                    <span className="font-mono font-medium tabular-nums ml-2">
-                                                        {formatSEK(value)}
-                                                    </span>
-                                                </div>
-                                            </>
-                                        )}
-                                    />
-                                }
-                            />
-                            <ChartLegend content={<ChartLegendContent />} />
-                            <Line
-                                type="monotone"
-                                dataKey="revenue"
-                                stroke="var(--color-revenue)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="cost"
-                                stroke="var(--color-cost)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="benefit"
-                                stroke="var(--color-benefit)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="taxes"
-                                stroke="var(--color-taxes)"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                        </LineChart>
-                    </ChartContainer>
+                        <ChartContainer config={CHART_CONFIG} className="w-full h-72">
+                            <LineChart
+                                data={totalYearRecords}
+                                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                            >
+                                <CartesianGrid
+                                    vertical={false}
+                                    strokeDasharray="3 3"
+                                    className="stroke-border/50"
+                                />
+                                <XAxis
+                                    dataKey="fy"
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickMargin={8}
+                                />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(v) => formatSEK(v)}
+                                    width={90}
+                                />
+                                <ChartTooltip
+                                    className="text-sm"
+                                    cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value, name, item) => (
+                                                <>
+                                                    <span
+                                                        className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                                                        style={{ backgroundColor: item.color }}
+                                                    />
+                                                    <div className="flex flex-1 justify-between leading-none items-center">
+                                                        <span className="text-muted-foreground">
+                                                            {CHART_CONFIG[name]?.label || name}
+                                                        </span>
+                                                        <span className="font-mono font-medium tabular-nums ml-2">
+                                                            {formatSEK(value)}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        />
+                                    }
+                                />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="var(--color-revenue)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="cost"
+                                    stroke="var(--color-cost)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="benefit"
+                                    stroke="var(--color-benefit)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="taxes"
+                                    stroke="var(--color-taxes)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
+                        </ChartContainer>
                     </div>
                 )}
             </CardContent>
