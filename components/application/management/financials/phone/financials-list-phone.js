@@ -30,7 +30,7 @@ import {
     deleteFinancialRecordAction,
 } from '@/actions/database/financials-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { formatSEK, getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears } from '@/lib/utils';
+import { getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears } from '@/lib/utils';
 import { QUARTER_FILTER_OPTIONS } from '../financials-constants';
 import { FinancialCardPhoneComponent } from './financial-card-phone';
 
@@ -109,9 +109,11 @@ export function FinancialsListPhoneComponent({
 
         const rows = [...base];
 
-        if (selectedQuarter === 'all' || selectedQuarter === '-1') {
-            const computed = buildComputedTotal(records, fyNum);
-            if (computed) rows.push(computed);
+        if (canManage) {
+            if (selectedQuarter === 'all' || selectedQuarter === '-1') {
+                const computed = buildComputedTotal(records, fyNum);
+                if (computed) rows.push(computed);
+            }
         }
 
         const sortKey = (q) => {

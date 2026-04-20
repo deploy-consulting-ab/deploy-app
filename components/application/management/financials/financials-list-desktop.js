@@ -116,9 +116,11 @@ export function FinancialsListDesktopComponent({
 
         const rows = [...base];
 
-        if (selectedQuarter === 'all' || selectedQuarter === '-1') {
-            const computed = buildComputedTotal(records, fyNum);
-            if (computed) rows.push(computed);
+        if (canManage) {
+            if (selectedQuarter === 'all' || selectedQuarter === '-1') {
+                const computed = buildComputedTotal(records, fyNum);
+                if (computed) rows.push(computed);
+            }
         }
 
         const sortKey = (q) => {

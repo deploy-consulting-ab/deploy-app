@@ -3,12 +3,14 @@
 import { auth } from '@/auth';
 import { getFinancialsAction } from '@/actions/database/financials-actions';
 import { FinancialsListComponent } from '@/components/application/management/financials/financials-list';
-import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
+import { MANAGE_FINANCIALS_PERMISSION } from '@/lib/rba-constants';
 import { toPermissionSet } from '@/lib/utils';
 
 export default async function FinancialsPage() {
     const session = await auth();
-    const canManage = toPermissionSet(session?.user?.systemPermissions).has(VIEW_SETUP_PERMISSION);
+    const canManage = toPermissionSet(session?.user?.systemPermissions).has(
+        MANAGE_FINANCIALS_PERMISSION
+    );
 
     let records = null;
     let error = null;
