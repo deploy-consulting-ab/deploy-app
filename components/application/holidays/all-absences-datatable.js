@@ -3,7 +3,13 @@
 import { useState } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Badge } from '@/components/ui/badge';
-import { formatDateToISOString, getAbsenceStatusColor, getAbsenceStatusText } from '@/lib/utils';
+import {
+    countSwedishBusinessDaysLocalInclusive,
+    formatDateToISOString,
+    getAbsenceStatusColor,
+    getAbsenceStatusText,
+    parseToLocalDate,
+} from '@/lib/utils';
 import {
     ABSENCE_STATUS_CODE,
     HOLIDAY_TYPE_ID,
@@ -38,6 +44,17 @@ const columns = [
         cell: ({ row }) => {
             const date = row.getValue('ToDate');
             return date ? formatDateToISOString(date) : '-';
+        },
+    },
+    {
+        id: 'Days',
+        header: 'Days',
+        cell: ({ row }) => {
+            const fromDate = parseToLocalDate(row.original.FromDate);
+            const toDate = parseToLocalDate(row.original.ToDate);
+            if (!fromDate || !toDate) return '-';
+            const days = countSwedishBusinessDaysLocalInclusive(fromDate, toDate);
+            return days;
         },
     },
     {
