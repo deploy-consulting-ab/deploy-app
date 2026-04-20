@@ -171,6 +171,12 @@ export function GlobalSearch({ user, location }) {
                                 )}
                             </>
                         )}
+
+                        {results?.records?.length === 0 && (
+                            <div className="text-center text-muted-foreground">
+                                No results found
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
