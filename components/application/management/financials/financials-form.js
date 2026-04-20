@@ -46,7 +46,7 @@ export function FinancialsFormComponent({ record, onSubmit }) {
             quarter: record?.quarter ?? 1,
             revenue: record?.revenue ?? 0,
             cost: record?.cost ?? 0,
-            benefit: record?.benefit ?? 0,
+            profit: record?.profit ?? 0,
             taxes: record?.taxes ?? 0,
         },
     });
@@ -170,10 +170,10 @@ export function FinancialsFormComponent({ record, onSubmit }) {
 
                     <FormField
                         control={form.control}
-                        name="benefit"
+                        name="profit"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Benefit (SEK)</FormLabel>
+                                <FormLabel>Profit (SEK)</FormLabel>
                                 <FormControl>
                                     <Input
                                         disabled={isSubmitting}

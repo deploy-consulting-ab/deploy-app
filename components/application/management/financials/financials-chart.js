@@ -44,7 +44,7 @@ function useTouchToMouseEvents() {
 const CHART_CONFIG = {
     revenue: { label: 'Revenue', color: '#3b82f6' },
     cost: { label: 'Cost', color: '#ef4444' },
-    benefit: { label: 'Benefit', color: '#22c55e' },
+    profit: { label: 'Profit', color: '#22c55e' },
     taxes: { label: 'Taxes', color: '#fddA0d' },
 };
 
@@ -57,7 +57,7 @@ const QUARTER_LABELS = {
 };
 
 /**
- * Bar chart: Revenue / Cost / Benefit / Taxes grouped by quarter for the selected FY.
+ * Bar chart: Revenue / Cost / Profit / Taxes grouped by quarter for the selected FY.
  */
 export function FinancialsBarChartComponent({ records, fiscalYear, compact = false }) {
     const quarterRecords = records
@@ -67,7 +67,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
             quarter: QUARTER_LABELS[r.quarter],
             revenue: r.revenue,
             cost: r.cost,
-            benefit: r.benefit,
+            profit: r.profit,
         }));
 
     const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
@@ -79,7 +79,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
             <CardHeader>
                 <CardTitle>Quarterly Breakdown</CardTitle>
                 <CardDescription>
-                    Revenue, Cost, Benefit and Taxes for FY{String(fiscalYear).slice(-2)}
+                    Revenue, Cost, Profit and Taxes for FY{String(fiscalYear).slice(-2)}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -149,8 +149,8 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
                                     maxBarSize={80}
                                 />
                                 <Bar
-                                    dataKey="benefit"
-                                    fill="var(--color-benefit)"
+                                    dataKey="profit"
+                                    fill="var(--color-profit)"
                                     radius={[4, 4, 0, 0]}
                                     maxBarSize={80}
                                 />
@@ -164,7 +164,7 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
 }
 
 /**
- * Line chart: Revenue / Cost / Benefit / Taxes trend across fiscal years (Total Year records).
+ * Line chart: Revenue / Cost / Profit / Taxes trend across fiscal years (Total Year records).
  */
 export function FinancialsLineChartComponent({ records, compact = false }) {
     const totalYearRecords = records
@@ -174,7 +174,7 @@ export function FinancialsLineChartComponent({ records, compact = false }) {
             fy: `FY${String(r.fiscalYear).slice(-2)}`,
             revenue: r.revenue,
             cost: r.cost,
-            benefit: r.benefit,
+            profit: r.profit,
             taxes: r.taxes,
         }));
 
@@ -187,7 +187,7 @@ export function FinancialsLineChartComponent({ records, compact = false }) {
             <CardHeader>
                 <CardTitle>Annual Trend</CardTitle>
                 <CardDescription>
-                    Revenue, Cost, Benefit and Taxes across fiscal years (Total Year)
+                    Revenue, Cost, Profit and Taxes across fiscal years (Total Year)
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -262,8 +262,8 @@ export function FinancialsLineChartComponent({ records, compact = false }) {
                                 />
                                 <Line
                                     type="monotone"
-                                    dataKey="benefit"
-                                    stroke="var(--color-benefit)"
+                                    dataKey="profit"
+                                    stroke="var(--color-profit)"
                                     strokeWidth={2}
                                     dot={{ r: 4 }}
                                     activeDot={{ r: 6 }}

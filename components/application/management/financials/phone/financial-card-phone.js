@@ -76,10 +76,10 @@ export function FinancialCardPhoneComponent({ record, canManage, openEditDialog,
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                            Benefit
+                            Profit
                         </p>
                         <p className="font-medium tabular-nums text-sm">
-                            {formatSEK(record.benefit)}
+                            {formatSEK(record.profit)}
                         </p>
                     </div>
                     <div>

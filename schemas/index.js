@@ -115,7 +115,7 @@ const financialAmountField = z.coerce
     .number({ invalid_type_error: 'Must be a number' })
     .min(0, { message: 'Must be 0 or greater' });
 
-const benefitAmountField = z.coerce
+const profitAmountField = z.coerce
     .number({ invalid_type_error: 'Must be a number' });
 
 export const CreateFinancialRecordSchema = z.object({
@@ -127,7 +127,7 @@ export const CreateFinancialRecordSchema = z.object({
         .max(4, { message: 'Quarter must be 0 (Total Year) or 1–4' }),
     revenue: financialAmountField,
     cost: financialAmountField,
-    benefit: benefitAmountField,
+    profit: profitAmountField,
     taxes: financialAmountField,
 });
 

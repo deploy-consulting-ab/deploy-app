@@ -101,7 +101,7 @@ model FinancialRecord {
     quarter    Int
     revenue    Float
     cost       Float
-    benefit    Float
+    profit     Float
     taxes      Float
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt

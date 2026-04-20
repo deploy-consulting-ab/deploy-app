@@ -223,7 +223,7 @@ export function FinancialsListDesktopComponent({
             ),
         },
         {
-            accessorKey: 'benefit',
+            accessorKey: 'profit',
             size: 150,
             minSize: 120,
             header: ({ column }) => (
@@ -233,13 +233,13 @@ export function FinancialsListDesktopComponent({
                     className="h-8 -ml-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground hover:bg-transparent hover:cursor-pointer"
                     onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
                 >
-                    Benefit
+                    Profit
                     <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
             cell: ({ row }) => (
                 <div className="tabular-nums text-foreground/80">
-                    {formatSEK(row.getValue('benefit'))}
+                    {formatSEK(row.getValue('profit'))}
                 </div>
             ),
         },
