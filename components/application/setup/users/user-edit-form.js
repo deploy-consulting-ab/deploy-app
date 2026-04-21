@@ -18,7 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { PROFILES } from '@/lib/rba-constants';
+import { PROFILES, PROFILE_LABELS } from '@/lib/rba-constants';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
 import { useState, useEffect } from 'react';
@@ -35,6 +35,7 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
             employeeNumber: user.employeeNumber || '',
             flexEmployeeId: user.flexEmployeeId || '',
             profileId: user.profileId || '',
+            homeLayoutKey: user.homeLayoutKey || 'none',
             isActive: user.isActive || true,
             yearlyHolidays: user.yearlyHolidays || 30,
             carriedOverHolidays: user.carriedOverHolidays || 0,
@@ -131,7 +132,34 @@ export function UserEditForm({ user, onEditingChange, onSubmit }) {
                                     <SelectContent>
                                         {PROFILES.map((profile) => (
                                             <SelectItem key={profile} value={profile}>
-                                                {profile}
+                                                {PROFILE_LABELS[profile]}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Home Layout Override */}
+                    <FormField
+                        control={form.control}
+                        name="homeLayoutKey"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Home Layout</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="hover:cursor-pointer w-full">
+                                            <SelectValue placeholder="Default (from profile)" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="none">Default (from profile)</SelectItem>
+                                        {PROFILES.map((profile) => (
+                                            <SelectItem key={profile} value={profile}>
+                                                {PROFILE_LABELS[profile]}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

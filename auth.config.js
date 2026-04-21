@@ -55,6 +55,10 @@ const authConfig = {
                 session.user.profileId = token.profileId;
             }
 
+            if (token.homeLayoutKey) {
+                session.user.homeLayoutKey = token.homeLayoutKey;
+            }
+
             if (token.isActive) {
                 session.user.isActive = token.isActive;
             }
@@ -68,6 +72,7 @@ const authConfig = {
                 session.user.name = token.impersonatedUser.name;
                 session.user.email = token.impersonatedUser.email;
                 session.user.profileId = token.impersonatedUser.profileId;
+                session.user.homeLayoutKey = token.impersonatedUser.homeLayoutKey;
                 session.user.flexEmployeeId = token.impersonatedUser.flexEmployeeId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;

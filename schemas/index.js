@@ -61,6 +61,10 @@ export const UpdateUserSchema = z.object({
     carriedOverHolidays: z.coerce.number().min(0, {
         message: 'Carried over holidays must be a positive number',
     }),
+    homeLayoutKey: z.preprocess(
+        (val) => (val === 'none' || val === '' ? null : val),
+        z.enum(PROFILES).nullable().optional()
+    ),
 });
 
 export const UpdateProfileSchema = z.object({

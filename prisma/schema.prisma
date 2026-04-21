@@ -47,6 +47,7 @@ model User {
     password        String?
     profile         Profile         @relation(fields: [profileId], references: [id])
     profileId       String          @default("deploy_consultant")
+    homeLayoutKey   String?
     permissionSets  PermissionSet[] 
     accounts        Account[]
     timereportCheckmarks TimereportCheckmark[]

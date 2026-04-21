@@ -22,8 +22,21 @@ const HOME_LAYOUT_MAP = {
     [SUBCONTRACTOR_PROFILE]: SubcontractorHomeLayout,
 };
 
-export function getHomeLayoutForProfile(profileId) {
-    return HOME_LAYOUT_MAP[profileId] || ConsultantHomeLayout; // Default to consultant layout
+export function getEffectiveHomeLayoutKey(profileId, homeLayoutKey) {
+    if (homeLayoutKey && HOME_LAYOUT_MAP[homeLayoutKey]) {
+        return homeLayoutKey;
+    }
+
+    if (HOME_LAYOUT_MAP[profileId]) {
+        return profileId;
+    }
+
+    return CONSULTANT_PROFILE;
+}
+
+export function getHomeLayoutForProfile(profileId, homeLayoutKey) {
+    const effectiveLayoutKey = getEffectiveHomeLayoutKey(profileId, homeLayoutKey);
+    return HOME_LAYOUT_MAP[effectiveLayoutKey] || ConsultantHomeLayout;
 }
 
 export function getHomeRequiredDataForProfile(profileId) {

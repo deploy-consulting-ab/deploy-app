@@ -1,18 +1,28 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getHomeLayoutForProfile } from '@/components/application/home/home-layout-selector';
+import {
+    getEffectiveHomeLayoutKey,
+    getHomeLayoutForProfile,
+} from '@/components/application/home/home-layout-selector';
 
 export default async function HomePage() {
     const session = await auth();
-    const { profileId, employeeNumber, yearlyHolidays, carriedOverHolidays } = session.user;
+    const {
+        profileId,
+        homeLayoutKey,
+        employeeNumber,
+        yearlyHolidays,
+        carriedOverHolidays,
+    } = session.user;
+    const effectiveHomeLayoutKey = getEffectiveHomeLayoutKey(profileId, homeLayoutKey);
     // Get the appropriate layout component for this profile
-    const LayoutComponent = getHomeLayoutForProfile(profileId);
+    const LayoutComponent = getHomeLayoutForProfile(profileId, homeLayoutKey);
 
     // Render the specific layout for the profile
     return (
         <LayoutComponent
-            profileId={profileId}
+            profileId={effectiveHomeLayoutKey}
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}

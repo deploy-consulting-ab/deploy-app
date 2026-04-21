@@ -112,6 +112,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.profileId = token.profileId;
             }
 
+            if (token.homeLayoutKey) {
+                session.user.homeLayoutKey = token.homeLayoutKey;
+            }
+
             if (token.isActive) {
                 session.user.isActive = token.isActive;
             }
@@ -133,6 +137,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.name = token.impersonatedUser.name;
                 session.user.email = token.impersonatedUser.email;
                 session.user.profileId = token.impersonatedUser.profileId;
+                session.user.homeLayoutKey = token.impersonatedUser.homeLayoutKey;
                 session.user.flexEmployeeId = token.impersonatedUser.flexEmployeeId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;
@@ -168,6 +173,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.flexEmployeeId = user.flexEmployeeId;
                 token.sub = user.id;
                 token.profileId = user.profileId;
+                token.homeLayoutKey = user.homeLayoutKey;
                 token.isActive = user.isActive;
                 token.yearlyHolidays = user.yearlyHolidays;
                 token.carriedOverHolidays = user.carriedOverHolidays;

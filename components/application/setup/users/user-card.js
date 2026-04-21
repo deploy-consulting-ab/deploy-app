@@ -7,6 +7,7 @@ import { RecordCardHeaderComponent } from '@/components/application/setup/record
 import Link from 'next/link';
 import { UserCardActionsComponent } from '@/components/application/setup/users/user-card-actions';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PROFILE_LABELS } from '@/lib/rba-constants';
 
 export async function UserCardComponent({ user }) {
     return (
@@ -32,6 +33,14 @@ export async function UserCardComponent({ user }) {
                             >
                                 {user.profileId}
                             </Link>
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-medium">Home Layout</h3>
+                            <p className="text-sm text-gray-500">
+                                {user.homeLayoutKey
+                                    ? PROFILE_LABELS[user.homeLayoutKey]
+                                    : 'Default (from profile)'}
+                            </p>
                         </div>
                         <div>
                             <h3 className="text-sm font-medium">Flex Employee ID</h3>
