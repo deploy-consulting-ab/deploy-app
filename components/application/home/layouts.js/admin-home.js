@@ -24,6 +24,7 @@ export async function AdminHomeComponent({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     const data = {
         holidays: null,
@@ -98,7 +99,7 @@ export async function AdminHomeComponent({
 
     return (
         <div className="min-h-screen pb-10">
-            <DashboardHeader label="Admin Dashboard" />
+            <DashboardHeader userName={userName} />
 
             {/* Main grid */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 items-start">

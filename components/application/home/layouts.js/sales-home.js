@@ -13,6 +13,7 @@ export async function SalesHomeComponent({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     // Initialize data and errors
     let loading = true;
@@ -67,7 +68,7 @@ export async function SalesHomeComponent({
 
     return (
         <div className="h-full grid gap-4">
-            <DashboardHeader label="Sales Dashboard" />
+            <DashboardHeader userName={userName} />
             {/* Holidays Card */}
             <HolidaysCardComponent
                 holidays={data.holidays}

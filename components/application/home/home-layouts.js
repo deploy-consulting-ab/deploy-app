@@ -11,6 +11,7 @@ export async function ConsultantHomeLayout({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     return (
         <ConsultantHomeComponent
@@ -18,6 +19,7 @@ export async function ConsultantHomeLayout({
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
+            userName={userName}
         />
     );
 }
@@ -27,6 +29,7 @@ export async function SalesHomeLayout({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     return (
         <SalesHomeComponent
@@ -34,6 +37,7 @@ export async function SalesHomeLayout({
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
+            userName={userName}
         />
     );
 }
@@ -59,6 +63,7 @@ export async function ManagementHomeLayout({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     return (
         <ManagementHomeComponent
@@ -66,6 +71,7 @@ export async function ManagementHomeLayout({
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
+            userName={userName}
         />
     );
 }
@@ -75,6 +81,7 @@ export async function AdminHomeLayout({
     employeeNumber,
     yearlyHolidays,
     carriedOverHolidays,
+    userName,
 }) {
     return (
         <AdminHomeComponent
@@ -82,6 +89,7 @@ export async function AdminHomeLayout({
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
+            userName={userName}
         />
     );
 }

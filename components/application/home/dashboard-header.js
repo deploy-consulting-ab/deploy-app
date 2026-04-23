@@ -1,4 +1,11 @@
-export function DashboardHeader ({ label }) {
+function getGreeting () {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good morning';
+    if (hour >= 12 && hour < 18) return 'Good afternoon';
+    return 'Good evening';
+}
+
+export function DashboardHeader ({ userName }) {
     const now = new Date();
     const formattedDate = now.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -6,6 +13,8 @@ export function DashboardHeader ({ label }) {
         day: 'numeric',
         year: 'numeric',
     });
+    const greeting = getGreeting();
+    const firstName = userName ? userName.split(' ')[0] : null;
 
     return (
         <header className="relative flex items-end justify-between gap-4 pb-4 mb-8">
@@ -26,18 +35,20 @@ export function DashboardHeader ({ label }) {
                 }}
             />
 
-            <div className="flex flex-col gap-1 pb-4">
-                <span className="inline-flex items-center gap-1.5 text-[0.6rem] font-semibold tracking-[0.18em] uppercase font-mono text-deploy-accent-lime">
-                    <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
-                    <span className="text-sm">{label}</span>
+            <div className="flex flex-col gap-0.5 pb-4">
+                <span className="inline-flex items-center gap-1.5">
+                    
+                    <span className="text-sm font-semibold tracking-[0.18em] uppercase font-mono">
+                        {greeting}, {firstName}
+                    </span>
                 </span>
             </div>
 
             <div className="flex flex-col gap-1 text-right shrink-0 pb-0.5">
-                <span className="text-[0.6rem] font-medium tracking-[0.12em] uppercase font-mono text-muted-foreground">
+                <span className="text-sm font-medium tracking-[0.12em] uppercase font-mono text-muted-foreground">
                     Today
                 </span>
-                <span className="text-[0.8125rem] font-medium tracking-[-0.01em] text-foreground">
+                <span className="text-sm font-medium tracking-[-0.01em] text-foreground">
                     {formattedDate}
                 </span>
             </div>

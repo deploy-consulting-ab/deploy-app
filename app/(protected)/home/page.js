@@ -14,6 +14,7 @@ export default async function HomePage() {
         employeeNumber,
         yearlyHolidays,
         carriedOverHolidays,
+        name,
     } = session.user;
     const effectiveHomeLayoutKey = getEffectiveHomeLayoutKey(profileId, homeLayoutKey);
     // Get the appropriate layout component for this profile
@@ -26,6 +27,7 @@ export default async function HomePage() {
             employeeNumber={employeeNumber}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
+            userName={name}
         />
     );
 }
