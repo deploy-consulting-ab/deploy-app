@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 
 
-  You are an expert in JavaScript, React, Node.js, Next.js App Router, Zustand, Shadcn UI, Radix UI, Tailwind, HTML, CSS and Stylus.
+  You are an expert in JavaScript, React, Node.js, Next.js App Router, Zustand, Shadcn UI, Radix UI, Tailwind, HTML, and CSS.
 
   Code Style and Structure
   - Write concise, technical JavaScript code following Standard.js rules.
@@ -64,39 +64,16 @@ alwaysApply: true
   UI and Styling
   - Use Shadcn UI and Radix UI for component foundations.
   - Implement responsive design with Tailwind CSS; use a mobile-first approach.
-  - Use Stylus as CSS Modules for component-specific styles:
-    - Create a .module.styl file for each component that needs custom styling.
-    - Use camelCase for class names in Stylus files.
-    - Leverage Stylus features like nesting, variables, and mixins for efficient styling.
-  - Implement a consistent naming convention for CSS classes (e.g., BEM) within Stylus modules.
-  - Use Tailwind for utility classes and rapid prototyping.
-  - Combine Tailwind utility classes with Stylus modules for a hybrid approach:
-    - Use Tailwind for common utilities and layout.
-    - Use Stylus modules for complex, component-specific styles.
-    - Never use the @apply directive
-
-  File Structure for Styling
-  - Place Stylus module files next to their corresponding component files.
-  - Example structure:
-    components/
-      Button/
-        Button.js
-        Button.module.styl
-      Card/
-        Card.js
-        Card.module.styl
-
-  Stylus Best Practices
-  - Use variables for colors, fonts, and other repeated values.
-  - Create mixins for commonly used style patterns.
-  - Utilize Stylus' parent selector (&) for nesting and pseudo-classes.
-  - Keep specificity low by avoiding deep nesting.
-
-  Integration with React
-  - Import Stylus modules in React components:
-    import styles from './ComponentName.module.styl'
-  - Apply classes using the styles object:
-    <div className={styles.containerClass}>
+  - Tailwind is the primary and default styling mechanism. Use utility classes for everything possible, including layout, spacing, typography, color, and responsive variants.
+  - Use Tailwind arbitrary values for values not in the default scale (e.g. text-[clamp(1.6rem,3.5vw,2.5rem)], tracking-[-0.045em], grid-cols-[2fr_1fr]).
+  - Use Tailwind CSS variable tokens when a design token is mapped in globals.css (e.g. text-deploy-accent-lime, not text-[var(--deploy-accent-lime)]).
+  - Never use the @apply directive.
+  - Only introduce a CSS module (.module.css) when Tailwind genuinely cannot express the style:
+    - Pseudo-elements (::before, ::after) that require linear-gradient or box-shadow with CSS variable values.
+    - Keyframe animations not available via tw-animate-css.
+    - Complex :has() / :is() selectors Tailwind variants don't cover.
+  - Prefer replacing ::before / ::after with real <div> or <span> elements before reaching for a CSS module.
+  - CSS module files use .module.css (not .module.styl — Stylus is not configured in this project).
 
   Performance Optimization
   - Minimize 'use client', 'useEffect', and 'useState'; favor React Server Components (RSC).
@@ -147,9 +124,7 @@ alwaysApply: true
     - Favor server components and Next.js SSR.
     - Use only for Web API access in small components.
     - Avoid for data fetching or state management.
-  - Balance the use of Tailwind utility classes with Stylus modules:
-    - Use Tailwind for rapid development and consistent spacing/sizing.
-    - Use Stylus modules for complex, unique component styles.
+  - Tailwind first, CSS module only when Tailwind cannot express the style (see UI and Styling above).
 
   Follow Next.js docs for Data Fetching, Rendering, and Routing.
     

@@ -1,6 +1,5 @@
 import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
-import { Spinner } from '@/components/ui/spinner';
 import {
     getAssignmentsMetrics,
     getRecentOccupancyRate,
@@ -14,6 +13,7 @@ import {
     transformStatisticsData,
 } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { DashboardHeader } from '@/components/application/home/dashboard-header';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
@@ -25,9 +25,6 @@ export async function AdminHomeComponent({
     yearlyHolidays,
     carriedOverHolidays,
 }) {
-    // Initialize data and errors
-    let loading = true;
-
     const data = {
         holidays: null,
         occupancyRates: null,
@@ -55,11 +52,9 @@ export async function AdminHomeComponent({
         revalidatePath('/home');
     }
 
-    // Determine what data this profile needs
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
     const links = getHomePageLinks(profileId);
 
-    // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
             const rawHolidays = await getHolidays({
@@ -93,7 +88,6 @@ export async function AdminHomeComponent({
         }
     }
 
-    // Transform quick links to match QuickLinksCard format
     const quickLinks = links.map((link) => ({
         title: link.title,
         description: link.description,
@@ -102,30 +96,19 @@ export async function AdminHomeComponent({
         external: link.target === '_blank',
     }));
 
-    loading = false;
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Spinner size="lg" label="Loading dashboard..." />
-            </div>
-        );
-    }
-
     return (
-        <div className="min-h-screen space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Content - Left Side */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Occupancy Rate Card - Team Capacity */}
+        <div className="min-h-screen pb-10">
+            <DashboardHeader label="Admin Dashboard" />
+
+            {/* Main grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 items-start">
+                <div className="flex flex-col gap-6">
                     <OccupancyRatesCardComponent
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
                         refreshAction={refreshOccupancy}
                         target={85}
                     />
-
-                    {/* Assignments Card */}
                     <StatisticsCardComponent
                         title="Assignments"
                         stats={data.assignmentsMetrics}
@@ -134,16 +117,12 @@ export async function AdminHomeComponent({
                     />
                 </div>
 
-                {/* Right Sidebar */}
-                <div className="space-y-6">
-                    {/* Holidays Card */}
+                <div className="flex flex-col gap-6">
                     <HolidaysCardComponent
                         holidays={data.holidays}
                         error={errors.holidays}
                         refreshAction={refreshHolidays}
                     />
-
-                    {/* Quick Links */}
                     <QuickLinksCardComponent
                         title="Quick Access"
                         description="Access resources and support anytime"

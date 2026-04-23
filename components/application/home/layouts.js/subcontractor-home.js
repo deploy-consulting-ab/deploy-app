@@ -12,6 +12,7 @@ import {
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { DashboardHeader } from '@/components/application/home/dashboard-header';
 
 export async function SubcontractorHomeComponent({ profileId, employeeNumber }) {
     const data = {
@@ -58,6 +59,7 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber }) 
 
     return (
         <div className="min-h-screen space-y-6">
+            <DashboardHeader label="Subcontractor Dashboard" />
             <div className="grid grid-cols-1 gap-6">
                 {/* Main Content - Left Side */}
                 <OccupancyRatesCardComponent

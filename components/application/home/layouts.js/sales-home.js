@@ -2,6 +2,7 @@ import { getHolidays } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { DashboardHeader } from '@/components/application/home/dashboard-header';
 import { revalidatePath } from 'next/cache';
 import { transformHolidaysData } from '@/lib/utils';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
@@ -66,6 +67,7 @@ export async function SalesHomeComponent({
 
     return (
         <div className="h-full grid gap-4">
+            <DashboardHeader label="Sales Dashboard" />
             {/* Holidays Card */}
             <HolidaysCardComponent
                 holidays={data.holidays}

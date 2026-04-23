@@ -14,6 +14,7 @@ import {
     transformStatisticsData,
 } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
+import { DashboardHeader } from '@/components/application/home/dashboard-header';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { OccupancyRatesCardComponent } from '@/components/application/home/dashboard-cards/occupancy-rates-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
@@ -113,6 +114,7 @@ export async function ManagementHomeComponent({
 
     return (
         <div className="min-h-screen space-y-6">
+            <DashboardHeader label="Management Dashboard" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content - Left Side */}
                 <div className="lg:col-span-2 space-y-6">
