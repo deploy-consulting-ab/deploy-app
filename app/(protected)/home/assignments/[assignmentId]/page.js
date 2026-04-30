@@ -1,9 +1,7 @@
 import { AssignmentRecordCardComponent } from '@/components/application/assignment/assignment-record-card';
-import {
-    getAssignmentById,
-    getTimecardHoursCountByAssignmentId,
-} from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
 import { getAssignmentTimereports } from '@/actions/flex/flex-actions';
+import { groupTimereportsByMonth } from '@/lib/utils';
 import { auth } from '@/auth';
 
 const AssignmentPage = async ({ params }) => {
@@ -19,13 +17,14 @@ const AssignmentPage = async ({ params }) => {
 
     try {
         assignment = await getAssignmentById(assignmentId, user?.employeeNumber);
-        timecardHours = await getTimecardHoursCountByAssignmentId(assignmentId);
         const weeklyTimereports = await getAssignmentTimereports(
             user?.flexEmployeeId,
             assignment?.flexId,
             assignment?.startDate,
             assignment?.endDate
         );
+        timecardHours = groupTimereportsByMonth(weeklyTimereports);
+        console.log('timecardHours', timecardHours);
         actualHours = weeklyTimereports.reduce(
             (sum, week) => sum + week.hours.reduce((s, h) => s + h, 0),
             0
