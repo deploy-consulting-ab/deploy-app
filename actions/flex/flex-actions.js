@@ -258,6 +258,79 @@ export async function getAssignmentTimereports(
 }
 
 /**
+ * Get all timereports for a given employee, grouped into weeks.
+ * Returns the same shape as the Salesforce getAssignmentTimecards response:
+ * { weekStartDate, weekEndDate, hours: [mon, tue, wed, thu, fri, sat, sun] }
+ * sorted newest week first.
+ * @param {string} flexEmployeeId - The Flex employee ID
+ * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string, hours: number[]}>>}
+ */
+export async function getAssignmentTimereportsForOccupancy(
+    flexEmployeeId,
+    startDate = null,
+    endDate = null
+) {
+    const flexApiClient = await getFlexApiService();
+    flexApiClient.config.cache = 'no-store';
+
+    try {
+        const timereports = await flexApiClient.getTimereports(flexEmployeeId, startDate, endDate);
+
+        const weekMap = new Map();
+
+        for (const timereport of timereports) {
+            if (!timereport.TimeRows?.length) continue;
+
+            const date = formatDateToISOString(timereport.Date);
+            const workingRows = timereport.TimeRows.filter((row) => {
+                if (row.TimeCode.Id !== WORKING_TYPE_ID) {
+                    return false;
+                }
+
+                const projectAccount = row.Accounts.find(
+                    (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+                );
+
+                if (!projectAccount) {
+                    return false;
+                }
+
+                const regex = /deploy/i;
+                const isInternalProject = regex.test(projectAccount.Name);
+                if (isInternalProject) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            const totalMinutes = workingRows.reduce((sum, row) => sum + row.TimeInMinutes, 0);
+
+            if (totalMinutes === 0) continue;
+
+            const mondayDate = formatDateToISOString(getWeekMonday(date));
+            const dayIndex = getDayOfWeekIndex(date);
+
+            if (!weekMap.has(mondayDate)) {
+                weekMap.set(mondayDate, {
+                    weekStartDate: mondayDate,
+                    weekEndDate: formatDateToISOString(getWeekSunday(getWeekMonday(date))),
+                    hours: [0, 0, 0, 0, 0, 0, 0],
+                });
+            }
+
+            weekMap.get(mondayDate).hours[dayIndex] = totalMinutes / 60;
+        }
+
+        return Array.from(weekMap.values()).sort((a, b) =>
+            b.weekStartDate.localeCompare(a.weekStartDate)
+        );
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * Get the timereports for a given employee number
  * @param {string} flexEmployeeId - The employee number
  * @param {string} weekStartDate - The start date of the week

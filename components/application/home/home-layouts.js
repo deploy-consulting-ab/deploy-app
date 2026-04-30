@@ -7,51 +7,41 @@ import { ManagementHomeComponent } from '@/components/application/home/layouts.j
 import { AdminHomeComponent } from '@/components/application/home/layouts.js/admin-home';
 
 export async function ConsultantHomeLayout({
-    profileId,
-    employeeNumber,
+    user,
     yearlyHolidays,
     carriedOverHolidays,
-    userName,
 }) {
     return (
         <ConsultantHomeComponent
-            profileId={profileId}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
-            userName={userName}
         />
     );
 }
 
 export async function SalesHomeLayout({
-    profileId,
-    employeeNumber,
+    user,
     yearlyHolidays,
     carriedOverHolidays,
-    userName,
 }) {
     return (
         <SalesHomeComponent
-            profileId={profileId}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
-            userName={userName}
         />
     );
 }
 
 export async function SubcontractorHomeLayout({
-    profileId,
-    employeeNumber,
+    user,
     yearlyHolidays,
     carriedOverHolidays,
 }) {
     return (
         <SubcontractorHomeComponent
-            profileId={profileId}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
         />
@@ -59,37 +49,25 @@ export async function SubcontractorHomeLayout({
 }
 
 export async function ManagementHomeLayout({
-    profileId,
-    employeeNumber,
+    user,
     yearlyHolidays,
     carriedOverHolidays,
-    userName,
 }) {
     return (
         <ManagementHomeComponent
-            profileId={profileId}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
-            userName={userName}
         />
     );
 }
 
-export async function AdminHomeLayout({
-    profileId,
-    employeeNumber,
-    yearlyHolidays,
-    carriedOverHolidays,
-    userName,
-}) {
+export async function AdminHomeLayout({ user, yearlyHolidays, carriedOverHolidays }) {
     return (
         <AdminHomeComponent
-            profileId={profileId}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
-            userName={userName}
         />
     );
 }

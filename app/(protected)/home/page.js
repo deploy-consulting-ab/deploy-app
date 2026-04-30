@@ -8,14 +8,9 @@ import {
 
 export default async function HomePage() {
     const session = await auth();
-    const {
-        profileId,
-        homeLayoutKey,
-        employeeNumber,
-        yearlyHolidays,
-        carriedOverHolidays,
-        name,
-    } = session.user;
+    const user = session.user;
+    const { profileId, homeLayoutKey, employeeNumber, yearlyHolidays, carriedOverHolidays, name } =
+        user;
     const effectiveHomeLayoutKey = getEffectiveHomeLayoutKey(profileId, homeLayoutKey);
     // Get the appropriate layout component for this profile
     const LayoutComponent = getHomeLayoutForProfile(profileId, homeLayoutKey);
@@ -23,11 +18,9 @@ export default async function HomePage() {
     // Render the specific layout for the profile
     return (
         <LayoutComponent
-            profileId={effectiveHomeLayoutKey}
-            employeeNumber={employeeNumber}
+            user={user}
             yearlyHolidays={yearlyHolidays}
             carriedOverHolidays={carriedOverHolidays}
-            userName={name}
         />
     );
 }

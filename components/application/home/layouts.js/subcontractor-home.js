@@ -1,12 +1,12 @@
+import { getAssignmentTimereportsForOccupancy } from '@/actions/flex/flex-actions';
 import { revalidatePath } from 'next/cache';
-import {
-    getAssignmentsMetrics,
-    getRecentOccupancyRate,
-} from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
 import {
     formatDateToISOString,
+    getCurrentFiscalYear,
+    getFiscalYearStartDate,
     getUTCToday,
-    transformOccupancyData,
+    transformTimereportsToOccupancy,
     transformStatisticsData,
 } from '@/lib/utils';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
@@ -14,7 +14,8 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { DashboardHeader } from '@/components/application/home/dashboard-header';
 
-export async function SubcontractorHomeComponent({ profileId, employeeNumber, userName }) {
+export async function SubcontractorHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
+    const { flexEmployeeId, profileId, employeeNumber, userName } = user;
     const data = {
         occupancyRates: null,
         assignmentsMetrics: null,
@@ -40,9 +41,14 @@ export async function SubcontractorHomeComponent({ profileId, employeeNumber, us
     if (dataRequirements.occupancyRates) {
         try {
             const today = getUTCToday();
-            const formattedToday = formatDateToISOString(today);
-            const rawOccupancy = await getRecentOccupancyRate(employeeNumber, formattedToday);
-            data.occupancyRates = transformOccupancyData(rawOccupancy);
+            const startDate = formatDateToISOString(getFiscalYearStartDate(getCurrentFiscalYear()));
+            const endDate = formatDateToISOString(today);
+            const rawTimereports = await getAssignmentTimereportsForOccupancy(
+                flexEmployeeId,
+                startDate,
+                endDate
+            );
+            data.occupancyRates = transformTimereportsToOccupancy(rawTimereports);
         } catch (error) {
             errors.occupancyRates = error.message || 'Failed to load occupancy';
         }

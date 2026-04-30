@@ -1,15 +1,14 @@
-import { getHolidays } from '@/actions/flex/flex-actions';
+import { getHolidays, getAssignmentTimereportsForOccupancy } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
-import {
-    getAssignmentsMetrics,
-    getRecentOccupancyRate,
-} from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
 import { revalidatePath } from 'next/cache';
 import {
     formatDateToISOString,
+    getCurrentFiscalYear,
+    getFiscalYearStartDate,
     getUTCToday,
     transformHolidaysData,
-    transformOccupancyData,
+    transformTimereportsToOccupancy,
     transformStatisticsData,
 } from '@/lib/utils';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
@@ -19,13 +18,7 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
-export async function AdminHomeComponent({
-    profileId,
-    employeeNumber,
-    yearlyHolidays,
-    carriedOverHolidays,
-    userName,
-}) {
+export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
     const data = {
         holidays: null,
         occupancyRates: null,
@@ -37,6 +30,8 @@ export async function AdminHomeComponent({
         occupancyRates: null,
         assignmentsMetrics: null,
     };
+
+    const { flexEmployeeId, profileId, employeeNumber, userName } = user;
 
     async function refreshHolidays() {
         'use server';
@@ -72,9 +67,14 @@ export async function AdminHomeComponent({
     if (dataRequirements.occupancyRates) {
         try {
             const today = getUTCToday();
-            const formattedToday = formatDateToISOString(today);
-            const rawOccupancy = await getRecentOccupancyRate(employeeNumber, formattedToday);
-            data.occupancyRates = transformOccupancyData(rawOccupancy);
+            const startDate = formatDateToISOString(getFiscalYearStartDate(getCurrentFiscalYear()));
+            const endDate = formatDateToISOString(today);
+            const rawTimereports = await getAssignmentTimereportsForOccupancy(
+                flexEmployeeId,
+                startDate,
+                endDate
+            );
+            data.occupancyRates = transformTimereportsToOccupancy(rawTimereports);
         } catch (error) {
             errors.occupancyRates = error.message || 'Failed to load occupancy';
         }
