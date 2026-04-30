@@ -24,7 +24,6 @@ const AssignmentPage = async ({ params }) => {
             assignment?.endDate
         );
         timecardHours = groupTimereportsByMonth(weeklyTimereports);
-        console.log('timecardHours', timecardHours);
         actualHours = weeklyTimereports.reduce(
             (sum, week) => sum + week.hours.reduce((s, h) => s + h, 0),
             0
