@@ -438,6 +438,7 @@ export async function getEmployeeById(employeeId) {
             employmentType: employee.EmploymentType__c,
             employmentStartDate: employee.EmploymentStartDate__c,
             employmentEndDate: employee.EmploymentEndDate__c,
+            flexId: employee.FlexID__c,
         };
     } catch (error) {
         throw error;

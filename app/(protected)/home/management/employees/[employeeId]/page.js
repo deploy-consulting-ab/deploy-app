@@ -1,8 +1,13 @@
 import { getEmployeeById } from '@/actions/salesforce/salesforce-actions';
 import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
-import { getOccupancyHistory, getOccupancyStats } from '@/actions/salesforce/salesforce-actions';
-import { formatDateToISOString, getUTCToday } from '@/lib/utils';
+import { getFlexOccupancyStats, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
+import {
+    formatDateToISOString,
+    getUTCToday,
+    getCurrentFiscalYear,
+    getFiscalYearStartDate,
+} from '@/lib/utils';
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
 
 const EmployeePage = async ({ params }) => {
@@ -11,7 +16,7 @@ const EmployeePage = async ({ params }) => {
     const formattedToday = formatDateToISOString(today);
 
     let employee = null;
-    let employeeNumber = null;
+    let flexEmployeeId = null;
     let occupancyData = [];
     let stats = null;
 
@@ -21,15 +26,19 @@ const EmployeePage = async ({ params }) => {
 
     try {
         employee = await getEmployeeById(employeeId);
-        employeeNumber = employee.employeeId;
+        flexEmployeeId = employee.flexId;
+        console.log('flexEmployeeId', flexEmployeeId);
     } catch (err) {
         employeeError = err;
     }
 
-    if (employeeNumber) {
+    const currentFY = getCurrentFiscalYear();
+    const historyStartDate = formatDateToISOString(getFiscalYearStartDate(currentFY - 2));
+
+    if (flexEmployeeId) {
         const [statsResult, historyResult] = await Promise.allSettled([
-            getOccupancyStats(employeeNumber, formattedToday),
-            getOccupancyHistory(employeeNumber, formattedToday),
+            getFlexOccupancyStats(flexEmployeeId, formattedToday),
+            getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate),
         ]);
 
         if (statsResult.status === 'fulfilled') {
@@ -55,8 +64,9 @@ const EmployeePage = async ({ params }) => {
             </div>
             <OccupancyListComponent
                 occupancyData={occupancyData}
-                employeeNumber={employeeNumber}
+                flexEmployeeId={flexEmployeeId}
                 formattedToday={formattedToday}
+                historyStartDate={historyStartDate}
                 error={historyError}
             />
         </div>

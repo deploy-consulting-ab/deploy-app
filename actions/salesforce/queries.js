@@ -167,7 +167,7 @@ const getEmployeesQuery = () => {
 };
 
 const getEmployeeByIdQuery = (employeeId) => {
-    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c
+    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c, FlexID__c
             FROM Employee__c WHERE Id = '${employeeId}' LIMIT 1`;
 };
 
