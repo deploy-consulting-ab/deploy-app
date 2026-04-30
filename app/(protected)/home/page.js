@@ -10,8 +10,6 @@ export default async function HomePage() {
     const user = session.user;
     const { profileId, homeLayoutKey, yearlyHolidays, carriedOverHolidays } = user;
     const LayoutComponent = getHomeLayoutForProfile(profileId, homeLayoutKey);
-
-    // Render the specific layout for the profile
     return (
         <LayoutComponent
             user={user}
