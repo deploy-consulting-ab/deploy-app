@@ -5,7 +5,7 @@ function getGreeting () {
     return 'Good evening';
 }
 
-export function DashboardHeader ({ userName }) {
+export function DashboardHeader ({ name }) {
     const now = new Date();
     const formattedDate = now.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -14,7 +14,7 @@ export function DashboardHeader ({ userName }) {
         year: 'numeric',
     });
     const greeting = getGreeting();
-    const firstName = userName ? userName.split(' ')[0] : null;
+    const firstName = name ? name.split(' ')[0] : null;
 
     return (
         <header className="relative flex items-end justify-between gap-4 pb-4 mb-8">

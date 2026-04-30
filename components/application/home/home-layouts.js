@@ -6,11 +6,7 @@ import { SalesHomeComponent } from '@/components/application/home/layouts.js/sal
 import { ManagementHomeComponent } from '@/components/application/home/layouts.js/management-home';
 import { AdminHomeComponent } from '@/components/application/home/layouts.js/admin-home';
 
-export async function ConsultantHomeLayout({
-    user,
-    yearlyHolidays,
-    carriedOverHolidays,
-}) {
+export async function ConsultantHomeLayout({ user, yearlyHolidays, carriedOverHolidays }) {
     return (
         <ConsultantHomeComponent
             user={user}
@@ -20,11 +16,7 @@ export async function ConsultantHomeLayout({
     );
 }
 
-export async function SalesHomeLayout({
-    user,
-    yearlyHolidays,
-    carriedOverHolidays,
-}) {
+export async function SalesHomeLayout({ user, yearlyHolidays, carriedOverHolidays }) {
     return (
         <SalesHomeComponent
             user={user}
@@ -34,25 +26,11 @@ export async function SalesHomeLayout({
     );
 }
 
-export async function SubcontractorHomeLayout({
-    user,
-    yearlyHolidays,
-    carriedOverHolidays,
-}) {
-    return (
-        <SubcontractorHomeComponent
-            user={user}
-            yearlyHolidays={yearlyHolidays}
-            carriedOverHolidays={carriedOverHolidays}
-        />
-    );
+export async function SubcontractorHomeLayout({ user }) {
+    return <SubcontractorHomeComponent user={user} />;
 }
 
-export async function ManagementHomeLayout({
-    user,
-    yearlyHolidays,
-    carriedOverHolidays,
-}) {
+export async function ManagementHomeLayout({ user, yearlyHolidays, carriedOverHolidays }) {
     return (
         <ManagementHomeComponent
             user={user}

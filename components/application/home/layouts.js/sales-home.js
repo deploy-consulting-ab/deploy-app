@@ -9,7 +9,7 @@ import { HolidaysCardComponent } from '@/components/application/home/dashboard-c
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 
 export async function SalesHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
-    const { profileId, employeeNumber, userName } = user;
+    const { profileId, employeeNumber, name } = user;
     // Initialize data and errors
     let loading = true;
 
@@ -63,7 +63,7 @@ export async function SalesHomeComponent({ user, yearlyHolidays, carriedOverHoli
 
     return (
         <div className="h-full grid gap-4">
-            <DashboardHeader userName={userName} />
+            <DashboardHeader name={name} />
             {/* Holidays Card */}
             <HolidaysCardComponent
                 holidays={data.holidays}

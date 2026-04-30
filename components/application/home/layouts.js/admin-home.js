@@ -31,7 +31,7 @@ export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHoli
         assignmentsMetrics: null,
     };
 
-    const { flexEmployeeId, profileId, employeeNumber, userName } = user;
+    const { flexEmployeeId, profileId, employeeNumber, name } = user;
 
     async function refreshHolidays() {
         'use server';
@@ -99,7 +99,7 @@ export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHoli
 
     return (
         <div className="min-h-screen pb-10">
-            <DashboardHeader userName={userName} />
+            <DashboardHeader name={name} />
 
             {/* Main grid */}
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 items-start">

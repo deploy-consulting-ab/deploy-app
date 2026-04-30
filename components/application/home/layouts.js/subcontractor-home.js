@@ -14,8 +14,8 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { DashboardHeader } from '@/components/application/home/dashboard-header';
 
-export async function SubcontractorHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
-    const { flexEmployeeId, profileId, employeeNumber, userName } = user;
+export async function SubcontractorHomeComponent({ user }) {
+    const { flexEmployeeId, profileId, employeeNumber, name } = user;
     const data = {
         occupancyRates: null,
         assignmentsMetrics: null,
@@ -65,7 +65,7 @@ export async function SubcontractorHomeComponent({ user, yearlyHolidays, carried
 
     return (
         <div className="min-h-screen space-y-6">
-            <DashboardHeader userName={userName} />
+            <DashboardHeader name={name} />
             <div className="grid grid-cols-1 gap-6">
                 {/* Main Content - Left Side */}
                 <OccupancyRatesCardComponent
