@@ -4,7 +4,13 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { OccupancyListPhoneComponent } from '@/components/application/occupancy/phone/occupancy-list-phone';
 import { OccupancyListDesktopComponent } from '@/components/application/occupancy/occupancy-list-desktop';
 
-export function OccupancyListComponent({ occupancyData, employeeNumber, formattedToday, error }) {
+export function OccupancyListComponent({
+    occupancyData,
+    flexEmployeeId,
+    formattedToday,
+    historyStartDate,
+    error,
+}) {
     const isMobile = useIsMobile();
 
     if (isMobile) {
@@ -14,8 +20,9 @@ export function OccupancyListComponent({ occupancyData, employeeNumber, formatte
     return (
         <OccupancyListDesktopComponent
             occupancyData={occupancyData}
-            employeeNumber={employeeNumber}
+            flexEmployeeId={flexEmployeeId}
             formattedToday={formattedToday}
+            historyStartDate={historyStartDate}
             error={error}
         />
     );

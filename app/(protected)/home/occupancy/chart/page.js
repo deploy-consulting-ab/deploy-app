@@ -8,17 +8,16 @@ import {
     formatDateToISOString,
     getUTCToday,
 } from '@/lib/utils';
-import { getOccupancyRateFromLastFiscalYear } from '@/actions/salesforce/salesforce-actions';
+import { getFlexOccupancyRates } from '@/actions/flex/flex-actions';
 
 export default async function OccupancyChartPage() {
     const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
+    const flexEmployeeId = session.user.flexEmployeeId;
 
     const today = getUTCToday();
     const formattedToday = formatDateToISOString(today);
 
     const currentFiscalYear = getCurrentFiscalYear();
-
     const previousFiscalYear = currentFiscalYear - 1;
     const previousFiscalYearStartDate = getFiscalYearStartDate(previousFiscalYear);
     const formattedPreviousFiscalYearStartDate = formatDateToISOString(previousFiscalYearStartDate);
@@ -27,10 +26,10 @@ export default async function OccupancyChartPage() {
     let error = null;
 
     try {
-        occupancyRates = await getOccupancyRateFromLastFiscalYear(
-            employeeNumber,
-            formattedToday,
-            formattedPreviousFiscalYearStartDate
+        occupancyRates = await getFlexOccupancyRates(
+            flexEmployeeId,
+            formattedPreviousFiscalYearStartDate,
+            formattedToday
         );
     } catch (err) {
         error = err;

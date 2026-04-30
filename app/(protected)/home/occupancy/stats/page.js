@@ -1,25 +1,33 @@
 import { auth } from '@/auth';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
 import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
-import { formatDateToISOString, getUTCToday } from '@/lib/utils';
-import { getOccupancyHistory, getOccupancyStats } from '@/actions/salesforce/salesforce-actions';
+import {
+    formatDateToISOString,
+    getUTCToday,
+    getCurrentFiscalYear,
+    getFiscalYearStartDate,
+} from '@/lib/utils';
+import { getFlexOccupancyStats, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
 
 export default async function OccupancyStatsPage() {
     const session = await auth();
-    const employeeNumber = session.user.employeeNumber;
+    const flexEmployeeId = session.user.flexEmployeeId;
 
     const today = getUTCToday();
     const formattedToday = formatDateToISOString(today);
+
+    const currentFY = getCurrentFiscalYear();
+    const historyStartDate = formatDateToISOString(getFiscalYearStartDate(currentFY - 2));
 
     let occupancyData = [];
     let statsError = null;
     let historyError = null;
     let stats = null;
 
-    if (employeeNumber) {
+    if (flexEmployeeId) {
         const [statsResult, historyResult] = await Promise.allSettled([
-            getOccupancyStats(employeeNumber, formattedToday),
-            getOccupancyHistory(employeeNumber, formattedToday),
+            getFlexOccupancyStats(flexEmployeeId, formattedToday),
+            getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate),
         ]);
 
         if (statsResult.status === 'fulfilled') {
@@ -42,8 +50,9 @@ export default async function OccupancyStatsPage() {
             </div>
             <OccupancyListComponent
                 occupancyData={occupancyData}
-                employeeNumber={employeeNumber}
+                flexEmployeeId={flexEmployeeId}
                 formattedToday={formattedToday}
+                historyStartDate={historyStartDate}
                 error={historyError}
             />
         </div>

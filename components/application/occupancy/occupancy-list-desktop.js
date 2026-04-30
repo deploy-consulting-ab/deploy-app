@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown, RefreshCw, BarChart2 } from 'lucide-react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
-import { getOccupancyHistory } from '@/actions/salesforce/salesforce-actions';
+import { getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { OccupancyDynamicAverageComponent } from '@/components/application/occupancy/occupancy-dynamic-average';
 import { getCurrentFiscalYear, getFiscalYearStartDate, formatDateToISOString } from '@/lib/utils';
@@ -34,8 +34,9 @@ function formatHours(hours) {
 
 export function OccupancyListDesktopComponent({
     occupancyData,
-    employeeNumber,
+    flexEmployeeId,
     formattedToday,
+    historyStartDate,
     error: initialError,
 }) {
     const [data, setData] = useState(occupancyData);
@@ -54,7 +55,7 @@ export function OccupancyListDesktopComponent({
         setIsRefreshing(true);
 
         try {
-            const freshData = await getOccupancyHistory(employeeNumber, formattedToday);
+            const freshData = await getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate);
             setData(freshData);
             setError(null);
         } catch (err) {
@@ -260,7 +261,7 @@ export function OccupancyListDesktopComponent({
                     <DialogTitle>Custom Occupancy Average</DialogTitle>
                 </DialogHeader>
                 <OccupancyDynamicAverageComponent
-                    employeeNumber={employeeNumber}
+                    flexEmployeeId={flexEmployeeId}
                     defaultStartDate={defaultStartDate}
                     defaultEndDate={formattedToday}
                 />

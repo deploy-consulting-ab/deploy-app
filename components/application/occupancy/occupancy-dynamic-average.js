@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getOccupancyAverageByDateRange } from '@/actions/salesforce/salesforce-actions';
+import { getFlexOccupancyAverageByDateRange } from '@/actions/flex/flex-actions';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
 
 function OccupancyRateBadge({ rate }) {
@@ -26,7 +26,7 @@ function OccupancyRateBadge({ rate }) {
     );
 }
 
-export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartDate, defaultEndDate }) {
+export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartDate, defaultEndDate }) {
     const [startDate, setStartDate] = useState(defaultStartDate ? parseISO(defaultStartDate) : undefined);
     const [endDate, setEndDate] = useState(defaultEndDate ? parseISO(defaultEndDate) : undefined);
     const [result, setResult] = useState(null);
@@ -40,8 +40,8 @@ export function OccupancyDynamicAverageComponent({ employeeNumber, defaultStartD
         startTransition(async () => {
             try {
                 setError(null);
-                const data = await getOccupancyAverageByDateRange(
-                    employeeNumber,
+                const data = await getFlexOccupancyAverageByDateRange(
+                    flexEmployeeId,
                     format(startDate, 'yyyy-MM-dd'),
                     format(endDate, 'yyyy-MM-dd')
                 );

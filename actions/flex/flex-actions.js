@@ -10,6 +10,12 @@ import {
     getWeekMonday,
     getWeekSunday,
     getDayOfWeekIndex,
+    buildMonthlyOccupancyFromWeeks,
+    buildFullMonthlyOccupancy,
+    getCurrentFiscalYear,
+    getFiscalYearStartDate,
+    getFiscalYearEndDate,
+    getPreviousFiscalYear,
 } from '@/lib/utils.js';
 import { getFlexApiService } from './flex-service.js';
 import {
@@ -665,6 +671,203 @@ export async function deleteAbsenceRequest(absenceRequestId) {
     } catch (error) {
         throw error;
     }
+}
+
+/**
+ * Fetch timereports for a date range and return per-week external AND internal working hours.
+ * External hours are rows on non-deploy projects; internal hours are rows on deploy projects.
+ * Each week entry contains two parallel 7-element arrays (Mon=0 … Sun=6).
+ *
+ * @param {string} flexEmployeeId
+ * @param {string|null} startDate - YYYY-MM-DD
+ * @param {string|null} endDate - YYYY-MM-DD
+ * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string,
+ *   externalHours: number[], internalHours: number[]}>>} sorted newest week first
+ */
+export async function getTimereportsForOccupancyFull(
+    flexEmployeeId,
+    startDate = null,
+    endDate = null
+) {
+    const flexApiClient = await getFlexApiService();
+    flexApiClient.config.cache = 'no-store';
+
+    const timereports = await flexApiClient.getTimereports(flexEmployeeId, startDate, endDate);
+
+    const weekMap = new Map();
+    const deployRegex = /deploy/i;
+
+    for (const timereport of timereports) {
+        if (!timereport.TimeRows?.length) continue;
+
+        const date = formatDateToISOString(timereport.Date);
+        const mondayDate = formatDateToISOString(getWeekMonday(date));
+        const dayIndex = getDayOfWeekIndex(date);
+
+        if (!weekMap.has(mondayDate)) {
+            weekMap.set(mondayDate, {
+                weekStartDate: mondayDate,
+                weekEndDate: formatDateToISOString(getWeekSunday(getWeekMonday(date))),
+                externalHours: [0, 0, 0, 0, 0, 0, 0],
+                internalHours: [0, 0, 0, 0, 0, 0, 0],
+            });
+        }
+
+        const week = weekMap.get(mondayDate);
+
+        for (const row of timereport.TimeRows) {
+            if (row.TimeCode.Id !== WORKING_TYPE_ID) continue;
+
+            const projectAccount = row.Accounts.find(
+                (account) => account.AccountDistribution.Id === PROJECT_TYPE_ID
+            );
+            if (!projectAccount) continue;
+
+            const minutes = row.TimeInMinutes;
+            if (!minutes) continue;
+
+            if (deployRegex.test(projectAccount.Name)) {
+                week.internalHours[dayIndex] += minutes / 60;
+            } else {
+                week.externalHours[dayIndex] += minutes / 60;
+            }
+        }
+    }
+
+    return Array.from(weekMap.values()).sort((a, b) =>
+        b.weekStartDate.localeCompare(a.weekStartDate)
+    );
+}
+
+/**
+ * Occupancy rate helpers derived from Flex timereports
+ */
+
+/**
+ * Return monthly occupancy rates for the occupancy chart, covering a date range.
+ * Calls getAssignmentTimereportsForOccupancy and builds the monthly shape expected
+ * by OccupancyChartComponent: [{ month, date, rate }].
+ * @param {string} flexEmployeeId
+ * @param {string} startDate - YYYY-MM-DD
+ * @param {string} endDate - YYYY-MM-DD
+ * @returns {Promise<Array<{month: string, date: string, rate: number}>>}
+ */
+export async function getFlexOccupancyRates(flexEmployeeId, startDate, endDate) {
+    const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
+    const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
+    const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
+
+    return monthly.map(({ monthName, year, date, rate }) => ({
+        month: `${monthName} ${year}`,
+        date,
+        rate,
+    }));
+}
+
+/**
+ * Return full occupancy history for the occupancy list, building the same shape as
+ * getOccupancyHistory from Salesforce. Uses a single Flex API call to capture both
+ * external (non-deploy) and internal (deploy) working hours per month.
+ * @param {string} flexEmployeeId
+ * @param {string} endDate - YYYY-MM-DD (inclusive upper bound, typically today)
+ * @param {string} [startDate] - YYYY-MM-DD optional lower bound
+ * @returns {Promise<Array>}
+ */
+export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate = null) {
+    const timereports = await getTimereportsForOccupancyFull(flexEmployeeId, startDate, endDate);
+    const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
+    const monthly = buildFullMonthlyOccupancy(timereports, today);
+
+    return monthly.map(({
+        year, month, monthName, date,
+        externalHours, internalHours, totalHours, totalMonthlyHours, rate,
+    }) => ({
+        id: date,
+        month: monthName,
+        year: String(year),
+        period: `${monthName} ${year}`,
+        date,
+        rate,
+        status: rate,
+        externalHours,
+        internalHours,
+        totalHours,
+        totalMonthlyHours,
+    }));
+}
+
+/**
+ * Compute occupancy stats (current, FYTD, last FY) from Flex timereports.
+ * Returns the same shape as getOccupancyStats from Salesforce.
+ * @param {string} flexEmployeeId
+ * @param {string} today - YYYY-MM-DD
+ * @returns {Promise<Object>}
+ */
+export async function getFlexOccupancyStats(flexEmployeeId, today) {
+    const currentFY = getCurrentFiscalYear();
+    const previousFY = getPreviousFiscalYear();
+
+    const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
+    const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
+    const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
+
+    const [currentFYTimereports, lastFYTimereports] = await Promise.all([
+        getAssignmentTimereportsForOccupancy(flexEmployeeId, currentFYStart, today),
+        getAssignmentTimereportsForOccupancy(flexEmployeeId, lastFYStart, lastFYEnd),
+    ]);
+
+    const todayDate = today ? new Date(today + 'T00:00:00Z') : getUTCToday();
+    const lastFYEndDate = new Date(lastFYEnd + 'T00:00:00Z');
+
+    const currentFYMonthly = buildMonthlyOccupancyFromWeeks(currentFYTimereports, todayDate);
+    const lastFYMonthly = buildMonthlyOccupancyFromWeeks(lastFYTimereports, lastFYEndDate);
+
+    const computeAverage = (monthly) => {
+        const rates = monthly.map((m) => m.rate).filter((r) => r != null);
+        if (rates.length === 0) return null;
+        return Math.round((rates.reduce((a, b) => a + b, 0) / rates.length) * 100) / 100;
+    };
+
+    const currentRecord = currentFYMonthly[0];
+
+    return {
+        current: currentRecord?.rate ?? null,
+        currentMonth: currentRecord ? `${currentRecord.monthName} ${currentRecord.year}` : null,
+        currentFYTD: computeAverage(currentFYMonthly),
+        lastFY: computeAverage(lastFYMonthly),
+        currentFYYear: currentFY,
+        previousFYYear: previousFY,
+        currentFYMonthCount: currentFYMonthly.length,
+        lastFYMonthCount: lastFYMonthly.length,
+    };
+}
+
+/**
+ * Compute the average occupancy rate for a custom date range from Flex timereports.
+ * Returns the same shape as getOccupancyAverageByDateRange from Salesforce.
+ * @param {string} flexEmployeeId
+ * @param {string} startDate - YYYY-MM-DD
+ * @param {string} endDate - YYYY-MM-DD
+ * @returns {Promise<{average: number|null, count: number, months: Array}>}
+ */
+export async function getFlexOccupancyAverageByDateRange(flexEmployeeId, startDate, endDate) {
+    const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
+    const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
+    const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
+
+    const rates = monthly.map((m) => m.rate).filter((r) => r != null);
+    if (rates.length === 0) return { average: null, count: 0, months: [] };
+
+    const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
+    return {
+        average: Math.round(avg * 100) / 100,
+        count: rates.length,
+        months: monthly.map(({ monthName, year, rate }) => ({
+            month: monthName,
+            year: String(year),
+            rate,
+        })),
+    };
 }
 
 /**
