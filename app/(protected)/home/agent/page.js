@@ -1,0 +1,277 @@
+'use client';
+
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Bot, Send, User, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+const SUGGESTED_PROMPTS = [
+    'What are my current project assignments?',
+    'Show me open opportunities',
+    'What are the financial results for last fiscal year?',
+    'How many holidays do I have remaining?',
+];
+
+function ThinkingIndicator () {
+    return (
+        <div className="flex items-center gap-1.5 px-1 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce [animation-delay:0ms]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce [animation-delay:150ms]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce [animation-delay:300ms]" />
+        </div>
+    );
+}
+
+function MarkdownContent ({ content }) {
+    return (
+        <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                h1: ({ children }) => <h1 className="text-base font-bold mb-2 mt-3 first:mt-0">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-base font-bold mb-2 mt-3 first:mt-0">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-sm font-bold mb-1.5 mt-3 first:mt-0">{children}</h3>,
+                ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
+                li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                em: ({ children }) => <em className="italic">{children}</em>,
+                code: ({ inline, children }) => inline
+                    ? <code className="px-1 py-0.5 rounded bg-muted text-xs font-mono">{children}</code>
+                    : <pre className="p-3 rounded-lg bg-muted text-xs font-mono overflow-x-auto mb-2"><code>{children}</code></pre>,
+                table: ({ children }) => (
+                    <div className="overflow-x-auto mb-2">
+                        <table className="w-full text-xs border-collapse">{children}</table>
+                    </div>
+                ),
+                thead: ({ children }) => <thead className="bg-muted/50">{children}</thead>,
+                th: ({ children }) => <th className="px-2 py-1.5 text-left font-semibold border border-border/60">{children}</th>,
+                td: ({ children }) => <td className="px-2 py-1.5 border border-border/60">{children}</td>,
+                hr: () => <hr className="my-3 border-border/60" />,
+                blockquote: ({ children }) => <blockquote className="border-l-2 border-primary/40 pl-3 italic text-muted-foreground mb-2">{children}</blockquote>,
+                a: ({ href, children }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:no-underline">{children}</a>,
+            }}
+        >
+            {content}
+        </ReactMarkdown>
+    );
+}
+
+function MessageBubble ({ message }) {
+    const isUser = message.role === 'user';
+    return (
+        <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+            <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 ${
+                isUser
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted border border-border/60 text-muted-foreground'
+            }`}>
+                {isUser ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
+            </div>
+            {isUser
+                ? (
+                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed bg-primary text-primary-foreground">
+                        {message.content}
+                    </div>
+                )
+                : (
+                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed bg-card border border-border/60 text-foreground shadow-sm">
+                        <MarkdownContent content={message.content} />
+                    </div>
+                )
+            }
+        </div>
+    );
+}
+
+function WelcomeScreen ({ onPromptClick }) {
+    return (
+        <div className="flex flex-col items-center justify-center flex-1 gap-8 py-12 px-4">
+            <div className="flex flex-col items-center gap-4 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <Bot className="w-7 h-7 text-primary" />
+                </div>
+                <div>
+                    <h2 className="text-xl font-semibold text-foreground tracking-tight">
+                        Tilde Agent
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+                        Ask me about assignments, opportunities, financials, timereports, and more.
+                    </p>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
+                {SUGGESTED_PROMPTS.map((prompt) => (
+                    <button
+                        key={prompt}
+                        onClick={() => onPromptClick(prompt)}
+                        className="text-left px-3.5 py-3 rounded-xl border border-border/70 bg-card hover:bg-accent hover:border-border transition-colors text-sm text-muted-foreground hover:text-foreground shadow-sm"
+                    >
+                        {prompt}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export default function AgentPage () {
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const messagesEndRef = useRef(null);
+    const textareaRef = useRef(null);
+    const abortRef = useRef(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    const adjustTextareaHeight = useCallback(() => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 160)}px`;
+    }, []);
+
+    useEffect(() => {
+        adjustTextareaHeight();
+    }, [input, adjustTextareaHeight]);
+
+    const sendMessage = useCallback(async (text) => {
+        const userMessage = { role: 'user', content: text };
+        const nextMessages = [...messages, userMessage];
+
+        setMessages(nextMessages);
+        setIsLoading(true);
+        setError(null);
+
+        // Placeholder for the streaming assistant message
+        const assistantId = Date.now();
+        setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
+
+        abortRef.current = new AbortController();
+
+        try {
+            const res = await fetch('/api/agent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: nextMessages.map(({ role, content }) => ({ role, content })),
+                }),
+                signal: abortRef.current.signal,
+            });
+
+            if (!res.ok) {
+                throw new Error(`Request failed: ${res.status}`);
+            }
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let accumulated = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                accumulated += decoder.decode(value, { stream: true });
+                const current = accumulated;
+                setMessages((prev) =>
+                    prev.map((m) =>
+                        m.id === assistantId ? { ...m, content: current } : m
+                    )
+                );
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                setError('Something went wrong. Please try again.');
+                setMessages((prev) => prev.filter((m) => m.id !== assistantId));
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, [messages]);
+
+    const submit = useCallback(() => {
+        const text = input.trim();
+        if (!text || isLoading) return;
+        setInput('');
+        sendMessage(text);
+    }, [input, isLoading, sendMessage]);
+
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submit();
+        }
+    }, [submit]);
+
+    const hasMessages = messages.length > 0;
+    const isThinking = isLoading && messages[messages.length - 1]?.role === 'user';
+
+    return (
+        <div className="flex flex-col h-[calc(100vh-7rem)] max-w-3xl mx-auto">
+            <div className="flex-1 overflow-y-auto">
+                {!hasMessages
+                    ? <WelcomeScreen onPromptClick={(p) => sendMessage(p)} />
+                    : (
+                        <div className="flex flex-col gap-6 py-6 px-1">
+                            {messages.map((message, i) => (
+                                <MessageBubble key={message.id ?? i} message={message} />
+                            ))}
+
+                            {isThinking && (
+                                <div className="flex gap-3">
+                                    <div className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 bg-muted border border-border/60 text-muted-foreground">
+                                        <Bot className="w-3.5 h-3.5" />
+                                    </div>
+                                    <div className="px-3.5 py-1 rounded-2xl rounded-tl-sm bg-card border border-border/60 shadow-sm">
+                                        <ThinkingIndicator />
+                                    </div>
+                                </div>
+                            )}
+
+                            {error && (
+                                <p className="text-sm text-destructive text-center py-2">{error}</p>
+                            )}
+
+                            <div ref={messagesEndRef} />
+                        </div>
+                    )
+                }
+            </div>
+
+            <div className="sticky bottom-0 pt-3 pb-1">
+                <div className="flex items-end gap-2 rounded-2xl border border-border/70 bg-card shadow-sm px-3 py-2.5">
+                    <textarea
+                        ref={textareaRef}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Ask about assignments, opportunities, financials…"
+                        rows={1}
+                        disabled={isLoading}
+                        className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none min-h-[24px] max-h-40 py-0.5 disabled:opacity-50"
+                    />
+                    <Button
+                        type="button"
+                        size="icon"
+                        onClick={submit}
+                        disabled={!input.trim() || isLoading}
+                        className="shrink-0 w-8 h-8 rounded-xl"
+                    >
+                        {isLoading
+                            ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            : <Send className="w-3.5 h-3.5" />
+                        }
+                    </Button>
+                </div>
+                <p className="text-center text-[11px] text-muted-foreground/50 mt-2">
+                    Agent may make mistakes. Verify important information.
+                </p>
+            </div>
+        </div>
+    );
+}

@@ -7,6 +7,7 @@ import {
     VIEW_SETUP_PERMISSION,
     VIEW_TIMEREPORT_PERMISSION,
     VIEW_MANAGEMENT_PERMISSION,
+    VIEW_AGENT_PERMISSION,
 } from '@/lib/rba-constants';
 
 export const LOGIN_ROUTE = '/auth/login';
@@ -26,6 +27,8 @@ export const AUTH_ROUTES = [LOGIN_ROUTE];
  */
 export const API_AUTH_PREFIX = '/api/auth';
 export const API_CRON_PREFIX = '/api/cron';
+export const API_AGENT_PREFIX = '/api/agent';
+
 
 /**
  * Default redirecting path
@@ -45,6 +48,7 @@ export const PERMISSION_SETS_ROUTE = `${SETUP_ROUTE}/permission-sets`;
 export const SYSTEM_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/system-permissions`;
 export const EMPLOYEES_LIST_ROUTE = `${MANAGEMENT_ROUTE}/employees`;
 export const FINANCIALS_ROUTE = `${MANAGEMENT_ROUTE}/financials`;
+export const AGENT_ROUTE = `${HOME_ROUTE}/agent`;
 
 export const PROTECTED_ROUTES = [
     { path: HOLIDAYS_ROUTE, systemPermission: VIEW_HOLIDAYS_PERMISSION },
@@ -61,6 +65,7 @@ export const PROTECTED_ROUTES = [
     { path: MANAGEMENT_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
     { path: EMPLOYEES_LIST_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
     { path: FINANCIALS_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
+    { path: AGENT_ROUTE, systemPermission: VIEW_AGENT_PERMISSION },
     { path: HOME_ROUTE, systemPermission: VIEW_HOME_PERMISSION }, // This always needs to be the last route
     { path: TIMEREPORT_ROUTE, systemPermission: VIEW_TIMEREPORT_PERMISSION },
 ];

@@ -6,6 +6,7 @@ import {
     PUBLIC_ROUTES,
     PROTECTED_ROUTES,
     API_CRON_PREFIX,
+    API_AGENT_PREFIX
 } from '@/menus/routes';
 
 import { NextResponse } from 'next/server';
@@ -25,12 +26,14 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth;
     const user = req.auth?.user;
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
     const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
     const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
+    const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
     const isApiCronRoute = nextUrl.pathname.startsWith(API_CRON_PREFIX);
+    const isApiAgentRoute = nextUrl.pathname.startsWith(API_AGENT_PREFIX);
+    
     // API auth routes
-    if (isApiAuthRoute || isApiCronRoute) {
+    if (isApiAuthRoute || isApiCronRoute || isApiAgentRoute) {
         return NextResponse.next();
     }
 
