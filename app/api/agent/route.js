@@ -1,4 +1,4 @@
-import { streamText, convertToModelMessages, createTextStreamResponse } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { auth } from '@/auth';
 import { createAgentTools } from '@/actions/agent/agent-tools';
@@ -58,10 +58,10 @@ export async function POST (req) {
     const result = streamText({
         model: openrouter('openrouter/free'),
         system: buildSystemPrompt(session.user),
-        messages,
+        messages: await convertToModelMessages(messages),
         tools: createAgentTools(session.user),
         maxSteps: 5,
     });
 
-    return createTextStreamResponse({ textStream: result.textStream });
+    return result.toUIMessageStreamResponse();
 }

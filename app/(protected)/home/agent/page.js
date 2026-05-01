@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from 'react-markdown';
@@ -60,6 +62,11 @@ function MarkdownContent ({ content }) {
 
 function MessageBubble ({ message }) {
     const isUser = message.role === 'user';
+    const textContent = message.parts
+        ?.filter((p) => p.type === 'text')
+        .map((p) => p.text)
+        .join('') ?? '';
+
     return (
         <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
             <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 ${
@@ -72,12 +79,12 @@ function MessageBubble ({ message }) {
             {isUser
                 ? (
                     <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed bg-primary text-primary-foreground">
-                        {message.content}
+                        {textContent}
                     </div>
                 )
                 : (
                     <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed bg-card border border-border/60 text-foreground shadow-sm">
-                        <MarkdownContent content={message.content} />
+                        <MarkdownContent content={textContent} />
                     </div>
                 )
             }
@@ -117,14 +124,20 @@ function WelcomeScreen ({ onPromptClick }) {
 }
 
 export default function AgentPage () {
-    const [messages, setMessages] = useState([]);
+    const { messages, sendMessage, status, error } = useChat({
+        transport: new DefaultChatTransport({
+            api: '/api/agent',
+        }),
+    });
+
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
-    const abortRef = useRef(null);
+
+    const isLoading = status === 'submitted' || status === 'streaming';
+    const hasMessages = messages.length > 0;
+    const isThinking = status === 'submitted';
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -141,65 +154,12 @@ export default function AgentPage () {
         adjustTextareaHeight();
     }, [input, adjustTextareaHeight]);
 
-    const sendMessage = useCallback(async (text) => {
-        const userMessage = { role: 'user', content: text };
-        const nextMessages = [...messages, userMessage];
-
-        setMessages(nextMessages);
-        setIsLoading(true);
-        setError(null);
-
-        // Placeholder for the streaming assistant message
-        const assistantId = Date.now();
-        setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
-
-        abortRef.current = new AbortController();
-
-        try {
-            const res = await fetch('/api/agent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: nextMessages.map(({ role, content }) => ({ role, content })),
-                }),
-                signal: abortRef.current.signal,
-            });
-
-            if (!res.ok) {
-                throw new Error(`Request failed: ${res.status}`);
-            }
-
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            let accumulated = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                accumulated += decoder.decode(value, { stream: true });
-                const current = accumulated;
-                setMessages((prev) =>
-                    prev.map((m) =>
-                        m.id === assistantId ? { ...m, content: current } : m
-                    )
-                );
-            }
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                setError('Something went wrong. Please try again.');
-                setMessages((prev) => prev.filter((m) => m.id !== assistantId));
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    }, [messages]);
-
     const submit = useCallback(() => {
-        const text = input.trim();
+        const text = (input ?? '').trim();
         if (!text || isLoading) return;
+        sendMessage({ text });
         setInput('');
-        sendMessage(text);
-    }, [input, isLoading, sendMessage]);
+    }, [input, isLoading, sendMessage, setInput]);
 
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -208,18 +168,15 @@ export default function AgentPage () {
         }
     }, [submit]);
 
-    const hasMessages = messages.length > 0;
-    const isThinking = isLoading && messages[messages.length - 1]?.role === 'user';
-
     return (
         <div className="flex flex-col h-[calc(100vh-7rem)] max-w-3xl mx-auto">
             <div className="flex-1 overflow-y-auto">
                 {!hasMessages
-                    ? <WelcomeScreen onPromptClick={(p) => sendMessage(p)} />
+                    ? <WelcomeScreen onPromptClick={(p) => { sendMessage({ text: p }); }} />
                     : (
                         <div className="flex flex-col gap-6 py-6 px-1">
-                            {messages.map((message, i) => (
-                                <MessageBubble key={message.id ?? i} message={message} />
+                            {messages.map((message) => (
+                                <MessageBubble key={message.id} message={message} />
                             ))}
 
                             {isThinking && (
@@ -234,7 +191,9 @@ export default function AgentPage () {
                             )}
 
                             {error && (
-                                <p className="text-sm text-destructive text-center py-2">{error}</p>
+                                <p className="text-sm text-destructive text-center py-2">
+                                    Something went wrong. Please try again.
+                                </p>
                             )}
 
                             <div ref={messagesEndRef} />
@@ -247,7 +206,7 @@ export default function AgentPage () {
                 <div className="flex items-end gap-2 rounded-2xl border border-border/70 bg-card shadow-sm px-3 py-2.5">
                     <textarea
                         ref={textareaRef}
-                        value={input}
+                        value={input ?? ''}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask about assignments, opportunities, financials…"
@@ -259,7 +218,7 @@ export default function AgentPage () {
                         type="button"
                         size="icon"
                         onClick={submit}
-                        disabled={!input.trim() || isLoading}
+                        disabled={!(input ?? '').trim() || isLoading}
                         className="shrink-0 w-8 h-8 rounded-xl"
                     >
                         {isLoading
