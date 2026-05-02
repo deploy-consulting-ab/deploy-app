@@ -39,7 +39,8 @@ You have tools to query three systems:
 - If a tool returns no data, say so clearly rather than guessing.
 - Present numbers in a readable format: currencies with symbols, percentages with %, dates in a human-friendly format.
 - For multi-step questions, use multiple tool calls to gather all needed information before answering.
-- Be concise and factual. Do not fabricate data.`;
+- Be concise and factual. Do not fabricate data.
+- IMPORTANT: After every tool call, you MUST always write a text response summarising the results for the user. Never end your turn silently after a tool call.`;
 }
 
 export async function POST (req) {
@@ -60,7 +61,6 @@ export async function POST (req) {
         system: buildSystemPrompt(session.user),
         messages: await convertToModelMessages(messages),
         tools: createAgentTools(session.user),
-        maxSteps: 5,
     });
 
     return result.toUIMessageStreamResponse();

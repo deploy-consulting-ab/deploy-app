@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from 'react-markdown';
@@ -62,10 +62,13 @@ function MarkdownContent ({ content }) {
 
 function MessageBubble ({ message }) {
     const isUser = message.role === 'user';
-    const textContent = message.parts
+    const textFromParts = message.parts
         ?.filter((p) => p.type === 'text')
         .map((p) => p.text)
         .join('') ?? '';
+    const textContent = textFromParts || message.content || '';
+
+    if (!isUser && !textContent) return null;
 
     return (
         <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -128,6 +131,7 @@ export default function AgentPage () {
         transport: new DefaultChatTransport({
             api: '/api/agent',
         }),
+        sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     });
 
     const [input, setInput] = useState('');
