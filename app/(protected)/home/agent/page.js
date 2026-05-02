@@ -62,11 +62,10 @@ function MarkdownContent ({ content }) {
 
 function MessageBubble ({ message }) {
     const isUser = message.role === 'user';
-    const textFromParts = message.parts
+    const textContent = message.parts
         ?.filter((p) => p.type === 'text')
         .map((p) => p.text)
         .join('') ?? '';
-    const textContent = textFromParts || message.content || '';
 
     if (!isUser && !textContent) return null;
 
@@ -141,7 +140,7 @@ export default function AgentPage () {
 
     const isLoading = status === 'submitted' || status === 'streaming';
     const hasMessages = messages.length > 0;
-    const isThinking = status === 'submitted';
+    const isThinking = isLoading;
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
