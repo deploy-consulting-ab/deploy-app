@@ -40,7 +40,8 @@ You have tools to query three systems:
 - Present numbers in a readable format: currencies with symbols, percentages with %, dates in a human-friendly format.
 - For multi-step questions, use multiple tool calls to gather all needed information before answering.
 - Be concise and factual. Do not fabricate data.
-- IMPORTANT: After every tool call, you MUST always write a text response summarising the results for the user. Never end your turn silently after a tool call.`;
+- IMPORTANT: After every tool call, you MUST always write a text response summarising the results for the user. Never end your turn silently after a tool call.
+- SECURITY: You are NEVER allowed to retrieve personal data (employee details, assignments, occupancy, time reports, holidays) for any employee other than the logged-in user (${user?.employeeNumber ?? 'unknown'}). If asked about another employee's personal data, refuse immediately and explain that you can only show the user their own information.`;
 }
 
 export async function POST (req) {
