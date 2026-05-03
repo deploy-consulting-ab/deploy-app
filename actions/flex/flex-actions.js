@@ -208,9 +208,11 @@ async function createTimeRow(flexEmployeeId, date, workingTimeRows) {
  * sorted newest week first.
  * @param {string} flexEmployeeId - The Flex employee ID
  * @param {string|null} flexProjectId - Optional Flex project ID to filter by
+ * @param {string|null} startDate - Optional start date to filter by
+ * @param {string|null} endDate - Optional end date to filter by
  * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string, hours: number[]}>>}
  */
-export async function getAssignmentTimereports(
+export async function getAssignmentTimereportsByProjectId(
     flexEmployeeId,
     flexProjectId = null,
     startDate = null,
@@ -269,6 +271,8 @@ export async function getAssignmentTimereports(
  * { weekStartDate, weekEndDate, hours: [mon, tue, wed, thu, fri, sat, sun] }
  * sorted newest week first.
  * @param {string} flexEmployeeId - The Flex employee ID
+ * @param {string|null} startDate - Optional start date to filter by
+ * @param {string|null} endDate - Optional end date to filter by
  * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string, hours: number[]}>>}
  */
 export async function getAssignmentTimereportsForOccupancy(

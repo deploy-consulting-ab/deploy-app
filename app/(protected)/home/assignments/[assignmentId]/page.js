@@ -1,6 +1,6 @@
 import { AssignmentRecordCardComponent } from '@/components/application/assignment/assignment-record-card';
 import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
-import { getAssignmentTimereports } from '@/actions/flex/flex-actions';
+import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { groupTimereportsByMonth } from '@/lib/utils';
 import { auth } from '@/auth';
 
@@ -17,7 +17,7 @@ const AssignmentPage = async ({ params }) => {
 
     try {
         assignment = await getAssignmentById(assignmentId, user?.employeeNumber);
-        const weeklyTimereports = await getAssignmentTimereports(
+        const weeklyTimereports = await getAssignmentTimereportsByProjectId(
             user?.flexEmployeeId,
             assignment?.flexId,
             assignment?.startDate,
