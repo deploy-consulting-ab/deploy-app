@@ -875,6 +875,54 @@ export async function getFlexOccupancyAverageByDateRange(flexEmployeeId, startDa
 }
 
 /**
+ * Compute occupancy stats (current, FYTD, last FY) anchored to a specific reference date.
+ * Unlike getFlexOccupancyStats, the fiscal year boundaries are derived from referenceDate
+ * rather than the real system clock, so passing a past date correctly returns stats for
+ * the FY that contained that date.
+ * @param {string} flexEmployeeId
+ * @param {string} referenceDate - YYYY-MM-DD (the month whose rate is shown as "current")
+ * @returns {Promise<Object>}
+ */
+export async function getFlexOccupancyStatsAnchored(flexEmployeeId, referenceDate) {
+    const refDateObj = referenceDate ? new Date(referenceDate + 'T00:00:00Z') : getUTCToday();
+    const currentFY = getCurrentFiscalYear(refDateObj);
+    const previousFY = getPreviousFiscalYear(refDateObj);
+
+    const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
+    const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
+    const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
+    const refDateStr = formatDateToISOString(refDateObj);
+
+    const [currentFYTimereports, lastFYTimereports] = await Promise.all([
+        getAssignmentTimereportsForOccupancy(flexEmployeeId, currentFYStart, refDateStr),
+        getAssignmentTimereportsForOccupancy(flexEmployeeId, lastFYStart, lastFYEnd),
+    ]);
+
+    const lastFYEndDate = new Date(lastFYEnd + 'T00:00:00Z');
+    const currentFYMonthly = buildMonthlyOccupancyFromWeeks(currentFYTimereports, refDateObj);
+    const lastFYMonthly = buildMonthlyOccupancyFromWeeks(lastFYTimereports, lastFYEndDate);
+
+    const computeAverage = (monthly) => {
+        const rates = monthly.map((m) => m.rate).filter((r) => r != null);
+        if (rates.length === 0) return null;
+        return Math.round((rates.reduce((a, b) => a + b, 0) / rates.length) * 100) / 100;
+    };
+
+    const currentRecord = currentFYMonthly[0];
+
+    return {
+        current: currentRecord?.rate ?? null,
+        currentMonth: currentRecord ? `${currentRecord.monthName} ${currentRecord.year}` : null,
+        currentFYTD: computeAverage(currentFYMonthly),
+        lastFY: computeAverage(lastFYMonthly),
+        currentFYYear: currentFY,
+        previousFYYear: previousFY,
+        currentFYMonthCount: currentFYMonthly.length,
+        lastFYMonthCount: lastFYMonthly.length,
+    };
+}
+
+/**
  * Utils methods
  */
 /**

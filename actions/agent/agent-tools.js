@@ -5,10 +5,14 @@ import {
     getAssignmentsByEmployeeNumber,
     getOpportunities,
     getOpportunitiesByName,
-    getOccupancyStats,
-    getOccupancyHistory,
 } from '@/actions/salesforce/salesforce-actions';
-import { getHolidays, getTimereports } from '@/actions/flex/flex-actions';
+import {
+    getHolidays,
+    getTimereports,
+    getFlexOccupancyHistory,
+    getFlexOccupancyStatsAnchored,
+    getFlexOccupancyAverageByDateRange,
+} from '@/actions/flex/flex-actions';
 import { getFinancialsAction } from '@/actions/database/financials-actions';
 import { toPermissionSet } from '@/lib/utils';
 import {
@@ -39,8 +43,6 @@ export function createAgentTools(user) {
     const hasOccupancyViewPermission = permissionsSet.has(VIEW_OCCUPANCY_PERMISSION);
     const hasAssignmentsViewPermission = permissionsSet.has(VIEW_ASSIGNMENTS_PERMISSION);
     const hasFlexTimereportsViewPermission = permissionsSet.has(VIEW_TIMEREPORT_PERMISSION);
-
-    console.log('hasOpportunitiesViewPermission', hasOpportunitiesViewPermission);
 
     return {
         // Public tools
@@ -158,25 +160,31 @@ export function createAgentTools(user) {
         ...(hasOccupancyViewPermission && {
             getOccupancyStats: tool({
                 description:
-                    'Get occupancy rate statistics for the logged-in employee: current month rate, fiscal-year-to-date average, and last fiscal year average.',
+                    'Get occupancy rate statistics for the logged-in employee anchored to a reference date: the rate for the month containing that date, fiscal-year-to-date average, and previous fiscal year average. ' +
+                    'Pass the last day of the month the user is asking about as `today` (e.g. "2025-09-30" for September 2025). ' +
+                    'For a specific month or custom date range use getOccupancyForDateRange instead.',
                 inputSchema: z.object({
-                    employeeNumber: z
+                    flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Employee number. Must match the logged-in user.'),
-                    today: z.string().describe('Reference date in YYYY-MM-DD format'),
+                        .describe('Flex employee ID. Must match the logged-in user.'),
+                    today: z
+                        .string()
+                        .describe(
+                            'Reference date in YYYY-MM-DD format. Use the last day of the target month (e.g. 2025-09-30 for September 2025, or today\'s date for current stats).'
+                        ),
                 }),
-                execute: async ({ employeeNumber, today }) => {
-                    const number = employeeNumber ?? defaultEmployeeNumber;
-                    if (!number) {
-                        return { error: 'No employee number available' };
+                execute: async ({ flexEmployeeId, today }) => {
+                    const id = flexEmployeeId ?? defaultFlexEmployeeId;
+                    if (!id) {
+                        return { error: 'No Flex employee ID available' };
                     }
-                    if (number !== defaultEmployeeNumber) {
+                    if (id !== defaultFlexEmployeeId) {
                         return {
                             error: 'Not authorized. You can only view your own occupancy stats.',
                         };
                     }
-                    return getOccupancyStats(number, today);
+                    return getFlexOccupancyStatsAnchored(id, today);
                 },
             }),
         }),
@@ -184,25 +192,67 @@ export function createAgentTools(user) {
         ...(hasOccupancyViewPermission && {
             getOccupancyHistory: tool({
                 description:
-                    'Get the full monthly occupancy rate history for the logged-in employee, including hours breakdown per month.',
+                    'Get the full monthly occupancy rate history for the logged-in employee up to `today`, including hours breakdown per month. ' +
+                    'Pass the last day of the latest month the user wants to see (e.g. "2025-09-30" to show history through September 2025).',
                 inputSchema: z.object({
-                    employeeNumber: z
+                    flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Employee number. Must match the logged-in user.'),
-                    today: z.string().describe('Reference date in YYYY-MM-DD format'),
+                        .describe('Flex employee ID. Must match the logged-in user.'),
+                    today: z
+                        .string()
+                        .describe(
+                            'Upper bound date in YYYY-MM-DD format. History is returned up to and including this date.'
+                        ),
                 }),
-                execute: async ({ employeeNumber, today }) => {
-                    const number = employeeNumber ?? defaultEmployeeNumber;
-                    if (!number) {
-                        return { error: 'No employee number available' };
+                execute: async ({ flexEmployeeId, today }) => {
+                    const id = flexEmployeeId ?? defaultFlexEmployeeId;
+                    if (!id) {
+                        return { error: 'No Flex employee ID available' };
                     }
-                    if (number !== defaultEmployeeNumber) {
+                    if (id !== defaultFlexEmployeeId) {
                         return {
                             error: 'Not authorized. You can only view your own occupancy history.',
                         };
                     }
-                    return getOccupancyHistory(number, today);
+                    return getFlexOccupancyHistory(id, today);
+                },
+            }),
+        }),
+
+        ...(hasOccupancyViewPermission && {
+            getOccupancyForDateRange: tool({
+                description:
+                    'Get the occupancy rate for the logged-in employee for a specific month or custom date range. ' +
+                    'Use this whenever the user asks about a specific month (e.g. "September 2025") or any period that is not the current one. ' +
+                    'Returns the average rate across the range, a per-month breakdown, and the hours detail.',
+                inputSchema: z.object({
+                    flexEmployeeId: z
+                        .string()
+                        .optional()
+                        .describe('Flex employee ID. Must match the logged-in user.'),
+                    startDate: z
+                        .string()
+                        .describe(
+                            'First day of the range in YYYY-MM-DD format (e.g. 2025-09-01 for September 2025).'
+                        ),
+                    endDate: z
+                        .string()
+                        .describe(
+                            'Last day of the range in YYYY-MM-DD format (e.g. 2025-09-30 for September 2025).'
+                        ),
+                }),
+                execute: async ({ flexEmployeeId, startDate, endDate }) => {
+                    const id = flexEmployeeId ?? defaultFlexEmployeeId;
+                    if (!id) {
+                        return { error: 'No Flex employee ID available' };
+                    }
+                    if (id !== defaultFlexEmployeeId) {
+                        return {
+                            error: 'Not authorized. You can only view your own occupancy data.',
+                        };
+                    }
+                    return getFlexOccupancyAverageByDateRange(id, startDate, endDate);
                 },
             }),
         }),
