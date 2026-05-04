@@ -14,6 +14,7 @@ import {
     getFlexOccupancyAverageByDateRange,
 } from '@/actions/flex/flex-actions';
 import { getFinancialsAction } from '@/actions/database/financials-actions';
+import { getFlexIdByEmployeeNumberAction } from '@/actions/database/user-actions';
 import { toPermissionSet } from '@/lib/utils';
 import {
     VIEW_MANAGEMENT_PERMISSION,
@@ -43,6 +44,8 @@ export function createAgentTools(user) {
     const hasOccupancyViewPermission = permissionsSet.has(VIEW_OCCUPANCY_PERMISSION);
     const hasAssignmentsViewPermission = permissionsSet.has(VIEW_ASSIGNMENTS_PERMISSION);
     const hasFlexTimereportsViewPermission = permissionsSet.has(VIEW_TIMEREPORT_PERMISSION);
+
+    const canViewEmployee = (id) => hasManagementViewPermission || id === defaultFlexEmployeeId;
 
     return {
         // Public tools
@@ -85,7 +88,6 @@ export function createAgentTools(user) {
         }),
 
         // Protected tools
-
         ...(hasFlexTimereportsViewPermission && {
             getFlexTimereports: tool({
                 description:
@@ -167,7 +169,7 @@ export function createAgentTools(user) {
                     flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Flex employee ID. Must match the logged-in user.'),
+                        .describe('Flex employee ID to look up.'),
                     today: z
                         .string()
                         .describe(
@@ -179,7 +181,7 @@ export function createAgentTools(user) {
                     if (!id) {
                         return { error: 'No Flex employee ID available' };
                     }
-                    if (id !== defaultFlexEmployeeId) {
+                    if (!canViewEmployee(id)) {
                         return {
                             error: 'Not authorized. You can only view your own occupancy stats.',
                         };
@@ -198,7 +200,7 @@ export function createAgentTools(user) {
                     flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Flex employee ID. Must match the logged-in user.'),
+                        .describe('Flex employee ID to look up.'),
                     today: z
                         .string()
                         .describe(
@@ -210,7 +212,7 @@ export function createAgentTools(user) {
                     if (!id) {
                         return { error: 'No Flex employee ID available' };
                     }
-                    if (id !== defaultFlexEmployeeId) {
+                    if (!canViewEmployee(id)) {
                         return {
                             error: 'Not authorized. You can only view your own occupancy history.',
                         };
@@ -230,7 +232,7 @@ export function createAgentTools(user) {
                     flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Flex employee ID. Must match the logged-in user.'),
+                        .describe('Flex employee ID to look up.'),
                     startDate: z
                         .string()
                         .describe(
@@ -247,12 +249,32 @@ export function createAgentTools(user) {
                     if (!id) {
                         return { error: 'No Flex employee ID available' };
                     }
-                    if (id !== defaultFlexEmployeeId) {
+                    if (!canViewEmployee(id)) {
                         return {
                             error: 'Not authorized. You can only view your own occupancy data.',
                         };
                     }
                     return getFlexOccupancyAverageByDateRange(id, startDate, endDate);
+                },
+            }),
+        }),
+
+        ...(hasManagementViewPermission && {
+            getFlexIdByEmployeeNumber: tool({
+                description:
+                    'Look up a user\'s Flex employee ID from their employee number (e.g. "D002"). ' +
+                    'Use this before calling occupancy tools when you have an employee number but not a Flex ID.',
+                inputSchema: z.object({
+                    employeeNumber: z
+                        .string()
+                        .describe('The employee number to look up (e.g. "D002").'),
+                }),
+                execute: async ({ employeeNumber }) => {
+                    const result = await getFlexIdByEmployeeNumberAction(employeeNumber);
+                    if (!result) {
+                        return { error: `No user found with employee number ${employeeNumber}` };
+                    }
+                    return result;
                 },
             }),
         }),

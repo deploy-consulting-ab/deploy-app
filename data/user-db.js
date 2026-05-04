@@ -251,6 +251,26 @@ export const updateUserProfile = async (userId, profileId) => {
 };
 
 /**
+ * Get a user's Flex employee ID by their employee number
+ * @param {string} employeeNumber
+ * @returns {Promise<{name: string, employeeNumber: string, flexEmployeeId: string|null}|null>}
+ */
+export async function getUserByEmployeeNumber(employeeNumber) {
+    try {
+        return await db.user.findUnique({
+            where: { employeeNumber },
+            select: {
+                name: true,
+                employeeNumber: true,
+                flexEmployeeId: true,
+            },
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
  * SEARCH METHODS
  */
 

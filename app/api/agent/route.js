@@ -2,12 +2,15 @@ import { streamText, convertToModelMessages } from 'ai';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { auth } from '@/auth';
 import { createAgentTools } from '@/actions/agent/agent-tools';
+import { toPermissionSet } from '@/lib/utils';
+import { VIEW_MANAGEMENT_PERMISSION } from '@/lib/rba-constants';
 
 function buildSystemPrompt (user) {
     const today = new Date().toISOString().split('T')[0];
     const userName = user?.name ?? 'the user';
     const hasEmployeeNumber = !!user?.employeeNumber;
     const hasFlexId = !!user?.flexEmployeeId;
+    const hasManagementViewPermission = toPermissionSet(user?.systemPermissions).has(VIEW_MANAGEMENT_PERMISSION);
 
     return `You are a helpful AI assistant for the Tilde app, used internally by a consulting company called Deploy.
 
@@ -41,7 +44,10 @@ You have tools to query three systems:
 - For multi-step questions, use multiple tool calls to gather all needed information before answering.
 - Be concise and factual. Do not fabricate data.
 - IMPORTANT: After every tool call, you MUST always write a text response summarising the results for the user. Never end your turn silently after a tool call.
-- SECURITY: You are NEVER allowed to retrieve personal data (employee details, assignments, occupancy, time reports, holidays) for any employee other than the logged-in user (${user?.employeeNumber ?? 'unknown'}). If asked about another employee's personal data, refuse immediately and explain that you can only show the user their own information.`;
+- SECURITY: ${hasManagementViewPermission
+        ? "You have management access and may retrieve occupancy data for any employee. For all other personal data (assignments, time reports, holidays) you may only access the logged-in user's own records."
+        : `You are NEVER allowed to retrieve personal data (employee details, assignments, occupancy, time reports, holidays) for any employee other than the logged-in user (${user?.employeeNumber ?? 'unknown'}). If asked about another employee's personal data, refuse immediately and explain that you can only show the user their own information.`
+    }`;
 }
 
 export async function POST (req) {
