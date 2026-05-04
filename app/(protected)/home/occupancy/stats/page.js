@@ -7,7 +7,7 @@ import {
     getCurrentFiscalYear,
     getFiscalYearStartDate,
 } from '@/lib/utils';
-import { getFlexOccupancyStats, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
+import { getFlexOccupancyStatsAnchored, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
 
 export default async function OccupancyStatsPage() {
     const session = await auth();
@@ -26,7 +26,7 @@ export default async function OccupancyStatsPage() {
 
     if (flexEmployeeId) {
         const [statsResult, historyResult] = await Promise.allSettled([
-            getFlexOccupancyStats(flexEmployeeId, formattedToday),
+            getFlexOccupancyStatsAnchored(flexEmployeeId, formattedToday),
             getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate),
         ]);
 

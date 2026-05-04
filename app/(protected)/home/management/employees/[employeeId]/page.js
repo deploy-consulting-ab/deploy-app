@@ -1,7 +1,7 @@
 import { getEmployeeById } from '@/actions/salesforce/salesforce-actions';
 import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
-import { getFlexOccupancyStats, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
+import { getFlexOccupancyStatsAnchored, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
 import {
     formatDateToISOString,
     getUTCToday,
@@ -37,7 +37,7 @@ const EmployeePage = async ({ params }) => {
 
     if (flexEmployeeId) {
         const [statsResult, historyResult] = await Promise.allSettled([
-            getFlexOccupancyStats(flexEmployeeId, formattedToday),
+            getFlexOccupancyStatsAnchored(flexEmployeeId, formattedToday),
             getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate),
         ]);
 

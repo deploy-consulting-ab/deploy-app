@@ -682,13 +682,16 @@ export async function deleteAbsenceRequest(absenceRequestId) {
  * External hours are rows on non-deploy projects; internal hours are rows on deploy projects.
  * Each week entry contains two parallel 7-element arrays (Mon=0 … Sun=6).
  *
+ * Internal helper — not exported. Consumed by getFlexOccupancyHistory and
+ * getFlexOccupancyStatsAnchored to build their full per-month breakdowns.
+ *
  * @param {string} flexEmployeeId
  * @param {string|null} startDate - YYYY-MM-DD
  * @param {string|null} endDate - YYYY-MM-DD
  * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string,
  *   externalHours: number[], internalHours: number[]}>>} sorted newest week first
  */
-export async function getTimereportsForOccupancyFull(
+async function getTimereportsForOccupancyFull(
     flexEmployeeId,
     startDate = null,
     endDate = null
@@ -798,52 +801,6 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
         totalHours,
         totalMonthlyHours,
     }));
-}
-
-/**
- * Compute occupancy stats (current, FYTD, last FY) from Flex timereports.
- * Returns the same shape as getOccupancyStats from Salesforce.
- * @param {string} flexEmployeeId
- * @param {string} today - YYYY-MM-DD
- * @returns {Promise<Object>}
- */
-export async function getFlexOccupancyStats(flexEmployeeId, today) {
-    const currentFY = getCurrentFiscalYear();
-    const previousFY = getPreviousFiscalYear();
-
-    const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
-    const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
-    const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
-
-    const [currentFYTimereports, lastFYTimereports] = await Promise.all([
-        getAssignmentTimereportsForOccupancy(flexEmployeeId, currentFYStart, today),
-        getAssignmentTimereportsForOccupancy(flexEmployeeId, lastFYStart, lastFYEnd),
-    ]);
-
-    const todayDate = today ? new Date(today + 'T00:00:00Z') : getUTCToday();
-    const lastFYEndDate = new Date(lastFYEnd + 'T00:00:00Z');
-
-    const currentFYMonthly = buildMonthlyOccupancyFromWeeks(currentFYTimereports, todayDate);
-    const lastFYMonthly = buildMonthlyOccupancyFromWeeks(lastFYTimereports, lastFYEndDate);
-
-    const computeAverage = (monthly) => {
-        const rates = monthly.map((m) => m.rate).filter((r) => r != null);
-        if (rates.length === 0) return null;
-        return Math.round((rates.reduce((a, b) => a + b, 0) / rates.length) * 100) / 100;
-    };
-
-    const currentRecord = currentFYMonthly[0];
-
-    return {
-        current: currentRecord?.rate ?? null,
-        currentMonth: currentRecord ? `${currentRecord.monthName} ${currentRecord.year}` : null,
-        currentFYTD: computeAverage(currentFYMonthly),
-        lastFY: computeAverage(lastFYMonthly),
-        currentFYYear: currentFY,
-        previousFYYear: previousFY,
-        currentFYMonthCount: currentFYMonthly.length,
-        lastFYMonthCount: lastFYMonthly.length,
-    };
 }
 
 /**
