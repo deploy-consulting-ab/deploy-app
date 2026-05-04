@@ -27,7 +27,6 @@ const EmployeePage = async ({ params }) => {
     try {
         employee = await getEmployeeById(employeeId);
         flexEmployeeId = employee.flexId;
-        console.log('flexEmployeeId', flexEmployeeId);
     } catch (err) {
         employeeError = err;
     }

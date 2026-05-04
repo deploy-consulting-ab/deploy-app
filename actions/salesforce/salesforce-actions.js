@@ -409,10 +409,8 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
 }
 
 export async function getEmployeesByNameOrEmployeeId(query) {
-    console.log('#####query', query);
     try {
         const result = await queryData(getEmployeesByNameOrEmployeeIdQuery(query));
-        console.log('#####result', result);
         return result.map((employee) => ({
             id: employee.Id,
             name: employee.Name,
@@ -421,7 +419,6 @@ export async function getEmployeesByNameOrEmployeeId(query) {
             type: 'Employee',
         }));
     } catch (error) {
-        console.log('#####error', error);
         throw error;
     }
 }
