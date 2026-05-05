@@ -30,21 +30,21 @@ function MarkdownContent ({ content }) {
         <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                h1: ({ children }) => <h1 className="text-base font-bold mb-2 mt-3 first:mt-0">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-base font-bold mb-2 mt-3 first:mt-0">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-sm font-bold mb-1.5 mt-3 first:mt-0">{children}</h3>,
+                p: ({ children }) => <p className="mb-2 last:mb-0 text-[15px] leading-7">{children}</p>,
+                h1: ({ children }) => <h1 className="text-lg font-bold mb-2 mt-3 first:mt-0">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-lg font-bold mb-2 mt-3 first:mt-0">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-base font-bold mb-1.5 mt-3 first:mt-0">{children}</h3>,
                 ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
                 ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
                 li: ({ children }) => <li className="leading-relaxed">{children}</li>,
                 strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                 em: ({ children }) => <em className="italic">{children}</em>,
                 code: ({ inline, children }) => inline
-                    ? <code className="px-1 py-0.5 rounded bg-muted text-xs font-mono">{children}</code>
-                    : <pre className="p-3 rounded-lg bg-muted text-xs font-mono overflow-x-auto mb-2"><code>{children}</code></pre>,
+                    ? <code className="px-1 py-0.5 rounded bg-muted text-sm font-mono">{children}</code>
+                    : <pre className="p-3 rounded-lg bg-muted text-sm font-mono overflow-x-auto mb-2"><code>{children}</code></pre>,
                 table: ({ children }) => (
                     <div className="overflow-x-auto mb-2">
-                        <table className="w-full text-xs border-collapse">{children}</table>
+                        <table className="w-full text-sm border-collapse">{children}</table>
                     </div>
                 ),
                 thead: ({ children }) => <thead className="bg-muted/50">{children}</thead>,
@@ -80,12 +80,12 @@ function MessageBubble ({ message }) {
             </div>
             {isUser
                 ? (
-                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed bg-primary text-primary-foreground">
+                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-base leading-relaxed bg-primary text-primary-foreground">
                         {textContent}
                     </div>
                 )
                 : (
-                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-sm leading-relaxed bg-card border border-border/60 text-foreground shadow-sm">
+                    <div className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-base leading-relaxed bg-card border border-border/60 text-foreground shadow-sm">
                         <MarkdownContent content={textContent} />
                     </div>
                 )
@@ -115,7 +115,7 @@ function WelcomeScreen ({ onPromptClick }) {
                     <button
                         key={prompt}
                         onClick={() => onPromptClick(prompt)}
-                        className="text-left px-3.5 py-3 rounded-xl border border-border/70 bg-card hover:bg-accent hover:border-border transition-colors text-sm text-muted-foreground hover:text-foreground shadow-sm"
+                        className="text-left px-3.5 py-3 rounded-xl border border-border/70 bg-card hover:bg-accent hover:border-border transition-colors text-[15px] text-muted-foreground hover:text-foreground shadow-sm"
                     >
                         {prompt}
                     </button>
@@ -215,7 +215,7 @@ export function AgentChatComponent () {
                         placeholder="Ask about assignments, opportunities, financials…"
                         rows={1}
                         disabled={isLoading}
-                        className="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60 outline-none min-h-[24px] max-h-40 py-0.5 disabled:opacity-50"
+                        className="flex-1 resize-none bg-transparent text-base text-foreground placeholder:text-muted-foreground/60 outline-none min-h-[24px] max-h-40 py-0.5 disabled:opacity-50"
                     />
                     <Button
                         type="button"
