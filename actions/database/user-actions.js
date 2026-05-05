@@ -12,6 +12,7 @@ import {
     updateUserProfile,
     addPermissionSetToUser,
     removePermissionSetFromUser,
+    getUserByEmployeeNumber,
 } from '@/data/user-db';
 import { getUsers } from '@/data/user-db';
 import { updateUser } from '@/data/user-db';
@@ -199,6 +200,19 @@ export async function updateUserProfileAction(userId, profileId) {
 export async function addPermissionSetToUserAction(id, permissionSetId) {
     try {
         return await addPermissionSetToUser(id, permissionSetId);
+    } catch (error) {
+        throw error;
+    }
+}
+
+/**
+ * Get a user's Flex employee ID by their employee number
+ * @param {string} employeeNumber
+ * @returns {Promise<{name: string, employeeNumber: string, flexEmployeeId: string|null}|null>}
+ */
+export async function getFlexIdByEmployeeNumberAction(employeeNumber) {
+    try {
+        return await getUserByEmployeeNumber(employeeNumber);
     } catch (error) {
         throw error;
     }

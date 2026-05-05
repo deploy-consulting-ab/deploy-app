@@ -13,6 +13,7 @@ import {
     BarChart3,
     ChartPie,
     DollarSign,
+    Bot,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -31,6 +32,7 @@ import {
     MANAGEMENT_ROUTE,
     EMPLOYEES_LIST_ROUTE,
     FINANCIALS_ROUTE,
+    AGENT_ROUTE,
 } from '@/menus/routes';
 import {
     VIEW_HOME_PERMISSION,
@@ -41,6 +43,7 @@ import {
     VIEW_SETUP_PERMISSION,
     VIEW_TIMEREPORT_PERMISSION,
     VIEW_MANAGEMENT_PERMISSION,
+    VIEW_AGENT_PERMISSION,
 } from '@/lib/rba-constants';
 
 // Map of menu items with their required permissions and configurations
@@ -110,6 +113,12 @@ export const MENU_ITEMS_MAP = {
         url: TIMEREPORT_ROUTE,
         icon: Clock,
         systemPermission: VIEW_TIMEREPORT_PERMISSION,
+    },
+    agent: {
+        title: 'Agent',
+        url: AGENT_ROUTE,
+        icon: Bot,
+        systemPermission: VIEW_AGENT_PERMISSION,
     },
 };
 

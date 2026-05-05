@@ -1,7 +1,7 @@
 'use server';
 
 import { TimecardListComponent } from '@/components/application/assignment/timecard-list';
-import { getAssignmentTimereports } from '@/actions/flex/flex-actions';
+import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
 
@@ -16,7 +16,12 @@ const TimecardsPage = async ({ params }) => {
 
     try {
         const assignment = await getAssignmentById(assignmentId, user?.employeeNumber);
-        timecards = await getAssignmentTimereports(user?.flexEmployeeId, assignment?.flexId, assignment?.startDate, assignment?.endDate);
+        timecards = await getAssignmentTimereportsByProjectId(
+            user?.flexEmployeeId,
+            assignment?.flexId,
+            assignment?.startDate,
+            assignment?.endDate
+        );
     } catch (err) {
         error = err;
     }
