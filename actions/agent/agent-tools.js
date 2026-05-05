@@ -49,16 +49,6 @@ export function createAgentTools(user) {
 
     return {
         // Public tools
-        searchEmployees: tool({
-            description:
-                'Search for employees by name or employee ID. Returns a list of matching employees with their IDs and employment status.',
-            inputSchema: z.object({
-                query: z.string().describe('Name or employee ID to search for'),
-            }),
-            execute: async ({ query }) => {
-                return getEmployeesByNameOrEmployeeId(query);
-            },
-        }),
 
         getFlexHolidays: tool({
             description:
@@ -88,6 +78,39 @@ export function createAgentTools(user) {
         }),
 
         // Protected tools
+        searchEmployees: tool({
+            description: hasManagementViewPermission
+                ? 'Search for employees by name or employee ID. Returns a list of matching employees with their IDs and employment status.'
+                : 'Look up the logged-in employee by their own name or employee ID. Cannot be used to search for other employees.',
+            inputSchema: z.object({
+                query: z.string().describe('Name or employee ID to search for'),
+            }),
+            execute: async ({ query }) => {
+                if (hasManagementViewPermission) {
+                    return getEmployeesByNameOrEmployeeId(query);
+                }
+
+                const results = await getEmployeesByNameOrEmployeeId(query);
+                if (!Array.isArray(results)) {
+                    return results;
+                }
+
+                const filtered = results.filter(
+                    (emp) =>
+                        emp.employeeId === defaultEmployeeNumber ||
+                        (user?.name && emp.name === user.name)
+                );
+
+                if (filtered.length === 0) {
+                    return {
+                        error: 'Not authorized. You can only search for your own employee record.',
+                    };
+                }
+
+                return filtered;
+            },
+        }),
+
         ...(hasFlexTimereportsViewPermission && {
             getFlexTimereports: tool({
                 description:
