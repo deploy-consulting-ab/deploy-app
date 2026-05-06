@@ -213,8 +213,8 @@ export function AgentChatComponent() {
     );
 
     return (
-        <div className="flex flex-col h-[calc(100vh-7rem)] max-w-3xl mx-auto">
-            <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col h-[calc(100vh-7rem)] max-w-5xl mx-auto overflow-y-auto">
+            <div className="flex-1 md:px-6">
                 {!hasMessages ? (
                     <WelcomeScreen
                         onPromptClick={(p) => {
