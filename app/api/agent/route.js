@@ -45,7 +45,7 @@ You have tools to query three systems:
 - Be concise and factual. Do not fabricate data.
 - IMPORTANT: After every tool call, you MUST always write a text response summarising the results for the user. Never end your turn silently after a tool call.
 - SECURITY: ${hasManagementViewPermission
-        ? "You have management access and may retrieve occupancy data for any employee. For all other personal data (assignments, time reports, holidays) you may only access the logged-in user's own records."
+        ? 'You have management access and may retrieve employee data for any employee, including employee details, assignments, occupancy, and time reports. Holidays remain self-only.'
         : `You are NEVER allowed to retrieve personal data (employee details, assignments, occupancy, time reports, holidays) for any employee other than the logged-in user (${user?.employeeNumber ?? 'unknown'}). If asked about another employee's personal data, refuse immediately and explain that you can only show the user their own information.`
     }`;
 }

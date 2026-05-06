@@ -46,6 +46,8 @@ export function createAgentTools(user) {
     const hasFlexTimereportsViewPermission = permissionsSet.has(VIEW_TIMEREPORT_PERMISSION);
 
     const canViewEmployee = (id) => hasManagementViewPermission || id === defaultFlexEmployeeId;
+    const canViewEmployeeByNumber = (number) =>
+        hasManagementViewPermission || number === defaultEmployeeNumber;
 
     return {
         // Public tools
@@ -114,12 +116,12 @@ export function createAgentTools(user) {
         ...(hasFlexTimereportsViewPermission && {
             getFlexTimereports: tool({
                 description:
-                    'Get time reports from Flex for the logged-in employee for a specific week. Returns logged hours per day, project names, and absence entries.',
+                    'Get time reports from Flex for a specific employee and week. Returns logged hours per day, project names, and absence entries.',
                 inputSchema: z.object({
                     flexEmployeeId: z
                         .string()
                         .optional()
-                        .describe('Flex employee ID. Must match the logged-in user.'),
+                        .describe('Flex employee ID to look up. Omit to use the logged-in user.'),
                     weekStartDate: z.string().describe('Monday of the week in YYYY-MM-DD format'),
                     weekEndDate: z.string().describe('Sunday of the week in YYYY-MM-DD format'),
                 }),
@@ -128,7 +130,7 @@ export function createAgentTools(user) {
                     if (!id) {
                         return { error: 'No Flex employee ID available' };
                     }
-                    if (id !== defaultFlexEmployeeId) {
+                    if (!canViewEmployee(id)) {
                         return {
                             error: 'Not authorized. You can only view your own time reports.',
                         };
@@ -141,19 +143,19 @@ export function createAgentTools(user) {
 
         ...(hasAssignmentsViewPermission && {
             getAssignments: tool({
-                description: 'Get all project assignments for the logged-in employee.',
+                description: 'Get all project assignments for a specific employee.',
                 inputSchema: z.object({
                     employeeNumber: z
                         .string()
                         .optional()
-                        .describe('Employee number. Must match the logged-in user.'),
+                        .describe('Employee number to look up. Omit to use the logged-in user.'),
                 }),
                 execute: async ({ employeeNumber }) => {
                     const number = employeeNumber ?? defaultEmployeeNumber;
                     if (!number) {
                         return { error: 'No employee number available' };
                     }
-                    if (number !== defaultEmployeeNumber) {
+                    if (!canViewEmployeeByNumber(number)) {
                         return { error: 'Not authorized. You can only view your own assignments.' };
                     }
                     return getAssignmentsByEmployeeNumber(number);
