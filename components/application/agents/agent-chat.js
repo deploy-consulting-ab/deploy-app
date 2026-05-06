@@ -222,7 +222,7 @@ export function AgentChatComponent() {
                         }}
                     />
                 ) : (
-                    <div className="flex flex-col gap-6 py-6 px-1">
+                    <div className="flex flex-col gap-6 py-6 px-1 pb-32">
                         {messages.map((message) => (
                             <MessageBubble key={message.id} message={message} />
                         ))}
@@ -249,7 +249,7 @@ export function AgentChatComponent() {
                 )}
             </div>
 
-            <div className="sticky bottom-0 pt-3 pb-1">
+            <div className="sticky bottom-0 pt-3 pb-2 bg-background">
                 <div className="flex items-end gap-2 rounded-2xl border border-border/70 bg-card shadow-sm px-3 py-2.5">
                     <textarea
                         ref={textareaRef}
