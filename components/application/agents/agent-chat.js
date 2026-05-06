@@ -222,7 +222,7 @@ export function AgentChatComponent() {
                         }}
                     />
                 ) : (
-                    <div className="flex flex-col gap-6 py-6 px-1 pb-32">
+                    <div className="flex flex-col gap-6 py-6 px-1">
                         {messages.map((message) => (
                             <MessageBubble key={message.id} message={message} />
                         ))}
@@ -256,10 +256,10 @@ export function AgentChatComponent() {
                         value={input ?? ''}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Ask about assignments, opportunities, financials…"
+                        placeholder="Ask tilde..."
                         rows={1}
                         disabled={isLoading}
-                        className="flex-1 resize-none bg-transparent text-base text-foreground placeholder:text-muted-foreground/60 outline-none min-h-[24px] max-h-40 py-0.5 disabled:opacity-50"
+                        className="flex-1 resize-none overflow-hidden bg-transparent text-base text-foreground placeholder:text-muted-foreground/60 outline-none min-h-[24px] max-h-40 py-0.5 disabled:opacity-50"
                     />
                     <Button
                         type="button"
