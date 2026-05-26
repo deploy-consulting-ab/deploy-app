@@ -92,11 +92,13 @@ const getOpportunitiesByNameQuery = (name) => {
 
 const getOpportunityByIdQuery = (opportunityId) => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
-            FROM Opportunity WHERE Id = '${opportunityId}' 
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            FROM Opportunity WHERE Id = '${opportunityId}'
             LIMIT 1`;
+};
+
+const getQuoteLinesQuery = (opportunityId) => {
+    return `SELECT Id, ServiceDate, EndDate__c, Product2.Name
+            FROM QuoteLineItem WHERE Quote.OpportunityId = '${opportunityId}' AND Quote.IsSyncing = true`;
 };
 
 /**
@@ -198,4 +200,5 @@ export {
     getEmployeesQuery,
     getEmployeeByIdQuery,
     getEmployeesByNameOrEmployeeIdQuery,
+    getQuoteLinesQuery,
 };

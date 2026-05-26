@@ -20,6 +20,7 @@ import {
     getEmployeesQuery,
     getEmployeeByIdQuery,
     getEmployeesByNameOrEmployeeIdQuery,
+    getQuoteLinesQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -188,6 +189,20 @@ export async function getOpportunityById(opportunityId) {
             currency: result.CurrencyIsoCode,
             productType: result.ProductType__c,
         };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getQuoteLines(opportunityId) {
+    try {
+        const results = await queryData(getQuoteLinesQuery(opportunityId));
+        return results.map((quoteLine) => ({
+            id: quoteLine.Id,
+            productName: quoteLine.Product2.Name,
+            startDate: quoteLine.ServiceDate,
+            endDate: quoteLine.EndDate__c,
+        }));
     } catch (error) {
         throw error;
     }

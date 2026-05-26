@@ -3,8 +3,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { formatDateToSwedish, getOpportunityStageColor } from '@/lib/utils';
+import { OpportunityProductCardPhone } from '@/components/application/opportunities/phone/opportunity-product-card-phone';
 
-export function OpportunityCardPhoneComponent({ opportunity, onClick }) {
+export function OpportunityCardPhoneComponent({ opportunity, products, onClick }) {
     const formatAmount = (amount, currency) => {
         if (!amount) return '-';
         return new Intl.NumberFormat('en-US', {
@@ -51,6 +52,14 @@ export function OpportunityCardPhoneComponent({ opportunity, onClick }) {
                         </div>
                     </div>
                 </div>
+                {products && products.length > 0 && (
+                    <div className="space-y-2 pt-2 border-t">
+                        <p className="text-sm text-muted-foreground font-medium">Products</p>
+                        {products.map((product) => (
+                            <OpportunityProductCardPhone key={product.id} product={product} />
+                        ))}
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
