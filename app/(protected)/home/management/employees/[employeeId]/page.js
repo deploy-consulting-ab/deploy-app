@@ -17,6 +17,7 @@ import {
 } from '@/lib/utils';
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
+import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
 
 const EmployeePage = async ({ params }) => {
     const { employeeId } = await params;
@@ -70,27 +71,35 @@ const EmployeePage = async ({ params }) => {
     }
 
     return (
-        <div className="flex flex-col">
-            <div className="mb-6">
-                <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
-            </div>
-            <div className="mb-6">
-                <OccupancyStatsComponent stats={stats} error={errors.stats} />
-            </div>
-            <OccupancyListComponent
-                occupancyData={occupancyData}
-                flexEmployeeId={flexEmployeeId}
-                formattedToday={formattedToday}
-                historyStartDate={historyStartDate}
-                error={errors.history}
-            />
-            <AssignmentsListComponent
-                error={errors.assignments}
-                assignments={assignments}
-                employeeNumber={employee.employeeNumber}
-                assignmentsMetrics={assignmentsMetrics}
-            />
-        </div>
+        <EmployeePageComponent
+            detailsTab={
+                <>
+                    <div className="mb-6">
+                        <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
+                    </div>
+                    <OccupancyStatsComponent stats={stats} error={errors.stats} />
+                </>
+            }
+            occupancyTab={
+                <>
+                    <OccupancyListComponent
+                        occupancyData={occupancyData}
+                        flexEmployeeId={flexEmployeeId}
+                        formattedToday={formattedToday}
+                        historyStartDate={historyStartDate}
+                        error={errors.history}
+                    />
+                </>
+            }
+            assignmentsTab={
+                <AssignmentsListComponent
+                    error={errors.assignments}
+                    assignments={assignments}
+                    employeeNumber={employee?.employeeNumber}
+                    assignmentsMetrics={assignmentsMetrics}
+                />
+            }
+        />
     );
 };
 
