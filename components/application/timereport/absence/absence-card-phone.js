@@ -130,10 +130,10 @@ export function AbsenceCardPhoneComponent({ employmentNumber, employeeName }) {
                                 className="w-full"
                             >
                                 <TabsList className="w-full">
-                                    <TabsTrigger value="new-request" className="flex-1">
+                                    <TabsTrigger value="new-request" className="flex-1 hover:cursor-pointer">
                                         New Request
                                     </TabsTrigger>
-                                    <TabsTrigger value="requested" className="flex-1">
+                                    <TabsTrigger value="requested" className="flex-1 hover:cursor-pointer">
                                         Requested
                                     </TabsTrigger>
                                 </TabsList>
