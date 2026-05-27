@@ -3,7 +3,7 @@
 import { queryData, queryCachedData } from './salesforce-service';
 import {
     getAssignmentsByEmployeeNumberQuery,
-    getAssignmentByIdQuery,
+    getAssignmentByIdAndEmployeeNumberQuery,
     getAssignmentTimecardsQuery,
     getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
@@ -63,9 +63,9 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
     }
 }
 
-export async function getAssignmentById(assignmentId, employeeNumber) {
+export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeNumber) {
     try {
-        const results = await queryData(getAssignmentByIdQuery(assignmentId, employeeNumber));
+        const results = await queryData(getAssignmentByIdAndEmployeeNumberQuery(assignmentId, employeeNumber));
 
         if (results?.length === 0) {
             return null;

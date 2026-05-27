@@ -1,5 +1,5 @@
 import { AssignmentRecordCardComponent } from '@/components/application/assignment/assignment-record-card';
-import { getAssignmentById } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentByIdAndEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
 import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { groupTimereportsByMonth } from '@/lib/utils';
 import { auth } from '@/auth';
@@ -16,7 +16,7 @@ const AssignmentPage = async ({ params }) => {
     let error = null;
 
     try {
-        assignment = await getAssignmentById(assignmentId, user?.employeeNumber);
+        assignment = await getAssignmentByIdAndEmployeeNumber(assignmentId, user?.employeeNumber);
         const weeklyTimereports = await getAssignmentTimereportsByProjectId(
             user?.flexEmployeeId,
             assignment?.flexId,
