@@ -3,6 +3,7 @@ import { getAssignmentByIdAndEmployeeNumber } from '@/actions/salesforce/salesfo
 import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { groupTimereportsByMonth } from '@/lib/utils';
 import { auth } from '@/auth';
+import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 const AssignmentPage = async ({ params }) => {
     const { assignmentId } = await params;
@@ -38,6 +39,7 @@ const AssignmentPage = async ({ params }) => {
             assignment={assignment}
             timecardHours={timecardHours}
             actualHours={actualHours}
+            timecardsRoute={`${ASSIGNMENTS_ROUTE}`}
         />
     );
 };

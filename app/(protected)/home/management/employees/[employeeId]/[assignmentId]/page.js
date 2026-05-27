@@ -5,6 +5,7 @@ import {
 } from '@/actions/salesforce/salesforce-actions';
 import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { groupTimereportsByMonth } from '@/lib/utils';
+import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 
 const EmployeeAssignmentPage = async ({ params }) => {
     const { employeeId, assignmentId } = await params;
@@ -46,6 +47,7 @@ const EmployeeAssignmentPage = async ({ params }) => {
             assignment={assignment}
             timecardHours={timecardHours}
             actualHours={actualHours}
+            timecardsRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}`}
         />
     );
 };

@@ -19,6 +19,7 @@ import { EmployeeRecordCardComponent } from '@/components/application/management
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
+import { NoDataComponent } from '@/components/errors/no-data';
 
 const EmployeePage = async ({ params }) => {
     const { employeeId } = await params;
@@ -47,6 +48,10 @@ const EmployeePage = async ({ params }) => {
         assignmentsMetrics = await getAssignmentsMetrics(employee.employeeId);
     } catch (err) {
         errors.employee = err;
+    }
+
+    if (!employee) {
+        return <NoDataComponent text="Employee not found" />;
     }
 
     const currentFY = getCurrentFiscalYear();

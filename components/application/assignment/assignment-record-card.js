@@ -10,7 +10,13 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { AssignmentTimecardsDatatable } from '@/components/application/assignment/assignment-timecards-datatable';
 
-export function AssignmentRecordCardComponent({ assignment, timecardHours, actualHours, error }) {
+export function AssignmentRecordCardComponent({
+    assignment,
+    timecardHours,
+    actualHours,
+    error,
+    timecardsRoute
+}) {
     const isMobile = useIsMobile();
 
     if (!assignment) {
@@ -73,7 +79,7 @@ export function AssignmentRecordCardComponent({ assignment, timecardHours, actua
                     {/* Link to Timecards */}
                     {actualHours > 0 && (
                         <Link
-                            href={`/home/assignments/${assignment.id}/timecards`}
+                            href={`${timecardsRoute}/${assignment.id}/timecards`}
                             className="block w-full"
                         >
                             <Card className="transition-colors hover:bg-muted/50">
