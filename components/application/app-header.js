@@ -18,26 +18,21 @@ export async function AppHeaderComponent({ location }) {
     return (
         <>
             <ImpersonationBannerComponent />
-            <header className="bg-sidebar flex h-16 shrink-0 items-center justify-between px-4 sticky top-0 z-40">
-                {/* Left section with sidebar trigger and breadcrumbs */}
-                <div className="flex items-center gap-4 min-w-fit">
-                    <SidebarTrigger className="-ml-1 hover:bg-accent/50 rounded-lg transition-colors" />
-                    <div className="hidden md:block whitespace-nowrap">
+            <header className="bg-sidebar grid h-16 w-full max-w-full shrink-0 grid-cols-[minmax(0,1fr)_minmax(12rem,36rem)_auto] items-center gap-x-4 overflow-hidden px-4 sticky top-0 z-40">
+                <div className="flex min-w-0 items-center gap-4 overflow-hidden">
+                    <SidebarTrigger className="-ml-1 shrink-0 hover:bg-accent/50 rounded-lg transition-colors" />
+                    <div className="hidden min-w-0 flex-1 md:block">
                         <DynamicBreadcrumbComponent />
                     </div>
                 </div>
 
-                {/* Center section with search */}
-                {/* {isHomePage && ( */}
-                    <div className="flex-1 flex justify-center px-4">
-                        <div className="w-full max-w-xl">
-                            <GlobalSearch user={user} location={location} />
-                        </div>
+                <div className="flex min-w-0 justify-center px-4">
+                    <div className="w-full max-w-xl">
+                        <GlobalSearch user={user} location={location} />
                     </div>
-                {/* )} */}
+                </div>
 
-                {/* Right section with icons */}
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center justify-self-end gap-2">
                     {user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && isHomePage && (
                         <SetupButtonComponent />
                     )}
