@@ -87,7 +87,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
         <header
             ref={headerRef}
             className={cn(
-                'bg-sidebar sticky top-0 z-40 flex h-16 w-full max-w-full shrink-0 items-center overflow-hidden px-4',
+                'bg-sidebar sticky top-0 z-50 flex h-16 w-full max-w-full shrink-0 items-center px-4',
                 searchOnRight ? 'gap-4' : 'relative gap-4'
             )}
         >
@@ -107,11 +107,11 @@ export function AppHeaderBar({ user, location, showSetup }) {
 
             {searchOnRight ? (
                 <>
-                    <div className="relative z-10 shrink-0">{search}</div>
+                    <div className="relative z-20 shrink-0">{search}</div>
                     <div className="min-w-0 flex-1" aria-hidden="true" />
                 </>
             ) : (
-                <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
+                <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
                     <div className="pointer-events-auto">{search}</div>
                 </div>
             )}
