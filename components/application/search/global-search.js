@@ -118,14 +118,14 @@ export function GlobalSearch({ user, location }) {
     };
 
     return (
-        <div ref={containerRef} className="relative w-full max-w-[600px] md:w-[400px]">
+        <div ref={containerRef} className="relative w-full">
             <div className="relative w-full">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                     ref={searchRef}
                     value={searchValue}
                     placeholder="Search for records"
-                    className="pl-9 pr-8 text-base md:text-sm border-transparent rounded-full h-9 focus-visible:ring-0 focus-visible:border-border transition-[border-color] duration-300 ease-in-out"
+                    className="pl-9 pr-8 text-base md:text-sm border-transparent rounded-full h-9 focus-visible:ring-0 focus-visible:border-border"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
                     onBlur={() => {
@@ -142,7 +142,7 @@ export function GlobalSearch({ user, location }) {
                 )}
             </div>
             {open && (loading || results) && (
-                <div className="absolute top-full left-0 w-[calc(100%+7.5rem)] -translate-x-8 sm:translate-x-0 sm:w-fit min-w-full max-w-[600px] mt-2 p-2 sm:p-4 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+                <div className="absolute top-full left-0 z-50 mt-2 w-full min-w-full max-w-sm p-2 bg-popover text-popover-foreground rounded-md border shadow-md sm:max-w-md sm:p-4">
                     <div className="w-full overflow-hidden text-ellipsis sm:w-max sm:min-w-full">
                         {loading && (
                             <div className="flex justify-center p-4">
