@@ -11,10 +11,14 @@ import {
 import { AssignmentCardPhoneComponent } from '@/components/application/assignment/phone/assignment-card-phone';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
-export function AssignmentsListPhoneComponent({ assignments, error, projectViews }) {
+export function AssignmentsListPhoneComponent({
+    assignments,
+    error,
+    projectViews,
+    assignmentRoute,
+}) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
@@ -33,7 +37,7 @@ export function AssignmentsListPhoneComponent({ assignments, error, projectViews
     };
 
     const handleAssignmentClick = (id) => {
-        router.push(`${ASSIGNMENTS_ROUTE}/${id}`);
+        router.push(`${assignmentRoute}/${id}`);
     };
 
     // Filter assignments based on search and view

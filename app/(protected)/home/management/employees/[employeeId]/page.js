@@ -18,6 +18,7 @@ import {
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
+import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 
 const EmployeePage = async ({ params }) => {
     const { employeeId } = await params;
@@ -43,7 +44,7 @@ const EmployeePage = async ({ params }) => {
         employee = await getEmployeeById(employeeId);
         flexEmployeeId = employee.flexId;
         assignments = await getAssignmentsByEmployeeNumber(employee.employeeId);
-        assignmentsMetrics = await getAssignmentsMetrics(employee.employeeNumber);
+        assignmentsMetrics = await getAssignmentsMetrics(employee.employeeId);
     } catch (err) {
         errors.employee = err;
     }
@@ -95,8 +96,9 @@ const EmployeePage = async ({ params }) => {
                 <AssignmentsListComponent
                     error={errors.assignments}
                     assignments={assignments}
-                    employeeNumber={employee?.employeeNumber}
+                    employeeNumber={employee?.employeeId}
                     assignmentsMetrics={assignmentsMetrics}
+                    assignmentRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}`}
                 />
             }
         />

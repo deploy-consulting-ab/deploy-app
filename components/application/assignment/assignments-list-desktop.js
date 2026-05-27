@@ -17,13 +17,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
-import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 export function AssignmentsListDesktopComponent({
     assignments,
     employeeNumber,
     error: initialError,
     projectViews,
+    assignmentRoute,
 }) {
     const searchParams = useSearchParams();
 
@@ -110,7 +110,7 @@ export function AssignmentsListDesktopComponent({
 
                 return (
                     <Link
-                        href={`${ASSIGNMENTS_ROUTE}/${id}`}
+                        href={`${assignmentRoute}/${id}`}
                         className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
                         title={row.getValue('name')}
                     >

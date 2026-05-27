@@ -3,12 +3,14 @@
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AssignmentsListPhoneComponent } from '@/components/application/assignment/phone/assignments-list-phone';
 import { AssignmentsListDesktopComponent } from '@/components/application/assignment/assignments-list-desktop';
+import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 export function AssignmentsListComponent({
     assignments,
     employeeNumber,
     error,
     assignmentsMetrics,
+    assignmentRoute = ASSIGNMENTS_ROUTE,
 }) {
     const isMobile = useIsMobile();
 
@@ -26,6 +28,7 @@ export function AssignmentsListComponent({
                 employeeNumber={employeeNumber}
                 error={error}
                 projectViews={projectViews}
+                assignmentRoute={assignmentRoute}
             />
         );
     }
@@ -37,6 +40,7 @@ export function AssignmentsListComponent({
             error={error}
             projectViews={projectViews}
             assignmentsMetrics={assignmentsMetrics}
+            assignmentRoute={assignmentRoute}
         />
     );
 }
