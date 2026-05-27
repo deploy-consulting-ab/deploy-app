@@ -2,11 +2,11 @@
 
 import { TimecardListComponent } from '@/components/application/assignment/timecard-list';
 import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
-import { getAssignmentByIdAndEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { getAssignmentByIdAndEmployeeNumber, getEmployeeById } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';
 
 const TimecardsPage = async ({ params }) => {
-    const { assignmentId } = await params;
+    const { employeeId, assignmentId } = await params;
 
     const session = await auth();
     const { user } = session;
@@ -15,9 +15,10 @@ const TimecardsPage = async ({ params }) => {
     let error = null;
 
     try {
-        const assignment = await getAssignmentByIdAndEmployeeNumber(assignmentId, user?.employeeNumber);
+        const employee = await getEmployeeById(employeeId);
+        const assignment = await getAssignmentByIdAndEmployeeNumber(assignmentId, employee.employeeId);
         timecards = await getAssignmentTimereportsByProjectId(
-            user?.flexEmployeeId,
+            employee?.flexId,
             assignment?.flexId,
             assignment?.startDate,
             assignment?.endDate
