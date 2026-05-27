@@ -30,6 +30,12 @@ const getAssignmentsByEmployeeNumberAndProjectNameQuery = (employeeNumber, proje
             ORDER BY StartDate__c DESC`;
 };
 
+const getAssignmentByIdQuery = (assignmentId) => {
+    return `SELECT Id, Project__r.FlexID__c, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c 
+            FROM Assignment__c 
+            WHERE Id = '${assignmentId}' LIMIT 1`;
+};
+
 const getAssignmentByIdAndEmployeeNumberQuery = (assignmentId, employeeNumber) => {
     return `SELECT Id, Project__r.FlexID__c, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, ProjectedHours__c, ActualHours__c 
             FROM Assignment__c 
@@ -182,6 +188,7 @@ const getEmployeesByNameOrEmployeeIdQuery = (query) => {
 
 export {
     getAssignmentsByEmployeeNumberQuery,
+    getAssignmentByIdQuery,
     getAssignmentByIdAndEmployeeNumberQuery,
     getAssignmentTimecardsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,

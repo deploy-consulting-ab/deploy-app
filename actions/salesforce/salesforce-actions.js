@@ -11,6 +11,7 @@ import {
     getOccupancyHistoryQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
+    getAssignmentByIdQuery,
     getOpportunityByIdQuery,
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
@@ -65,7 +66,35 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
 
 export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeNumber) {
     try {
-        const results = await queryData(getAssignmentByIdAndEmployeeNumberQuery(assignmentId, employeeNumber));
+        const results = await queryData(
+            getAssignmentByIdAndEmployeeNumberQuery(assignmentId, employeeNumber)
+        );
+
+        if (results?.length === 0) {
+            return null;
+        }
+
+        const result = results[0];
+
+        return {
+            id: result.Id,
+            name: result.Name,
+            flexId: result.Project__r.FlexID__c,
+            startDate: result.StartDate__c,
+            endDate: result.EndDate__c,
+            projectStatus: result.ProjectStatus__c,
+            projectName: result.Project__r.Name,
+            projectedHours: result.ProjectedHours__c,
+            actualHours: result.ActualHours__c,
+        };
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getAssignmentById(assignmentId) {
+    try {
+        const results = await queryData(getAssignmentByIdQuery(assignmentId));
 
         if (results?.length === 0) {
             return null;

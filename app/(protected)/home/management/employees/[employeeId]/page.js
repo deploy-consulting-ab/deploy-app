@@ -1,7 +1,14 @@
-import { getEmployeeById } from '@/actions/salesforce/salesforce-actions';
+import {
+    getEmployeeById,
+    getAssignmentsByEmployeeNumber,
+    getAssignmentsMetrics,
+} from '@/actions/salesforce/salesforce-actions';
 import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
-import { getFlexOccupancyStatsAnchored, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
+import {
+    getFlexOccupancyStatsAnchored,
+    getFlexOccupancyHistory,
+} from '@/actions/flex/flex-actions';
 import {
     formatDateToISOString,
     getUTCToday,
@@ -9,6 +16,7 @@ import {
     getFiscalYearStartDate,
 } from '@/lib/utils';
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
+import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 
 const EmployeePage = async ({ params }) => {
     const { employeeId } = await params;
@@ -16,19 +24,27 @@ const EmployeePage = async ({ params }) => {
     const formattedToday = formatDateToISOString(today);
 
     let employee = null;
+    let assignments = null;
+    let assignmentsMetrics = null;
     let flexEmployeeId = null;
     let occupancyData = [];
     let stats = null;
 
-    let employeeError = null;
-    let statsError = null;
-    let historyError = null;
+    const errors = {
+        employee: null,
+        assignments: null,
+        assignmentsMetrics: null,
+        stats: null,
+        history: null,
+    };
 
     try {
         employee = await getEmployeeById(employeeId);
         flexEmployeeId = employee.flexId;
+        assignments = await getAssignmentsByEmployeeNumber(employee.employeeId);
+        assignmentsMetrics = await getAssignmentsMetrics(employee.employeeNumber);
     } catch (err) {
-        employeeError = err;
+        errors.employee = err;
     }
 
     const currentFY = getCurrentFiscalYear();
@@ -43,30 +59,36 @@ const EmployeePage = async ({ params }) => {
         if (statsResult.status === 'fulfilled') {
             stats = statsResult.value;
         } else {
-            statsError = statsResult.reason;
+            errors.stats = statsResult.reason;
         }
 
         if (historyResult.status === 'fulfilled') {
             occupancyData = historyResult.value;
         } else {
-            historyError = historyResult.reason;
+            errors.history = historyResult.reason;
         }
     }
 
     return (
         <div className="flex flex-col">
             <div className="mb-6">
-                <EmployeeRecordCardComponent employee={employee} error={employeeError} />
+                <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
             </div>
             <div className="mb-6">
-                <OccupancyStatsComponent stats={stats} error={statsError} />
+                <OccupancyStatsComponent stats={stats} error={errors.stats} />
             </div>
             <OccupancyListComponent
                 occupancyData={occupancyData}
                 flexEmployeeId={flexEmployeeId}
                 formattedToday={formattedToday}
                 historyStartDate={historyStartDate}
-                error={historyError}
+                error={errors.history}
+            />
+            <AssignmentsListComponent
+                error={errors.assignments}
+                assignments={assignments}
+                employeeNumber={employee.employeeNumber}
+                assignmentsMetrics={assignmentsMetrics}
             />
         </div>
     );
