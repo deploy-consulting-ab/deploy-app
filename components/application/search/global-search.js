@@ -125,7 +125,7 @@ export function GlobalSearch({ user, location }) {
                     ref={searchRef}
                     value={searchValue}
                     placeholder="Search for records"
-                    className="pl-9 pr-8 text-base md:text-sm border-transparent rounded-full h-9 focus-visible:ring-0 focus-visible:border-border"
+                    className="pl-9 pr-8 text-base md:text-sm border-border md:border-transparent rounded-full h-9 focus-visible:ring-0 focus-visible:border-border"
                     onChange={handleSearch}
                     onFocus={() => setOpen(true)}
                     onBlur={() => {

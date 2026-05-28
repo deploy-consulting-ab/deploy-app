@@ -107,7 +107,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
 
             <div
                 className={cn(
-                    'flex min-w-0 justify-center px-4',
+                    'flex min-w-0 justify-center',
                     searchOnRight
                         ? 'md:relative md:z-20 md:shrink-0 md:px-0'
                         : 'md:pointer-events-none md:absolute md:left-1/2 md:top-1/2 md:z-20 md:-translate-x-1/2 md:-translate-y-1/2 md:px-0'
