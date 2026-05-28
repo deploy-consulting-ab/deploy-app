@@ -78,7 +78,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
     }, [updateSearchPlacement, showSetup]);
 
     const search = (
-        <div style={{ width: SEARCH_WIDTH_PX }}>
+        <div className="w-full max-w-xl md:max-w-none md:w-[400px]">
             <GlobalSearch user={user} location={location} />
         </div>
     );
@@ -87,11 +87,11 @@ export function AppHeaderBar({ user, location, showSetup }) {
         <header
             ref={headerRef}
             className={cn(
-                'bg-sidebar sticky top-0 z-50 flex h-16 w-full max-w-full shrink-0 items-center px-4',
-                searchOnRight ? 'gap-4' : 'relative gap-4'
+                'bg-sidebar sticky top-0 z-50 grid h-16 w-full max-w-full shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 overflow-hidden px-4 md:overflow-visible md:flex md:grid-cols-none',
+                searchOnRight ? 'md:gap-4' : 'md:relative md:gap-4'
             )}
         >
-            <div className="flex min-w-0 shrink items-center gap-4 overflow-hidden">
+            <div className="relative z-10 flex min-w-fit shrink-0 items-center gap-4">
                 <SidebarTrigger className="-ml-1 shrink-0 hover:bg-accent/50 rounded-lg transition-colors" />
                 <div className="hidden min-w-0 overflow-hidden md:block">
                     <DynamicBreadcrumbComponent
@@ -105,22 +105,26 @@ export function AppHeaderBar({ user, location, showSetup }) {
                 </div>
             </div>
 
-            {searchOnRight ? (
-                <>
-                    <div className="relative z-20 shrink-0">{search}</div>
-                    <div className="min-w-0 flex-1" aria-hidden="true" />
-                </>
-            ) : (
-                <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-                    <div className="pointer-events-auto">{search}</div>
-                </div>
+            <div
+                className={cn(
+                    'flex min-w-0 justify-center px-4',
+                    searchOnRight
+                        ? 'md:relative md:z-20 md:shrink-0 md:px-0'
+                        : 'md:pointer-events-none md:absolute md:left-1/2 md:top-1/2 md:z-20 md:-translate-x-1/2 md:-translate-y-1/2 md:px-0'
+                )}
+            >
+                <div className="pointer-events-auto w-full">{search}</div>
+            </div>
+
+            {searchOnRight && (
+                <div className="hidden min-w-0 flex-1 md:block" aria-hidden="true" />
             )}
 
             <div
                 ref={iconsRef}
                 className={cn(
-                    'relative z-10 flex shrink-0 items-center gap-2',
-                    !searchOnRight && 'ml-auto'
+                    'relative z-10 flex shrink-0 items-center justify-self-end gap-2 md:justify-self-auto',
+                    !searchOnRight && 'md:ml-auto'
                 )}
             >
                 {showSetup && <SetupButtonComponent />}
