@@ -87,7 +87,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
         <header
             ref={headerRef}
             className={cn(
-                'bg-sidebar sticky top-0 z-50 grid h-16 w-full max-w-full shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 overflow-hidden px-4 md:overflow-visible md:flex md:grid-cols-none',
+                'bg-sidebar sticky top-0 z-50 grid h-16 w-full max-w-full shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 px-4 md:overflow-visible md:flex md:grid-cols-none',
                 searchOnRight ? 'md:gap-4' : 'md:relative md:gap-4'
             )}
         >
