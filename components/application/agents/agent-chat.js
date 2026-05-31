@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
-import { Bot, Send, User, Loader2 } from 'lucide-react';
+import { Bot, Loader2, Send, SquarePen, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -163,8 +163,15 @@ function WelcomeScreen({ onPromptClick }) {
     );
 }
 
+function createChatId() {
+    return crypto.randomUUID();
+}
+
 export function AgentChatComponent() {
-    const { messages, sendMessage, status, error } = useChat({
+    const [chatId, setChatId] = useState(createChatId);
+
+    const { messages, sendMessage, status, error, stop, clearError } = useChat({
+        id: chatId,
         transport: new DefaultChatTransport({
             api: '/api/agent',
         }),
@@ -212,8 +219,32 @@ export function AgentChatComponent() {
         [submit]
     );
 
+    const startNewChat = useCallback(() => {
+        stop();
+        clearError();
+        setInput('');
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
+        setChatId(createChatId());
+    }, [stop, clearError]);
+
     return (
         <div className="flex flex-col h-[calc(100vh-7rem)] max-w-5xl mx-auto overflow-y-auto">
+            {hasMessages && (
+                <div className="sticky top-0 z-10 flex justify-end px-1 md:px-6 pt-2 pb-1 bg-background/95 backdrop-blur-sm">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={startNewChat}
+                        className="gap-1.5 rounded-xl hover:cursor-pointer"
+                    >
+                        <SquarePen className="w-3.5 h-3.5" />
+                        New chat
+                    </Button>
+                </div>
+            )}
             <div className="flex-1 md:px-6">
                 {!hasMessages ? (
                     <WelcomeScreen
