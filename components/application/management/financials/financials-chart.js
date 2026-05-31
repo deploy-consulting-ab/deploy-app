@@ -10,8 +10,9 @@ import {
     ChartLegend,
     ChartLegendContent,
 } from '@/components/ui/chart';
-import { formatSEK, formatSEKCompact } from '@/lib/utils';
+import { formatSEK, formatSEKCompact, buildQuarterComparisonSeries } from '@/lib/utils';
 import { NoDataComponent } from '@/components/errors/no-data';
+import { QUARTER_LABELS } from './financials-constants';
 
 function useTouchToMouseEvents() {
     const ref = useRef(null);
@@ -46,14 +47,6 @@ const CHART_CONFIG = {
     cost: { label: 'Cost', color: '#ef4444' },
     profit: { label: 'Profit', color: '#22c55e' },
     taxes: { label: 'Taxes', color: '#fddA0d' },
-};
-
-const QUARTER_LABELS = {
-    0: 'Total Year',
-    1: 'Q1',
-    2: 'Q2',
-    3: 'Q3',
-    4: 'Q4',
 };
 
 /**
@@ -155,6 +148,126 @@ export function FinancialsBarChartComponent({ records, fiscalYear, compact = fal
                                     maxBarSize={80}
                                 />
                             </BarChart>
+                        </ChartContainer>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+}
+
+/**
+ * Line chart: Revenue / Cost / Profit / Taxes for one quarter across fiscal years.
+ */
+export function FinancialsQuarterComparisonChartComponent({ records, quarter, compact = false }) {
+    const quarterLabel = QUARTER_LABELS[quarter] ?? `Q${quarter}`;
+    const series = buildQuarterComparisonSeries(records, quarter).map((r) => ({
+        fy: r.fyLabel,
+        revenue: r.revenue,
+        cost: r.cost,
+        profit: r.profit,
+        taxes: r.taxes,
+    }));
+
+    const { ref, handleTouchMove, handleTouchEnd } = useTouchToMouseEvents();
+    const yTickFormatter = compact ? formatSEKCompact : formatSEK;
+    const yWidth = compact ? 68 : 90;
+
+    return (
+        <Card variant="shadow">
+            <CardHeader>
+                <CardTitle>{quarterLabel} Year-over-Year</CardTitle>
+                <CardDescription>
+                    {quarterLabel} Revenue, Cost, Profit and Taxes across fiscal years
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                {series.length === 0 ? (
+                    <div className="flex items-center justify-center h-48">
+                        <NoDataComponent text={`No ${quarterLabel} records available yet`} />
+                    </div>
+                ) : (
+                    <div ref={ref} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+                        <ChartContainer config={CHART_CONFIG} className="w-full h-72">
+                            <LineChart
+                                data={series}
+                                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                            >
+                                <CartesianGrid
+                                    vertical={false}
+                                    strokeDasharray="3 3"
+                                    className="stroke-border/50"
+                                />
+                                <XAxis
+                                    dataKey="fy"
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickMargin={8}
+                                />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={yTickFormatter}
+                                    width={yWidth}
+                                />
+                                <ChartTooltip
+                                    className="text-sm"
+                                    cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1 }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value, name, item) => (
+                                                <>
+                                                    <span
+                                                        className="inline-block h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                                                        style={{ backgroundColor: item.color }}
+                                                    />
+                                                    <div className="flex flex-1 justify-between leading-none items-center">
+                                                        <span className="text-muted-foreground">
+                                                            {CHART_CONFIG[name]?.label || name}
+                                                        </span>
+                                                        <span className="font-mono font-medium tabular-nums ml-2">
+                                                            {formatSEK(value)}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            )}
+                                        />
+                                    }
+                                />
+                                <ChartLegend content={<ChartLegendContent />} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="var(--color-revenue)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="cost"
+                                    stroke="var(--color-cost)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="profit"
+                                    stroke="var(--color-profit)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="taxes"
+                                    stroke="var(--color-taxes)"
+                                    strokeWidth={2}
+                                    dot={{ r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
                         </ChartContainer>
                     </div>
                 )}

@@ -29,7 +29,9 @@ import { FinancialsFormComponent } from '@/components/application/management/fin
 import {
     FinancialsBarChartComponent,
     FinancialsLineChartComponent,
+    FinancialsQuarterComparisonChartComponent,
 } from '@/components/application/management/financials/financials-chart';
+import { FinancialMetricCell } from '@/components/application/management/financials/financial-yoy-badge';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     getFinancialsAction,
@@ -38,7 +40,7 @@ import {
     deleteFinancialRecordAction,
 } from '@/actions/database/financials-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { formatSEK, getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears } from '@/lib/utils';
+import { formatSEK, getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears, attachYearOverYearChanges } from '@/lib/utils';
 import { QUARTER_LABELS, QUARTER_FILTER_OPTIONS } from './financials-constants';
 
 export function FinancialsListDesktopComponent({
@@ -105,8 +107,14 @@ export function FinancialsListDesktopComponent({
     };
 
     const fyNum = parseInt(selectedFY, 10);
+    const isQuarterComparison = ['1', '2', '3', '4'].includes(selectedQuarter);
+    const comparisonQuarter = isQuarterComparison ? parseInt(selectedQuarter, 10) : null;
 
     const filteredRecords = (() => {
+        if (isQuarterComparison) {
+            return attachYearOverYearChanges(records, comparisonQuarter);
+        }
+
         let base = records.filter((r) => r.fiscalYear === fyNum);
 
         if (selectedQuarter !== 'all') {
@@ -130,6 +138,20 @@ export function FinancialsListDesktopComponent({
         };
         return rows.sort((a, b) => sortKey(a.quarter) - sortKey(b.quarter));
     })();
+
+    const renderMetricCell = (row, key, invertColors = false) => {
+        const value = row.getValue(key);
+        if (isQuarterComparison && row.original._yoy) {
+            return (
+                <FinancialMetricCell
+                    value={value}
+                    yoyPercent={row.original._yoy[key]}
+                    invertColors={invertColors}
+                />
+            );
+        }
+        return <div className="tabular-nums text-foreground/80">{formatSEK(value)}</div>;
+    };
 
     const columns = [
         {
@@ -197,11 +219,7 @@ export function FinancialsListDesktopComponent({
                     <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
-            cell: ({ row }) => (
-                <div className="tabular-nums text-foreground/80">
-                    {formatSEK(row.getValue('revenue'))}
-                </div>
-            ),
+            cell: ({ row }) => renderMetricCell(row, 'revenue'),
         },
         {
             accessorKey: 'cost',
@@ -218,11 +236,7 @@ export function FinancialsListDesktopComponent({
                     <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
-            cell: ({ row }) => (
-                <div className="tabular-nums text-foreground/80">
-                    {formatSEK(row.getValue('cost'))}
-                </div>
-            ),
+            cell: ({ row }) => renderMetricCell(row, 'cost', true),
         },
         {
             accessorKey: 'profit',
@@ -239,11 +253,7 @@ export function FinancialsListDesktopComponent({
                     <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
-            cell: ({ row }) => (
-                <div className="tabular-nums text-foreground/80">
-                    {formatSEK(row.getValue('profit'))}
-                </div>
-            ),
+            cell: ({ row }) => renderMetricCell(row, 'profit'),
         },
         {
             accessorKey: 'taxes',
@@ -260,11 +270,7 @@ export function FinancialsListDesktopComponent({
                     <ArrowUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50" />
                 </Button>
             ),
-            cell: ({ row }) => (
-                <div className="tabular-nums text-foreground/80">
-                    {formatSEK(row.getValue('taxes'))}
-                </div>
-            ),
+            cell: ({ row }) => renderMetricCell(row, 'taxes', true),
         },
         ...(canManage
             ? [
@@ -304,7 +310,7 @@ export function FinancialsListDesktopComponent({
                   },
               ]
             : []),
-    ];
+    ].filter((col) => !(isQuarterComparison && col.accessorKey === 'quarter'));
 
     const fyOptions = (() => {
         const all = [...availableFYs];
@@ -405,7 +411,14 @@ export function FinancialsListDesktopComponent({
 
             <div className="grid grid-cols-2 gap-6">
                 <FinancialsBarChartComponent records={records} fiscalYear={fyNum} />
-                <FinancialsLineChartComponent records={records} />
+                {isQuarterComparison ? (
+                    <FinancialsQuarterComparisonChartComponent
+                        records={records}
+                        quarter={comparisonQuarter}
+                    />
+                ) : (
+                    <FinancialsLineChartComponent records={records} />
+                )}
             </div>
 
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

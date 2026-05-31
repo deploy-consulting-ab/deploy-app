@@ -1,5 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { formatSEK } from '@/lib/utils';
+import { FinancialMetricCell } from '@/components/application/management/financials/financial-yoy-badge';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +21,21 @@ export function FinancialCardPhoneComponent({ record, canManage, openEditDialog,
 
     const quarterLabel =
     record.quarter === -1 ? 'Total Year' : QUARTER_LABELS[record.quarter];
+    const yoy = record._yoy;
+
+    const renderMetric = (key, invertColors = false) => {
+        if (yoy) {
+            return (
+                <FinancialMetricCell
+                    value={record[key]}
+                    yoyPercent={yoy[key]}
+                    invertColors={invertColors}
+                />
+            );
+        }
+        return <p className="font-medium tabular-nums text-sm">{formatSEK(record[key])}</p>;
+    };
+
     return (
         <Card key={record.id} className={record._isComputed ? 'bg-muted/80 dark:bg-muted' : ''}>
             <CardContent>
@@ -64,31 +80,25 @@ export function FinancialCardPhoneComponent({ record, canManage, openEditDialog,
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Revenue
                         </p>
-                        <p className="font-medium tabular-nums text-sm">
-                            {formatSEK(record.revenue)}
-                        </p>
+                        {renderMetric('revenue')}
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Cost
                         </p>
-                        <p className="font-medium tabular-nums text-sm">{formatSEK(record.cost)}</p>
+                        {renderMetric('cost', true)}
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Profit
                         </p>
-                        <p className="font-medium tabular-nums text-sm">
-                            {formatSEK(record.profit)}
-                        </p>
+                        {renderMetric('profit')}
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                             Taxes
                         </p>
-                        <p className="font-medium tabular-nums text-sm">
-                            {formatSEK(record.taxes)}
-                        </p>
+                        {renderMetric('taxes', true)}
                     </div>
                 </div>
             </CardContent>
