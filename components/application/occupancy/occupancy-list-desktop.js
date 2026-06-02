@@ -10,7 +10,6 @@ import { getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { OccupancyDynamicAverageComponent } from '@/components/application/occupancy/occupancy-dynamic-average';
 import { getCurrentFiscalYear, getFiscalYearStartDate, formatDateToISOString } from '@/lib/utils';
-import { getOccupancyPeriodRoute } from '@/menus/routes';
 import Link from 'next/link';
 
 function OccupancyBadge({ rate }) {
@@ -86,7 +85,6 @@ export function OccupancyListDesktopComponent({
                 );
             },
             cell: ({ row }) => (
-
                 <Link
                     href={`${statsRoute}/${row.original.date}`}
                     className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"

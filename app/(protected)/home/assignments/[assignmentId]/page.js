@@ -5,7 +5,7 @@ import { groupTimereportsByMonth } from '@/lib/utils';
 import { auth } from '@/auth';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
-const AssignmentPage = async ({ params }) => {
+export default async function AssignmentPage({ params }) {
     const { assignmentId } = await params;
 
     const session = await auth();
@@ -42,6 +42,4 @@ const AssignmentPage = async ({ params }) => {
             timecardsRoute={`${ASSIGNMENTS_ROUTE}`}
         />
     );
-};
-
-export default AssignmentPage;
+}
