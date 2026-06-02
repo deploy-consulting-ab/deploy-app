@@ -37,6 +37,7 @@ export const HOLIDAYS_ROUTE = `${HOME_ROUTE}/holidays`;
 export const OCCUPANCY_ROUTE = `${HOME_ROUTE}/occupancy`;
 export const OCCUPANCY_CHART_ROUTE = `${OCCUPANCY_ROUTE}/chart`;
 export const OCCUPANCY_STATS_ROUTE = `${OCCUPANCY_ROUTE}/stats`;
+export const getOccupancyPeriodRoute = (period) => `${OCCUPANCY_STATS_ROUTE}/${period}`;
 export const ASSIGNMENTS_ROUTE = `${HOME_ROUTE}/assignments`;
 export const OPPORTUNITIES_ROUTE = `${HOME_ROUTE}/opportunities`;
 export const TIMEREPORT_ROUTE = `${HOME_ROUTE}/timereport`;

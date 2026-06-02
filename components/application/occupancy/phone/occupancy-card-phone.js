@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
+import { getOccupancyPeriodRoute } from '@/menus/routes';
 
 function OccupancyBadge({ rate }) {
     const level = getOccupancyLevel(rate);
@@ -26,7 +28,8 @@ function formatHours(hours) {
 
 export function OccupancyCardPhoneComponent({ occupancy }) {
     return (
-        <Card className="w-full mb-4">
+        <Link href={getOccupancyPeriodRoute(occupancy.date)} className="block">
+        <Card className="w-full mb-4 hover:bg-accent/30 transition-colors cursor-pointer">
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                     <CardTitle className="text-lg font-semibold">{occupancy.period}</CardTitle>
@@ -64,5 +67,6 @@ export function OccupancyCardPhoneComponent({ occupancy }) {
                 </div>
             </CardContent>
         </Card>
+        </Link>
     );
 }
