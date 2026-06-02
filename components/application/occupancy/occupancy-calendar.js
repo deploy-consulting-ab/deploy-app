@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { formatDateToISOString, isWeekend } from '@/lib/utils';
 import { SWEDISH_BANK_HOLIDAYS } from '@/actions/flex/constants';
 import { cn } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -50,6 +51,23 @@ function formatHoursDisplay(hours) {
 function formatPeriodTitle(dateStr) {
     const d = new Date(dateStr + 'T00:00:00Z');
     return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+
+function formatDayTitle(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    return d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
+    });
+}
+
+function getEntryTypeLabel(row) {
+    if (!row.isWorkingTime) return 'Time off';
+    if (row.color === '#6b7280') return 'Internal';
+    return 'External';
 }
 
 function EntryPill({ row }) {
@@ -99,21 +117,104 @@ function LegendDot({ color, label }) {
     );
 }
 
-function DayCell({ dateStr, entries, isCurrentMonth, today }) {
+function DayDetailModal({ selectedDay, onClose }) {
+    const totalHours = selectedDay?.entries.reduce((sum, row) => sum + (row.hours || 0), 0) ?? 0;
+
+    return (
+        <Dialog open={Boolean(selectedDay)} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                    <DialogTitle>
+                        {selectedDay ? formatDayTitle(selectedDay.dateStr) : 'Day details'}
+                    </DialogTitle>
+                </DialogHeader>
+
+                {selectedDay && (
+                    <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                            {totalHours > 0
+                                ? `${formatHoursDisplay(totalHours)} reported`
+                                : 'No hours reported on this day'}
+                        </p>
+
+                        {selectedDay.entries.length > 0 ? (
+                            <ul className="space-y-3">
+                                {selectedDay.entries.map((row, index) => {
+                                    const color = normalizeColor(row.color);
+
+                                    return (
+                                        <li
+                                            key={`${row.projectId}-${index}`}
+                                            className="flex items-start justify-between gap-4 rounded-lg border border-border/60 px-4 py-3"
+                                        >
+                                            <div className="min-w-0 space-y-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span
+                                                        className="size-2.5 shrink-0 rounded-full"
+                                                        style={{ backgroundColor: color }}
+                                                    />
+                                                    <p className="font-medium leading-snug">
+                                                        {row.projectName}
+                                                    </p>
+                                                </div>
+                                                {row.projectCode && (
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {row.projectCode}
+                                                    </p>
+                                                )}
+                                                <p className="text-xs text-muted-foreground">
+                                                    {getEntryTypeLabel(row)}
+                                                </p>
+                                            </div>
+                                            <span className="shrink-0 font-mono text-sm font-medium">
+                                                {formatHoursDisplay(row.hours)}
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">
+                                No projects or absences were recorded for this day.
+                            </p>
+                        )}
+                    </div>
+                )}
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function DayCell({ dateStr, entries, isCurrentMonth, today, onSelect }) {
     const isToday = dateStr === today;
     const isWeekendDay = isWeekend(dateStr);
     const isBankHoliday = SWEDISH_BANK_HOLIDAYS.has(dateStr);
     const dayNumber = parseInt(dateStr.split('-')[2], 10);
     const totalHours = entries.reduce((sum, row) => sum + (row.hours || 0), 0);
+    const isClickable = isCurrentMonth && entries.length > 0;
 
     return (
         <div
+            role={isClickable ? 'button' : undefined}
+            tabIndex={isClickable ? 0 : undefined}
+            onClick={isClickable ? () => onSelect(dateStr, entries) : undefined}
+            onKeyDown={
+                isClickable
+                    ? (event) => {
+                          if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              onSelect(dateStr, entries);
+                          }
+                      }
+                    : undefined
+            }
             className={cn(
                 'min-h-[100px] p-2 flex flex-col gap-1.5 border-b border-r border-border/40 relative overflow-hidden',
                 !isCurrentMonth && 'opacity-20 bg-muted/10',
                 isCurrentMonth && isWeekendDay && 'bg-muted/25',
                 isCurrentMonth && isBankHoliday && 'bg-amber-50/60 dark:bg-amber-950/25',
                 isToday && 'ring-2 ring-inset ring-primary/50',
+                isClickable && 'cursor-pointer hover:bg-accent/30 transition-colors'
             )}
         >
             <div className="flex items-start justify-between gap-1">
@@ -122,7 +223,7 @@ function DayCell({ dateStr, entries, isCurrentMonth, today }) {
                         'text-sm font-semibold leading-none tabular-nums shrink-0 w-6 h-6 flex items-center justify-center rounded-full',
                         isToday
                             ? 'bg-primary text-primary-foreground text-xs'
-                            : 'text-foreground/60',
+                            : 'text-foreground/60'
                     )}
                 >
                     {dayNumber}
@@ -151,6 +252,8 @@ function DayCell({ dateStr, entries, isCurrentMonth, today }) {
 }
 
 export function OccupancyCalendarComponent({ timereports, startDate, endDate, today, error }) {
+    const [selectedDay, setSelectedDay] = useState(null);
+
     const calendarDays = useMemo(() => getCalendarDays(startDate, endDate), [startDate, endDate]);
 
     const entriesByDate = useMemo(() => {
@@ -172,7 +275,7 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
 
         if (timereports) {
             for (const entry of timereports) {
-                for (const row of (entry.timeRows || [])) {
+                for (const row of entry.timeRows || []) {
                     const hours = row.hours || 0;
                     if (row.isWorkingTime) {
                         if (row.color === '#6b7280') internal += hours;
@@ -209,6 +312,10 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
     }
 
     const title = formatPeriodTitle(startDate);
+
+    const handleDaySelect = (dateStr, entries) => {
+        setSelectedDay({ dateStr, entries });
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -252,7 +359,7 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                                 key={day}
                                 className={cn(
                                     'py-2.5 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wide border-r border-border/40 last:border-r-0',
-                                    (day === 'Sat' || day === 'Sun') && 'bg-muted/20',
+                                    (day === 'Sat' || day === 'Sun') && 'bg-muted/20'
                                 )}
                             >
                                 {day}
@@ -270,6 +377,7 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                                         entries={entriesByDate.get(dateStr) || []}
                                         isCurrentMonth={dateStr >= startDate && dateStr <= endDate}
                                         today={today}
+                                        onSelect={handleDaySelect}
                                     />
                                 ))}
                             </div>
@@ -287,6 +395,8 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                     <span>SE bank holiday</span>
                 </div>
             </div>
+
+            <DayDetailModal selectedDay={selectedDay} onClose={() => setSelectedDay(null)} />
         </div>
     );
 }
