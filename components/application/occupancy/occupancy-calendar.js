@@ -59,7 +59,7 @@ function EntryPill({ row }) {
 
     return (
         <div
-            className="flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium leading-tight max-w-full"
+            className="flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium leading-tight max-w-full"
             style={{
                 backgroundColor: `color-mix(in oklch, ${color} 15%, transparent)`,
                 color,
@@ -75,8 +75,8 @@ function EntryPill({ row }) {
 function SummaryItem({ label, value, colorClass, valueClass }) {
     return (
         <div className={cn('flex flex-col rounded-lg border px-3 py-2.5', colorClass)}>
-            <span className="text-[11px] font-medium uppercase tracking-wide opacity-60">{label}</span>
-            <span className={cn('text-xl font-bold tabular-nums', valueClass)}>
+            <span className="text-xs font-medium uppercase tracking-wide opacity-60">{label}</span>
+            <span className={cn('text-2xl font-bold tabular-nums', valueClass)}>
                 {value || '—'}
             </span>
         </div>
@@ -119,9 +119,9 @@ function DayCell({ dateStr, entries, isCurrentMonth, today }) {
             <div className="flex items-start justify-between gap-1">
                 <span
                     className={cn(
-                        'text-xs font-semibold leading-none tabular-nums shrink-0 w-5 h-5 flex items-center justify-center rounded-full',
+                        'text-sm font-semibold leading-none tabular-nums shrink-0 w-6 h-6 flex items-center justify-center rounded-full',
                         isToday
-                            ? 'bg-primary text-primary-foreground text-[10px]'
+                            ? 'bg-primary text-primary-foreground text-xs'
                             : 'text-foreground/60',
                     )}
                 >
@@ -129,12 +129,12 @@ function DayCell({ dateStr, entries, isCurrentMonth, today }) {
                 </span>
                 <div className="flex flex-col items-end gap-0.5">
                     {isBankHoliday && isCurrentMonth && (
-                        <span className="text-[9px] font-medium text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded leading-none">
+                        <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded leading-none">
                             SE Holiday
                         </span>
                     )}
                     {totalHours > 0 && (
-                        <span className="text-[10px] text-muted-foreground font-mono leading-none">
+                        <span className="text-xs text-muted-foreground font-mono leading-none">
                             {formatHoursDisplay(totalHours)}
                         </span>
                     )}
@@ -151,12 +151,6 @@ function DayCell({ dateStr, entries, isCurrentMonth, today }) {
 }
 
 export function OccupancyCalendarComponent({ timereports, startDate, endDate, today, error }) {
-    if (error) {
-        return <ErrorDisplayComponent error={error} />;
-    }
-
-    const title = formatPeriodTitle(startDate);
-
     const calendarDays = useMemo(() => getCalendarDays(startDate, endDate), [startDate, endDate]);
 
     const entriesByDate = useMemo(() => {
@@ -210,11 +204,17 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
         return result;
     }, [calendarDays]);
 
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
+    }
+
+    const title = formatPeriodTitle(startDate);
+
     return (
         <div className="flex flex-col gap-4">
             <div>
-                <h2 className="text-xl font-semibold">{title}</h2>
-                <p className="text-sm text-muted-foreground">{workingDays} working days</p>
+                <h2 className="text-2xl font-semibold">{title}</h2>
+                <p className="text-base text-muted-foreground">{workingDays} working days</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -251,7 +251,7 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                             <div
                                 key={day}
                                 className={cn(
-                                    'py-2 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wide border-r border-border/40 last:border-r-0',
+                                    'py-2.5 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wide border-r border-border/40 last:border-r-0',
                                     (day === 'Sat' || day === 'Sun') && 'bg-muted/20',
                                 )}
                             >
@@ -278,7 +278,7 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <LegendDot color={ENTRY_COLORS.external} label="External project" />
                 <LegendDot color={ENTRY_COLORS.internal} label="Internal project" />
                 <LegendDot color={ENTRY_COLORS.absence} label="Absence / time off" />
