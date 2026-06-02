@@ -7,6 +7,7 @@ import { ModeToggleComponent } from '@/components/application/mode-toggle';
 import { LogoutButtonComponent } from '@/components/application/logout-button';
 import { GlobalSearch } from '@/components/application/search/global-search';
 import { SetupButtonComponent } from '@/components/application/setup-button';
+import { MobileBackButtonComponent } from '@/components/application/mobile-back-button';
 import { cn } from '@/lib/utils';
 
 const SEARCH_WIDTH_PX = 400;
@@ -91,8 +92,9 @@ export function AppHeaderBar({ user, location, showSetup }) {
                 searchOnRight ? 'md:gap-4' : 'md:relative md:gap-4'
             )}
         >
-            <div className="relative z-10 flex min-w-fit shrink-0 items-center gap-4">
-                <SidebarTrigger className="-ml-1 shrink-0 hover:bg-accent/50 rounded-lg transition-colors" />
+            <div className="relative z-10 flex min-w-fit shrink-0 items-center gap-1 md:gap-4">
+                <MobileBackButtonComponent className="md:hidden" />
+                <SidebarTrigger className="-ml-1 shrink-0 rounded-lg transition-colors hover:bg-accent/50" />
                 <div className="hidden min-w-0 overflow-hidden md:block">
                     <DynamicBreadcrumbComponent
                         maxContainerWidth={
@@ -129,7 +131,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
             >
                 {showSetup && <SetupButtonComponent />}
                 <ModeToggleComponent />
-                <LogoutButtonComponent />
+                <LogoutButtonComponent className="hidden md:inline-flex" />
             </div>
         </header>
     );
