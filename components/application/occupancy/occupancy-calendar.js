@@ -6,8 +6,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     formatDateToISOString,
     isWeekend,
-    getAdjacentMonthStartDate,
-    getMonthStartDate,
 } from '@/lib/utils';
 import { SWEDISH_BANK_HOLIDAYS } from '@/actions/flex/constants';
 import { cn } from '@/lib/utils';
@@ -101,6 +99,13 @@ function EntryPill({ row }) {
     );
 }
 
+function getAdjacentMonthStartDate(dateStr, monthOffset) {
+    const d = new Date(dateStr + 'T00:00:00Z');
+    d.setUTCDate(1);
+    d.setUTCMonth(d.getUTCMonth() + monthOffset);
+    return formatDateToISOString(d);
+}
+
 function SummaryItem({ label, value, colorClass, valueClass }) {
     return (
         <div className={cn('flex flex-col rounded-lg border px-3 py-2.5', colorClass)}>
@@ -115,7 +120,7 @@ function SummaryItem({ label, value, colorClass, valueClass }) {
 function OccupancyMonthNavigation({ startDate, today, title }) {
     const previousMonth = getAdjacentMonthStartDate(startDate, -1);
     const nextMonth = getAdjacentMonthStartDate(startDate, 1);
-    const currentMonthStart = getMonthStartDate(today);
+    const currentMonthStart = `${today.slice(0, 7)}-01`;
     const isCurrentMonth = startDate === currentMonthStart;
 
     return (
