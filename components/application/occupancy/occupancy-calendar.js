@@ -1,13 +1,22 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { formatDateToISOString, isWeekend } from '@/lib/utils';
+import Link from 'next/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+    formatDateToISOString,
+    isWeekend,
+    getAdjacentMonthStartDate,
+    getMonthStartDate,
+} from '@/lib/utils';
 import { SWEDISH_BANK_HOLIDAYS } from '@/actions/flex/constants';
 import { cn } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { getOccupancyPeriodRoute } from '@/menus/routes';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -99,6 +108,54 @@ function SummaryItem({ label, value, colorClass, valueClass }) {
             <span className={cn('text-2xl font-bold tabular-nums', valueClass)}>
                 {value || '—'}
             </span>
+        </div>
+    );
+}
+
+function OccupancyMonthNavigation({ startDate, today, title }) {
+    const previousMonth = getAdjacentMonthStartDate(startDate, -1);
+    const nextMonth = getAdjacentMonthStartDate(startDate, 1);
+    const currentMonthStart = getMonthStartDate(today);
+    const isCurrentMonth = startDate === currentMonthStart;
+
+    return (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 justify-center sm:justify-start">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    asChild
+                    className="h-8 w-8 shrink-0 hover:cursor-pointer"
+                >
+                    <Link href={getOccupancyPeriodRoute(previousMonth)} aria-label="Previous month">
+                        <ChevronLeft className="h-4 w-4" />
+                    </Link>
+                </Button>
+
+                <h2 className="text-2xl font-semibold min-w-[160px] text-center">{title}</h2>
+
+                <Button
+                    variant="outline"
+                    size="icon"
+                    asChild
+                    className="h-8 w-8 shrink-0 hover:cursor-pointer"
+                >
+                    <Link href={getOccupancyPeriodRoute(nextMonth)} aria-label="Next month">
+                        <ChevronRight className="h-4 w-4" />
+                    </Link>
+                </Button>
+            </div>
+
+            {!isCurrentMonth && (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="text-xs w-full sm:w-auto hover:cursor-pointer"
+                >
+                    <Link href={getOccupancyPeriodRoute(currentMonthStart)}>Current month</Link>
+                </Button>
+            )}
         </div>
     );
 }
@@ -404,8 +461,8 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
     return (
         <div className="flex flex-col gap-4">
             <div>
-                <h2 className="text-2xl font-semibold">{title}</h2>
-                <p className="text-base text-muted-foreground">{workingDays} working days</p>
+                <OccupancyMonthNavigation startDate={startDate} today={today} title={title} />
+                <p className="text-base text-muted-foreground mt-1">{workingDays} working days</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
