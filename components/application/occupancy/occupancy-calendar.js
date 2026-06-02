@@ -6,6 +6,8 @@ import { SWEDISH_BANK_HOLIDAYS } from '@/actions/flex/constants';
 import { cn } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -98,6 +100,36 @@ function SummaryItem({ label, value, colorClass, valueClass }) {
                 {value || '—'}
             </span>
         </div>
+    );
+}
+
+function ProjectSummaryCard({ project }) {
+    const color = normalizeColor(project.color);
+
+    return (
+        <Card className="p-4 border-border/50">
+            <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 space-y-1">
+                    <div className="flex items-center gap-2">
+                        <span
+                            className="size-2.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: color }}
+                        />
+                        <p className="font-medium leading-snug truncate">{project.projectName}</p>
+                    </div>
+                    {project.projectCode && (
+                        <p className="text-sm text-muted-foreground truncate">{project.projectCode}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground">{getEntryTypeLabel(project)}</p>
+                </div>
+                <span
+                    className="shrink-0 text-2xl font-bold tabular-nums font-mono"
+                    style={{ color }}
+                >
+                    {formatHoursDisplay(project.hours)}
+                </span>
+            </div>
+        </Card>
     );
 }
 
@@ -310,6 +342,38 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
         return { external, internal, absence, total: external + internal + absence };
     }, [timereports]);
 
+    const projectTotals = useMemo(() => {
+        const totalsByProject = new Map();
+
+        if (!timereports) return [];
+
+        for (const entry of timereports) {
+            for (const row of entry.timeRows || []) {
+                const key = row.projectId || row.projectName;
+                const existing = totalsByProject.get(key);
+
+                if (existing) {
+                    existing.hours += row.hours || 0;
+                    continue;
+                }
+
+                totalsByProject.set(key, {
+                    projectId: row.projectId,
+                    projectName: row.projectName,
+                    projectCode: row.projectCode,
+                    color: row.color,
+                    isWorkingTime: row.isWorkingTime,
+                    hours: row.hours || 0,
+                });
+            }
+        }
+
+        return Array.from(totalsByProject.values()).sort((a, b) => {
+            if (b.hours !== a.hours) return b.hours - a.hours;
+            return (a.projectName || '').localeCompare(b.projectName || '');
+        });
+    }, [timereports]);
+
     const workingDays = useMemo(() => {
         return calendarDays.filter((d) => {
             if (d < startDate || d > endDate) return false;
@@ -371,50 +435,82 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
                 />
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-border/40">
-                <div className="min-w-[560px]">
-                    <div className="grid grid-cols-7 border-b border-border/40">
-                        {DAY_LABELS.map((day) => (
-                            <div
-                                key={day}
-                                className={cn(
-                                    'py-2.5 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wide border-r border-border/40 last:border-r-0',
-                                    (day === 'Sat' || day === 'Sun') && 'bg-muted/20'
-                                )}
-                            >
-                                {day}
-                            </div>
-                        ))}
-                    </div>
+            <Tabs defaultValue="projects" className="w-full">
+                <TabsList className="w-full">
+                    <TabsTrigger value="projects" className="flex-1 hover:cursor-pointer">
+                        Projects
+                    </TabsTrigger>
+                    <TabsTrigger value="calendar" className="flex-1 hover:cursor-pointer">
+                        Calendar
+                    </TabsTrigger>
+                </TabsList>
 
-                    <div>
-                        {weeks.map((week, wi) => (
-                            <div key={wi} className="grid grid-cols-7">
-                                {week.map((dateStr) => (
-                                    <DayCell
-                                        key={dateStr}
-                                        dateStr={dateStr}
-                                        entries={entriesByDate.get(dateStr) || []}
-                                        isCurrentMonth={dateStr >= startDate && dateStr <= endDate}
-                                        today={today}
-                                        onSelect={handleDaySelect}
-                                    />
+                <TabsContent value="projects" className="pt-4">
+                    {projectTotals.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {projectTotals.map((project) => (
+                                <ProjectSummaryCard
+                                    key={project.projectId || project.projectName}
+                                    project={project}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-muted-foreground">
+                            No projects or absences were reported this month.
+                        </p>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="calendar" className="space-y-4 pt-4">
+                    <div className="overflow-x-auto rounded-lg border border-border/40">
+                        <div className="min-w-[560px]">
+                            <div className="grid grid-cols-7 border-b border-border/40">
+                                {DAY_LABELS.map((day) => (
+                                    <div
+                                        key={day}
+                                        className={cn(
+                                            'py-2.5 text-center text-sm font-semibold text-muted-foreground uppercase tracking-wide border-r border-border/40 last:border-r-0',
+                                            (day === 'Sat' || day === 'Sun') && 'bg-muted/20'
+                                        )}
+                                    >
+                                        {day}
+                                    </div>
                                 ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
 
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <LegendDot color={ENTRY_COLORS.external} label="External project" />
-                <LegendDot color={ENTRY_COLORS.internal} label="Internal project" />
-                <LegendDot color={ENTRY_COLORS.absence} label="Absence / time off" />
-                <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-3 rounded-sm shrink-0 bg-amber-100 dark:bg-amber-900/40 ring-1 ring-amber-400" />
-                    <span>SE bank holiday</span>
-                </div>
-            </div>
+                            <div>
+                                {weeks.map((week, wi) => (
+                                    <div key={wi} className="grid grid-cols-7">
+                                        {week.map((dateStr) => (
+                                            <DayCell
+                                                key={dateStr}
+                                                dateStr={dateStr}
+                                                entries={entriesByDate.get(dateStr) || []}
+                                                isCurrentMonth={
+                                                    dateStr >= startDate && dateStr <= endDate
+                                                }
+                                                today={today}
+                                                onSelect={handleDaySelect}
+                                            />
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                        <LegendDot color={ENTRY_COLORS.external} label="External project" />
+                        <LegendDot color={ENTRY_COLORS.internal} label="Internal project" />
+                        <LegendDot color={ENTRY_COLORS.absence} label="Absence / time off" />
+                        <div className="flex items-center gap-1.5">
+                            <span className="w-3 h-3 rounded-sm shrink-0 bg-amber-100 dark:bg-amber-900/40 ring-1 ring-amber-400" />
+                            <span>SE bank holiday</span>
+                        </div>
+                    </div>
+                </TabsContent>
+            </Tabs>
 
             <DayDetailModal selectedDay={selectedDay} onClose={() => setSelectedDay(null)} />
         </div>
