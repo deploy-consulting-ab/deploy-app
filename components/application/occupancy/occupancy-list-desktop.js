@@ -40,6 +40,7 @@ export function OccupancyListDesktopComponent({
     formattedToday,
     historyStartDate,
     error: initialError,
+    statsRoute,
 }) {
     const [data, setData] = useState(occupancyData);
     const [error, setError] = useState(initialError);
@@ -85,8 +86,9 @@ export function OccupancyListDesktopComponent({
                 );
             },
             cell: ({ row }) => (
+
                 <Link
-                    href={getOccupancyPeriodRoute(row.original.date)}
+                    href={`${statsRoute}/${row.original.date}`}
                     className="cursor-pointer font-medium dark:text-deploy-ocean text-deploy-blue hover:underline truncate transition-colors"
                 >
                     {row.original.month} {row.original.year}

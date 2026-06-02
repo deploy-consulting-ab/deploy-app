@@ -14,7 +14,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { getOccupancyPeriodRoute } from '@/menus/routes';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -117,22 +116,22 @@ function SummaryItem({ label, value, colorClass, valueClass }) {
     );
 }
 
-function OccupancyMonthNavigation({ startDate, today, title }) {
+function OccupancyMonthNavigation({ startDate, today, title, statsRoute }) {
     const previousMonth = getAdjacentMonthStartDate(startDate, -1);
     const nextMonth = getAdjacentMonthStartDate(startDate, 1);
     const currentMonthStart = `${today.slice(0, 7)}-01`;
     const isCurrentMonth = startDate === currentMonthStart;
 
     return (
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2 justify-center sm:justify-start">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center justify-center sm:justify-start">
                 <Button
                     variant="outline"
                     size="icon"
                     asChild
                     className="h-8 w-8 shrink-0 hover:cursor-pointer"
                 >
-                    <Link href={getOccupancyPeriodRoute(previousMonth)} aria-label="Previous month">
+                    <Link href={`${statsRoute}/${previousMonth}`} aria-label="Previous month">
                         <ChevronLeft className="h-4 w-4" />
                     </Link>
                 </Button>
@@ -145,7 +144,7 @@ function OccupancyMonthNavigation({ startDate, today, title }) {
                     asChild
                     className="h-8 w-8 shrink-0 hover:cursor-pointer"
                 >
-                    <Link href={getOccupancyPeriodRoute(nextMonth)} aria-label="Next month">
+                    <Link href={`${statsRoute}/${nextMonth}`} aria-label="Next month">
                         <ChevronRight className="h-4 w-4" />
                     </Link>
                 </Button>
@@ -158,7 +157,7 @@ function OccupancyMonthNavigation({ startDate, today, title }) {
                     asChild
                     className="text-xs w-full sm:w-auto hover:cursor-pointer"
                 >
-                    <Link href={getOccupancyPeriodRoute(currentMonthStart)}>Current month</Link>
+                    <Link href={`${statsRoute}/${currentMonthStart}`}>Current month</Link>
                 </Button>
             )}
         </div>
@@ -365,7 +364,7 @@ function DayCell({ dateStr, entries, isCurrentMonth, today, onSelect }) {
     );
 }
 
-export function OccupancyCalendarComponent({ timereports, startDate, endDate, today, error }) {
+export function OccupancyCalendarComponent({ timereports, startDate, endDate, today, error, statsRoute }) {
     const [selectedDay, setSelectedDay] = useState(null);
 
     const calendarDays = useMemo(() => getCalendarDays(startDate, endDate), [startDate, endDate]);
@@ -466,8 +465,8 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
     return (
         <div className="flex flex-col gap-4">
             <div>
-                <OccupancyMonthNavigation startDate={startDate} today={today} title={title} />
-                <p className="text-base text-muted-foreground mt-1">{workingDays} working days</p>
+                <OccupancyMonthNavigation startDate={startDate} today={today} title={title} statsRoute={statsRoute} />
+                <p className="text-base text-muted-foreground mt-2">{workingDays} working days</p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">

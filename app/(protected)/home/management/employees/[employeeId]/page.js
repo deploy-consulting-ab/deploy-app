@@ -18,7 +18,7 @@ import {
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
-import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
+import { EMPLOYEES_LIST_ROUTE, OCCUPANCY_STATS_ROUTE } from '@/menus/routes';
 import { NoDataComponent } from '@/components/errors/no-data';
 
 const EmployeePage = async ({ params }) => {
@@ -94,6 +94,7 @@ const EmployeePage = async ({ params }) => {
                         formattedToday={formattedToday}
                         historyStartDate={historyStartDate}
                         error={errors.history}
+                        statsRoute={OCCUPANCY_STATS_ROUTE}
                     />
                 </>
             }

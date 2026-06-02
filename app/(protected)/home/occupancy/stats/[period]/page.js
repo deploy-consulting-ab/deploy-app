@@ -2,6 +2,7 @@ import { auth } from '@/auth';
 import { getTimereports } from '@/actions/flex/flex-actions';
 import { formatDateToISOString, getLastDayOfMonth, getUTCToday } from '@/lib/utils';
 import { OccupancyCalendarComponent } from '@/components/application/occupancy/occupancy-calendar';
+import { OCCUPANCY_STATS_ROUTE } from '@/menus/routes';
 
 export default async function OccupancyPeriodPage({ params }) {
     const { period } = await params;
@@ -31,6 +32,7 @@ export default async function OccupancyPeriodPage({ params }) {
             endDate={endDate}
             today={today}
             error={error}
+            statsRoute={OCCUPANCY_STATS_ROUTE}
         />
     );
 }
