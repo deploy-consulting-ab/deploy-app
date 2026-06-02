@@ -119,6 +119,7 @@ function LegendDot({ color, label }) {
 
 function DayDetailModal({ selectedDay, onClose }) {
     const totalHours = selectedDay?.entries.reduce((sum, row) => sum + (row.hours || 0), 0) ?? 0;
+    const isBankHoliday = selectedDay?.isBankHoliday ?? false;
 
     return (
         <Dialog open={Boolean(selectedDay)} onOpenChange={(open) => !open && onClose()}>
@@ -131,11 +132,28 @@ function DayDetailModal({ selectedDay, onClose }) {
 
                 {selectedDay && (
                     <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                            {totalHours > 0
-                                ? `${formatHoursDisplay(totalHours)} reported`
-                                : 'No hours reported on this day'}
-                        </p>
+                        {isBankHoliday && (
+                            <div className="flex items-center gap-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/30 px-4 py-3">
+                                <span className="size-2.5 shrink-0 rounded-full bg-amber-500" />
+                                <p className="font-medium text-amber-800 dark:text-amber-200">
+                                    SE Holiday
+                                </p>
+                            </div>
+                        )}
+
+                        {!isBankHoliday && (
+                            <p className="text-sm text-muted-foreground">
+                                {totalHours > 0
+                                    ? `${formatHoursDisplay(totalHours)} reported`
+                                    : 'No hours reported on this day'}
+                            </p>
+                        )}
+
+                        {isBankHoliday && totalHours > 0 && (
+                            <p className="text-sm text-muted-foreground">
+                                {formatHoursDisplay(totalHours)} reported
+                            </p>
+                        )}
 
                         {selectedDay.entries.length > 0 ? (
                             <ul className="space-y-3">
@@ -173,11 +191,11 @@ function DayDetailModal({ selectedDay, onClose }) {
                                     );
                                 })}
                             </ul>
-                        ) : (
+                        ) : !isBankHoliday ? (
                             <p className="text-sm text-muted-foreground">
                                 No projects or absences were recorded for this day.
                             </p>
-                        )}
+                        ) : null}
                     </div>
                 )}
             </DialogContent>
@@ -191,19 +209,21 @@ function DayCell({ dateStr, entries, isCurrentMonth, today, onSelect }) {
     const isBankHoliday = SWEDISH_BANK_HOLIDAYS.has(dateStr);
     const dayNumber = parseInt(dateStr.split('-')[2], 10);
     const totalHours = entries.reduce((sum, row) => sum + (row.hours || 0), 0);
-    const isClickable = isCurrentMonth && entries.length > 0;
+    const isClickable = isCurrentMonth && (entries.length > 0 || isBankHoliday);
+
+    const handleSelect = () => onSelect(dateStr, entries, isBankHoliday);
 
     return (
         <div
             role={isClickable ? 'button' : undefined}
             tabIndex={isClickable ? 0 : undefined}
-            onClick={isClickable ? () => onSelect(dateStr, entries) : undefined}
+            onClick={isClickable ? handleSelect : undefined}
             onKeyDown={
                 isClickable
                     ? (event) => {
                           if (event.key === 'Enter' || event.key === ' ') {
                               event.preventDefault();
-                              onSelect(dateStr, entries);
+                              handleSelect();
                           }
                       }
                     : undefined
@@ -313,8 +333,8 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
 
     const title = formatPeriodTitle(startDate);
 
-    const handleDaySelect = (dateStr, entries) => {
-        setSelectedDay({ dateStr, entries });
+    const handleDaySelect = (dateStr, entries, isBankHoliday) => {
+        setSelectedDay({ dateStr, entries, isBankHoliday });
     };
 
     return (
