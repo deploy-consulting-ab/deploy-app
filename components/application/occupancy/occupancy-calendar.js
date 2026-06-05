@@ -3,10 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import {
-    formatDateToISOString,
-    isWeekend,
-} from '@/lib/utils';
+import { formatDateToISOString, isWeekend } from '@/lib/utils';
 import { SWEDISH_BANK_HOLIDAYS } from '@/actions/flex/constants';
 import { cn } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
@@ -179,7 +176,9 @@ function ProjectSummaryCard({ project }) {
                         <p className="font-medium leading-snug truncate">{project.projectName}</p>
                     </div>
                     {project.projectCode && (
-                        <p className="text-sm text-muted-foreground truncate">{project.projectCode}</p>
+                        <p className="text-sm text-muted-foreground truncate">
+                            {project.projectCode}
+                        </p>
                     )}
                     <p className="text-xs text-muted-foreground">{getEntryTypeLabel(project)}</p>
                 </div>
@@ -364,7 +363,14 @@ function DayCell({ dateStr, entries, isCurrentMonth, today, onSelect }) {
     );
 }
 
-export function OccupancyCalendarComponent({ timereports, startDate, endDate, today, error, statsRoute }) {
+export function OccupancyCalendarComponent({
+    timereports,
+    startDate,
+    endDate,
+    today,
+    error,
+    statsRoute,
+}) {
     const [selectedDay, setSelectedDay] = useState(null);
 
     const calendarDays = useMemo(() => getCalendarDays(startDate, endDate), [startDate, endDate]);
@@ -465,7 +471,12 @@ export function OccupancyCalendarComponent({ timereports, startDate, endDate, to
     return (
         <div className="flex flex-col gap-4">
             <div>
-                <OccupancyMonthNavigation startDate={startDate} today={today} title={title} statsRoute={statsRoute} />
+                <OccupancyMonthNavigation
+                    startDate={startDate}
+                    today={today}
+                    title={title}
+                    statsRoute={statsRoute}
+                />
                 <p className="text-base text-muted-foreground mt-2">{workingDays} working days</p>
             </div>
 

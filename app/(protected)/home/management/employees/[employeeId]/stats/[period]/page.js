@@ -1,13 +1,30 @@
 import { getEmployeeById } from '@/actions/salesforce/salesforce-actions';
 import { getUTCToday, formatDateToISOString, getLastDayOfMonth } from '@/lib/utils';
-import { OCCUPANCY_STATS_ROUTE } from '@/menus/routes';
+import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 import { OccupancyCalendarComponent } from '@/components/application/occupancy/occupancy-calendar';
 import { getTimereports } from '@/actions/flex/flex-actions';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 
 export default async function EmployeeOccupancyPage({ params }) {
     const { employeeId, period } = await params;
 
-    const employee = await getEmployeeById(employeeId);
+    let employee = null;
+    let employeeError = null;
+
+    try {
+        employee = await getEmployeeById(employeeId);
+    } catch (err) {
+        employeeError = err;
+    }
+
+    if (employeeError || !employee) {
+        return (
+            <ErrorDisplayComponent
+                error={employeeError}
+            />
+        );
+    }
+
     const flexEmployeeId = employee.flexId;
 
     const startDate = period;
@@ -33,7 +50,7 @@ export default async function EmployeeOccupancyPage({ params }) {
             endDate={endDate}
             today={today}
             error={error}
-            statsRoute={OCCUPANCY_STATS_ROUTE}
+            statsRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}/stats`}
         />
     );
 }
