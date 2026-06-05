@@ -65,7 +65,7 @@ export function AppSidebarUserComponent({ user }) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout}>
+                        <DropdownMenuItem onClick={logout} className="hover:cursor-pointer">
                             <LogOut />
                             Log out
                         </DropdownMenuItem>
