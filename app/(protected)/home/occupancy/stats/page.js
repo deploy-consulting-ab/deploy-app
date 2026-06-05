@@ -7,7 +7,11 @@ import {
     getCurrentFiscalYear,
     getFiscalYearStartDate,
 } from '@/lib/utils';
-import { getFlexOccupancyStatsAnchored, getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
+import {
+    getFlexOccupancyStatsAnchored,
+    getFlexOccupancyHistory,
+} from '@/actions/flex/flex-actions';
+import { OCCUPANCY_STATS_ROUTE } from '@/menus/routes';
 
 export default async function OccupancyStatsPage() {
     const session = await auth();
@@ -54,6 +58,7 @@ export default async function OccupancyStatsPage() {
                 formattedToday={formattedToday}
                 historyStartDate={historyStartDate}
                 error={historyError}
+                statsRoute={OCCUPANCY_STATS_ROUTE}
             />
         </div>
     );

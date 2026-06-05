@@ -22,7 +22,7 @@ const occupancyViews = [
     { value: 'Over Capacity', label: 'Over Capacity' },
 ];
 
-export function OccupancyListPhoneComponent({ occupancyData, error }) {
+export function OccupancyListPhoneComponent({ occupancyData, error, statsRoute }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [view, setView] = useState('all');
     const [displayCount, setDisplayCount] = useState(10);
@@ -109,7 +109,11 @@ export function OccupancyListPhoneComponent({ occupancyData, error }) {
             </div>
             <div className="space-y-4">
                 {displayedOccupancy.map((occupancy) => (
-                    <OccupancyCardPhoneComponent key={occupancy.id} occupancy={occupancy} />
+                    <OccupancyCardPhoneComponent
+                        key={occupancy.id}
+                        occupancy={occupancy}
+                        statsRoute={statsRoute}
+                    />
                 ))}
                 {filtered.length === 0 && (
                     <div className="text-center py-8 text-muted-foreground">

@@ -10,11 +10,18 @@ export function OccupancyListComponent({
     formattedToday,
     historyStartDate,
     error,
+    statsRoute,
 }) {
     const isMobile = useIsMobile();
 
     if (isMobile) {
-        return <OccupancyListPhoneComponent occupancyData={occupancyData} error={error} />;
+        return (
+            <OccupancyListPhoneComponent
+                occupancyData={occupancyData}
+                error={error}
+                statsRoute={statsRoute}
+            />
+        );
     }
 
     return (
@@ -24,6 +31,7 @@ export function OccupancyListComponent({
             formattedToday={formattedToday}
             historyStartDate={historyStartDate}
             error={error}
+            statsRoute={statsRoute}
         />
     );
 }

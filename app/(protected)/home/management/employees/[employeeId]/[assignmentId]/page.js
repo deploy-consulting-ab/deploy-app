@@ -7,7 +7,7 @@ import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions
 import { groupTimereportsByMonth } from '@/lib/utils';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 
-const EmployeeAssignmentPage = async ({ params }) => {
+export default async function EmployeeAssignmentPage({ params }) {
     const { employeeId, assignmentId } = await params;
 
     let assignment = null;
@@ -50,6 +50,4 @@ const EmployeeAssignmentPage = async ({ params }) => {
             timecardsRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}`}
         />
     );
-};
-
-export default EmployeeAssignmentPage;
+}
