@@ -121,7 +121,7 @@ function OccupancyMonthNavigation({ startDate, today, title, statsRoute }) {
 
     return (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center justify-center sm:justify-start">
+            <div className="flex items-center gap-3 justify-center sm:justify-start">
                 <Button
                     variant="outline"
                     size="icon"
