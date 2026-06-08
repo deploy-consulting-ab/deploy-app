@@ -18,6 +18,7 @@ import {
     getFiscalYearEndDate,
 } from '@/lib/utils';
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
+import { EmployeeFinancialCardComponent } from '@/components/application/management/employees/employee-financial-card';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
@@ -89,8 +90,12 @@ export default async function EmployeePage({ params }) {
         <EmployeePageComponent
             detailsTab={
                 <>
-                    <div className="mb-6">
+                    <div className="mb-6 space-y-6">
                         <EmployeeRecordCardComponent
+                            employee={employee}
+                            error={errors.employee}
+                        />
+                        <EmployeeFinancialCardComponent
                             employee={employee}
                             fyAmounts={fyAmounts}
                             error={errors.employee}
