@@ -602,6 +602,7 @@ export async function getEmployeeProfitabilityData() {
     const employeeCostMap = new Map();
     for (const emp of employeeRows) {
         employeeCostMap.set(emp.EmployeeId__c, {
+            id: emp.Id,
             name: emp.Name,
             adjustedCostFY: emp.AdjustedCostFY__c ?? 0,
             adjustedCostFYTD: emp.AdjustedCostFYTD__c ?? 0,
@@ -614,6 +615,7 @@ export async function getEmployeeProfitabilityData() {
         if (!empId) continue;
 
         const costs = employeeCostMap.get(empId) ?? {
+            id: row.salesforceId,
             name: row.employeeName,
             adjustedCostFY: 0,
             adjustedCostFYTD: 0,
@@ -622,6 +624,7 @@ export async function getEmployeeProfitabilityData() {
         if (!employeeMap.has(empId)) {
             employeeMap.set(empId, {
                 employeeId: empId,
+                id: costs.id || row.salesforceId,
                 employeeName: costs.name || row.employeeName || empId,
                 adjustedCostFY: costs.adjustedCostFY,
                 adjustedCostFYTD: costs.adjustedCostFYTD,

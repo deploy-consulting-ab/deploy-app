@@ -21,7 +21,9 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
 import { RefreshCw, ChevronDown, ChevronRight, TrendingUp, TrendingDown, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 import { getEmployeeProfitabilityData } from '@/actions/salesforce/salesforce-actions';
+import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 
 const SEK = 'SEK';
 const fmt = (v) => formatCurrency(v, SEK);
@@ -33,6 +35,7 @@ const METRIC_TOOLTIPS = {
         'Total invoiced amount from timecards in the current fiscal year (sum of TimecardAmount__c) for qualifying external assignments.',
     adjustedCostFY:
         'Total adjusted employment cost allocated for the full current fiscal year (1 Feb – 31 Jan).',
+    adjustedCostFYTD: 'Adjusted employment cost for the current fiscal year to date.',
     projectedProfitabilityFY: 'Projected Invoiced Amount FY minus Adjusted Cost FY.',
     profitabilityFY: 'Invoiced Amount minus Adjusted Cost FY for the full fiscal year.',
     profitabilityFYTD: 'Invoiced Amount minus Adjusted Cost FYTD for the fiscal year to date.',
@@ -112,20 +115,25 @@ function ProfitBadge({ value, label = 'FYTD', description }) {
     );
 }
 
-function MetricBar({ label, value, maxValue, colorClass, description }) {
-    const pct = maxValue > 0 ? Math.min((Math.abs(value) / maxValue) * 100, 100) : 0;
+function MetricCell({ label, value, description, colored = false }) {
+    const positive = value >= 0;
     return (
-        <div className="space-y-1">
-            <div className="flex justify-between items-center gap-2">
-                <span className="inline-flex items-center gap-1 text-sm text-muted-foreground min-w-0">
-                    <span className="truncate">{label}</span>
-                    <InfoTooltip label={label} description={description} />
-                </span>
-                <span className="text-sm font-medium tabular-nums shrink-0">{fmt(value)}</span>
-            </div>
-            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${pct}%` }} />
-            </div>
+        <div className="flex flex-col gap-0.5 min-w-0">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
+                <span className="truncate">{label}</span>
+                <InfoTooltip label={label} description={description} />
+            </span>
+            <span
+                className={`text-sm font-semibold tabular-nums ${
+                    colored
+                        ? positive
+                            ? 'text-emerald-600 dark:text-emerald-400'
+                            : 'text-red-500 dark:text-red-400'
+                        : 'text-foreground'
+                }`}
+            >
+                {fmt(value)}
+            </span>
         </div>
     );
 }
@@ -191,7 +199,7 @@ const PROJECT_COLUMNS = [
         accessorKey: 'timecardAmount',
         header: () => (
             <MetricLabel
-                label="Invoiced"
+                label="Invoiced FY"
                 description={METRIC_TOOLTIPS.invoicedAmount}
                 align="right"
             />
@@ -330,30 +338,9 @@ function ProjectBreakdownTable({ assignments, totalProjected, totalInvoiced }) {
     );
 }
 
-function ProfitMetric({ label, value, description }) {
-    const positive = value >= 0;
-    return (
-        <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
-                <span className="truncate">{label}</span>
-                <InfoTooltip label={label} description={description} />
-            </span>
-            <span
-                className={`text-sm font-semibold tabular-nums ${
-                    positive
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-red-500 dark:text-red-400'
-                }`}
-            >
-                {fmt(value)}
-            </span>
-        </div>
-    );
-}
-
 function EmployeeCard({ employee }) {
     const [expanded, setExpanded] = useState(false);
-    const { employeeId, employeeName, adjustedCostFY, adjustedCostFYTD, assignments } = employee;
+    const { id, employeeName, adjustedCostFY, adjustedCostFYTD, assignments } = employee;
 
     const totalProjected = assignments.reduce((s, a) => s + a.projectedAmountFY, 0);
     const totalInvoiced = assignments.reduce((s, a) => s + a.timecardAmount, 0);
@@ -362,7 +349,6 @@ function EmployeeCard({ employee }) {
     const profitFY = totalInvoiced - adjustedCostFY;
     const profitFYTD = totalInvoiced - adjustedCostFYTD;
 
-    const maxBar = Math.max(totalProjected, totalInvoiced, adjustedCostFY, 1);
     const isProfitableFYTD = profitFYTD >= 0;
 
     return (
@@ -373,7 +359,16 @@ function EmployeeCard({ employee }) {
         >
             <CardHeader className="pb-2 pt-4 px-4">
                 <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-base leading-snug">{employeeName}</h3>
+                    {id ? (
+                        <Link
+                            href={`${EMPLOYEES_LIST_ROUTE}/${id}`}
+                            className="font-semibold text-base leading-snug dark:text-deploy-ocean text-deploy-blue hover:underline transition-colors"
+                        >
+                            {employeeName}
+                        </Link>
+                    ) : (
+                        <h3 className="font-semibold text-base leading-snug">{employeeName}</h3>
+                    )}
                     <ProfitBadge
                         value={profitFYTD}
                         description={METRIC_TOOLTIPS.profitabilityFYTD}
@@ -382,47 +377,47 @@ function EmployeeCard({ employee }) {
             </CardHeader>
 
             <CardContent className="px-4 pb-4 space-y-4">
-                {/* Visual bars: invoiced amounts vs cost */}
-                <div className="space-y-2">
-                    <MetricBar
-                        label="Projected Invoiced FY"
+                <div className="grid grid-cols-2 gap-2">
+                    <MetricCell
+                        label="Proj. Invoiced FY"
                         value={totalProjected}
-                        maxValue={maxBar}
-                        colorClass="bg-deploy-blue"
                         description={METRIC_TOOLTIPS.projectedInvoicedFY}
                     />
-                    <MetricBar
-                        label="Invoiced Amount"
+                    <MetricCell
+                        label="Invoiced FY"
                         value={totalInvoiced}
-                        maxValue={maxBar}
-                        colorClass="bg-deploy-teal"
                         description={METRIC_TOOLTIPS.invoicedAmount}
                     />
-                    <MetricBar
-                        label="Adjusted Cost FY"
+                    <MetricCell
+                        label="Cost FY"
                         value={adjustedCostFY}
-                        maxValue={maxBar}
-                        colorClass="bg-deploy-accent-orange"
                         description={METRIC_TOOLTIPS.adjustedCostFY}
+                    />
+                    <MetricCell
+                        label="Cost FYTD"
+                        value={adjustedCostFYTD}
+                        description={METRIC_TOOLTIPS.adjustedCostFYTD}
                     />
                 </div>
 
-                {/* Profitability computed metrics */}
                 <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/50">
-                    <ProfitMetric
+                    <MetricCell
                         label="Proj. Prof. FY"
                         value={projProfitFY}
                         description={METRIC_TOOLTIPS.projectedProfitabilityFY}
+                        colored
                     />
-                    <ProfitMetric
+                    <MetricCell
                         label="Profit FY"
                         value={profitFY}
                         description={METRIC_TOOLTIPS.profitabilityFY}
+                        colored
                     />
-                    <ProfitMetric
+                    <MetricCell
                         label="Profit FYTD"
                         value={profitFYTD}
                         description={METRIC_TOOLTIPS.profitabilityFYTD}
+                        colored
                     />
                 </div>
 

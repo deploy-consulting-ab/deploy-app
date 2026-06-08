@@ -176,6 +176,7 @@ const getEmployeeFYAmountsQuery = (employeeNumber, fyStart, fyEnd) => {
 const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
     return `SELECT Assignment__c,
                    MAX(Assignment__r.Resource__r.EmployeeId__c) employeeId,
+                   MAX(Assignment__r.Resource__r.Id) salesforceId,
                    MAX(Assignment__r.Resource__r.Name) employeeName,
                    MAX(Assignment__r.Name) assignmentName,
                    MAX(Assignment__r.Project__r.Name) projectName,
@@ -194,7 +195,7 @@ const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
  * Fetch adjusted cost fields for all active Full-Time / Part-Time employees.
  */
 const getEmployeesCostsQuery = () => {
-    return `SELECT EmployeeId__c, Name, AdjustedCostFY__c, AdjustedCostFYTD__c
+    return `SELECT Id, EmployeeId__c, Name, AdjustedCostFY__c, AdjustedCostFYTD__c
             FROM Employee__c
             WHERE EmploymentType__c IN ('Full-Time', 'Part-Time')
             AND IsActive__c = true`;
