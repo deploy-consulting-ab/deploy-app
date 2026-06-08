@@ -116,7 +116,7 @@ export function AssignmentRecordCardComponent({
                                 </p>
                             </div>
                         )}
-                        {actualProfitabilityPercentage && (
+                        {actualProfitabilityPercentage != null && (
                             <div className="space-y-1">
                                 <p className="text-muted-foreground font-semibold text-xs uppercase">
                                     Actual Profitability %
