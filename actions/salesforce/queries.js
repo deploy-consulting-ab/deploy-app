@@ -22,6 +22,7 @@ const ASSIGNMENT_BASE_FIELDS = [
     'Project__r.FlexID__c',
     'ProjectedHours__c',
     'ActualHours__c',
+    'CurrencyIsoCode',
 ];
 
 /**
@@ -39,16 +40,12 @@ const OPPORTUNITY_BASE_FIELDS = [
 /**
  * Build a SOQL SELECT clause from base fields + permitted optional fields.
  * @param {string[]} baseFields - Always-included fields
- * @param {Set<string>|null} permittedFields - Optional fields permitted for this user (null = all)
- * @param {string[]} optionalFields - All optional fields that can be gated
+ * @param {Set<string>|null} permittedFields - Optional fields permitted for this user (null = base fields only)
  * @returns {string} Comma-separated SELECT field list
  */
-const buildSelectClause = (baseFields, permittedFields, optionalFields) => {
-    if (!permittedFields) {
-        return [...baseFields, ...optionalFields].join(', ');
-    }
-    const allowed = optionalFields.filter((f) => permittedFields.has(f));
-    return [...baseFields, ...allowed].join(', ');
+const buildSelectClause = (baseFields, permittedFields) => {
+    if (!permittedFields) return baseFields.join(', ');
+    return [...baseFields, ...permittedFields].join(', ');
 };
 
 /**
@@ -232,22 +229,10 @@ const getEmployeesByNameOrEmployeeIdQuery = (query) => {
 /**
  * Dynamic Assignment query builders (field-level permission aware)
  * @param {string} employeeNumber
- * @param {Set<string>|null} permittedFields - null means all optional fields are included
+ * @param {Set<string>|null} permittedFields - null means base fields only
  */
-const ASSIGNMENT_OPTIONAL_FIELDS = [
-    'ProjectedHours__c',
-    'ActualHours__c',
-    'ActualAmount__c',
-    'ActualCost__c',
-    'ActualProfitability__c',
-];
-
 const getAssignmentsByEmployeeNumberQueryDynamic = (employeeNumber, permittedFields) => {
-    const select = buildSelectClause(
-        ASSIGNMENT_BASE_FIELDS,
-        permittedFields,
-        ASSIGNMENT_OPTIONAL_FIELDS
-    );
+    const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
             AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
@@ -261,37 +246,23 @@ const getAssignmentByIdAndEmployeeNumberQueryDynamic = (
     employeeNumber,
     permittedFields
 ) => {
-    const select = buildSelectClause(
-        ASSIGNMENT_BASE_FIELDS,
-        permittedFields,
-        ASSIGNMENT_OPTIONAL_FIELDS
-    );
+    const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
 };
 
 const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
-    const select = buildSelectClause(
-        ASSIGNMENT_BASE_FIELDS,
-        permittedFields,
-        ASSIGNMENT_OPTIONAL_FIELDS
-    );
+    const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
 /**
  * Dynamic Opportunity query builders (field-level permission aware)
- * @param {Set<string>|null} permittedFields - null means all optional fields are included
+ * @param {Set<string>|null} permittedFields - null means base fields only
  */
-const OPPORTUNITY_OPTIONAL_FIELDS = ['Amount', 'ProductType__c'];
-
 const getOpportunitiesQueryDynamic = (permittedFields) => {
-    const select = buildSelectClause(
-        OPPORTUNITY_BASE_FIELDS,
-        permittedFields,
-        OPPORTUNITY_OPTIONAL_FIELDS
-    );
+    const select = buildSelectClause(OPPORTUNITY_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Opportunity 
             WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
             AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
@@ -300,11 +271,7 @@ const getOpportunitiesQueryDynamic = (permittedFields) => {
 };
 
 const getOpportunityByIdQueryDynamic = (opportunityId, permittedFields) => {
-    const select = buildSelectClause(
-        OPPORTUNITY_BASE_FIELDS,
-        permittedFields,
-        OPPORTUNITY_OPTIONAL_FIELDS
-    );
+    const select = buildSelectClause(OPPORTUNITY_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
 };
 

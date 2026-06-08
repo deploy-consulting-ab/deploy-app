@@ -2,17 +2,12 @@
 
 import { queryData, queryCachedData } from './salesforce-service';
 import {
-    getAssignmentsByEmployeeNumberQuery,
-    getAssignmentByIdAndEmployeeNumberQuery,
     getAssignmentTimecardsQuery,
-    getOpportunitiesQuery,
     getRecentOccupancyRateQuery,
     getOccupancyRateFromLastFiscalYearQuery,
     getOccupancyHistoryQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
-    getAssignmentByIdQuery,
-    getOpportunityByIdQuery,
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
     getSalesforcePublicHolidaysQuery,
@@ -55,7 +50,6 @@ export async function getAssignmentsByEmployeeNumber(employeeNumber) {
         const result = await queryData(
             getAssignmentsByEmployeeNumberQueryDynamic(employeeNumber, permittedFields)
         );
-        console.log('result', result);
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Name,
@@ -65,6 +59,7 @@ export async function getAssignmentsByEmployeeNumber(employeeNumber) {
             projectName: assignment.Project__r?.Name,
             projectedHours: assignment.ProjectedHours__c,
             actualHours: assignment.ActualHours__c,
+            currencyIsoCode: assignment.CurrencyIsoCode,
             ...(assignment.ActualAmount__c !== undefined && {
                 actualAmount: assignment.ActualAmount__c,
             }),
@@ -126,9 +121,7 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
             projectName: result.Project__r?.Name,
             projectedHours: result.ProjectedHours__c,
             actualHours: result.ActualHours__c,
-            actualAmount: result.ActualAmount__c,
-            actualCost: result.ActualCost__c,
-            actualProfitability: result.ActualProfitability__c,
+            currencyIsoCode: result.CurrencyIsoCode,
             ...(result.ActualAmount__c !== undefined && { actualAmount: result.ActualAmount__c }),
             ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
             ...(result.ActualProfitability__c !== undefined && {
@@ -168,6 +161,7 @@ export async function getAssignmentById(assignmentId) {
             projectName: result.Project__r?.Name,
             projectedHours: result.ProjectedHours__c,
             actualHours: result.ActualHours__c,
+            currencyIsoCode: result.CurrencyIsoCode,
             ...(result.ActualAmount__c !== undefined && { actualAmount: result.ActualAmount__c }),
             ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
             ...(result.ActualProfitability__c !== undefined && {

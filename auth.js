@@ -172,10 +172,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // Only populated on sign in
             if (user) {
                 const { systemPermissions, fieldPermissions } = await getCombinedPermissionsForUser(user.id);
-
-                console.log('systemPermissions', systemPermissions);
-                console.log('fieldPermissions', fieldPermissions);
-
                 token.systemPermissions = systemPermissions;
                 token.fieldPermissions = fieldPermissions;
                 token.employeeNumber = user.employeeNumber;

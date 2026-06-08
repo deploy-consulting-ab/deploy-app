@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
+import { formatDateToSwedish, getAssignmentStageColor, formatCurrency } from '@/lib/utils';
 import { ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -15,7 +15,7 @@ export function AssignmentRecordCardComponent({
     timecardHours,
     actualHours,
     error,
-    timecardsRoute
+    timecardsRoute,
 }) {
     const isMobile = useIsMobile();
 
@@ -27,7 +27,18 @@ export function AssignmentRecordCardComponent({
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const { name, startDate, endDate, projectStatus, projectName, projectedHours } = assignment;
+    const {
+        name,
+        startDate,
+        endDate,
+        projectStatus,
+        projectName,
+        projectedHours,
+        actualAmount,
+        actualCost,
+        actualProfitability,
+        currencyIsoCode,
+    } = assignment;
 
     return (
         <>
@@ -74,6 +85,36 @@ export function AssignmentRecordCardComponent({
                             </p>
                             <p className="font-medium">{actualHours} hours</p>
                         </div>
+                        {actualAmount && (
+                            <div className="space-y-1">
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                    Actual Amount
+                                </p>
+                                <p className="font-medium">
+                                    {formatCurrency(actualAmount, currencyIsoCode)}
+                                </p>
+                            </div>
+                        )}
+                        {actualCost && (
+                            <div className="space-y-1">
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                    Actual Cost
+                                </p>
+                                <p className="font-medium">
+                                    {formatCurrency(actualCost, currencyIsoCode)}
+                                </p>
+                            </div>
+                        )}
+                        {actualProfitability && (
+                            <div className="space-y-1">
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                    Actual Profitability
+                                </p>
+                                <p className="font-medium">
+                                    {formatCurrency(actualProfitability, currencyIsoCode)}
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Link to Timecards */}
