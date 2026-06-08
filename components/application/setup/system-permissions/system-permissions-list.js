@@ -151,7 +151,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
             cell: ({ row }) => {
                 return (
                     <div
-                        className="truncate text-foreground/70 font-mono text-xs"
+                        className="truncate text-foreground/70"
                         title={row.getValue('id')}
                     >
                         {row.getValue('id')}

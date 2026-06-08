@@ -111,7 +111,7 @@ export function FieldPermissionsListComponent({ fieldPermissions, error: initial
                 </Button>
             ),
             cell: ({ row }) => (
-                <Badge variant="outline" className="font-mono text-xs">
+                <Badge variant="outline" className="text-sm">
                     {row.getValue('system')}
                 </Badge>
             ),
@@ -132,7 +132,10 @@ export function FieldPermissionsListComponent({ fieldPermissions, error: initial
                 </Button>
             ),
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 font-mono text-xs" title={row.getValue('objectName')}>
+                <div
+                    className="truncate text-foreground/70"
+                    title={row.getValue('objectName')}
+                >
                     {row.getValue('objectName')}
                 </div>
             ),
@@ -153,7 +156,7 @@ export function FieldPermissionsListComponent({ fieldPermissions, error: initial
                 </Button>
             ),
             cell: ({ row }) => (
-                <div className="truncate text-foreground/70 font-mono text-xs" title={row.getValue('fieldName')}>
+                <div className="truncate text-foreground/70" title={row.getValue('fieldName')}>
                     {row.getValue('fieldName')}
                 </div>
             ),
@@ -213,11 +216,7 @@ export function FieldPermissionsListComponent({ fieldPermissions, error: initial
     }
 
     const createButton = (
-        <Dialog
-            open={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            key="create-field-permission"
-        >
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} key="create-field-permission">
             <DialogTrigger asChild>
                 <Button size="sm" className="hover:cursor-pointer">
                     <KeyRound className="h-4 w-4" />
