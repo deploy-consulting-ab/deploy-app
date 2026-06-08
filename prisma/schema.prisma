@@ -15,6 +15,7 @@ model Profile {
     name        String       @unique
     description String?
     systemPermissions SystemPermission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
+    fieldPermissions  FieldPermission[]
     users       User[]
 }
 
@@ -24,7 +25,25 @@ model PermissionSet {
     name        String       @unique
     description String?
     systemPermissions SystemPermission[] // Enable simple and intuitive queries. Like parent to child (__r) in SF
+    fieldPermissions  FieldPermission[]
     users       User[] // Many-to-many relationship with users
+}
+
+// Field-level permissions for external systems (Salesforce, Flex, etc.)
+// system: "salesforce" | "flex" | ...
+// objectName: e.g. "Assignment__c", "Opportunity"
+// fieldName: e.g. "ActualAmount__c", "StartDate__c"
+model FieldPermission {
+    id          String          @id @default(cuid())
+    system      String
+    objectName  String
+    fieldName   String
+    label       String?
+    description String?
+    profiles       Profile[]
+    permissionSets PermissionSet[]
+
+    @@unique([system, objectName, fieldName])
 }
 
 // System permissions. i.e. Home:View, Holidays:View, Assignments:View, Lead:Create, etc

@@ -115,6 +115,22 @@ export const CreateSystemPermissionSchema = z.object({
     }),
 });
 
+export const CreateFieldPermissionSchema = z.object({
+    system: z.string().min(1, { message: 'System is required' }),
+    objectName: z.string().min(1, { message: 'Object name is required' }),
+    fieldName: z.string().min(1, { message: 'Field name is required' }),
+    label: z.string().min(1, { message: 'Label is required' }),
+    description: z.string().optional(),
+});
+
+export const UpdateFieldPermissionSchema = z.object({
+    system: z.string().min(1, { message: 'System is required' }),
+    objectName: z.string().min(1, { message: 'Object name is required' }),
+    fieldName: z.string().min(1, { message: 'Field name is required' }),
+    label: z.string().min(1, { message: 'Label is required' }),
+    description: z.string().optional(),
+});
+
 const financialAmountField = z.coerce
     .number({ invalid_type_error: 'Must be a number' })
     .min(0, { message: 'Must be 0 or greater' });

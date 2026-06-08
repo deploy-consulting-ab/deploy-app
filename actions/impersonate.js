@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getUserById, getCombinedSystemPermissionsForUser } from '@/data/user-db';
+import { getUserById, getCombinedPermissionsForUser } from '@/data/user-db';
 import { revalidatePath } from 'next/cache';
 import { toPermissionSet } from '@/lib/utils';
 import { VIEW_SETUP_PERMISSION } from '@/lib/rba-constants';
@@ -27,7 +27,8 @@ export async function startImpersonation(userId) {
             return { error: 'User not found' };
         }
 
-        const targetSystemPermissions = await getCombinedSystemPermissionsForUser(userId);
+        const { systemPermissions: targetSystemPermissions, fieldPermissions: targetFieldPermissions } =
+            await getCombinedPermissionsForUser(userId);
 
         // Store the current session data for later restoration
         const impersonationData = {
@@ -41,6 +42,7 @@ export async function startImpersonation(userId) {
                 employeeNumber: targetUser.employeeNumber,
                 flexEmployeeId: targetUser.flexEmployeeId,
                 systemPermissions: targetSystemPermissions,
+                fieldPermissions: targetFieldPermissions,
                 image: targetUser.image,
                 isActive: targetUser.isActive,
                 yearlyHolidays: targetUser.yearlyHolidays,
@@ -55,6 +57,7 @@ export async function startImpersonation(userId) {
                 employeeNumber: session.user.employeeNumber,
                 flexEmployeeId: session.user.flexEmployeeId,
                 systemPermissions: session.user.systemPermissions,
+                fieldPermissions: session.user.fieldPermissions,
                 image: session.user.image,
                 isActive: session.user.isActive,
                 yearlyHolidays: session.user.yearlyHolidays,

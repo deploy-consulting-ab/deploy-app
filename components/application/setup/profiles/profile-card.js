@@ -2,11 +2,12 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ProfilePermissions } from '@/components/application/setup/profiles/profile-permissions';
+import { ProfileFieldPermissions } from '@/components/application/setup/profiles/profile-field-permissions';
 import { ProfileUserAssignmentsListComponent } from '@/components/application/setup/profiles/profile-user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { ProfileCardActionsComponent } from '@/components/application/setup/profiles/profile-card-actions';
 
-export async function ProfileCardComponent({ profile, totalSystemPermissions }) {
+export async function ProfileCardComponent({ profile, totalSystemPermissions, totalFieldPermissions }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
@@ -35,8 +36,18 @@ export async function ProfileCardComponent({ profile, totalSystemPermissions }) 
                 </CardContent>
             </Card>
 
-            {/* Permissions Card */}
+            {/* System Permissions Card */}
             <ProfilePermissions profile={profile} totalSystemPermissions={totalSystemPermissions} />
+
+            {/* Field Permissions Card */}
+            {totalFieldPermissions && totalFieldPermissions.length > 0 && (
+                <div className="col-span-2">
+                    <ProfileFieldPermissions
+                        profile={profile}
+                        totalFieldPermissions={totalFieldPermissions}
+                    />
+                </div>
+            )}
 
             {/* Users in Profile List */}
             <div className="col-span-2">

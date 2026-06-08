@@ -5,7 +5,7 @@ import bcryptjs from 'bcryptjs';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
-import { getUserById, getUserByEmail, getCombinedSystemPermissionsForUser } from '@/data/user-db';
+import { getUserById, getUserByEmail, getCombinedPermissionsForUser } from '@/data/user-db';
 import { LoginSchema } from '@/schemas';
 
 /**
@@ -108,6 +108,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.systemPermissions = token.systemPermissions;
             }
 
+            if (token.fieldPermissions) {
+                session.user.fieldPermissions = token.fieldPermissions;
+            }
+
             if (token.profileId) {
                 session.user.profileId = token.profileId;
             }
@@ -141,6 +145,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.flexEmployeeId = token.impersonatedUser.flexEmployeeId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;
+                session.user.fieldPermissions = token.impersonatedUser.fieldPermissions;
                 session.user.image = token.impersonatedUser.image;
                 session.user.isActive = token.impersonatedUser.isActive;
                 session.user.yearlyHolidays = token.impersonatedUser.yearlyHolidays;
@@ -166,9 +171,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
             // Only populated on sign in
             if (user) {
-                const systemPermissions = await getCombinedSystemPermissionsForUser(user.id);
-
+                const { systemPermissions, fieldPermissions } = await getCombinedPermissionsForUser(user.id);
                 token.systemPermissions = systemPermissions;
+                token.fieldPermissions = fieldPermissions;
                 token.employeeNumber = user.employeeNumber;
                 token.flexEmployeeId = user.flexEmployeeId;
                 token.sub = user.id;

@@ -14,6 +14,7 @@ import {
     ChartPie,
     DollarSign,
     Bot,
+    KeyRound,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -28,6 +29,7 @@ import {
     PROFILES_ROUTE,
     PERMISSION_SETS_ROUTE,
     SYSTEM_PERMISSIONS_ROUTE,
+    FIELD_PERMISSIONS_ROUTE,
     TIMEREPORT_ROUTE,
     MANAGEMENT_ROUTE,
     EMPLOYEES_LIST_ROUTE,
@@ -151,6 +153,12 @@ export const SETUP_MENU_ITEMS_MAP = {
         title: 'System Permissions',
         url: SYSTEM_PERMISSIONS_ROUTE,
         icon: Shield,
+        systemPermission: VIEW_SETUP_PERMISSION,
+    },
+    fieldPermissions: {
+        title: 'Field Permissions',
+        url: FIELD_PERMISSIONS_ROUTE,
+        icon: KeyRound,
         systemPermission: VIEW_SETUP_PERMISSION,
     },
 };
