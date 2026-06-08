@@ -148,6 +148,26 @@ const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
             WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
+/**
+ * Single aggregate query that starts from Timecard__c, filters by Timecard date range,
+ * and reaches up to the parent Assignment via relationship fields.
+ * Groups by Assignment so each assignment contributes its ProjectedAmountFY__c exactly once
+ * (via MAX) and its portion of TimecardAmount__c (via SUM).
+ */
+const getEmployeeFYAmountsQuery = (employeeNumber, fyStart, fyEnd) => {
+    return `SELECT Assignment__c,
+                   SUM(TimecardAmount__c) actualPerAssignment,
+                   MAX(Assignment__r.ProjectedAmountFY__c) projectedPerAssignment
+            FROM Timecard__c
+            WHERE Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}'
+            AND Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            AND Assignment__r.ProjectStatus__c IN ('Ongoing', 'Completed', 'Not Started')
+            AND Assignment__r.Resource__r.EmploymentType__c IN ('Full-Time', 'Part-Time')
+            AND StartDate__c >= ${fyStart} AND StartDate__c <= ${fyEnd}
+            AND EndDate__c >= ${fyStart} AND EndDate__c <= ${fyEnd}
+            GROUP BY Assignment__c`;
+};
+
 /* ─── Opportunity queries ───────────────────────────────────────────────── */
 
 const getOpportunitiesQuery = () => {
@@ -266,7 +286,7 @@ const getEmployeesQuery = () => {
 };
 
 const getEmployeeByIdQuery = (employeeId) => {
-    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c, FlexID__c
+    return `SELECT Id, Name, EmployeeId__c, IsActive__c, EmploymentType__c, EmploymentStartDate__c, EmploymentEndDate__c, FlexID__c, AdjustedCostFY__c, AdjustedCostFYTD__c
             FROM Employee__c WHERE Id = '${employeeId}' LIMIT 1`;
 };
 
@@ -304,4 +324,5 @@ export {
     getAssignmentByIdQueryDynamic,
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
+    getEmployeeFYAmountsQuery,
 };

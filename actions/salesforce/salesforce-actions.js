@@ -22,6 +22,7 @@ import {
     getAssignmentByIdQueryDynamic,
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
+    getEmployeeFYAmountsQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -546,6 +547,32 @@ export async function getEmployeesByNameOrEmployeeId(query) {
     }
 }
 
+/**
+ * Fetch Projected Amount FY (sum of ProjectedAmountFY__c) and Actual Amount
+ * (sum of TimecardAmount__c) for an employee's FY assignments.
+ * @param {string} employeeNumber - The employee's EmployeeId__c
+ * @param {string} fyStart - Fiscal year start date (YYYY-MM-DD)
+ * @param {string} fyEnd - Fiscal year end date (YYYY-MM-DD)
+ */
+export async function getEmployeeFYAmounts(employeeNumber, fyStart, fyEnd) {
+    try {
+        const rows = await queryData(getEmployeeFYAmountsQuery(employeeNumber, fyStart, fyEnd));
+
+        const projectedAmountFY = rows.reduce(
+            (sum, row) => sum + (row.projectedPerAssignment ?? 0),
+            0
+        );
+        const actualAmount = rows.reduce(
+            (sum, row) => sum + (row.actualPerAssignment ?? 0),
+            0
+        );
+
+        return { projectedAmountFY, actualAmount };
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function getEmployeeById(employeeId) {
     try {
         const result = await queryData(getEmployeeByIdQuery(employeeId));
@@ -562,6 +589,8 @@ export async function getEmployeeById(employeeId) {
             employmentStartDate: employee.EmploymentStartDate__c,
             employmentEndDate: employee.EmploymentEndDate__c,
             flexId: employee.FlexID__c,
+            adjustedCostFY: employee.AdjustedCostFY__c ?? null,
+            adjustedCostFYTD: employee.AdjustedCostFYTD__c ?? null,
         };
     } catch (error) {
         throw error;

@@ -2,6 +2,7 @@ import {
     getEmployeeById,
     getAssignmentsByEmployeeNumber,
     getAssignmentsMetrics,
+    getEmployeeFYAmounts,
 } from '@/actions/salesforce/salesforce-actions';
 import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
 import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
@@ -14,6 +15,7 @@ import {
     getUTCToday,
     getCurrentFiscalYear,
     getFiscalYearStartDate,
+    getFiscalYearEndDate,
 } from '@/lib/utils';
 import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
 import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
@@ -32,6 +34,7 @@ export default async function EmployeePage({ params }) {
     let flexEmployeeId = null;
     let occupancyData = [];
     let stats = null;
+    let fyAmounts = null;
 
     const errors = {
         employee: null,
@@ -41,11 +44,17 @@ export default async function EmployeePage({ params }) {
         history: null,
     };
 
+    const fyStart = formatDateToISOString(getFiscalYearStartDate(getCurrentFiscalYear()));
+    const fyEnd = formatDateToISOString(getFiscalYearEndDate(getCurrentFiscalYear()));
+
     try {
         employee = await getEmployeeById(employeeId);
         flexEmployeeId = employee.flexId;
-        assignments = await getAssignmentsByEmployeeNumber(employee.employeeId);
-        assignmentsMetrics = await getAssignmentsMetrics(employee.employeeId);
+        [assignments, assignmentsMetrics, fyAmounts] = await Promise.all([
+            getAssignmentsByEmployeeNumber(employee.employeeId),
+            getAssignmentsMetrics(employee.employeeId),
+            getEmployeeFYAmounts(employee.employeeId, fyStart, fyEnd),
+        ]);
     } catch (err) {
         errors.employee = err;
     }
@@ -81,7 +90,11 @@ export default async function EmployeePage({ params }) {
             detailsTab={
                 <>
                     <div className="mb-6">
-                        <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
+                        <EmployeeRecordCardComponent
+                            employee={employee}
+                            fyAmounts={fyAmounts}
+                            error={errors.employee}
+                        />
                     </div>
                     <OccupancyStatsComponent stats={stats} error={errors.stats} />
                 </>
