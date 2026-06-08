@@ -22,6 +22,11 @@ import {
     getEmployeeByIdQuery,
     getEmployeesByNameOrEmployeeIdQuery,
     getQuoteLinesQuery,
+    getAssignmentsByEmployeeNumberQueryDynamic,
+    getAssignmentByIdAndEmployeeNumberQueryDynamic,
+    getAssignmentByIdQueryDynamic,
+    getOpportunitiesQueryDynamic,
+    getOpportunityByIdQueryDynamic,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -29,19 +34,44 @@ import {
     getFiscalYearStartDate,
     getFiscalYearEndDate,
     formatDateToISOString,
+    getPermittedFieldsFromSession,
 } from '@/lib/utils';
 import { PROJECT_TYPE_INTERNAL } from './constants';
+import { auth } from '@/auth';
+import {
+    SALESFORCE_SYSTEM,
+    SF_OBJECT_ASSIGNMENT,
+    SF_OBJECT_OPPORTUNITY,
+} from '@/lib/rba-constants';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
     try {
-        const result = await queryData(getAssignmentsByEmployeeNumberQuery(employeeNumber));
+        const session = await auth();
+        const permittedFields = getPermittedFieldsFromSession(
+            session?.user?.fieldPermissions,
+            SALESFORCE_SYSTEM,
+            SF_OBJECT_ASSIGNMENT
+        );
+        const result = await queryData(
+            getAssignmentsByEmployeeNumberQueryDynamic(employeeNumber, permittedFields)
+        );
+        console.log('result', result);
         return result.map((assignment) => ({
             id: assignment.Id,
             name: assignment.Name,
             startDate: assignment.StartDate__c,
             endDate: assignment.EndDate__c,
             projectStatus: assignment.ProjectStatus__c,
-            projectName: assignment.Project__r.Name,
+            projectName: assignment.Project__r?.Name,
+            projectedHours: assignment.ProjectedHours__c,
+            actualHours: assignment.ActualHours__c,
+            ...(assignment.ActualAmount__c !== undefined && {
+                actualAmount: assignment.ActualAmount__c,
+            }),
+            ...(assignment.ActualCost__c !== undefined && { actualCost: assignment.ActualCost__c }),
+            ...(assignment.ActualProfitability__c !== undefined && {
+                actualProfitability: assignment.ActualProfitability__c,
+            }),
         }));
     } catch (error) {
         throw error;
@@ -66,8 +96,18 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
 
 export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeNumber) {
     try {
+        const session = await auth();
+        const permittedFields = getPermittedFieldsFromSession(
+            session?.user?.fieldPermissions,
+            SALESFORCE_SYSTEM,
+            SF_OBJECT_ASSIGNMENT
+        );
         const results = await queryData(
-            getAssignmentByIdAndEmployeeNumberQuery(assignmentId, employeeNumber)
+            getAssignmentByIdAndEmployeeNumberQueryDynamic(
+                assignmentId,
+                employeeNumber,
+                permittedFields
+            )
         );
 
         if (results?.length === 0) {
@@ -79,13 +119,21 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
         return {
             id: result.Id,
             name: result.Name,
-            flexId: result.Project__r.FlexID__c,
+            flexId: result.Project__r?.FlexID__c,
             startDate: result.StartDate__c,
             endDate: result.EndDate__c,
             projectStatus: result.ProjectStatus__c,
-            projectName: result.Project__r.Name,
+            projectName: result.Project__r?.Name,
             projectedHours: result.ProjectedHours__c,
             actualHours: result.ActualHours__c,
+            actualAmount: result.ActualAmount__c,
+            actualCost: result.ActualCost__c,
+            actualProfitability: result.ActualProfitability__c,
+            ...(result.ActualAmount__c !== undefined && { actualAmount: result.ActualAmount__c }),
+            ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
+            ...(result.ActualProfitability__c !== undefined && {
+                actualProfitability: result.ActualProfitability__c,
+            }),
         };
     } catch (error) {
         throw error;
@@ -94,7 +142,15 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
 
 export async function getAssignmentById(assignmentId) {
     try {
-        const results = await queryData(getAssignmentByIdQuery(assignmentId));
+        const session = await auth();
+        const permittedFields = getPermittedFieldsFromSession(
+            session?.user?.fieldPermissions,
+            SALESFORCE_SYSTEM,
+            SF_OBJECT_ASSIGNMENT
+        );
+        const results = await queryData(
+            getAssignmentByIdQueryDynamic(assignmentId, permittedFields)
+        );
 
         if (results?.length === 0) {
             return null;
@@ -105,13 +161,18 @@ export async function getAssignmentById(assignmentId) {
         return {
             id: result.Id,
             name: result.Name,
-            flexId: result.Project__r.FlexID__c,
+            flexId: result.Project__r?.FlexID__c,
             startDate: result.StartDate__c,
             endDate: result.EndDate__c,
             projectStatus: result.ProjectStatus__c,
-            projectName: result.Project__r.Name,
+            projectName: result.Project__r?.Name,
             projectedHours: result.ProjectedHours__c,
             actualHours: result.ActualHours__c,
+            ...(result.ActualAmount__c !== undefined && { actualAmount: result.ActualAmount__c }),
+            ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
+            ...(result.ActualProfitability__c !== undefined && {
+                actualProfitability: result.ActualProfitability__c,
+            }),
         };
     } catch (error) {
         throw error;
@@ -169,16 +230,24 @@ export async function getCurrentAssignmentsByEmployeeNumber(
 
 export async function getOpportunities() {
     try {
-        const result = await queryData(getOpportunitiesQuery());
+        const session = await auth();
+        const permittedFields = getPermittedFieldsFromSession(
+            session?.user?.fieldPermissions,
+            SALESFORCE_SYSTEM,
+            SF_OBJECT_OPPORTUNITY
+        );
+        const result = await queryData(getOpportunitiesQueryDynamic(permittedFields));
         return result.map((opportunity) => ({
             id: opportunity.Id,
             name: opportunity.Name,
             stage: opportunity.StageName,
             closeDate: opportunity.CloseDate,
-            amount: opportunity.Amount,
-            accountName: opportunity.Account.Name,
+            accountName: opportunity.Account?.Name,
             currency: opportunity.CurrencyIsoCode,
-            productType: opportunity.ProductType__c,
+            ...(opportunity.Amount !== undefined && { amount: opportunity.Amount }),
+            ...(opportunity.ProductType__c !== undefined && {
+                productType: opportunity.ProductType__c,
+            }),
         }));
     } catch (error) {
         throw error;
@@ -206,17 +275,25 @@ export async function getOpportunitiesByName(name) {
 
 export async function getOpportunityById(opportunityId) {
     try {
-        const results = await queryData(getOpportunityByIdQuery(opportunityId));
+        const session = await auth();
+        const permittedFields = getPermittedFieldsFromSession(
+            session?.user?.fieldPermissions,
+            SALESFORCE_SYSTEM,
+            SF_OBJECT_OPPORTUNITY
+        );
+        const results = await queryData(
+            getOpportunityByIdQueryDynamic(opportunityId, permittedFields)
+        );
         const result = results[0];
         return {
             id: result.Id,
             name: result.Name,
             stage: result.StageName,
             closeDate: result.CloseDate,
-            amount: result.Amount,
-            accountName: result.Account.Name,
+            accountName: result.Account?.Name,
             currency: result.CurrencyIsoCode,
-            productType: result.ProductType__c,
+            ...(result.Amount !== undefined && { amount: result.Amount }),
+            ...(result.ProductType__c !== undefined && { productType: result.ProductType__c }),
         };
     } catch (error) {
         throw error;

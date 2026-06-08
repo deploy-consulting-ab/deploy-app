@@ -31,6 +31,7 @@ export async function getPermissionSetById(id) {
             where: { id },
             include: {
                 systemPermissions: true,
+                fieldPermissions: true,
                 users: true,
             },
         });

@@ -2,11 +2,12 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { PermissionSetPermissions } from '@/components/application/setup/permission-sets/permissionset-permissions';
+import { PermissionSetFieldPermissions } from '@/components/application/setup/permission-sets/permissionset-field-permissions';
 import { PermissionSetAssignmentsListComponent } from '@/components/application/setup/permission-sets/permissionset-user-assignments-list';
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { PermissionSetCardActionsComponent } from '@/components/application/setup/permission-sets/permissionset-card-actions';
 
-export async function PermissionSetCardComponent({ permissionSet, totalSystemPermissions }) {
+export async function PermissionSetCardComponent({ permissionSet, totalSystemPermissions, totalFieldPermissions }) {
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">
@@ -38,11 +39,21 @@ export async function PermissionSetCardComponent({ permissionSet, totalSystemPer
                 </CardContent>
             </Card>
 
-            {/* Permissions Card */}
+            {/* System Permissions Card */}
             <PermissionSetPermissions
                 permissionSet={permissionSet}
                 totalSystemPermissions={totalSystemPermissions}
             />
+
+            {/* Field Permissions Card */}
+            {totalFieldPermissions && totalFieldPermissions.length > 0 && (
+                <div className="col-span-2">
+                    <PermissionSetFieldPermissions
+                        permissionSet={permissionSet}
+                        totalFieldPermissions={totalFieldPermissions}
+                    />
+                </div>
+            )}
 
             {/* Users List */}
             <div className="col-span-2">

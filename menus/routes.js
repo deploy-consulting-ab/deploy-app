@@ -46,6 +46,7 @@ export const USERS_ROUTE = `${SETUP_ROUTE}/users`;
 export const PROFILES_ROUTE = `${SETUP_ROUTE}/profiles`;
 export const PERMISSION_SETS_ROUTE = `${SETUP_ROUTE}/permission-sets`;
 export const SYSTEM_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/system-permissions`;
+export const FIELD_PERMISSIONS_ROUTE = `${SETUP_ROUTE}/field-permissions`;
 export const EMPLOYEES_LIST_ROUTE = `${MANAGEMENT_ROUTE}/employees`;
 export const FINANCIALS_ROUTE = `${MANAGEMENT_ROUTE}/financials`;
 export const AGENT_ROUTE = `${HOME_ROUTE}/agent`;
@@ -61,6 +62,7 @@ export const PROTECTED_ROUTES = [
     { path: PROFILES_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PROFILES_PERMISSION
     { path: PERMISSION_SETS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_PERMISSION_SETS_PERMISSION
     { path: SYSTEM_PERMISSIONS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION }, // TO CHANGE TO VIEW_SYSTEM_PERMISSIONS_PERMISSION
+    { path: FIELD_PERMISSIONS_ROUTE, systemPermission: VIEW_SETUP_PERMISSION },
     { path: SETUP_ROUTE, systemPermission: VIEW_SETUP_PERMISSION },
     { path: MANAGEMENT_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },
     { path: EMPLOYEES_LIST_ROUTE, systemPermission: VIEW_MANAGEMENT_PERMISSION },

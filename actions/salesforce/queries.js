@@ -9,6 +9,49 @@ import {
 } from '@/actions/salesforce/constants';
 
 /**
+ * Always-included Assignment fields that are never gated by field permissions.
+ * These are required for core app functionality (routing, status display, etc.)
+ */
+const ASSIGNMENT_BASE_FIELDS = [
+    'Id',
+    'Name',
+    'StartDate__c',
+    'EndDate__c',
+    'ProjectStatus__c',
+    'Project__r.Name',
+    'Project__r.FlexID__c',
+    'ProjectedHours__c',
+    'ActualHours__c',
+];
+
+/**
+ * Always-included Opportunity fields that are never gated by field permissions.
+ */
+const OPPORTUNITY_BASE_FIELDS = [
+    'Id',
+    'Name',
+    'StageName',
+    'CloseDate',
+    'Account.Name',
+    'CurrencyIsoCode',
+];
+
+/**
+ * Build a SOQL SELECT clause from base fields + permitted optional fields.
+ * @param {string[]} baseFields - Always-included fields
+ * @param {Set<string>|null} permittedFields - Optional fields permitted for this user (null = all)
+ * @param {string[]} optionalFields - All optional fields that can be gated
+ * @returns {string} Comma-separated SELECT field list
+ */
+const buildSelectClause = (baseFields, permittedFields, optionalFields) => {
+    if (!permittedFields) {
+        return [...baseFields, ...optionalFields].join(', ');
+    }
+    const allowed = optionalFields.filter((f) => permittedFields.has(f));
+    return [...baseFields, ...allowed].join(', ');
+};
+
+/**
  * Assignments query
  */
 const getAssignmentsByEmployeeNumberQuery = (employeeNumber) => {
@@ -186,6 +229,85 @@ const getEmployeesByNameOrEmployeeIdQuery = (query) => {
             ORDER BY IsActive__c DESC, Name ASC`;
 };
 
+/**
+ * Dynamic Assignment query builders (field-level permission aware)
+ * @param {string} employeeNumber
+ * @param {Set<string>|null} permittedFields - null means all optional fields are included
+ */
+const ASSIGNMENT_OPTIONAL_FIELDS = [
+    'ProjectedHours__c',
+    'ActualHours__c',
+    'ActualAmount__c',
+    'ActualCost__c',
+    'ActualProfitability__c',
+];
+
+const getAssignmentsByEmployeeNumberQueryDynamic = (employeeNumber, permittedFields) => {
+    const select = buildSelectClause(
+        ASSIGNMENT_BASE_FIELDS,
+        permittedFields,
+        ASSIGNMENT_OPTIONAL_FIELDS
+    );
+    return `SELECT ${select} FROM Assignment__c 
+            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
+            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
+            AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            ORDER BY StartDate__c DESC`;
+};
+
+const getAssignmentByIdAndEmployeeNumberQueryDynamic = (
+    assignmentId,
+    employeeNumber,
+    permittedFields
+) => {
+    const select = buildSelectClause(
+        ASSIGNMENT_BASE_FIELDS,
+        permittedFields,
+        ASSIGNMENT_OPTIONAL_FIELDS
+    );
+    return `SELECT ${select} FROM Assignment__c 
+            WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
+};
+
+const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
+    const select = buildSelectClause(
+        ASSIGNMENT_BASE_FIELDS,
+        permittedFields,
+        ASSIGNMENT_OPTIONAL_FIELDS
+    );
+    return `SELECT ${select} FROM Assignment__c 
+            WHERE Id = '${assignmentId}' LIMIT 1`;
+};
+
+/**
+ * Dynamic Opportunity query builders (field-level permission aware)
+ * @param {Set<string>|null} permittedFields - null means all optional fields are included
+ */
+const OPPORTUNITY_OPTIONAL_FIELDS = ['Amount', 'ProductType__c'];
+
+const getOpportunitiesQueryDynamic = (permittedFields) => {
+    const select = buildSelectClause(
+        OPPORTUNITY_BASE_FIELDS,
+        permittedFields,
+        OPPORTUNITY_OPTIONAL_FIELDS
+    );
+    return `SELECT ${select} FROM Opportunity 
+            WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            ORDER BY CloseDate DESC`;
+};
+
+const getOpportunityByIdQueryDynamic = (opportunityId, permittedFields) => {
+    const select = buildSelectClause(
+        OPPORTUNITY_BASE_FIELDS,
+        permittedFields,
+        OPPORTUNITY_OPTIONAL_FIELDS
+    );
+    return `SELECT ${select} FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
+};
+
 export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
@@ -208,4 +330,9 @@ export {
     getEmployeeByIdQuery,
     getEmployeesByNameOrEmployeeIdQuery,
     getQuoteLinesQuery,
+    getAssignmentsByEmployeeNumberQueryDynamic,
+    getAssignmentByIdAndEmployeeNumberQueryDynamic,
+    getAssignmentByIdQueryDynamic,
+    getOpportunitiesQueryDynamic,
+    getOpportunityByIdQueryDynamic,
 };

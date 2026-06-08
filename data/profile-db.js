@@ -26,6 +26,7 @@ export async function getProfileById(id) {
             where: { id },
             include: {
                 systemPermissions: true,
+                fieldPermissions: true,
                 users: true,
             },
         });

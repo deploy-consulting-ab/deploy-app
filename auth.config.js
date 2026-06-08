@@ -51,6 +51,10 @@ const authConfig = {
                 session.user.systemPermissions = token.systemPermissions;
             }
 
+            if (token.fieldPermissions) {
+                session.user.fieldPermissions = token.fieldPermissions;
+            }
+
             if (token.profileId) {
                 session.user.profileId = token.profileId;
             }
@@ -76,6 +80,7 @@ const authConfig = {
                 session.user.flexEmployeeId = token.impersonatedUser.flexEmployeeId;
                 session.user.employeeNumber = token.impersonatedUser.employeeNumber;
                 session.user.systemPermissions = token.impersonatedUser.systemPermissions;
+                session.user.fieldPermissions = token.impersonatedUser.fieldPermissions;
                 session.user.image = token.impersonatedUser.image;
                 session.user.isActive = token.impersonatedUser.isActive;
             }
