@@ -67,6 +67,9 @@ export async function getAssignmentsByEmployeeNumber(employeeNumber) {
             ...(assignment.ActualProfitability__c !== undefined && {
                 actualProfitability: assignment.ActualProfitability__c,
             }),
+            ...(assignment.ActualProfitabilityPercentage__c !== undefined && {
+                actualProfitabilityPercentage: assignment.ActualProfitabilityPercentage__c,
+            }),
         }));
     } catch (error) {
         throw error;
@@ -104,7 +107,6 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
                 permittedFields
             )
         );
-
         if (results?.length === 0) {
             return null;
         }
@@ -126,6 +128,9 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
             ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
             ...(result.ActualProfitability__c !== undefined && {
                 actualProfitability: result.ActualProfitability__c,
+            }),
+            ...(result.ActualProfitabilityPercentage__c !== undefined && {
+                actualProfitabilityPercentage: result.ActualProfitabilityPercentage__c,
             }),
         };
     } catch (error) {
@@ -166,6 +171,9 @@ export async function getAssignmentById(assignmentId) {
             ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
             ...(result.ActualProfitability__c !== undefined && {
                 actualProfitability: result.ActualProfitability__c,
+            }),
+            ...(result.ActualProfitabilityPercentage__c !== undefined && {
+                actualProfitabilityPercentage: result.ActualProfitabilityPercentage__c,
             }),
         };
     } catch (error) {

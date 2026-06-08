@@ -37,6 +37,7 @@ export function AssignmentRecordCardComponent({
         actualAmount,
         actualCost,
         actualProfitability,
+        actualProfitabilityPercentage,
         currencyIsoCode,
     } = assignment;
 
@@ -112,6 +113,16 @@ export function AssignmentRecordCardComponent({
                                 </p>
                                 <p className="font-medium">
                                     {formatCurrency(actualProfitability, currencyIsoCode)}
+                                </p>
+                            </div>
+                        )}
+                        {actualProfitabilityPercentage && (
+                            <div className="space-y-1">
+                                <p className="text-muted-foreground font-semibold text-xs uppercase">
+                                    Actual Profitability %
+                                </p>
+                                <p className="font-medium">
+                                    {actualProfitabilityPercentage.toFixed(1)}%
                                 </p>
                             </div>
                         )}
