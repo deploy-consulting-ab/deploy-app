@@ -29,7 +29,7 @@ export async function FieldPermissionCardComponent({ fieldPermission }) {
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Field API Name</h3>
-                                <p className="text-sm text-gray-500 font-mono">{fieldPermission.fieldName}</p>
+                                <p className="text-sm text-gray-500">{fieldPermission.fieldName}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Description</h3>
@@ -39,17 +39,17 @@ export async function FieldPermissionCardComponent({ fieldPermission }) {
                         <div className="space-y-4">
                             <div>
                                 <h3 className="text-sm font-medium">System</h3>
-                                <Badge variant="outline" className="mt-1 font-mono text-xs">
+                                <Badge variant="outline" className="mt-1">
                                     {fieldPermission.system}
                                 </Badge>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Object Name</h3>
-                                <p className="text-sm text-gray-500 font-mono">{fieldPermission.objectName}</p>
+                                <p className="text-sm text-gray-500">{fieldPermission.objectName}</p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Permission ID</h3>
-                                <p className="text-sm text-gray-500 font-mono text-xs">{fieldPermission.id}</p>
+                                <p className="text-sm text-gray-500">{fieldPermission.id}</p>
                             </div>
                         </div>
                     </div>
