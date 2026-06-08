@@ -19,44 +19,108 @@ import {
 import { formatCurrency } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
-import { RefreshCw, ChevronDown, ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
+import { RefreshCw, ChevronDown, ChevronRight, TrendingUp, TrendingDown, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { getEmployeeProfitabilityData } from '@/actions/salesforce/salesforce-actions';
 
 const SEK = 'SEK';
 const fmt = (v) => formatCurrency(v, SEK);
 
-function ProfitBadge({ value, label = 'FYTD' }) {
-    if (value === null || value === undefined) return null;
-    const positive = value >= 0;
+const METRIC_TOOLTIPS = {
+    projectedInvoicedFY:
+        "Sum of projected invoiced amounts from assignments linked to timecards in the current fiscal year, based on each assignment's Projected Amount FY.",
+    invoicedAmount:
+        'Total invoiced amount from timecards in the current fiscal year (sum of TimecardAmount__c) for qualifying external assignments.',
+    adjustedCostFY:
+        'Total adjusted employment cost allocated for the full current fiscal year (1 Feb – 31 Jan).',
+    projectedProfitabilityFY: 'Projected Invoiced Amount FY minus Adjusted Cost FY.',
+    profitabilityFY: 'Invoiced Amount minus Adjusted Cost FY for the full fiscal year.',
+    profitabilityFYTD: 'Invoiced Amount minus Adjusted Cost FYTD for the fiscal year to date.',
+    employees: 'Active Full-Time and Part-Time employees with FY assignment data.',
+    profitable: 'Employees whose invoiced amount exceeds adjusted cost FYTD.',
+    unprofitable: 'Employees whose invoiced amount is below adjusted cost FYTD.',
+    totalProfitFYTD: 'Sum of invoiced amount minus adjusted cost FYTD across all employees.',
+    project: 'External assignment project name for the current fiscal year.',
+};
+
+function InfoTooltip({ label, description, side = 'top' }) {
+    if (!description) return null;
+
+    return (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <button
+                    type="button"
+                    className="inline-flex shrink-0 cursor-help text-muted-foreground/60 hover:text-muted-foreground"
+                    aria-label={`About ${label}`}
+                >
+                    <Info className="size-3.5" />
+                </button>
+            </TooltipTrigger>
+            <TooltipContent side={side} className="max-w-xs">
+                {description}
+            </TooltipContent>
+        </Tooltip>
+    );
+}
+
+function MetricLabel({ label, description, align = 'left' }) {
     return (
         <span
-            className={`inline-flex flex-col items-end gap-0.5 text-sm font-semibold px-2.5 py-1 rounded-lg tabular-nums whitespace-nowrap ${
-                positive
-                    ? 'bg-deploy-blue/10 text-deploy-blue dark:bg-deploy-blue/20 dark:text-deploy-ocean'
-                    : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+            className={`inline-flex items-center gap-1 min-w-0 ${
+                align === 'right' ? 'justify-end' : ''
             }`}
         >
-            <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
-                {label}
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-                {positive ? (
-                    <TrendingUp className="h-4 w-4 shrink-0" />
-                ) : (
-                    <TrendingDown className="h-4 w-4 shrink-0" />
-                )}
-                {fmt(value)}
-            </span>
+            <span className="truncate">{label}</span>
+            <InfoTooltip label={label} description={description} />
         </span>
     );
 }
 
-function MetricBar({ label, value, maxValue, colorClass }) {
+function ProfitBadge({ value, label = 'FYTD', description }) {
+    if (value === null || value === undefined) return null;
+    const positive = value >= 0;
+    return (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <span
+                    className={`inline-flex flex-col items-end gap-0.5 text-sm font-semibold px-2.5 py-1 rounded-lg tabular-nums whitespace-nowrap cursor-help ${
+                        positive
+                            ? 'bg-deploy-blue/10 text-deploy-blue dark:bg-deploy-blue/20 dark:text-deploy-ocean'
+                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                    }`}
+                >
+                    <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
+                        {label}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5">
+                        {positive ? (
+                            <TrendingUp className="h-4 w-4 shrink-0" />
+                        ) : (
+                            <TrendingDown className="h-4 w-4 shrink-0" />
+                        )}
+                        {fmt(value)}
+                    </span>
+                </span>
+            </TooltipTrigger>
+            {description && (
+                <TooltipContent side="left" className="max-w-xs">
+                    {description}
+                </TooltipContent>
+            )}
+        </Tooltip>
+    );
+}
+
+function MetricBar({ label, value, maxValue, colorClass, description }) {
     const pct = maxValue > 0 ? Math.min((Math.abs(value) / maxValue) * 100, 100) : 0;
     return (
         <div className="space-y-1">
             <div className="flex justify-between items-center gap-2">
-                <span className="text-sm text-muted-foreground truncate">{label}</span>
+                <span className="inline-flex items-center gap-1 text-sm text-muted-foreground min-w-0">
+                    <span className="truncate">{label}</span>
+                    <InfoTooltip label={label} description={description} />
+                </span>
                 <span className="text-sm font-medium tabular-nums shrink-0">{fmt(value)}</span>
             </div>
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
@@ -69,26 +133,45 @@ function MetricBar({ label, value, maxValue, colorClass }) {
 const PROJECT_COLUMNS = [
     {
         accessorKey: 'projectName',
-        header: 'Project',
+        header: () => (
+            <MetricLabel label="Project" description={METRIC_TOOLTIPS.project} />
+        ),
         size: 300,
         minSize: 120,
         maxSize: 500,
-        cell: ({ row, getValue }) => (
-            <span
-                className={`block truncate ${
-                    row.original.isSubtotal
-                        ? 'text-xs font-semibold uppercase tracking-wider text-foreground/80'
-                        : 'text-sm text-foreground/80'
-                }`}
-                title={getValue()}
-            >
-                {getValue()}
-            </span>
-        ),
+        cell: ({ row, getValue }) => {
+            const name = getValue();
+            if (row.original.isSubtotal) {
+                return (
+                    <span className="block truncate text-xs font-semibold uppercase tracking-wider text-foreground/80">
+                        {name}
+                    </span>
+                );
+            }
+
+            return (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <span className="block truncate text-sm text-foreground/80 cursor-default">
+                            {name}
+                        </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-sm">
+                        {name}
+                    </TooltipContent>
+                </Tooltip>
+            );
+        },
     },
     {
         accessorKey: 'projectedAmountFY',
-        header: 'Proj. Invoiced FY',
+        header: () => (
+            <MetricLabel
+                label="Proj. Invoiced FY"
+                description={METRIC_TOOLTIPS.projectedInvoicedFY}
+                align="right"
+            />
+        ),
         size: 150,
         minSize: 110,
         maxSize: 280,
@@ -106,7 +189,13 @@ const PROJECT_COLUMNS = [
     },
     {
         accessorKey: 'timecardAmount',
-        header: 'Invoiced',
+        header: () => (
+            <MetricLabel
+                label="Invoiced"
+                description={METRIC_TOOLTIPS.invoicedAmount}
+                align="right"
+            />
+        ),
         size: 130,
         minSize: 100,
         maxSize: 240,
@@ -241,12 +330,13 @@ function ProjectBreakdownTable({ assignments, totalProjected, totalInvoiced }) {
     );
 }
 
-function ProfitMetric({ label, value }) {
+function ProfitMetric({ label, value, description }) {
     const positive = value >= 0;
     return (
         <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight truncate">
-                {label}
+            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
+                <span className="truncate">{label}</span>
+                <InfoTooltip label={label} description={description} />
             </span>
             <span
                 className={`text-sm font-semibold tabular-nums ${
@@ -284,7 +374,10 @@ function EmployeeCard({ employee }) {
             <CardHeader className="pb-2 pt-4 px-4">
                 <div className="flex items-start justify-between gap-2">
                     <h3 className="font-semibold text-base leading-snug">{employeeName}</h3>
-                    <ProfitBadge value={profitFYTD} />
+                    <ProfitBadge
+                        value={profitFYTD}
+                        description={METRIC_TOOLTIPS.profitabilityFYTD}
+                    />
                 </div>
             </CardHeader>
 
@@ -296,26 +389,41 @@ function EmployeeCard({ employee }) {
                         value={totalProjected}
                         maxValue={maxBar}
                         colorClass="bg-deploy-blue"
+                        description={METRIC_TOOLTIPS.projectedInvoicedFY}
                     />
                     <MetricBar
                         label="Invoiced Amount"
                         value={totalInvoiced}
                         maxValue={maxBar}
                         colorClass="bg-deploy-teal"
+                        description={METRIC_TOOLTIPS.invoicedAmount}
                     />
                     <MetricBar
                         label="Adjusted Cost FY"
                         value={adjustedCostFY}
                         maxValue={maxBar}
                         colorClass="bg-deploy-accent-orange"
+                        description={METRIC_TOOLTIPS.adjustedCostFY}
                     />
                 </div>
 
                 {/* Profitability computed metrics */}
                 <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/50">
-                    <ProfitMetric label="Proj. Prof. FY" value={projProfitFY} />
-                    <ProfitMetric label="Profit FY" value={profitFY} />
-                    <ProfitMetric label="Profit FYTD" value={profitFYTD} />
+                    <ProfitMetric
+                        label="Proj. Prof. FY"
+                        value={projProfitFY}
+                        description={METRIC_TOOLTIPS.projectedProfitabilityFY}
+                    />
+                    <ProfitMetric
+                        label="Profit FY"
+                        value={profitFY}
+                        description={METRIC_TOOLTIPS.profitabilityFY}
+                    />
+                    <ProfitMetric
+                        label="Profit FYTD"
+                        value={profitFYTD}
+                        description={METRIC_TOOLTIPS.profitabilityFYTD}
+                    />
                 </div>
 
                 {/* Expandable project list */}
@@ -361,27 +469,50 @@ function SummaryStrip({ employees }) {
         (acc, e) => {
             const inv = e.assignments.reduce((s, a) => s + a.timecardAmount, 0);
             acc.invoiced += inv;
-            acc.cost += e.adjustedCostFY;
+            acc.costFYTD += e.adjustedCostFYTD;
             return acc;
         },
-        { invoiced: 0, cost: 0 }
+        { invoiced: 0, costFYTD: 0 }
     );
-    const totalProfitFY = totals.invoiced - totals.cost;
+    const totalProfitFYTD = totals.invoiced - totals.costFYTD;
 
     return (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
             {[
-                { label: 'Employees', value: total, isCount: true },
-                { label: 'Profitable', value: profitable, isCount: true, positive: true },
-                { label: 'Unprofitable', value: total - profitable, isCount: true, negative: true },
-                { label: 'Total Profit FY', value: fmt(totalProfitFY), profit: totalProfitFY },
+                {
+                    label: 'Employees',
+                    value: total,
+                    isCount: true,
+                    description: METRIC_TOOLTIPS.employees,
+                },
+                {
+                    label: 'Profitable',
+                    value: profitable,
+                    isCount: true,
+                    positive: true,
+                    description: METRIC_TOOLTIPS.profitable,
+                },
+                {
+                    label: 'Unprofitable',
+                    value: total - profitable,
+                    isCount: true,
+                    negative: true,
+                    description: METRIC_TOOLTIPS.unprofitable,
+                },
+                {
+                    label: 'Total Profit FYTD',
+                    value: fmt(totalProfitFYTD),
+                    profit: totalProfitFYTD,
+                    description: METRIC_TOOLTIPS.totalProfitFYTD,
+                },
             ].map((item) => (
                 <div
                     key={item.label}
                     className="rounded-xl border border-border/30 bg-card px-4 py-3 shadow-sm"
                 >
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                        {item.label}
+                    <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                        <span>{item.label}</span>
+                        <InfoTooltip label={item.label} description={item.description} />
                     </p>
                     <p
                         className={`text-xl font-bold tabular-nums ${
