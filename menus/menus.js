@@ -15,6 +15,7 @@ import {
     DollarSign,
     Bot,
     KeyRound,
+    LineChart,
 } from 'lucide-react';
 import {
     HOME_ROUTE,
@@ -34,6 +35,7 @@ import {
     MANAGEMENT_ROUTE,
     EMPLOYEES_LIST_ROUTE,
     FINANCIALS_ROUTE,
+    EMPLOYEE_PROFITABILITY_ROUTE,
     AGENT_ROUTE,
 } from '@/menus/routes';
 import {
@@ -71,6 +73,11 @@ export const MENU_ITEMS_MAP = {
                 title: 'Financials',
                 url: FINANCIALS_ROUTE,
                 icon: DollarSign,
+            },
+            {
+                title: 'Employee Profitability',
+                url: EMPLOYEE_PROFITABILITY_ROUTE,
+                icon: LineChart,
             },
         ],
     },

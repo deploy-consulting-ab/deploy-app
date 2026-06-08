@@ -23,6 +23,8 @@ import {
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
     getEmployeeFYAmountsQuery,
+    getAllEmployeesFYAmountsQuery,
+    getEmployeesCostsQuery,
 } from './queries';
 import {
     getCurrentFiscalYear,
@@ -571,6 +573,81 @@ export async function getEmployeeFYAmounts(employeeNumber, fyStart, fyEnd) {
     } catch (error) {
         throw error;
     }
+}
+
+/**
+ * Fetch profitability data for all active Full-Time / Part-Time employees.
+ * Returns an array of employee objects, each with their assignment-level FY
+ * financial data merged with their employee-level adjusted cost fields.
+ *
+ * Shape:
+ * [{
+ *   employeeId: string,
+ *   employeeName: string,
+ *   adjustedCostFY: number,
+ *   adjustedCostFYTD: number,
+ *   assignments: [{ assignmentName, projectName, projectedAmountFY, timecardAmount }]
+ * }]
+ */
+export async function getEmployeeProfitabilityData() {
+    const currentFY = getCurrentFiscalYear();
+    const fyStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
+    const fyEnd = formatDateToISOString(getFiscalYearEndDate(currentFY));
+
+    const [assignmentRows, employeeRows] = await Promise.all([
+        queryData(getAllEmployeesFYAmountsQuery(fyStart, fyEnd)),
+        queryData(getEmployeesCostsQuery()),
+    ]);
+
+    const employeeCostMap = new Map();
+    for (const emp of employeeRows) {
+        employeeCostMap.set(emp.EmployeeId__c, {
+            name: emp.Name,
+            adjustedCostFY: emp.AdjustedCostFY__c ?? 0,
+            adjustedCostFYTD: emp.AdjustedCostFYTD__c ?? 0,
+        });
+    }
+
+    const employeeMap = new Map();
+    for (const row of assignmentRows) {
+        const empId = row.employeeId;
+        if (!empId) continue;
+
+        const costs = employeeCostMap.get(empId) ?? {
+            name: row.employeeName,
+            adjustedCostFY: 0,
+            adjustedCostFYTD: 0,
+        };
+
+        if (!employeeMap.has(empId)) {
+            employeeMap.set(empId, {
+                employeeId: empId,
+                employeeName: costs.name || row.employeeName || empId,
+                adjustedCostFY: costs.adjustedCostFY,
+                adjustedCostFYTD: costs.adjustedCostFYTD,
+                assignments: [],
+            });
+        }
+
+        employeeMap.get(empId).assignments.push({
+            assignmentName: row.assignmentName || '-',
+            projectName: row.projectName || row.assignmentName || '-',
+            projectedAmountFY: row.projectedAmountFY ?? 0,
+            timecardAmount: row.timecardAmount ?? 0,
+        });
+    }
+
+    const employees = [...employeeMap.values()].sort((a, b) =>
+        a.employeeName.localeCompare(b.employeeName)
+    );
+
+    for (const employee of employees) {
+        employee.assignments.sort((a, b) =>
+            (a.assignmentName || '').localeCompare(b.assignmentName || '')
+        );
+    }
+
+    return employees;
 }
 
 export async function getEmployeeById(employeeId) {

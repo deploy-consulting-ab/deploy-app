@@ -168,6 +168,38 @@ const getEmployeeFYAmountsQuery = (employeeNumber, fyStart, fyEnd) => {
             GROUP BY Assignment__c`;
 };
 
+/**
+ * Aggregate FY timecard amounts for ALL employees, grouped per assignment.
+ * Returns one row per assignment with employee identity, project name,
+ * sum of timecard amounts, and the assignment's projected FY amount.
+ */
+const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
+    return `SELECT Assignment__c,
+                   MAX(Assignment__r.Resource__r.EmployeeId__c) employeeId,
+                   MAX(Assignment__r.Resource__r.Name) employeeName,
+                   MAX(Assignment__r.Name) assignmentName,
+                   MAX(Assignment__r.Project__r.Name) projectName,
+                   SUM(TimecardAmount__c) timecardAmount,
+                   MAX(Assignment__r.ProjectedAmountFY__c) projectedAmountFY
+            FROM Timecard__c
+            WHERE Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            AND Assignment__r.ProjectStatus__c IN ('Ongoing', 'Completed', 'Not Started')
+            AND Assignment__r.Resource__r.EmploymentType__c IN ('Full-Time', 'Part-Time')
+            AND StartDate__c >= ${fyStart} AND StartDate__c <= ${fyEnd}
+            AND EndDate__c >= ${fyStart} AND EndDate__c <= ${fyEnd}
+            GROUP BY Assignment__c`;
+};
+
+/**
+ * Fetch adjusted cost fields for all active Full-Time / Part-Time employees.
+ */
+const getEmployeesCostsQuery = () => {
+    return `SELECT EmployeeId__c, Name, AdjustedCostFY__c, AdjustedCostFYTD__c
+            FROM Employee__c
+            WHERE EmploymentType__c IN ('Full-Time', 'Part-Time')
+            AND IsActive__c = true`;
+};
+
 /* ─── Opportunity queries ───────────────────────────────────────────────── */
 
 const getOpportunitiesQuery = () => {
@@ -325,4 +357,6 @@ export {
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
     getEmployeeFYAmountsQuery,
+    getAllEmployeesFYAmountsQuery,
+    getEmployeesCostsQuery,
 };
