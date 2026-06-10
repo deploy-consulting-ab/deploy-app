@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { EmployeeFinancialMetrics } from '@/components/application/management/employees/employee-financial-metrics';
-
-function formatMetricCurrency(value, currency = 'SEK') {
-    return value != null ? formatCurrency(value, currency) : null;
-}
+import {
+    EMPLOYEE_FINANCIAL_TOOLTIPS,
+    ProfitBadge,
+} from '@/components/application/management/employees/employee-financial-metric-ui';
 
 export async function EmployeeFinancialCardComponent({ employee, fyAmounts, error }) {
     if (error) {
@@ -13,38 +12,46 @@ export async function EmployeeFinancialCardComponent({ employee, fyAmounts, erro
     }
 
     const { adjustedCostFY, adjustedCostFYTD } = employee;
-    const currency = 'SEK';
     const projectedAmountFY = fyAmounts?.projectedAmountFY ?? null;
-    const actualAmount = fyAmounts?.actualAmount ?? null;
+    const invoicedAmount = fyAmounts?.actualAmount ?? null;
 
     const projectedProfitabilityFY =
         projectedAmountFY != null && adjustedCostFY != null
             ? projectedAmountFY - adjustedCostFY
             : null;
     const profitabilityFY =
-        actualAmount != null && adjustedCostFY != null ? actualAmount - adjustedCostFY : null;
+        invoicedAmount != null && adjustedCostFY != null ? invoicedAmount - adjustedCostFY : null;
     const profitabilityFYTD =
-        actualAmount != null && adjustedCostFYTD != null
-            ? actualAmount - adjustedCostFYTD
+        invoicedAmount != null && adjustedCostFYTD != null
+            ? invoicedAmount - adjustedCostFYTD
             : null;
 
+    const isProfitableFYTD = profitabilityFYTD != null && profitabilityFYTD >= 0;
+
     return (
-        <Card className="w-full transition-all hover:shadow-md border-l-4 border-l-deploy-blue">
-            <CardHeader className="space-y-1 border-b">
-                <CardTitle className="text-base">Financial Overview</CardTitle>
+        <Card
+            className={`w-full transition-all hover:shadow-md border-l-4 ${
+                isProfitableFYTD ? 'border-l-deploy-blue' : 'border-l-deploy-accent-orange'
+            }`}
+        >
+            <CardHeader className="pb-2 pt-4 px-4">
+                <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="text-base">Financial Overview</CardTitle>
+                    <ProfitBadge
+                        value={profitabilityFYTD}
+                        description={EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFYTD}
+                    />
+                </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 pb-4">
                 <EmployeeFinancialMetrics
-                    adjustedCostFY={formatMetricCurrency(adjustedCostFY, currency)}
-                    adjustedCostFYTD={formatMetricCurrency(adjustedCostFYTD, currency)}
-                    projectedInvoicedAmountFY={formatMetricCurrency(projectedAmountFY, currency)}
-                    invoicedAmount={formatMetricCurrency(actualAmount, currency)}
-                    projectedProfitabilityFY={formatMetricCurrency(
-                        projectedProfitabilityFY,
-                        currency
-                    )}
-                    profitabilityFY={formatMetricCurrency(profitabilityFY, currency)}
-                    profitabilityFYTD={formatMetricCurrency(profitabilityFYTD, currency)}
+                    adjustedCostFY={adjustedCostFY}
+                    adjustedCostFYTD={adjustedCostFYTD}
+                    projectedAmountFY={projectedAmountFY}
+                    invoicedAmount={invoicedAmount}
+                    projectedProfitabilityFY={projectedProfitabilityFY}
+                    profitabilityFY={profitabilityFY}
+                    profitabilityFYTD={profitabilityFYTD}
                 />
             </CardContent>
         </Card>

@@ -2,13 +2,10 @@
 
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { CardTitle } from '@/components/ui/card';
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+    EMPLOYEE_FINANCIAL_TOOLTIPS,
+    MetricCell,
+} from '@/components/application/management/employees/employee-financial-metric-ui';
 
 export function MetricField({ label, value, description }) {
     return (
@@ -37,89 +34,151 @@ export function MetricField({ label, value, description }) {
     );
 }
 
-function MetricSectionContent({ children }) {
-    return <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{children}</div>;
-}
-
-export function EmployeeFinancialMetrics({
+function buildMetricColumns({
     adjustedCostFY,
     adjustedCostFYTD,
-    projectedInvoicedAmountFY,
+    projectedAmountFY,
     invoicedAmount,
     projectedProfitabilityFY,
     profitabilityFY,
     profitabilityFYTD,
 }) {
+    return [
+        {
+            title: 'Projected',
+            metrics: [
+                {
+                    label: 'Proj. Invoiced FY',
+                    value: projectedAmountFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.projectedInvoicedFY,
+                },
+                {
+                    label: 'Cost FY',
+                    value: adjustedCostFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFY,
+                },
+                {
+                    label: 'Proj. Prof. FY',
+                    value: projectedProfitabilityFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.projectedProfitabilityFY,
+                    colored: true,
+                },
+            ],
+        },
+        {
+            title: 'Full Year',
+            metrics: [
+                {
+                    label: 'Invoiced FY',
+                    value: invoicedAmount,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.invoicedAmount,
+                },
+                {
+                    label: 'Cost FY',
+                    value: adjustedCostFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFY,
+                },
+                {
+                    label: 'Profit FY',
+                    value: profitabilityFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFY,
+                    colored: true,
+                },
+            ],
+        },
+        {
+            title: 'FYTD',
+            metrics: [
+                {
+                    label: 'Invoiced FY',
+                    value: invoicedAmount,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.invoicedAmount,
+                },
+                {
+                    label: 'Cost FYTD',
+                    value: adjustedCostFYTD,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFYTD,
+                },
+                {
+                    label: 'Profit FYTD',
+                    value: profitabilityFYTD,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFYTD,
+                    colored: true,
+                },
+            ],
+        },
+    ];
+}
+
+function EmployeeFinancialMetricsMobile({ columns }) {
     return (
-        <Accordion
-            type="multiple"
-            defaultValue={['cost', 'invoiced', 'profit']}
-            className="w-full rounded-lg"
-        >
-            <AccordionItem value="cost">
-                <AccordionTrigger className="px-4 hover:no-underline">
-                    <CardTitle className="text-base">Cost</CardTitle>
-                </AccordionTrigger>
-                <AccordionContent className="px-4">
-                    <MetricSectionContent>
-                        <MetricField
-                            label="Adjusted Cost FY"
-                            value={adjustedCostFY}
-                            description="Total adjusted employment cost allocated for the full current fiscal year (1 Feb – 31 Jan)."
-                        />
-                        <MetricField
-                            label="Adjusted Cost FYTD"
-                            value={adjustedCostFYTD}
-                            description="Adjusted employment cost for the current fiscal year to date."
-                        />
-                    </MetricSectionContent>
-                </AccordionContent>
-            </AccordionItem>
+        <div className="flex flex-col gap-3 md:hidden">
+            {columns.map((column, index) => (
+                <div
+                    key={column.title}
+                    className={index > 0 ? 'pt-3 border-t border-border/50' : undefined}
+                >
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-2">
+                        {column.title}
+                    </p>
+                    <div className="space-y-2">
+                        {column.metrics.map((metric) => (
+                            <MetricCell key={metric.label} layout="row" {...metric} />
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
 
-            <AccordionItem value="invoiced">
-                <AccordionTrigger className="px-4 hover:no-underline">
-                    <CardTitle className="text-base">Invoiced</CardTitle>
-                </AccordionTrigger>
-                <AccordionContent className="px-4">
-                    <MetricSectionContent>
-                        <MetricField
-                            label="Projected Invoiced Amount FY"
-                            value={projectedInvoicedAmountFY}
-                            description="Sum of projected invoiced amounts from assignments linked to timecards in the current fiscal year, based on each assignment's ProjectedAmountFY__c."
-                        />
-                        <MetricField
-                            label="Invoiced Amount"
-                            value={invoicedAmount}
-                            description="Total invoiced amount from timecards in the current fiscal year (sum of TimecardAmount__c) for qualifying external assignments."
-                        />
-                    </MetricSectionContent>
-                </AccordionContent>
-            </AccordionItem>
+function EmployeeFinancialMetricsDesktop({ columns }) {
+    const rowLabels = ['Invoiced', 'Cost', 'Profit'];
 
-            <AccordionItem value="profit">
-                <AccordionTrigger className="px-4 hover:no-underline">
-                    <CardTitle className="text-base">Profit</CardTitle>
-                </AccordionTrigger>
-                <AccordionContent className="px-4">
-                    <MetricSectionContent>
-                        <MetricField
-                            label="Projected Profitability FY"
-                            value={projectedProfitabilityFY}
-                            description="Projected Invoiced Amount FY minus Adjusted Cost FY."
-                        />
-                        <MetricField
-                            label="Profitability FY"
-                            value={profitabilityFY}
-                            description="Invoiced Amount minus Adjusted Cost FY for the full fiscal year."
-                        />
-                        <MetricField
-                            label="Profitability FYTD"
-                            value={profitabilityFYTD}
-                            description="Invoiced Amount minus Adjusted Cost FYTD for the fiscal year to date."
-                        />
-                    </MetricSectionContent>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
+    return (
+        <div className="hidden md:grid min-w-0 grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-2.5 items-end">
+            <div />
+            {columns.map((column) => (
+                <span
+                    key={column.title}
+                    className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pb-1 border-b border-border/50"
+                >
+                    {column.title}
+                </span>
+            ))}
+
+            {rowLabels.map((rowLabel, rowIndex) => (
+                <div key={rowLabel} className="contents">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 leading-tight self-center">
+                        {rowLabel}
+                    </span>
+                    {columns.map((column) => {
+                        const metric = column.metrics[rowIndex];
+
+                        return (
+                            <MetricCell
+                                key={`${column.title}-${metric.label}`}
+                                label={metric.label}
+                                value={metric.value}
+                                description={metric.description}
+                                colored={metric.colored}
+                                hideLabel
+                            />
+                        );
+                    })}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export function EmployeeFinancialMetrics(props) {
+    const columns = buildMetricColumns(props);
+
+    return (
+        <>
+            <EmployeeFinancialMetricsMobile columns={columns} />
+            <EmployeeFinancialMetricsDesktop columns={columns} />
+        </>
     );
 }

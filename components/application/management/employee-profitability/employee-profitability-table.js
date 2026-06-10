@@ -19,124 +19,31 @@ import {
 import { formatCurrency } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
-import { RefreshCw, ChevronDown, ChevronRight, TrendingUp, TrendingDown, Info } from 'lucide-react';
+import { RefreshCw, ChevronDown, ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { getEmployeeProfitabilityData } from '@/actions/salesforce/salesforce-actions';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
+import { EmployeeFinancialMetrics } from '@/components/application/management/employees/employee-financial-metrics';
+import {
+    CURRENCY_VALUE_PROMINENT_CLASS,
+    EMPLOYEE_FINANCIAL_TOOLTIPS,
+    InfoTooltip,
+    MetricLabel,
+    ProfitBadge,
+} from '@/components/application/management/employees/employee-financial-metric-ui';
 
 const SEK = 'SEK';
 const fmt = (v) => formatCurrency(v, SEK);
 
 const METRIC_TOOLTIPS = {
-    projectedInvoicedFY:
-        "Sum of projected invoiced amounts from assignments linked to timecards in the current fiscal year, based on each assignment's Projected Amount FY.",
-    invoicedAmount:
-        'Total invoiced amount from timecards in the current fiscal year (sum of TimecardAmount__c) for qualifying external assignments.',
-    adjustedCostFY:
-        'Total adjusted employment cost allocated for the full current fiscal year (1 Feb – 31 Jan).',
-    adjustedCostFYTD: 'Adjusted employment cost for the current fiscal year to date.',
-    projectedProfitabilityFY: 'Projected Invoiced Amount FY minus Adjusted Cost FY.',
-    profitabilityFY: 'Invoiced Amount minus Adjusted Cost FY for the full fiscal year.',
-    profitabilityFYTD: 'Invoiced Amount minus Adjusted Cost FYTD for the fiscal year to date.',
+    ...EMPLOYEE_FINANCIAL_TOOLTIPS,
     employees: 'Active Full-Time and Part-Time employees with FY assignment data.',
     profitable: 'Employees whose invoiced amount exceeds adjusted cost FYTD.',
     unprofitable: 'Employees whose invoiced amount is below adjusted cost FYTD.',
     totalProfitFYTD: 'Sum of invoiced amount minus adjusted cost FYTD across all employees.',
     project: 'External assignment project name for the current fiscal year.',
 };
-
-function InfoTooltip({ label, description, side = 'top' }) {
-    if (!description) return null;
-
-    return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <button
-                    type="button"
-                    className="inline-flex shrink-0 cursor-help text-muted-foreground/60 hover:text-muted-foreground"
-                    aria-label={`About ${label}`}
-                >
-                    <Info className="size-3.5" />
-                </button>
-            </TooltipTrigger>
-            <TooltipContent side={side} className="max-w-xs">
-                {description}
-            </TooltipContent>
-        </Tooltip>
-    );
-}
-
-function MetricLabel({ label, description, align = 'left' }) {
-    return (
-        <span
-            className={`inline-flex items-center gap-1 min-w-0 ${
-                align === 'right' ? 'justify-end' : ''
-            }`}
-        >
-            <span className="truncate">{label}</span>
-            <InfoTooltip label={label} description={description} />
-        </span>
-    );
-}
-
-function ProfitBadge({ value, label = 'FYTD', description }) {
-    if (value === null || value === undefined) return null;
-    const positive = value >= 0;
-    return (
-        <Tooltip>
-            <TooltipTrigger asChild>
-                <span
-                    className={`inline-flex flex-col items-end gap-0.5 text-sm font-semibold px-2.5 py-1 rounded-lg tabular-nums whitespace-nowrap cursor-help ${
-                        positive
-                            ? 'bg-deploy-blue/10 text-deploy-blue dark:bg-deploy-blue/20 dark:text-deploy-ocean'
-                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
-                    }`}
-                >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
-                        {label}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                        {positive ? (
-                            <TrendingUp className="h-4 w-4 shrink-0" />
-                        ) : (
-                            <TrendingDown className="h-4 w-4 shrink-0" />
-                        )}
-                        {fmt(value)}
-                    </span>
-                </span>
-            </TooltipTrigger>
-            {description && (
-                <TooltipContent side="left" className="max-w-xs">
-                    {description}
-                </TooltipContent>
-            )}
-        </Tooltip>
-    );
-}
-
-function MetricCell({ label, value, description, colored = false }) {
-    const positive = value >= 0;
-    return (
-        <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
-                <span className="truncate">{label}</span>
-                <InfoTooltip label={label} description={description} />
-            </span>
-            <span
-                className={`text-sm font-semibold tabular-nums ${
-                    colored
-                        ? positive
-                            ? 'text-emerald-600 dark:text-emerald-400'
-                            : 'text-red-500 dark:text-red-400'
-                        : 'text-foreground'
-                }`}
-            >
-                {fmt(value)}
-            </span>
-        </div>
-    );
-}
 
 const PROJECT_COLUMNS = [
     {
@@ -377,49 +284,15 @@ function EmployeeCard({ employee }) {
             </CardHeader>
 
             <CardContent className="px-4 pb-4 space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                    <MetricCell
-                        label="Proj. Invoiced FY"
-                        value={totalProjected}
-                        description={METRIC_TOOLTIPS.projectedInvoicedFY}
-                    />
-                    <MetricCell
-                        label="Invoiced FY"
-                        value={totalInvoiced}
-                        description={METRIC_TOOLTIPS.invoicedAmount}
-                    />
-                    <MetricCell
-                        label="Cost FY"
-                        value={adjustedCostFY}
-                        description={METRIC_TOOLTIPS.adjustedCostFY}
-                    />
-                    <MetricCell
-                        label="Cost FYTD"
-                        value={adjustedCostFYTD}
-                        description={METRIC_TOOLTIPS.adjustedCostFYTD}
-                    />
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/50">
-                    <MetricCell
-                        label="Proj. Prof. FY"
-                        value={projProfitFY}
-                        description={METRIC_TOOLTIPS.projectedProfitabilityFY}
-                        colored
-                    />
-                    <MetricCell
-                        label="Profit FY"
-                        value={profitFY}
-                        description={METRIC_TOOLTIPS.profitabilityFY}
-                        colored
-                    />
-                    <MetricCell
-                        label="Profit FYTD"
-                        value={profitFYTD}
-                        description={METRIC_TOOLTIPS.profitabilityFYTD}
-                        colored
-                    />
-                </div>
+                <EmployeeFinancialMetrics
+                    adjustedCostFY={adjustedCostFY}
+                    adjustedCostFYTD={adjustedCostFYTD}
+                    projectedAmountFY={totalProjected}
+                    invoicedAmount={totalInvoiced}
+                    projectedProfitabilityFY={projProfitFY}
+                    profitabilityFY={profitFY}
+                    profitabilityFYTD={profitFYTD}
+                />
 
                 {/* Expandable project list */}
                 {assignments.length > 0 && (
@@ -472,7 +345,7 @@ function SummaryStrip({ employees }) {
     const totalProfitFYTD = totals.invoiced - totals.costFYTD;
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 min-w-0">
             {[
                 {
                     label: 'Employees',
@@ -503,14 +376,18 @@ function SummaryStrip({ employees }) {
             ].map((item) => (
                 <div
                     key={item.label}
-                    className="rounded-xl border border-border/30 bg-card px-4 py-3 shadow-sm"
+                    className="min-w-0 rounded-xl border border-border/30 bg-card px-4 py-3 shadow-sm"
                 >
-                    <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                        <span>{item.label}</span>
+                    <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 min-w-0">
+                        <span className="wrap-anywhere">{item.label}</span>
                         <InfoTooltip label={item.label} description={item.description} />
                     </p>
                     <p
-                        className={`text-xl font-bold tabular-nums ${
+                        className={`font-bold ${
+                            item.isCount
+                                ? 'text-xl tabular-nums'
+                                : CURRENCY_VALUE_PROMINENT_CLASS
+                        } ${
                             item.profit !== undefined
                                 ? item.profit >= 0
                                     ? 'text-emerald-600 dark:text-emerald-400'
@@ -522,7 +399,7 @@ function SummaryStrip({ employees }) {
                                     : 'text-foreground'
                         }`}
                     >
-                        {item.isCount ? item.value : item.value}
+                        {item.value}
                     </p>
                 </div>
             ))}
