@@ -7,6 +7,14 @@ import { formatCurrency } from '@/lib/utils';
 const SEK = 'SEK';
 const fmt = (v) => formatCurrency(v, SEK);
 
+/** Keeps currency values readable while allowing wrap instead of overflow. */
+export const CURRENCY_VALUE_CLASS =
+    'text-sm tabular-nums leading-tight min-w-0 max-w-full wrap-anywhere';
+
+/** Larger currency display for summary / headline figures. */
+export const CURRENCY_VALUE_PROMINENT_CLASS =
+    'text-lg sm:text-xl tabular-nums leading-tight min-w-0 max-w-full wrap-anywhere';
+
 export const EMPLOYEE_FINANCIAL_TOOLTIPS = {
     projectedInvoicedFY:
         "Sum of projected invoiced amounts from assignments linked to timecards in the current fiscal year, based on each assignment's Projected Amount FY.",
@@ -62,7 +70,7 @@ export function ProfitBadge({ value, label = 'FYTD', description }) {
         <Tooltip>
             <TooltipTrigger asChild>
                 <span
-                    className={`inline-flex flex-col items-end gap-0.5 text-sm font-semibold px-2.5 py-1 rounded-lg tabular-nums whitespace-nowrap cursor-help ${
+                    className={`hidden md:inline-flex flex-col items-end gap-0.5 min-w-0 max-w-[48%] text-sm font-semibold px-2.5 py-1 rounded-lg cursor-help ${
                         positive
                             ? 'bg-deploy-blue/10 text-deploy-blue dark:bg-deploy-blue/20 dark:text-deploy-ocean'
                             : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
@@ -71,13 +79,15 @@ export function ProfitBadge({ value, label = 'FYTD', description }) {
                     <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">
                         {label}
                     </span>
-                    <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex items-center justify-end gap-1 min-w-0 max-w-full">
                         {positive ? (
                             <TrendingUp className="h-4 w-4 shrink-0" />
                         ) : (
                             <TrendingDown className="h-4 w-4 shrink-0" />
                         )}
-                        {fmt(value)}
+                        <span className={`${CURRENCY_VALUE_CLASS} font-semibold text-right`}>
+                            {fmt(value)}
+                        </span>
                     </span>
                 </span>
             </TooltipTrigger>
@@ -90,26 +100,53 @@ export function ProfitBadge({ value, label = 'FYTD', description }) {
     );
 }
 
-export function MetricCell({ label, value, description, colored = false }) {
+function metricValueClass(colored, hasValue, positive) {
+    if (colored && hasValue) {
+        return positive
+            ? 'text-emerald-600 dark:text-emerald-400'
+            : 'text-red-500 dark:text-red-400';
+    }
+
+    return 'text-foreground';
+}
+
+export function MetricCell({
+    label,
+    value,
+    description,
+    colored = false,
+    hideLabel = false,
+    layout = 'stack',
+}) {
     const hasValue = value !== null && value !== undefined;
     const positive = hasValue && value >= 0;
+    const valueClass = metricValueClass(colored, hasValue, positive);
+
+    if (layout === 'row') {
+        return (
+            <div className="flex items-center justify-between gap-3 min-w-0">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0 shrink">
+                    <span className="truncate">{label}</span>
+                    <InfoTooltip label={label} description={description} />
+                </span>
+                <span className={`${CURRENCY_VALUE_CLASS} font-semibold text-right shrink min-w-0 ${valueClass}`}>
+                    {fmt(value)}
+                </span>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-0.5 min-w-0">
-            <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
-                <span className="truncate">{label}</span>
-                <InfoTooltip label={label} description={description} />
-            </span>
-            <span
-                className={`text-sm font-semibold tabular-nums ${
-                    colored && hasValue
-                        ? positive
-                            ? 'text-emerald-600 dark:text-emerald-400'
-                            : 'text-red-500 dark:text-red-400'
-                        : 'text-foreground'
-                }`}
-            >
-                {fmt(value)}
+            {!hideLabel && (
+                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground leading-tight min-w-0">
+                    <span className="truncate">{label}</span>
+                    <InfoTooltip label={label} description={description} />
+                </span>
+            )}
+            <span className={`inline-flex items-center gap-1 min-w-0 max-w-full ${valueClass}`}>
+                <span className={`${CURRENCY_VALUE_CLASS} font-semibold`}>{fmt(value)}</span>
+                {hideLabel && <InfoTooltip label={label} description={description} />}
             </span>
         </div>
     );

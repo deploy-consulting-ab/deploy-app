@@ -34,54 +34,151 @@ export function MetricField({ label, value, description }) {
     );
 }
 
-export function EmployeeFinancialMetrics({
+function buildMetricColumns({
     adjustedCostFY,
+    adjustedCostFYTD,
     projectedAmountFY,
     invoicedAmount,
     projectedProfitabilityFY,
     profitabilityFY,
     profitabilityFYTD,
 }) {
-    return (
-        <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-2">
-                <MetricCell
-                    label="Proj. Invoiced FY"
-                    value={projectedAmountFY}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.projectedInvoicedFY}
-                />
-                <MetricCell
-                    label="Invoiced FY"
-                    value={invoicedAmount}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.invoicedAmount}
-                />
-                <MetricCell
-                    label="Cost FY"
-                    value={adjustedCostFY}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFY}
-                />
-            </div>
+    return [
+        {
+            title: 'Projected',
+            metrics: [
+                {
+                    label: 'Proj. Invoiced FY',
+                    value: projectedAmountFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.projectedInvoicedFY,
+                },
+                {
+                    label: 'Cost FY',
+                    value: adjustedCostFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFY,
+                },
+                {
+                    label: 'Proj. Prof. FY',
+                    value: projectedProfitabilityFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.projectedProfitabilityFY,
+                    colored: true,
+                },
+            ],
+        },
+        {
+            title: 'Full Year',
+            metrics: [
+                {
+                    label: 'Invoiced FY',
+                    value: invoicedAmount,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.invoicedAmount,
+                },
+                {
+                    label: 'Cost FY',
+                    value: adjustedCostFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFY,
+                },
+                {
+                    label: 'Profit FY',
+                    value: profitabilityFY,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFY,
+                    colored: true,
+                },
+            ],
+        },
+        {
+            title: 'FYTD',
+            metrics: [
+                {
+                    label: 'Invoiced FY',
+                    value: invoicedAmount,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.invoicedAmount,
+                },
+                {
+                    label: 'Cost FYTD',
+                    value: adjustedCostFYTD,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.adjustedCostFYTD,
+                },
+                {
+                    label: 'Profit FYTD',
+                    value: profitabilityFYTD,
+                    description: EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFYTD,
+                    colored: true,
+                },
+            ],
+        },
+    ];
+}
 
-            <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/50">
-                <MetricCell
-                    label="Proj. Prof. FY"
-                    value={projectedProfitabilityFY}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.projectedProfitabilityFY}
-                    colored
-                />
-                <MetricCell
-                    label="Profit FY"
-                    value={profitabilityFY}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFY}
-                    colored
-                />
-                <MetricCell
-                    label="Profit FYTD"
-                    value={profitabilityFYTD}
-                    description={EMPLOYEE_FINANCIAL_TOOLTIPS.profitabilityFYTD}
-                    colored
-                />
-            </div>
+function EmployeeFinancialMetricsMobile({ columns }) {
+    return (
+        <div className="flex flex-col gap-3 md:hidden">
+            {columns.map((column, index) => (
+                <div
+                    key={column.title}
+                    className={index > 0 ? 'pt-3 border-t border-border/50' : undefined}
+                >
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-2">
+                        {column.title}
+                    </p>
+                    <div className="space-y-2">
+                        {column.metrics.map((metric) => (
+                            <MetricCell key={metric.label} layout="row" {...metric} />
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
+    );
+}
+
+function EmployeeFinancialMetricsDesktop({ columns }) {
+    const rowLabels = ['Invoiced', 'Cost', 'Profit'];
+
+    return (
+        <div className="hidden md:grid min-w-0 grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-x-3 gap-y-2.5 items-end">
+            <div />
+            {columns.map((column) => (
+                <span
+                    key={column.title}
+                    className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 pb-1 border-b border-border/50"
+                >
+                    {column.title}
+                </span>
+            ))}
+
+            {rowLabels.map((rowLabel, rowIndex) => (
+                <div key={rowLabel} className="contents">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 leading-tight self-center">
+                        {rowLabel}
+                    </span>
+                    {columns.map((column) => {
+                        const metric = column.metrics[rowIndex];
+
+                        return (
+                            <MetricCell
+                                key={`${column.title}-${metric.label}`}
+                                label={metric.label}
+                                value={metric.value}
+                                description={metric.description}
+                                colored={metric.colored}
+                                hideLabel
+                            />
+                        );
+                    })}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export function EmployeeFinancialMetrics(props) {
+    const columns = buildMetricColumns(props);
+
+    return (
+        <>
+            <EmployeeFinancialMetricsMobile columns={columns} />
+            <EmployeeFinancialMetricsDesktop columns={columns} />
+        </>
     );
 }

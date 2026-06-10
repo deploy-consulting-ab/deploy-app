@@ -24,10 +24,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import Link from 'next/link';
 import { getEmployeeProfitabilityData } from '@/actions/salesforce/salesforce-actions';
 import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
+import { EmployeeFinancialMetrics } from '@/components/application/management/employees/employee-financial-metrics';
 import {
+    CURRENCY_VALUE_PROMINENT_CLASS,
     EMPLOYEE_FINANCIAL_TOOLTIPS,
     InfoTooltip,
-    MetricCell,
     MetricLabel,
     ProfitBadge,
 } from '@/components/application/management/employees/employee-financial-metric-ui';
@@ -283,44 +284,15 @@ function EmployeeCard({ employee }) {
             </CardHeader>
 
             <CardContent className="px-4 pb-4 space-y-4">
-                <div className="grid grid-cols-3 gap-2">
-                    <MetricCell
-                        label="Proj. Invoiced FY"
-                        value={totalProjected}
-                        description={METRIC_TOOLTIPS.projectedInvoicedFY}
-                    />
-                    <MetricCell
-                        label="Invoiced FY"
-                        value={totalInvoiced}
-                        description={METRIC_TOOLTIPS.invoicedAmount}
-                    />
-                    <MetricCell
-                        label="Cost FY"
-                        value={adjustedCostFY}
-                        description={METRIC_TOOLTIPS.adjustedCostFY}
-                    />
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/50">
-                    <MetricCell
-                        label="Proj. Prof. FY"
-                        value={projProfitFY}
-                        description={METRIC_TOOLTIPS.projectedProfitabilityFY}
-                        colored
-                    />
-                    <MetricCell
-                        label="Profit FY"
-                        value={profitFY}
-                        description={METRIC_TOOLTIPS.profitabilityFY}
-                        colored
-                    />
-                    <MetricCell
-                        label="Profit FYTD"
-                        value={profitFYTD}
-                        description={METRIC_TOOLTIPS.profitabilityFYTD}
-                        colored
-                    />
-                </div>
+                <EmployeeFinancialMetrics
+                    adjustedCostFY={adjustedCostFY}
+                    adjustedCostFYTD={adjustedCostFYTD}
+                    projectedAmountFY={totalProjected}
+                    invoicedAmount={totalInvoiced}
+                    projectedProfitabilityFY={projProfitFY}
+                    profitabilityFY={profitFY}
+                    profitabilityFYTD={profitFYTD}
+                />
 
                 {/* Expandable project list */}
                 {assignments.length > 0 && (
@@ -373,7 +345,7 @@ function SummaryStrip({ employees }) {
     const totalProfitFYTD = totals.invoiced - totals.costFYTD;
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 min-w-0">
             {[
                 {
                     label: 'Employees',
@@ -404,14 +376,18 @@ function SummaryStrip({ employees }) {
             ].map((item) => (
                 <div
                     key={item.label}
-                    className="rounded-xl border border-border/30 bg-card px-4 py-3 shadow-sm"
+                    className="min-w-0 rounded-xl border border-border/30 bg-card px-4 py-3 shadow-sm"
                 >
-                    <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                        <span>{item.label}</span>
+                    <p className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1 min-w-0">
+                        <span className="wrap-anywhere">{item.label}</span>
                         <InfoTooltip label={item.label} description={item.description} />
                     </p>
                     <p
-                        className={`text-xl font-bold tabular-nums ${
+                        className={`font-bold ${
+                            item.isCount
+                                ? 'text-xl tabular-nums'
+                                : CURRENCY_VALUE_PROMINENT_CLASS
+                        } ${
                             item.profit !== undefined
                                 ? item.profit >= 0
                                     ? 'text-emerald-600 dark:text-emerald-400'
@@ -423,7 +399,7 @@ function SummaryStrip({ employees }) {
                                     : 'text-foreground'
                         }`}
                     >
-                        {item.isCount ? item.value : item.value}
+                        {item.value}
                     </p>
                 </div>
             ))}

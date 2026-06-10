@@ -46,6 +46,7 @@ export async function EmployeeFinancialCardComponent({ employee, fyAmounts, erro
             <CardContent className="px-4 pb-4">
                 <EmployeeFinancialMetrics
                     adjustedCostFY={adjustedCostFY}
+                    adjustedCostFYTD={adjustedCostFYTD}
                     projectedAmountFY={projectedAmountFY}
                     invoicedAmount={invoicedAmount}
                     projectedProfitabilityFY={projectedProfitabilityFY}
