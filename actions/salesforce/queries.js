@@ -151,13 +151,13 @@ const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
 /**
  * Single aggregate query that starts from Timecard__c, filters by Timecard date range,
  * and reaches up to the parent Assignment via relationship fields.
- * Groups by Assignment so each assignment contributes its ProjectedAmountFY__c exactly once
+ * Groups by Assignment so each assignment contributes its ProjectedAmount__c exactly once
  * (via MAX) and its portion of TimecardAmount__c (via SUM).
  */
 const getEmployeeFYAmountsQuery = (employeeNumber, fyStart, fyEnd) => {
     return `SELECT Assignment__c,
                    SUM(TimecardAmount__c) actualPerAssignment,
-                   MAX(Assignment__r.ProjectedAmountFY__c) projectedPerAssignment
+                   MAX(Assignment__r.ProjectedAmount__c) projectedPerAssignment
             FROM Timecard__c
             WHERE Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}'
             AND Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
@@ -181,7 +181,7 @@ const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
                    MAX(Assignment__r.Name) assignmentName,
                    MAX(Assignment__r.Project__r.Name) projectName,
                    SUM(TimecardAmount__c) timecardAmount,
-                   MAX(Assignment__r.ProjectedAmountFY__c) projectedAmountFY
+                   MAX(Assignment__r.ProjectedAmount__c) projectedAmountFY
             FROM Timecard__c
             WHERE Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
             AND Assignment__r.ProjectStatus__c IN ('Ongoing', 'Completed', 'Not Started')

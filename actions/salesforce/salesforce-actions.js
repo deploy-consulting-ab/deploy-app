@@ -550,7 +550,7 @@ export async function getEmployeesByNameOrEmployeeId(query) {
 }
 
 /**
- * Fetch Projected Amount FY (sum of ProjectedAmountFY__c) and Actual Amount
+ * Fetch Projected Amount FY (sum of ProjectedAmount__c) and Actual Amount
  * (sum of TimecardAmount__c) for an employee's FY assignments.
  * @param {string} employeeNumber - The employee's EmployeeId__c
  * @param {string} fyStart - Fiscal year start date (YYYY-MM-DD)
