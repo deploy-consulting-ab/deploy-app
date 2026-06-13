@@ -5,8 +5,6 @@ import { requireAuth } from '@/lib/require-auth';
 import {
     getFieldPermissions,
     getFieldPermissionById,
-    getFieldPermissionAssignmentsById,
-    getTotalFieldPermissionsCount,
     searchFieldPermissions,
     createFieldPermission,
     updateFieldPermission,
@@ -32,28 +30,14 @@ export async function getFieldPermissionsAction() {
 }
 
 /**
- * Get a field permission by id
- * @param {string} id
- * @returns {Promise<FieldPermission>} The field permission
- */
-export async function getFieldPermissionByIdAction(id) {
-    await requireAuth();
-    try {
-        return await getFieldPermissionById(id);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Get a field permission with its profile and permission set assignments
  * @param {string} id
  * @returns {Promise<FieldPermission>} The field permission with assignments
  */
-export async function getFieldPermissionAssignmentsByIdAction(id) {
+export async function getFieldPermissionByIdAction(id) {
     await requireAuth();
     try {
-        const fieldPermission = await getFieldPermissionAssignmentsById(id);
+        const fieldPermission = await getFieldPermissionById(id);
 
         const allAssignments = [
             ...(fieldPermission?.profiles || []).map((profile) => ({
@@ -68,19 +52,6 @@ export async function getFieldPermissionAssignmentsByIdAction(id) {
 
         fieldPermission.allAssignments = allAssignments;
         return fieldPermission;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Get the total number of field permissions
- * @returns {Promise<number>} The total count
- */
-export async function getTotalFieldPermissionsCountAction() {
-    await requireAuth();
-    try {
-        return await getTotalFieldPermissionsCount();
     } catch (error) {
         throw error;
     }

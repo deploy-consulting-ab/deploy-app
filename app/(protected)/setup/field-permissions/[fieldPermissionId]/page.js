@@ -1,5 +1,5 @@
 import { FieldPermissionCardComponent } from '@/components/application/setup/field-permissions/field-permission-card';
-import { getFieldPermissionAssignmentsByIdAction } from '@/actions/database/field-permission-actions';
+import { getFieldPermissionByIdAction } from '@/actions/database/field-permission-actions';
 
 export default async function FieldPermissionPage({ params }) {
     const { fieldPermissionId } = await params;
@@ -8,7 +8,7 @@ export default async function FieldPermissionPage({ params }) {
     let error = null;
 
     try {
-        fieldPermission = await getFieldPermissionAssignmentsByIdAction(fieldPermissionId);
+        fieldPermission = await getFieldPermissionByIdAction(fieldPermissionId);
     } catch (err) {
         error = err;
     }

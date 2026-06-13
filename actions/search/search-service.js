@@ -16,6 +16,7 @@ import { searchUsersAction } from '@/actions/database/user-actions';
 import { searchProfilesAction } from '@/actions/database/profile-actions';
 import { searchPermissionSetsAction } from '@/actions/database/permissionset-actions';
 import { searchSystemPermissionsAction } from '@/actions/database/system-permission-actions';
+import { searchFieldPermissionsAction } from '@/actions/database/field-permission-actions';
 
 export async function globalSearch(query, limit = 3, employeeNumber, location) {
     if (!query) {
@@ -80,9 +81,19 @@ async function searchByLocation(query, limit, location, permissionsSet, employee
         promises.push(searchProfiles(query));
         promises.push(searchPermissionSets(query));
         promises.push(searchSystemPermissions(query));
+        promises.push(searchFieldPermissions(query));
 
-        const [users, profiles, permissionSets, systemPermissions] = await Promise.all(promises);
-        const records = [...users, ...profiles, ...permissionSets, ...systemPermissions];
+        const [users, profiles, permissionSets, systemPermissions, fieldPermissions] =
+            await Promise.all(promises);
+
+        const records = [
+            ...users,
+            ...profiles,
+            ...permissionSets,
+            ...systemPermissions,
+            ...fieldPermissions,
+        ];
+
         const slicedRecords = records.slice(0, limit);
 
         return {
@@ -207,6 +218,8 @@ async function searchSystemPermissions(query) {
             return [];
         }
 
+        console.log('systemPermissions', systemPermissions);
+
         return systemPermissions.map((systemPermission) => ({
             ...systemPermission,
             type: 'SystemPermission',
@@ -214,6 +227,28 @@ async function searchSystemPermissions(query) {
         }));
     } catch (error) {
         console.error('Search system permissions error:', error);
+        return [];
+    }
+}
+
+async function searchFieldPermissions(query) {
+    try {
+        const fieldPermissions = await searchFieldPermissionsAction(query);
+
+        if (fieldPermissions?.length === 0) {
+            return [];
+        }
+
+        console.log('fieldPermissions', fieldPermissions);
+
+        return fieldPermissions.map((fieldPermission) => ({
+            ...fieldPermission,
+            name: fieldPermission.label,
+            type: 'FieldPermission',
+            subType: fieldPermission.id,
+        }));
+    } catch (error) {
+        console.error('Search field permissions error:', error);
         return [];
     }
 }
