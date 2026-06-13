@@ -9,8 +9,10 @@ import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
+const DEFAULT_STATS = [];
+
 export function StatisticsCardComponent({
-    stats = [],
+    stats = DEFAULT_STATS,
     title = 'Assignments',
     refreshAction,
     error,
@@ -23,40 +25,6 @@ export function StatisticsCardComponent({
             await refreshAction();
         });
     }
-
-    // Color mapping for different stat types
-    const getStatColor = (label) => {
-        const lowerLabel = label?.toLowerCase() || '';
-        if (lowerLabel.includes('active')) return 'var(--deploy-accent-yellow)';
-        if (lowerLabel.includes('proposed')) return 'var(--deploy-accent-orange)';
-        if (lowerLabel.includes('closed')) return 'var(--deploy-accent-lime)';
-        return 'var(--deploy-accent-blue-bright)';
-    };
-
-    // Map label to view filter parameter
-    const getViewFilter = (label) => {
-        const lowerLabel = label?.toLowerCase() || '';
-        if (lowerLabel.includes('all')) return 'all';
-        if (lowerLabel.includes('active') || lowerLabel.includes('ongoing')) return 'ongoing';
-        if (lowerLabel.includes('closed') || lowerLabel.includes('completed')) return 'completed';
-        if (lowerLabel.includes('proposed') || lowerLabel.includes('not started'))
-            return 'not started';
-        return 'all';
-    };
-
-    // Generate mock chart data for each stat
-    const generateChartData = (value) => {
-        const base = value || 1;
-        return [
-            Math.max(0, base - 2),
-            Math.max(0, base - 1),
-            base,
-            Math.max(0, base + 1),
-            base,
-            Math.max(0, base - 1),
-            base,
-        ];
-    };
 
     if (error) {
         return (
@@ -98,7 +66,7 @@ export function StatisticsCardComponent({
             {/* Assignment Stats Cards with Navigation */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-4 border-t border-border/50">
                 {stats.map((stat, index) => {
-                    const viewFilter = getViewFilter(stat.label);
+                    const viewFilter = stat.label?.toLowerCase();
                     const href = `${ASSIGNMENTS_ROUTE}?view=${viewFilter}`;
 
                     return (
