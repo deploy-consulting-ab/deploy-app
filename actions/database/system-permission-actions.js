@@ -1,4 +1,6 @@
 'use server';
+
+import { requireAuth } from '@/lib/require-auth';
 import {
     getSystemPermissions,
     createSystemPermission,
@@ -16,6 +18,7 @@ import { CreateSystemPermissionSchema, UpdateSystemPermissionSchema } from '@/sc
  * @throws {Error} If the system permissions are not found
  */
 export async function getSystemPermissionsAction() {
+    await requireAuth();
     try {
         return await getSystemPermissions();
     } catch (error) {
@@ -30,6 +33,7 @@ export async function getSystemPermissionsAction() {
  * @throws {Error} If the system permission is not found
  */
 export async function getSystemPermissionByIdAction(id) {
+    await requireAuth();
     try {
         return await getSystemPermissionById(id);
     } catch (error) {
@@ -44,6 +48,7 @@ export async function getSystemPermissionByIdAction(id) {
  * @throws {Error} If the system permission assignments are not found
  */
 export async function getSystemPermissionAssignmentsByIdAction(systemPermissionId) {
+    await requireAuth();
     try {
         const permissionAssignments = await getSystemPermissionAssignmentsById(systemPermissionId);
 
@@ -76,6 +81,7 @@ export async function getSystemPermissionAssignmentsByIdAction(systemPermissionI
  * @throws {Error} If the permission is not created
  */
 export async function createSystemPermissionAction(data) {
+    await requireAuth();
     try {
         const validatedFields = CreateSystemPermissionSchema.safeParse(data);
         if (!validatedFields.success) {
@@ -93,6 +99,7 @@ export async function createSystemPermissionAction(data) {
  * @returns {Promise<{ success: string } | { error: string }>} Success or error message
  */
 export async function deleteSystemPermissionAction(id) {
+    await requireAuth();
     try {
         return await deleteSystemPermission(id);
     } catch (error) {
@@ -106,6 +113,7 @@ export async function deleteSystemPermissionAction(id) {
  * @throws {Error} If the total number of permissions is not found
  */
 export async function getTotalSystemPermissionsCountAction() {
+    await requireAuth();
     try {
         return await getTotalSystemPermissionsCount();
     } catch (error) {
@@ -121,6 +129,7 @@ export async function getTotalSystemPermissionsCountAction() {
  * @throws {Error} If the permission is not updated
  */
 export async function updateSystemPermissionAction(id, data) {
+    await requireAuth();
     try {
         const validatedFields = UpdateSystemPermissionSchema.safeParse(data);
 
@@ -136,6 +145,7 @@ export async function updateSystemPermissionAction(id, data) {
 }
 
 export async function searchSystemPermissionsAction(searchTerm) {
+    await requireAuth();
     try {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];

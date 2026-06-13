@@ -1,4 +1,3 @@
-'use server';
 
 import { ProfilesListComponent } from '@/components/application/setup/profiles/profiles-list';
 import { getProfilesAction } from '@/actions/database/profile-actions';

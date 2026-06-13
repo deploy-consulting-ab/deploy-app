@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import { CreateUserSchema } from '@/schemas';
 import bcryptjs from 'bcryptjs';
 import {
@@ -25,6 +27,7 @@ import { sub } from 'date-fns';
  * @throws {Error} If the users are not found
  */
 export async function getUsersAction() {
+    await requireAuth();
     try {
         return await getUsers();
     } catch (error) {
@@ -39,6 +42,7 @@ export async function getUsersAction() {
  * @throws {Error} If the users are not found
  */
 export async function getUsersForProfileAction(profileId) {
+    await requireAuth();
     try {
         return await getUsersForProfile(profileId);
     } catch (error) {
@@ -53,6 +57,7 @@ export async function getUsersForProfileAction(profileId) {
  * @throws {Error} If the user is not created
  */
 export async function createUserAction(values) {
+    await requireAuth();
     try {
         /**
          * Since a hacker can get this server action ID and execute it from postman,
@@ -113,6 +118,7 @@ export async function createUserAction(values) {
  * @throws {Error} If the user is not updated
  */
 export async function updateUserAction(id, data) {
+    await requireAuth();
     try {
         const validatedFields = UpdateUserSchema.safeParse(data);
 
@@ -132,6 +138,7 @@ export async function updateUserAction(id, data) {
  * @throws {Error} If the user is not found
  */
 export async function getUserByIdWithSystemPermissionsAction(id) {
+    await requireAuth();
     try {
         return await getUserByIdWithSystemPermissions(id);
     } catch (error) {
@@ -146,6 +153,7 @@ export async function getUserByIdWithSystemPermissionsAction(id) {
  * @throws {Error} If the user is not deleted
  */
 export async function deleteUserAction(id) {
+    await requireAuth();
     try {
         return await deleteUser(id);
     } catch (error) {
@@ -160,6 +168,7 @@ export async function deleteUserAction(id) {
  * @throws {Error} If the search fails
  */
 export async function searchUsersAction(searchTerm) {
+    await requireAuth();
     try {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];
@@ -179,6 +188,7 @@ export async function searchUsersAction(searchTerm) {
  * @throws {Error} If the update fails
  */
 export async function updateUserProfileAction(userId, profileId) {
+    await requireAuth();
     try {
         if (!userId || !profileId) {
             throw new Error('User ID and Profile ID are required');
@@ -198,6 +208,7 @@ export async function updateUserProfileAction(userId, profileId) {
  * @throws {Error} If the update fails
  */
 export async function addPermissionSetToUserAction(id, permissionSetId) {
+    await requireAuth();
     try {
         return await addPermissionSetToUser(id, permissionSetId);
     } catch (error) {
@@ -211,6 +222,7 @@ export async function addPermissionSetToUserAction(id, permissionSetId) {
  * @returns {Promise<{name: string, employeeNumber: string, flexEmployeeId: string|null}|null>}
  */
 export async function getFlexIdByEmployeeNumberAction(employeeNumber) {
+    await requireAuth();
     try {
         return await getUserByEmployeeNumber(employeeNumber);
     } catch (error) {
@@ -226,6 +238,7 @@ export async function getFlexIdByEmployeeNumberAction(employeeNumber) {
  * @throws {Error} If the update fails
  */
 export async function removePermissionSetFromUserAction(id, permissionSetId) {
+    await requireAuth();
     try {
         return await removePermissionSetFromUser(id, permissionSetId);
     } catch (error) {

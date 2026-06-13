@@ -1,4 +1,6 @@
 'use server';
+
+import { requireAuth } from '@/lib/require-auth';
 import { getProfiles } from '@/data/profile-db';
 import { UpdateProfileSchema } from '@/schemas';
 import {
@@ -18,6 +20,7 @@ import {
  * @throws {Error} If the profiles are not found
  */
 export async function getProfilesAction() {
+    await requireAuth();
     try {
         return await getProfiles();
     } catch (error) {
@@ -33,6 +36,7 @@ export async function getProfilesAction() {
  * @throws {Error} If the profile is not updated
  */
 export async function updateProfileAction(id, data) {
+    await requireAuth();
     try {
         const validatedFields = UpdateProfileSchema.safeParse(data);
 
@@ -54,6 +58,7 @@ export async function updateProfileAction(id, data) {
  * @throws {Error} If the profile is not found
  */
 export async function getProfileByIdAction(id) {
+    await requireAuth();
     try {
         return await getProfileById(id);
     } catch (error) {
@@ -69,6 +74,7 @@ export async function getProfileByIdAction(id) {
  * @throws {Error} If the permission is not added
  */
 export async function addSystemPermissionToProfileAction(profileId, systemPermissionId) {
+    await requireAuth();
     try {
         return await addSystemPermissionToProfile(profileId, systemPermissionId);
     } catch (error) {
@@ -84,6 +90,7 @@ export async function addSystemPermissionToProfileAction(profileId, systemPermis
  * @throws {Error} If the permission is not removed
  */
 export async function removeSystemPermissionFromProfileAction(profileId, systemPermissionId) {
+    await requireAuth();
     try {
         return await removeSystemPermissionFromProfile(profileId, systemPermissionId);
     } catch (error) {
@@ -98,6 +105,7 @@ export async function removeSystemPermissionFromProfileAction(profileId, systemP
  * @throws {Error} If the profile is not created
  */
 export async function createProfileAction(data) {
+    await requireAuth();
     const payload = {
         ...data,
         systemPermissions: data.systemPermissions.map((systemPermission) => ({
@@ -118,6 +126,7 @@ export async function createProfileAction(data) {
  * @throws {Error} If the profile is not deleted
  */
 export async function deleteProfileAction(id) {
+    await requireAuth();
     try {
         return await deleteProfile(id);
     } catch (error) {
@@ -131,6 +140,7 @@ export async function deleteProfileAction(id) {
  * @throws {Error} If the total number of profiles is not found
  */
 export async function getTotalProfilesCountAction() {
+    await requireAuth();
     try {
         return await getTotalProfilesCount();
     } catch (error) {
@@ -139,6 +149,7 @@ export async function getTotalProfilesCountAction() {
 }
 
 export async function searchProfilesAction(searchTerm) {
+    await requireAuth();
     try {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];

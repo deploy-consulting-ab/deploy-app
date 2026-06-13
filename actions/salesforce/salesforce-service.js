@@ -1,4 +1,3 @@
-'use server';
 
 import { unstable_cache, revalidateTag } from 'next/cache';
 import { getSalesforceConnection, invalidateSalesforceConnection } from './salesforce-auth';

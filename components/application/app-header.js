@@ -1,4 +1,3 @@
-'use server';
 
 import { auth } from '@/auth';
 import { ImpersonationBannerComponent } from '@/components/application/impersonation/impersonation-banner';

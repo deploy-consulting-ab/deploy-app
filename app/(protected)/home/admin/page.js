@@ -1,4 +1,3 @@
-'use server';
 
 import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 

@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import { CreateFinancialRecordSchema, UpdateFinancialRecordSchema } from '@/schemas';
 import {
     getFinancials,
@@ -13,6 +15,7 @@ import {
  * @returns {Promise<FinancialRecord[]>}
  */
 export async function getFinancialsAction() {
+    await requireAuth();
     try {
         return await getFinancials();
     } catch (error) {
@@ -26,6 +29,7 @@ export async function getFinancialsAction() {
  * @returns {Promise<FinancialRecord>}
  */
 export async function createFinancialRecordAction(values) {
+    await requireAuth();
     try {
         const validatedFields = CreateFinancialRecordSchema.safeParse(values);
 
@@ -46,6 +50,7 @@ export async function createFinancialRecordAction(values) {
  * @returns {Promise<FinancialRecord>}
  */
 export async function updateFinancialRecordAction(id, values) {
+    await requireAuth();
     try {
         if (!id) {
             throw new Error('Record ID is required');
@@ -69,6 +74,7 @@ export async function updateFinancialRecordAction(id, values) {
  * @returns {Promise<FinancialRecord>}
  */
 export async function deleteFinancialRecordAction(id) {
+    await requireAuth();
     try {
         if (!id) {
             throw new Error('Record ID is required');

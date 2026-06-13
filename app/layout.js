@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
+import Script from 'next/script';
 
 const nunitoSans = Nunito_Sans({ subsets: ['latin'] });
 
@@ -48,6 +49,13 @@ export default async function RootLayout({ children }) {
                     name="viewport"
                     content="width=device-width, initial-scale=1, maximum-scale=1"
                 />
+                {process.env.NODE_ENV === 'development' && (
+                    <Script
+                        src="//unpkg.com/react-grab/dist/index.global.js"
+                        crossOrigin="anonymous"
+                        strategy="beforeInteractive"
+                    />
+                )}
             </head>
             <body className={`${nunitoSans.className} antialiased h-full`} suppressHydrationWarning>
                 <SessionProvider session={session}>

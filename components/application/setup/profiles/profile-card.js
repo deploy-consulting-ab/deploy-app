@@ -1,4 +1,3 @@
-'use server';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ProfilePermissions } from '@/components/application/setup/profiles/profile-permissions';
