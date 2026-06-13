@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import { NoResultsError, NetworkError, ApiError } from '../callouts/errors.js';
 import {
     calculateHolidays,
@@ -44,6 +46,7 @@ import {
  * @returns {Promise<number[]>} Flat array of HTTP status codes (one per created row across all days)
  */
 export async function createTimereport(flexEmployeeId, timecard) {
+    await requireAuth();
     const timeDataEntries = timecard.timeData;
     try {
         // Phase 1: blank all time rows first (must finish before creating new rows)
@@ -218,6 +221,7 @@ export async function getAssignmentTimereportsByProjectId(
     startDate = null,
     endDate = null
 ) {
+    await requireAuth();
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store';
 
@@ -280,6 +284,7 @@ export async function getAssignmentTimereportsForOccupancy(
     startDate = null,
     endDate = null
 ) {
+    await requireAuth();
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store';
 
@@ -348,6 +353,7 @@ export async function getAssignmentTimereportsForOccupancy(
  * @returns {Promise<Object>} The timereports
  */
 export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate) {
+    await requireAuth();
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store'; // force-cache'; -> this will return the data from he cache
 
@@ -432,6 +438,7 @@ export async function getTimereports(flexEmployeeId, weekStartDate, weekEndDate)
  * @returns {Promise<Object>} The absence applications
  */
 export async function getAllAbsence(employeeNumber) {
+    await requireAuth();
     try {
         const flexApiClient = await getFlexApiService();
         return await flexApiClient.getAbsenceApplications(employeeNumber);
@@ -451,6 +458,7 @@ export async function getAllAbsence(employeeNumber) {
  * @returns {Promise<Object>} The holidays
  */
 export async function getHolidays(employeeInformation, options = { cache: 'no-store' }) {
+    await requireAuth();
     const { employeeNumber, yearlyHolidays, carriedOverHolidays } = employeeInformation;
     try {
         const flexApiClient = await getFlexApiService();
@@ -520,6 +528,7 @@ export async function getHolidays(employeeInformation, options = { cache: 'no-st
  * @returns {Promise<Object>} The holiday requests
  */
 export async function getHolidayRequests(employeeNumber, currentDate) {
+    await requireAuth();
     try {
         const flexApiClient = await getFlexApiService();
         const response = await flexApiClient.getAbsenceApplications(
@@ -544,6 +553,7 @@ export async function getHolidayRequests(employeeNumber, currentDate) {
 
 // @TODO: IMPLEMENT THIS: IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> IMPLEMENT THIS
 export async function getSickLeaveRequests(employeeNumber, currentDate) {
+    await requireAuth();
     try {
         const flexApiClient = await getFlexApiService();
         return await flexApiClient.getAbsenceApplications(employeeNumber, SICK_LEAVE_TYPE_ID);
@@ -564,6 +574,7 @@ export async function createAbsenceApplication(
     absenceApplicationType,
     absenceApplicationData
 ) {
+    await requireAuth();
     try {
         switch (absenceApplicationType) {
             case HOLIDAY_TYPE_ID:
@@ -619,6 +630,7 @@ export async function updateAbsenceRequest(
     employmentNumber,
     absenceApplicationData
 ) {
+    await requireAuth();
     try {
         switch (absenceApplicationType) {
             case HOLIDAY_TYPE_ID:
@@ -669,6 +681,7 @@ async function updateHolidayAbsenceApplication(
  * @returns {Promise<Object>} The deleted absence request
  */
 export async function deleteAbsenceRequest(absenceRequestId) {
+    await requireAuth();
     try {
         const flexApiClient = await getFlexApiService();
         return await flexApiClient.deleteAbsenceApplication(absenceRequestId);
@@ -760,6 +773,7 @@ async function getTimereportsForOccupancyFull(
  * @returns {Promise<Array<{month: string, date: string, rate: number}>>}
  */
 export async function getFlexOccupancyRates(flexEmployeeId, startDate, endDate) {
+    await requireAuth();
     const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
@@ -781,6 +795,7 @@ export async function getFlexOccupancyRates(flexEmployeeId, startDate, endDate) 
  * @returns {Promise<Array>}
  */
 export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate = null) {
+    await requireAuth();
     const timereports = await getTimereportsForOccupancyFull(flexEmployeeId, startDate, endDate);
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildFullMonthlyOccupancy(timereports, today);
@@ -812,6 +827,7 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
  * @returns {Promise<{average: number|null, count: number, months: Array}>}
  */
 export async function getFlexOccupancyAverageByDateRange(flexEmployeeId, startDate, endDate) {
+    await requireAuth();
     const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
@@ -841,6 +857,7 @@ export async function getFlexOccupancyAverageByDateRange(flexEmployeeId, startDa
  * @returns {Promise<Object>}
  */
 export async function getFlexOccupancyStatsAnchored(flexEmployeeId, referenceDate) {
+    await requireAuth();
     const refDateObj = referenceDate ? new Date(referenceDate + 'T00:00:00Z') : getUTCToday();
     const currentFY = getCurrentFiscalYear(refDateObj);
     const previousFY = getPreviousFiscalYear(refDateObj);

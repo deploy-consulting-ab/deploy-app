@@ -26,6 +26,7 @@ export function HomeSearchResults({ totalRecords, slicedRecords, handleSelect, o
 
             {totalRecords?.length > 5 && (
                 <button
+                    type="button"
                     onClick={openSearchResults}
                     className="w-full text-sm text-muted-foreground hover:text-foreground mt-4 p-2 hover:bg-accent rounded-md text-center"
                 >

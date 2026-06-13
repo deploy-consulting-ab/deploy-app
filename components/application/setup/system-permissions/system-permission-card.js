@@ -1,4 +1,3 @@
-'use server';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { SystemPermissionAssignmentsListComponent } from '@/components/application/setup/system-permissions/system-permission-assignments-list';

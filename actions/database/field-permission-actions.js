@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import {
     getFieldPermissions,
     getFieldPermissionById,
@@ -21,6 +23,7 @@ import { CreateFieldPermissionSchema, UpdateFieldPermissionSchema } from '@/sche
  * @returns {Promise<FieldPermission[]>} All field permissions
  */
 export async function getFieldPermissionsAction() {
+    await requireAuth();
     try {
         return await getFieldPermissions();
     } catch (error) {
@@ -34,6 +37,7 @@ export async function getFieldPermissionsAction() {
  * @returns {Promise<FieldPermission>} The field permission
  */
 export async function getFieldPermissionByIdAction(id) {
+    await requireAuth();
     try {
         return await getFieldPermissionById(id);
     } catch (error) {
@@ -47,6 +51,7 @@ export async function getFieldPermissionByIdAction(id) {
  * @returns {Promise<FieldPermission>} The field permission with assignments
  */
 export async function getFieldPermissionAssignmentsByIdAction(id) {
+    await requireAuth();
     try {
         const fieldPermission = await getFieldPermissionAssignmentsById(id);
 
@@ -73,6 +78,7 @@ export async function getFieldPermissionAssignmentsByIdAction(id) {
  * @returns {Promise<number>} The total count
  */
 export async function getTotalFieldPermissionsCountAction() {
+    await requireAuth();
     try {
         return await getTotalFieldPermissionsCount();
     } catch (error) {
@@ -86,6 +92,7 @@ export async function getTotalFieldPermissionsCountAction() {
  * @returns {Promise<FieldPermission[]>} Matching field permissions
  */
 export async function searchFieldPermissionsAction(searchTerm) {
+    await requireAuth();
     try {
         if (!searchTerm || searchTerm.trim() === '') {
             return [];
@@ -102,6 +109,7 @@ export async function searchFieldPermissionsAction(searchTerm) {
  * @returns {Promise<FieldPermission>} The created field permission
  */
 export async function createFieldPermissionAction(data) {
+    await requireAuth();
     try {
         const validatedFields = CreateFieldPermissionSchema.safeParse(data);
         if (!validatedFields.success) {
@@ -120,6 +128,7 @@ export async function createFieldPermissionAction(data) {
  * @returns {Promise<FieldPermission>} The updated field permission
  */
 export async function updateFieldPermissionAction(id, data) {
+    await requireAuth();
     try {
         const validatedFields = UpdateFieldPermissionSchema.safeParse(data);
         if (!validatedFields.success) {
@@ -137,6 +146,7 @@ export async function updateFieldPermissionAction(id, data) {
  * @returns {Promise<FieldPermission>} The deleted field permission
  */
 export async function deleteFieldPermissionAction(id) {
+    await requireAuth();
     try {
         return await deleteFieldPermission(id);
     } catch (error) {
@@ -150,6 +160,7 @@ export async function deleteFieldPermissionAction(id) {
  * @param {string} fieldPermissionId
  */
 export async function addFieldPermissionToProfileAction(profileId, fieldPermissionId) {
+    await requireAuth();
     try {
         return await addFieldPermissionToProfile(profileId, fieldPermissionId);
     } catch (error) {
@@ -163,6 +174,7 @@ export async function addFieldPermissionToProfileAction(profileId, fieldPermissi
  * @param {string} fieldPermissionId
  */
 export async function removeFieldPermissionFromProfileAction(profileId, fieldPermissionId) {
+    await requireAuth();
     try {
         return await removeFieldPermissionFromProfile(profileId, fieldPermissionId);
     } catch (error) {
@@ -176,6 +188,7 @@ export async function removeFieldPermissionFromProfileAction(profileId, fieldPer
  * @param {string} fieldPermissionId
  */
 export async function addFieldPermissionToPermissionSetAction(permissionSetId, fieldPermissionId) {
+    await requireAuth();
     try {
         return await addFieldPermissionToPermissionSet(permissionSetId, fieldPermissionId);
     } catch (error) {
@@ -192,6 +205,7 @@ export async function removeFieldPermissionFromPermissionSetAction(
     permissionSetId,
     fieldPermissionId
 ) {
+    await requireAuth();
     try {
         return await removeFieldPermissionFromPermissionSet(permissionSetId, fieldPermissionId);
     } catch (error) {

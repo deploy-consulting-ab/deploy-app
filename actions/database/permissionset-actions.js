@@ -1,4 +1,6 @@
 'use server';
+
+import { requireAuth } from '@/lib/require-auth';
 import {
     getPermissionSets,
     getPermissionSetById,
@@ -20,6 +22,7 @@ import { UpdatePermissionSetSchema } from '@/schemas';
  * @throws {Error} If the permission sets are not found
  */
 export async function getPermissionSetsAction() {
+    await requireAuth();
     try {
         return await getPermissionSets();
     } catch (error) {
@@ -34,6 +37,7 @@ export async function getPermissionSetsAction() {
  * @throws {Error} If the permission set is not found
  */
 export async function getPermissionSetByIdAction(id) {
+    await requireAuth();
     try {
         return await getPermissionSetById(id);
     } catch (error) {
@@ -48,6 +52,7 @@ export async function getPermissionSetByIdAction(id) {
  * @throws {Error} If the permission set is not created
  */
 export async function createPermissionSetAction(data) {
+    await requireAuth();
     const payload = {
         ...data,
         systemPermissions: data.systemPermissions.map((systemPermission) => ({
@@ -69,6 +74,7 @@ export async function createPermissionSetAction(data) {
  * @throws {Error} If the permission set is not updated
  */
 export async function updatePermissionSetAction(id, data) {
+    await requireAuth();
     try {
         const validatedFields = UpdatePermissionSetSchema.safeParse(data);
 
@@ -89,6 +95,7 @@ export async function updatePermissionSetAction(id, data) {
  * @throws {Error} If the permission set is not deleted
  */
 export async function deletePermissionSetAction(id) {
+    await requireAuth();
     try {
         return await deletePermissionSet(id);
     } catch (error) {
@@ -104,6 +111,7 @@ export async function deletePermissionSetAction(id) {
  * @throws {Error} If the permission is not added
  */
 export async function addPermissionToPermissionSetAction(permissionSetId, permissionId) {
+    await requireAuth();
     try {
         return await addPermissionToPermissionSet(permissionSetId, permissionId);
     } catch (error) {
@@ -119,6 +127,7 @@ export async function addPermissionToPermissionSetAction(permissionSetId, permis
  * @throws {Error} If the permission is not removed
  */
 export async function removePermissionFromPermissionSetAction(permissionSetId, permissionId) {
+    await requireAuth();
     try {
         return await removePermissionFromPermissionSet(permissionSetId, permissionId);
     } catch (error) {
@@ -134,6 +143,7 @@ export async function removePermissionFromPermissionSetAction(permissionSetId, p
  * @throws {Error} If the user is not added
  */
 export async function addUserToPermissionSetAction(permissionSetId, userId) {
+    await requireAuth();
     try {
         return await addUserToPermissionSet(permissionSetId, userId);
     } catch (error) {
@@ -149,6 +159,7 @@ export async function addUserToPermissionSetAction(permissionSetId, userId) {
  * @throws {Error} If the user is not removed
  */
 export async function removeUserFromPermissionSetAction(permissionSetId, userId) {
+    await requireAuth();
     try {
         return await removeUserFromPermissionSet(permissionSetId, userId);
     } catch (error) {
@@ -163,6 +174,7 @@ export async function removeUserFromPermissionSetAction(permissionSetId, userId)
  * @throws {Error} If the search fails
  */
 export async function searchPermissionSetsAction(searchTerm) {
+    await requireAuth();
     try {
         return await searchPermissionSets(searchTerm);
     } catch (error) {
@@ -176,6 +188,7 @@ export async function searchPermissionSetsAction(searchTerm) {
  * @throws {Error} If the total number of permission sets is not found
  */
 export async function getTotalPermissionSetsCountAction() {
+    await requireAuth();
     try {
         return await getTotalPermissionSetsCount();
     } catch (error) {

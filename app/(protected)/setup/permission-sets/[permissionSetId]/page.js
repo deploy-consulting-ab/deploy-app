@@ -1,4 +1,3 @@
-'use server';
 
 import { PermissionSetCardComponent } from '@/components/application/setup/permission-sets/permissionset-card';
 import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';

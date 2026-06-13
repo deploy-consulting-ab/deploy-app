@@ -1,4 +1,3 @@
-'use server';
 
 import { AppSidebarLogoComponent } from '@/components/application/sidebar/app-sidebar-logo';
 import {

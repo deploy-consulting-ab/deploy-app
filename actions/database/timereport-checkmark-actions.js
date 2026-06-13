@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import {
     getTimereportCheckmark,
     getTimereportCheckmarksByUser,
@@ -15,6 +17,7 @@ import {
  * @throws {Error} If the query fails
  */
 export async function getTimereportCheckmarkAction(userId, weekStartDate) {
+    await requireAuth();
     try {
         return await getTimereportCheckmark(userId, weekStartDate);
     } catch (error) {
@@ -29,6 +32,7 @@ export async function getTimereportCheckmarkAction(userId, weekStartDate) {
  * @throws {Error} If the query fails
  */
 export async function getTimereportCheckmarksByUserAction(userId) {
+    await requireAuth();
     try {
         return await getTimereportCheckmarksByUser(userId);
     } catch (error) {
@@ -44,6 +48,7 @@ export async function getTimereportCheckmarksByUserAction(userId) {
  * @throws {Error} If the creation fails
  */
 export async function createTimereportCheckmarkAction(userId, weekStartDate) {
+    await requireAuth();
     try {
         // Ensure weekStartDate is a Date object
         const dateObj = new Date(weekStartDate);
@@ -61,6 +66,7 @@ export async function createTimereportCheckmarkAction(userId, weekStartDate) {
  * @throws {Error} If the deletion fails
  */
 export async function deleteTimereportCheckmarkAction(userId, weekStartDate) {
+    await requireAuth();
     try {
         // Ensure weekStartDate is a Date object
         const dateObj = new Date(weekStartDate);

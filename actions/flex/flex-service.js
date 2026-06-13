@@ -1,4 +1,3 @@
-'use server';
 
 import { CalloutService } from '../callouts/callout-service.js';
 import { FLEX_API_CONFIG } from './flex-config.js';

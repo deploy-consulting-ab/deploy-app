@@ -1,4 +1,3 @@
-'use server';
 
 import { auth } from '@/auth';
 import { getFinancialsAction } from '@/actions/database/financials-actions';

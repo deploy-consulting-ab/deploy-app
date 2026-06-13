@@ -1,4 +1,3 @@
-'use server';
 
 import { UserCardComponent } from '@/components/application/setup/users/user-card';
 import { getUserByIdWithSystemPermissionsAction } from '@/actions/database/user-actions';

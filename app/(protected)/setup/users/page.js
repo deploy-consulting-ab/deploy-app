@@ -1,4 +1,3 @@
-'use server';
 
 import { UsersListComponent } from '@/components/application/setup/users/users-list';
 import { getUsersAction } from '@/actions/database/user-actions';

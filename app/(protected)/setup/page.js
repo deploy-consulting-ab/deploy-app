@@ -1,4 +1,3 @@
-'use server';
 
 import { SetupHomeComponent } from '@/components/application/setup/setup-home';
 import { getUsersAction } from '@/actions/database/user-actions';

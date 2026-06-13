@@ -1,4 +1,3 @@
-'use server';
 
 import { Card, CardHeader, CardAction, CardTitle, CardDescription } from '@/components/ui/card';
 

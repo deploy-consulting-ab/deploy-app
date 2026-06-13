@@ -1,4 +1,3 @@
-'use server';
 
 import { CalloutService } from '../callouts/callout-service.js';
 import { SLACK_API_CONFIG, SLACK_WEB_API_CONFIG } from './slack-config.js';

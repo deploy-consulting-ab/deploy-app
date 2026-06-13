@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import { queryData, queryCachedData } from './salesforce-service';
 import {
     getAssignmentTimecardsQuery,
@@ -43,6 +45,7 @@ import {
 } from '@/lib/rba-constants';
 
 export async function getAssignmentsByEmployeeNumber(employeeNumber) {
+    await requireAuth();
     try {
         const session = await auth();
         const permittedFields = getPermittedFieldsFromSession(
@@ -80,6 +83,7 @@ export async function getAssignmentsByEmployeeNumber(employeeNumber) {
 }
 
 export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumber, projectName) {
+    await requireAuth();
     try {
         const result = await queryData(
             getAssignmentsByEmployeeNumberAndProjectNameQuery(employeeNumber, projectName)
@@ -96,6 +100,7 @@ export async function getAssignmentsByEmployeeNumberAndProjectName(employeeNumbe
 }
 
 export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeNumber) {
+    await requireAuth();
     try {
         const session = await auth();
         const permittedFields = getPermittedFieldsFromSession(
@@ -142,6 +147,7 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
 }
 
 export async function getAssignmentById(assignmentId) {
+    await requireAuth();
     try {
         const session = await auth();
         const permittedFields = getPermittedFieldsFromSession(
@@ -185,6 +191,7 @@ export async function getAssignmentById(assignmentId) {
 }
 
 export async function getAssignmentTimecards(assignmentId, employeeNumber) {
+    await requireAuth();
     try {
         const result = await queryData(getAssignmentTimecardsQuery(assignmentId, employeeNumber));
         return result.map((timecard) => ({
@@ -211,6 +218,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(
     weekStartDate,
     weekEndDate
 ) {
+    await requireAuth();
     try {
         const result = await queryData(
             getCurrentAssignmentsByEmployeeNumberQuery(employeeNumber, weekStartDate, weekEndDate)
@@ -234,6 +242,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(
 }
 
 export async function getOpportunities() {
+    await requireAuth();
     try {
         const session = await auth();
         const permittedFields = getPermittedFieldsFromSession(
@@ -260,6 +269,7 @@ export async function getOpportunities() {
 }
 
 export async function getOpportunitiesByName(name) {
+    await requireAuth();
     try {
         const result = await queryData(getOpportunitiesByNameQuery(name));
         return result.map((opportunity) => ({
@@ -279,6 +289,7 @@ export async function getOpportunitiesByName(name) {
 }
 
 export async function getOpportunityById(opportunityId) {
+    await requireAuth();
     try {
         const session = await auth();
         const permittedFields = getPermittedFieldsFromSession(
@@ -306,6 +317,7 @@ export async function getOpportunityById(opportunityId) {
 }
 
 export async function getQuoteLines(opportunityId) {
+    await requireAuth();
     try {
         const results = await queryData(getQuoteLinesQuery(opportunityId));
         return results.map((quoteLine) => ({
@@ -320,6 +332,7 @@ export async function getQuoteLines(opportunityId) {
 }
 
 export async function getRecentOccupancyRate(employeeNumber, dates) {
+    await requireAuth();
     try {
         const result = await queryData(getRecentOccupancyRateQuery(employeeNumber, dates));
 
@@ -340,6 +353,7 @@ export async function getRecentOccupancyRate(employeeNumber, dates) {
 }
 
 export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, lastFiscalYear) {
+    await requireAuth();
     try {
         const result = await queryData(
             getOccupancyRateFromLastFiscalYearQuery(employeeNumber, today, lastFiscalYear)
@@ -360,6 +374,7 @@ export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, 
 }
 
 export async function getOccupancyHistory(employeeNumber, today) {
+    await requireAuth();
     try {
         const result = await queryData(getOccupancyHistoryQuery(employeeNumber, today));
 
@@ -386,6 +401,7 @@ export async function getOccupancyHistory(employeeNumber, today) {
 }
 
 export async function getAssignmentsMetrics(employeeNumber) {
+    await requireAuth();
     try {
         const result = await queryData(getAssignmentsMetricsQuery(employeeNumber));
 
@@ -428,6 +444,7 @@ export async function getAssignmentsMetrics(employeeNumber) {
  * @returns {Promise<Object>} Stats object
  */
 export async function getOccupancyStats(employeeNumber, today) {
+    await requireAuth();
     const currentFY = getCurrentFiscalYear();
     const previousFY = getPreviousFiscalYear();
 
@@ -469,6 +486,7 @@ export async function getOccupancyStats(employeeNumber, today) {
  * @returns {Promise<Object>} Average and record count
  */
 export async function getOccupancyAverageByDateRange(employeeNumber, startDate, endDate) {
+    await requireAuth();
     const records = await queryData(
         getOccupancyByDateRangeQuery(employeeNumber, startDate, endDate)
     );
@@ -489,6 +507,7 @@ export async function getOccupancyAverageByDateRange(employeeNumber, startDate, 
 }
 
 export async function getSalesforcePublicHolidays() {
+    await requireAuth();
     try {
         const result = await queryCachedData(getSalesforcePublicHolidaysQuery(), {
             tags: ['holidays'],
@@ -506,6 +525,7 @@ export async function getSalesforcePublicHolidays() {
 }
 
 export async function getEmployees() {
+    await requireAuth();
     try {
         const result = await queryData(getEmployeesQuery());
         return result.map((employee) => ({
@@ -523,6 +543,7 @@ export async function getEmployees() {
 }
 
 export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
+    await requireAuth();
     try {
         const employeeNumbersString = employeeNumbers.map((num) => `'${num}'`).join(', ');
         const result = await queryData(
@@ -535,6 +556,7 @@ export async function getEmployeesWithActiveAssignments(employeeNumbers, date) {
 }
 
 export async function getEmployeesByNameOrEmployeeId(query) {
+    await requireAuth();
     try {
         const result = await queryData(getEmployeesByNameOrEmployeeIdQuery(query));
         return result.map((employee) => ({
@@ -557,6 +579,7 @@ export async function getEmployeesByNameOrEmployeeId(query) {
  * @param {string} fyEnd - Fiscal year end date (YYYY-MM-DD)
  */
 export async function getEmployeeFYAmounts(employeeNumber, fyStart, fyEnd) {
+    await requireAuth();
     try {
         const rows = await queryData(getEmployeeFYAmountsQuery(employeeNumber, fyStart, fyEnd));
 
@@ -590,6 +613,7 @@ export async function getEmployeeFYAmounts(employeeNumber, fyStart, fyEnd) {
  * }]
  */
 export async function getEmployeeProfitabilityData() {
+    await requireAuth();
     const currentFY = getCurrentFiscalYear();
     const fyStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
     const fyEnd = formatDateToISOString(getFiscalYearEndDate(currentFY));
@@ -640,7 +664,7 @@ export async function getEmployeeProfitabilityData() {
         });
     }
 
-    const employees = [...employeeMap.values()].sort((a, b) =>
+    const employees = employeeMap.values().toSorted((a, b) =>
         a.employeeName.localeCompare(b.employeeName)
     );
 
@@ -654,6 +678,7 @@ export async function getEmployeeProfitabilityData() {
 }
 
 export async function getEmployeeById(employeeId) {
+    await requireAuth();
     try {
         const result = await queryData(getEmployeeByIdQuery(employeeId));
         if (result?.length === 0) {

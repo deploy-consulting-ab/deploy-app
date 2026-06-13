@@ -1,5 +1,7 @@
 'use server';
 
+import { requireAuth } from '@/lib/require-auth';
+
 import { getSlackService, getSlackWebApiService } from './slack-service.js';
 
 /**
@@ -22,6 +24,7 @@ export async function sendSlackTimereport(
     weekEndDate,
     message
 ) {
+    await requireAuth();
     try {
         const body = {
             text: `${employeeName} (${employeeNumber}) ${message} ${weekStartDate} - ${weekEndDate}`,
@@ -36,6 +39,7 @@ export async function sendSlackTimereport(
 }
 
 export async function sendSlackAbsence(message) {
+    await requireAuth();
     try {
         const body = {
             text: message,
@@ -64,6 +68,7 @@ export async function sendSlackAbsence(message) {
  * @throws {Error} If the user is not found in Slack or any API call fails
  */
 export async function sendSlackTimereportReminder(email, weekStartDate, weekEndDate) {
+    await requireAuth();
     try {
         const service = await getSlackWebApiService();
         const slackUserId = await service.lookupUserByEmail(email);
