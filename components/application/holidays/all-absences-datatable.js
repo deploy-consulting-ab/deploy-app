@@ -10,7 +10,13 @@ import {
     getAbsenceStatusText,
     parseToLocalDate,
 } from '@/lib/utils';
-import { ABSENCE_STATUS_CODE, HOLIDAY_TYPE_ID, SICK_LEAVE_TYPE_ID } from '@/actions/flex/constants';
+import {
+    ABSENCE_STATUS_CODE,
+    HOLIDAY_TYPE_ID,
+    SICK_LEAVE_TYPE_ID,
+    PARENTAL_LEAVE_TYPE_ID,
+    ABSENCE_STATUS_TYPE_TEXT,
+} from '@/actions/flex/constants';
 import {
     Select,
     SelectContent,
@@ -21,8 +27,9 @@ import {
 
 const absenceTypeViews = [
     { value: 'all', label: 'All Types' },
-    { value: HOLIDAY_TYPE_ID, label: 'Holiday' },
-    { value: SICK_LEAVE_TYPE_ID, label: 'Sick Leave' },
+    { value: HOLIDAY_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[HOLIDAY_TYPE_ID] },
+    { value: SICK_LEAVE_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[SICK_LEAVE_TYPE_ID] },
+    { value: PARENTAL_LEAVE_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[PARENTAL_LEAVE_TYPE_ID] },
 ];
 
 const columns = [
