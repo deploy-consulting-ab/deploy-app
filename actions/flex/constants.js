@@ -1,6 +1,7 @@
 export const HOLIDAY_TYPE_ID = '948b233d-892e-4d98-9841-0f14a2e55597';
 export const SICK_LEAVE_TYPE_ID = '181fa471-c415-41f2-bb31-995bff0b99e5';
-export const PARENTAL_LEAVE_TYPE_ID = '76f61785-4c54-4cdf-b0ab-3a2a3cb237d3';
+export const PARENTAL_LEAVE_10_DAYS_TYPE_ID = '76f61785-4c54-4cdf-b0ab-3a2a3cb237d3';
+export const PARENTAL_LEAVE_TYPE_ID = 'fe0f07f1-6bd3-4d3d-bce5-cc05024e62ad';
 export const PROJECT_TYPE_ID = '7a21a56d-c4b9-4625-93e0-d9d8c8e2cddf';
 export const ARTICLE_TYPE_ID = 'e507c1c9-b353-4589-b024-ee130002c9a3';
 export const WORKING_TYPE_ID = '87c61adf-09f4-4a48-b993-4bfa1dc0aa43';
@@ -20,12 +21,14 @@ export const ABSENCE_STATUS_CODE = {
 export const ABSENCE_STATUS_TYPE_TEXT = {
     [HOLIDAY_TYPE_ID]: 'PTO',
     [SICK_LEAVE_TYPE_ID]: 'Sick Leave',
+    [PARENTAL_LEAVE_10_DAYS_TYPE_ID]: 'Parental Leave (10 days)',
     [PARENTAL_LEAVE_TYPE_ID]: 'Parental Leave',
 };
 
 export const ABSENCE_TYPE_NAME = {
     [HOLIDAY_TYPE_ID]: 'Holiday Absence Request',
     [SICK_LEAVE_TYPE_ID]: 'Sick Leave Request',
+    [PARENTAL_LEAVE_10_DAYS_TYPE_ID]: 'Parental Leave (10 days) Request',
     [PARENTAL_LEAVE_TYPE_ID]: 'Parental Leave Request',
 };
 
