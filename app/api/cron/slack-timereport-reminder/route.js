@@ -141,22 +141,22 @@ export async function GET(request) {
         // Each message goes to the user's own DM via the Slack Web API.
         // Failures are caught individually so one failed lookup or send does
         // not prevent reminders from reaching the remaining users.
-        const results = [];
-
-        for (const user of usersWithoutCheckmarkAndActiveAssignments) {
-            try {
-                await sendSlackTimereportReminder(user.email, weekStartStr, weekEndStr);
-                results.push({ userId: user.id, name: user.name, status: 'sent' });
-            } catch (error) {
-                console.error(`Failed to send Slack DM reminder to ${user.name}:`, error);
-                results.push({
-                    userId: user.id,
-                    name: user.name,
-                    status: 'failed',
-                    error: error.message,
-                });
-            }
-        }
+        const results = await Promise.all(
+            usersWithoutCheckmarkAndActiveAssignments.map(async (user) => {
+                try {
+                    await sendSlackTimereportReminder(user.email, weekStartStr, weekEndStr);
+                    return { userId: user.id, name: user.name, status: 'sent' };
+                } catch (error) {
+                    console.error(`Failed to send Slack DM reminder to ${user.name}:`, error);
+                    return {
+                        userId: user.id,
+                        name: user.name,
+                        status: 'failed',
+                        error: error.message,
+                    };
+                }
+            })
+        );
 
         return Response.json(
             {
