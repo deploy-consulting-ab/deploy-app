@@ -9,8 +9,6 @@ import {
     deletePermissionSet,
     addPermissionToPermissionSet,
     removePermissionFromPermissionSet,
-    addUserToPermissionSet,
-    removeUserFromPermissionSet,
     searchPermissionSets,
     getTotalPermissionSetsCount,
 } from '@/data/permissionset-db';
@@ -130,38 +128,6 @@ export async function removePermissionFromPermissionSetAction(permissionSetId, p
     await requireAuth();
     try {
         return await removePermissionFromPermissionSet(permissionSetId, permissionId);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Add a user to a permission set
- * @param {string} permissionSetId
- * @param {string} userId
- * @returns {Promise<PermissionSet>} The updated permission set
- * @throws {Error} If the user is not added
- */
-export async function addUserToPermissionSetAction(permissionSetId, userId) {
-    await requireAuth();
-    try {
-        return await addUserToPermissionSet(permissionSetId, userId);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Remove a user from a permission set
- * @param {string} permissionSetId
- * @param {string} userId
- * @returns {Promise<PermissionSet>} The updated permission set
- * @throws {Error} If the user is not removed
- */
-export async function removeUserFromPermissionSetAction(permissionSetId, userId) {
-    await requireAuth();
-    try {
-        return await removeUserFromPermissionSet(permissionSetId, userId);
     } catch (error) {
         throw error;
     }
