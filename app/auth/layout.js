@@ -15,7 +15,6 @@ const AuthLayout = ({ children }) => {
                 playsInline
                 preload="auto"
                 poster="/images/deploy-background-poster.jpg"
-                aria-hidden="true"
                 className="absolute inset-0 w-full h-full object-cover z-0 hidden md:block"
             >
                 <source src="/deploy-background.mp4" type="video/mp4" />
