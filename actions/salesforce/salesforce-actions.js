@@ -36,7 +36,7 @@ import {
     formatDateToISOString,
     getPermittedFieldsFromSession,
 } from '@/lib/utils';
-import { PROJECT_TYPE_INTERNAL } from './constants';
+import { PROJECT_TYPE_MAP } from './constants';
 import { auth } from '@/auth';
 import {
     SALESFORCE_SYSTEM,
@@ -234,7 +234,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(
             roleFlexId: assignment?.Role__r?.FlexID__c,
             projectStatus: assignment.ProjectStatus__c,
             projectCode: assignment.Project__r.ProjectCode__c,
-            color: assignment.ProjectType__c === PROJECT_TYPE_INTERNAL ? '#6b7280' : '#3b82f6',
+            color: assignment.ProjectType__c === PROJECT_TYPE_MAP.INTERNAL ? '#6b7280' : '#3b82f6',
         }));
     } catch (error) {
         throw error;
