@@ -134,6 +134,7 @@ export function GlobalSearch({ user, location }) {
                 />
                 {searchValue && (
                     <button
+                        type="button"
                         onClick={handleClear}
                         className="absolute right-2 top-2 h-5 w-5 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent flex items-center justify-center"
                     >

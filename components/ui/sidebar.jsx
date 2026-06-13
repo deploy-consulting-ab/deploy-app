@@ -255,6 +255,7 @@ function SidebarRail({ className, variant = 'default', ...props }) {
 
     return (
         <button
+            type="button"
             data-sidebar="rail"
             data-slot="sidebar-rail"
             aria-label="Toggle Sidebar"

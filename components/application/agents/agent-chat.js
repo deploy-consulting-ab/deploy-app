@@ -151,6 +151,7 @@ function WelcomeScreen({ onPromptClick }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
                 {SUGGESTED_PROMPTS.map((prompt) => (
                     <button
+                        type="button"
                         key={prompt}
                         onClick={() => onPromptClick(prompt)}
                         className="text-left px-3.5 py-3 rounded-xl border border-border/70 bg-card hover:bg-accent hover:border-border transition-colors text-[15px] text-muted-foreground hover:text-foreground shadow-sm hover:cursor-pointer"

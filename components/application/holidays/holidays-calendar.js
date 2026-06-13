@@ -129,6 +129,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                     <h3 className="text-base font-semibold text-foreground">Your Holidays</h3>
                     <div className="flex items-center gap-2">
                         <button
+                            type="button"
                             onClick={goToPreviousMonth}
                             className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                         >
@@ -138,6 +139,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                             {monthNames[currentMonth]} {currentYear}
                         </span>
                         <button
+                            type="button"
                             onClick={goToNextMonth}
                             className="p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                         >
