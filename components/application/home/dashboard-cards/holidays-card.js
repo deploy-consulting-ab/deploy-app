@@ -132,9 +132,9 @@ export function HolidaysCardComponent({
             {/* Upcoming Holidays List */}
             <div className="space-y-3">
                 {upcomingHolidays.length > 0 ? (
-                    upcomingHolidays.slice(0, 3).map((holiday, index) => (
+                    upcomingHolidays.slice(0, 3).map((holiday) => (
                         <div
-                            key={index}
+                            key={holiday.id}
                             className="p-3 rounded-lg bg-background/50 border border-border/50 hover:border-border transition-colors"
                         >
                             <div className="flex items-start justify-between">
@@ -150,7 +150,8 @@ export function HolidaysCardComponent({
                                     </div>
                                 </div>
                                 <div className="text-xs font-medium text-deploy-accent-lime">
-                                    {holiday.days || 1} day{(holiday.days || 1) !== 1 ? 's' : ''}
+                                    {holiday.days || 1} day
+                                    {(holiday.days || 1) !== 1 ? 's' : ''}
                                 </div>
                             </div>
                         </div>
