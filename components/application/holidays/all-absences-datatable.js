@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { RefreshCw } from 'lucide-react';
+import { getAllAbsence } from '@/actions/flex/flex-actions';
+import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     countSwedishBusinessDaysLocalInclusive,
     formatDateToISOString,
@@ -10,7 +14,14 @@ import {
     getAbsenceStatusText,
     parseToLocalDate,
 } from '@/lib/utils';
-import { ABSENCE_STATUS_CODE, HOLIDAY_TYPE_ID, SICK_LEAVE_TYPE_ID } from '@/actions/flex/constants';
+import {
+    ABSENCE_STATUS_CODE,
+    HOLIDAY_TYPE_ID,
+    SICK_LEAVE_TYPE_ID,
+    PARENTAL_LEAVE_10_DAYS_TYPE_ID,
+    ABSENCE_STATUS_TYPE_TEXT,
+    PARENTAL_LEAVE_TYPE_ID,
+} from '@/actions/flex/constants';
 import {
     Select,
     SelectContent,
@@ -21,8 +32,13 @@ import {
 
 const absenceTypeViews = [
     { value: 'all', label: 'All Types' },
-    { value: HOLIDAY_TYPE_ID, label: 'Holiday' },
-    { value: SICK_LEAVE_TYPE_ID, label: 'Sick Leave' },
+    { value: HOLIDAY_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[HOLIDAY_TYPE_ID] },
+    { value: SICK_LEAVE_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[SICK_LEAVE_TYPE_ID] },
+    {
+        value: PARENTAL_LEAVE_10_DAYS_TYPE_ID,
+        label: ABSENCE_STATUS_TYPE_TEXT[PARENTAL_LEAVE_10_DAYS_TYPE_ID],
+    },
+    { value: PARENTAL_LEAVE_TYPE_ID, label: ABSENCE_STATUS_TYPE_TEXT[PARENTAL_LEAVE_TYPE_ID] },
 ];
 
 const columns = [
@@ -83,20 +99,42 @@ const columns = [
     },
 ];
 
-export function AllAbsencesDatatableComponent({ absences }) {
+function applyAbsenceFilter(data, filterValue) {
+    if (filterValue === 'all') {
+        return data;
+    }
+
+    return data.filter((absence) => absence.AbsenceTypeId === filterValue);
+}
+
+export function AllAbsencesDatatableComponent({ absences, employeeNumber }) {
+    const [allAbsences, setAllAbsences] = useState(absences);
     const [absencesData, setAbsencesData] = useState(absences);
     const [view, setView] = useState('all');
+    const [error, setError] = useState(null);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleRefresh = async () => {
+        if (isRefreshing) {
+            return;
+        }
+        setIsRefreshing(true);
+
+        try {
+            const response = await getAllAbsence(employeeNumber);
+            const freshData = response.Result;
+            setAllAbsences(freshData);
+            setAbsencesData(applyAbsenceFilter(freshData, view));
+            setError(null);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     const handleFilterAbsences = (value) => {
-        let filteredData = null;
-
-        if (value === 'all') {
-            filteredData = absences;
-        } else {
-            filteredData = absences.filter((absence) => absence.AbsenceTypeId === value);
-        }
-
-        setAbsencesData(filteredData);
+        setAbsencesData(applyAbsenceFilter(allAbsences, value));
         setView(value);
     };
 
@@ -115,7 +153,26 @@ export function AllAbsencesDatatableComponent({ absences }) {
         </Select>
     );
 
+    const refreshAbsences = (
+        <Button
+            key="refresh-absences"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+        >
+            <RefreshCw className="h-4 w-4 text-muted-foreground" />
+            <span className="sr-only">Refresh data</span>
+        </Button>
+    );
+
+    const actions = [refreshAbsences];
     const views = [viewByAbsenceType];
+
+    if (error) {
+        return <ErrorDisplayComponent error={error} />;
+    }
 
     return (
         <div className="w-full">
@@ -126,6 +183,7 @@ export function AllAbsencesDatatableComponent({ absences }) {
                 searchKey="FromDate"
                 pageSize={10}
                 views={views}
+                actions={actions}
             />
         </div>
     );

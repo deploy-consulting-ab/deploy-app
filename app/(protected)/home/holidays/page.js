@@ -31,6 +31,7 @@ export default async function HolidaysPage() {
             <HolidaysWrapperComponent
                 holidays={holidays}
                 absences={absences}
+                employeeNumber={employeeNumber}
                 refreshAction={refreshHolidayData}
                 error={error}
                 isNavigationDisabled={true}

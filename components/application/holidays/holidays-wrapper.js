@@ -12,6 +12,7 @@ import { ErrorDisplayComponent } from '@/components/errors/error-display';
 export function HolidaysWrapperComponent({
     holidays,
     absences,
+    employeeNumber,
     refreshAction,
     error,
     isNavigationDisabled = false,
@@ -88,7 +89,10 @@ export function HolidaysWrapperComponent({
             {absences && (
                 <div>
                     <h2 className="text-lg font-semibold mb-4">All Absences</h2>
-                    <AllAbsencesDatatableComponent absences={absences} />
+                    <AllAbsencesDatatableComponent
+                        absences={absences}
+                        employeeNumber={employeeNumber}
+                    />
                 </div>
             )}
         </div>

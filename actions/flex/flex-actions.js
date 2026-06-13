@@ -26,6 +26,8 @@ import {
     HOLIDAY_TYPE_ID,
     COMPANY_ID,
     SICK_LEAVE_TYPE_ID,
+    PARENTAL_LEAVE_10_DAYS_TYPE_ID,
+    PARENTAL_LEAVE_TYPE_ID,
     ABSENCE_STATUS_CODE,
     ARTICLE_TYPE_ID,
 } from './constants.js';
@@ -577,6 +579,56 @@ export async function getSickLeaveRequests(employeeNumber, currentDate) {
     }
 }
 
+export async function getParentalLeave10DaysRequests(employeeNumber, currentDate) {
+    await requireAuth();
+    try {
+        const flexApiClient = await getFlexApiService();
+
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            PARENTAL_LEAVE_10_DAYS_TYPE_ID
+        );
+
+        const currentDateISO = formatDateToISOString(currentDate);
+
+        const filteredResponse = response.Result.filter(
+            (request) => formatDateToISOString(request.FromDate) >= currentDateISO
+        ).map((request) => ({
+            ...request,
+            status: ABSENCE_STATUS_CODE[request.CurrentStatus.Status],
+        }));
+
+        return filteredResponse || [];
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getParentalLeaveRequests(employeeNumber, currentDate) {
+    await requireAuth();
+    try {
+        const flexApiClient = await getFlexApiService();
+
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            PARENTAL_LEAVE_TYPE_ID
+        );
+
+        const currentDateISO = formatDateToISOString(currentDate);
+
+        const filteredResponse = response.Result.filter(
+            (request) => formatDateToISOString(request.FromDate) >= currentDateISO
+        ).map((request) => ({
+            ...request,
+            status: ABSENCE_STATUS_CODE[request.CurrentStatus.Status],
+        }));
+
+        return filteredResponse || [];
+    } catch (error) {
+        throw error;
+    }
+}
+
 /**
  * Create an absence application for a given employee number
  * @param {string} employmentNumber - The employee number
@@ -596,6 +648,16 @@ export async function createAbsenceApplication(
                 return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
             case SICK_LEAVE_TYPE_ID:
                 return createSickAbsenceApplication(employmentNumber, absenceApplicationData);
+            case PARENTAL_LEAVE_10_DAYS_TYPE_ID:
+                return createParentalLeave10DaysAbsenceApplication(
+                    employmentNumber,
+                    absenceApplicationData
+                );
+            case PARENTAL_LEAVE_TYPE_ID:
+                return createParentalLeaveAbsenceApplication(
+                    employmentNumber,
+                    absenceApplicationData
+                );
             default:
                 throw new Error('Invalid absence application type');
         }
@@ -622,6 +684,22 @@ async function createSickAbsenceApplication(employmentNumber, absenceApplication
     return createAbsenceApplicationByType(
         employmentNumber,
         SICK_LEAVE_TYPE_ID,
+        absenceApplicationData
+    );
+}
+
+async function createParentalLeave10DaysAbsenceApplication(employmentNumber, absenceApplicationData) {
+    return createAbsenceApplicationByType(
+        employmentNumber,
+        PARENTAL_LEAVE_10_DAYS_TYPE_ID,
+        absenceApplicationData
+    );
+}
+
+async function createParentalLeaveAbsenceApplication(employmentNumber, absenceApplicationData) {
+    return createAbsenceApplicationByType(
+        employmentNumber,
+        PARENTAL_LEAVE_TYPE_ID,
         absenceApplicationData
     );
 }
@@ -682,6 +760,18 @@ export async function updateAbsenceRequest(
                     employmentNumber,
                     absenceApplicationData
                 );
+            case PARENTAL_LEAVE_10_DAYS_TYPE_ID:
+                return updateParentalLeave10DaysAbsenceApplication(
+                    absenceRequestId,
+                    employmentNumber,
+                    absenceApplicationData
+                );
+            case PARENTAL_LEAVE_TYPE_ID:
+                return updateParentalLeaveAbsenceApplication(
+                    absenceRequestId,
+                    employmentNumber,
+                    absenceApplicationData
+                );
             default:
                 throw new Error('Invalid absence application type');
         }
@@ -729,6 +819,46 @@ async function updateSickAbsenceApplication(
             toDate: absenceApplicationData.ToDate,
             employmentNumber: employmentNumber,
             absenceTypeId: SICK_LEAVE_TYPE_ID,
+            companyId: COMPANY_ID,
+        };
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function updateParentalLeave10DaysAbsenceApplication(
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        const payload = {
+            fromDate: absenceApplicationData.FromDate,
+            toDate: absenceApplicationData.ToDate,
+            employmentNumber: employmentNumber,
+            absenceTypeId: PARENTAL_LEAVE_10_DAYS_TYPE_ID,
+            companyId: COMPANY_ID,
+        };
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function updateParentalLeaveAbsenceApplication(
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        const payload = {
+            fromDate: absenceApplicationData.FromDate,
+            toDate: absenceApplicationData.ToDate,
+            employmentNumber: employmentNumber,
+            absenceTypeId: PARENTAL_LEAVE_TYPE_ID,
             companyId: COMPANY_ID,
         };
         const flexApiClient = await getFlexApiService();
