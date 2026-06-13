@@ -9,14 +9,8 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    const {
-        name,
-        isActive,
-        employeeId,
-        employmentType,
-        employmentStartDate,
-        employmentEndDate,
-    } = employee;
+    const { name, isActive, employeeId, employmentType, employmentStartDate, employmentEndDate } =
+        employee;
 
     return (
         <Card className="w-full transition-all hover:shadow-md border-l-4 border-l-deploy-blue">
@@ -34,9 +28,7 @@ export async function EmployeeRecordCardComponent({ employee, error }) {
                         }
                         variant="outline"
                     >
-                        <span className="uppercase">
-                            {isActive ? 'Active' : 'Inactive'}
-                        </span>
+                        <span className="uppercase">{isActive ? 'Active' : 'Inactive'}</span>
                     </Badge>
                 </div>
             </CardHeader>

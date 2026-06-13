@@ -587,10 +587,7 @@ export async function getEmployeeFYAmounts(employeeNumber, fyStart, fyEnd) {
             (sum, row) => sum + (row.projectedPerAssignment ?? 0),
             0
         );
-        const actualAmount = rows.reduce(
-            (sum, row) => sum + (row.actualPerAssignment ?? 0),
-            0
-        );
+        const actualAmount = rows.reduce((sum, row) => sum + (row.actualPerAssignment ?? 0), 0);
 
         return { projectedAmountFY, actualAmount };
     } catch (error) {

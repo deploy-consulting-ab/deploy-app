@@ -1,4 +1,3 @@
-
 import { PermissionSetCardComponent } from '@/components/application/setup/permission-sets/permissionset-card';
 import { getPermissionSetByIdAction } from '@/actions/database/permissionset-actions';
 import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';

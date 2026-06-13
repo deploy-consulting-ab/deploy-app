@@ -704,11 +704,7 @@ export async function deleteAbsenceRequest(absenceRequestId) {
  * @returns {Promise<Array<{weekStartDate: string, weekEndDate: string,
  *   externalHours: number[], internalHours: number[]}>>} sorted newest week first
  */
-async function getTimereportsForOccupancyFull(
-    flexEmployeeId,
-    startDate = null,
-    endDate = null
-) {
+async function getTimereportsForOccupancyFull(flexEmployeeId, startDate = null, endDate = null) {
     const flexApiClient = await getFlexApiService();
     flexApiClient.config.cache = 'no-store';
 
@@ -774,7 +770,11 @@ async function getTimereportsForOccupancyFull(
  */
 export async function getFlexOccupancyRates(flexEmployeeId, startDate, endDate) {
     await requireAuth();
-    const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
+    const timereports = await getAssignmentTimereportsForOccupancy(
+        flexEmployeeId,
+        startDate,
+        endDate
+    );
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
 
@@ -800,22 +800,31 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildFullMonthlyOccupancy(timereports, today);
 
-    return monthly.map(({
-        year, month, monthName, date,
-        externalHours, internalHours, totalHours, totalMonthlyHours, rate,
-    }) => ({
-        id: date,
-        month: monthName,
-        year: String(year),
-        period: `${monthName} ${year}`,
-        date,
-        rate,
-        status: rate,
-        externalHours,
-        internalHours,
-        totalHours,
-        totalMonthlyHours,
-    }));
+    return monthly.map(
+        ({
+            year,
+            month,
+            monthName,
+            date,
+            externalHours,
+            internalHours,
+            totalHours,
+            totalMonthlyHours,
+            rate,
+        }) => ({
+            id: date,
+            month: monthName,
+            year: String(year),
+            period: `${monthName} ${year}`,
+            date,
+            rate,
+            status: rate,
+            externalHours,
+            internalHours,
+            totalHours,
+            totalMonthlyHours,
+        })
+    );
 }
 
 /**
@@ -828,7 +837,11 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
  */
 export async function getFlexOccupancyAverageByDateRange(flexEmployeeId, startDate, endDate) {
     await requireAuth();
-    const timereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
+    const timereports = await getAssignmentTimereportsForOccupancy(
+        flexEmployeeId,
+        startDate,
+        endDate
+    );
     const today = endDate ? new Date(endDate + 'T00:00:00Z') : getUTCToday();
     const monthly = buildMonthlyOccupancyFromWeeks(timereports, today);
 

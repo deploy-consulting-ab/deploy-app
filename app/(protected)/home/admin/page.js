@@ -1,4 +1,3 @@
-
 import { CreateUserComponent } from '@/components/application/setup/users/create-user';
 
 const AdminPage = async () => {

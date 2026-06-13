@@ -1,4 +1,3 @@
-
 import { auth } from '@/auth';
 import { OccupancyChartComponent } from '@/components/application/occupancy/occupancy-chart';
 import {

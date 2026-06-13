@@ -217,9 +217,7 @@ export function ProfileUserAssignmentsListComponent({ users, profileId }) {
             key="create-profile-user-assignment"
         >
             <DialogTrigger asChild>
-                <Button size="sm"
-                className="hover:cursor-pointer"
-            >
+                <Button size="sm" className="hover:cursor-pointer">
                     <CirclePlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

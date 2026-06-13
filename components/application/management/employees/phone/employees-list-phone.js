@@ -24,14 +24,13 @@ export function EmployeesListPhoneComponent({ employees, error }) {
 
     const filteredEmployees = () => {
         return (
-            employees
-                ?.filter(
-                    (emp) =>
-                        searchQuery === '' ||
-                        emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        (emp.employeeId &&
-                            emp.employeeId.toLowerCase().includes(searchQuery.toLowerCase()))
-                ) || []
+            employees?.filter(
+                (emp) =>
+                    searchQuery === '' ||
+                    emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (emp.employeeId &&
+                        emp.employeeId.toLowerCase().includes(searchQuery.toLowerCase()))
+            ) || []
         );
     };
 
@@ -92,9 +91,7 @@ export function EmployeesListPhoneComponent({ employees, error }) {
                 </div>
             )}
             {!hasMore && filtered.length > 0 && (
-                <div className="text-center py-4 text-sm text-gray-500">
-                    All employees loaded
-                </div>
+                <div className="text-center py-4 text-sm text-gray-500">All employees loaded</div>
             )}
         </div>
     );

@@ -40,7 +40,13 @@ import {
     deleteFinancialRecordAction,
 } from '@/actions/database/financials-actions';
 import { toastRichSuccess, toastRichError } from '@/lib/toast-library';
-import { formatSEK, getCurrentFiscalYear, buildComputedTotal, getFinancialFiscalYears, attachYearOverYearChanges } from '@/lib/utils';
+import {
+    formatSEK,
+    getCurrentFiscalYear,
+    buildComputedTotal,
+    getFinancialFiscalYears,
+    attachYearOverYearChanges,
+} from '@/lib/utils';
 import { QUARTER_LABELS, QUARTER_FILTER_OPTIONS } from './financials-constants';
 
 export function FinancialsListDesktopComponent({

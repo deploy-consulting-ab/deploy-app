@@ -122,13 +122,15 @@ export function PermissionSetEditForm({ permissionSet, onSubmit, onEditingChange
                             type="button"
                             variant="outline"
                             onClick={() => onEditingChange(false)}
-                className="hover:cursor-pointer"
-            >
+                            className="hover:cursor-pointer"
+                        >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isSubmitting}
-                className="hover:cursor-pointer"
-            >
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="hover:cursor-pointer"
+                        >
                             {isSubmitting ? 'Saving...' : 'Save'}
                         </Button>
                     </div>

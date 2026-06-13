@@ -129,7 +129,9 @@ export function MetricCell({
                     <span className="truncate">{label}</span>
                     <InfoTooltip label={label} description={description} />
                 </span>
-                <span className={`${CURRENCY_VALUE_CLASS} font-semibold text-right shrink min-w-0 ${valueClass}`}>
+                <span
+                    className={`${CURRENCY_VALUE_CLASS} font-semibold text-right shrink min-w-0 ${valueClass}`}
+                >
                     {fmt(value)}
                 </span>
             </div>

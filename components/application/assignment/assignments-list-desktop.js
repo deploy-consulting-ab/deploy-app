@@ -227,8 +227,8 @@ export function AssignmentsListDesktopComponent({
             size="icon"
             onClick={handleRefresh}
             disabled={isRefreshing}
-                className="hover:cursor-pointer"
-            >
+            className="hover:cursor-pointer"
+        >
             <RefreshCw className="h-4 w-4 text-muted-foreground" />
             <span className="sr-only">Refresh data</span>
         </Button>

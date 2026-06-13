@@ -8,18 +8,8 @@ export function EmployeesListComponent({ employees, error }) {
     const isMobile = useIsMobile();
 
     if (isMobile) {
-        return (
-            <EmployeesListPhoneComponent
-                employees={employees}
-                error={error}
-            />
-        );
+        return <EmployeesListPhoneComponent employees={employees} error={error} />;
     }
 
-    return (
-        <EmployeesListDesktopComponent
-            employees={employees}
-            error={error}
-        />
-    );
+    return <EmployeesListDesktopComponent employees={employees} error={error} />;
 }

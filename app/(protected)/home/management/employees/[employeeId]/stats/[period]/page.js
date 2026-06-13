@@ -18,11 +18,7 @@ export default async function EmployeeOccupancyPage({ params }) {
     }
 
     if (employeeError || !employee) {
-        return (
-            <ErrorDisplayComponent
-                error={employeeError}
-            />
-        );
+        return <ErrorDisplayComponent error={employeeError} />;
     }
 
     const flexEmployeeId = employee.flexId;

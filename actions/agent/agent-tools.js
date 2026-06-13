@@ -191,14 +191,11 @@ export function createAgentTools(user) {
                     'Pass the last day of the month the user is asking about as `today` (e.g. "2025-09-30" for September 2025). ' +
                     'For a specific month or custom date range use getOccupancyForDateRange instead.',
                 inputSchema: z.object({
-                    flexEmployeeId: z
-                        .string()
-                        .optional()
-                        .describe('Flex employee ID to look up.'),
+                    flexEmployeeId: z.string().optional().describe('Flex employee ID to look up.'),
                     today: z
                         .string()
                         .describe(
-                            'Reference date in YYYY-MM-DD format. Use the last day of the target month (e.g. 2025-09-30 for September 2025, or today\'s date for current stats).'
+                            "Reference date in YYYY-MM-DD format. Use the last day of the target month (e.g. 2025-09-30 for September 2025, or today's date for current stats)."
                         ),
                 }),
                 execute: async ({ flexEmployeeId, today }) => {
@@ -222,10 +219,7 @@ export function createAgentTools(user) {
                     'Get the full monthly occupancy rate history for the logged-in employee up to `today`, including hours breakdown per month. ' +
                     'Pass the last day of the latest month the user wants to see (e.g. "2025-09-30" to show history through September 2025).',
                 inputSchema: z.object({
-                    flexEmployeeId: z
-                        .string()
-                        .optional()
-                        .describe('Flex employee ID to look up.'),
+                    flexEmployeeId: z.string().optional().describe('Flex employee ID to look up.'),
                     today: z
                         .string()
                         .describe(
@@ -254,10 +248,7 @@ export function createAgentTools(user) {
                     'Use this whenever the user asks about a specific month (e.g. "September 2025") or any period that is not the current one. ' +
                     'Returns the average rate across the range, a per-month breakdown, and the hours detail.',
                 inputSchema: z.object({
-                    flexEmployeeId: z
-                        .string()
-                        .optional()
-                        .describe('Flex employee ID to look up.'),
+                    flexEmployeeId: z.string().optional().describe('Flex employee ID to look up.'),
                     startDate: z
                         .string()
                         .describe(

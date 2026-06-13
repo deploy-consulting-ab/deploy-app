@@ -18,9 +18,7 @@ const QUARTER_LABELS = {
 };
 
 export function FinancialCardPhoneComponent({ record, canManage, openEditDialog, handleDelete }) {
-
-    const quarterLabel =
-    record.quarter === -1 ? 'Total Year' : QUARTER_LABELS[record.quarter];
+    const quarterLabel = record.quarter === -1 ? 'Total Year' : QUARTER_LABELS[record.quarter];
     const yoy = record._yoy;
 
     const renderMetric = (key, invertColors = false) => {

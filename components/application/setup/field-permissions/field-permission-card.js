@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FieldPermissionAssignmentsListComponent } from '@/components/application/setup/field-permissions/field-permission-assignments-list';
@@ -32,7 +31,9 @@ export async function FieldPermissionCardComponent({ fieldPermission }) {
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Description</h3>
-                                <p className="text-sm text-gray-500">{fieldPermission.description || '—'}</p>
+                                <p className="text-sm text-gray-500">
+                                    {fieldPermission.description || '—'}
+                                </p>
                             </div>
                         </div>
                         <div className="space-y-4">
@@ -44,7 +45,9 @@ export async function FieldPermissionCardComponent({ fieldPermission }) {
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Object Name</h3>
-                                <p className="text-sm text-gray-500">{fieldPermission.objectName}</p>
+                                <p className="text-sm text-gray-500">
+                                    {fieldPermission.objectName}
+                                </p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium">Permission ID</h3>

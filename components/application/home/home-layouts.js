@@ -1,4 +1,3 @@
-
 import { SubcontractorHomeComponent } from '@/components/application/home/layouts.js/subcontractor-home';
 import { ConsultantHomeComponent } from '@/components/application/home/layouts.js/consultant-home';
 import { SalesHomeComponent } from '@/components/application/home/layouts.js/sales-home';

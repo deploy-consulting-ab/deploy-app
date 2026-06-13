@@ -1,4 +1,3 @@
-
 import { ProfilesListComponent } from '@/components/application/setup/profiles/profiles-list';
 import { getProfilesAction } from '@/actions/database/profile-actions';
 export default async function ProfilesPage() {

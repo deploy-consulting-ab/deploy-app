@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { ProfilePermissions } from '@/components/application/setup/profiles/profile-permissions';
 import { ProfileFieldPermissions } from '@/components/application/setup/profiles/profile-field-permissions';
@@ -6,7 +5,11 @@ import { ProfileUserAssignmentsListComponent } from '@/components/application/se
 import { RecordCardHeaderComponent } from '@/components/application/setup/record-card-header';
 import { ProfileCardActionsComponent } from '@/components/application/setup/profiles/profile-card-actions';
 
-export async function ProfileCardComponent({ profile, totalSystemPermissions, totalFieldPermissions }) {
+export async function ProfileCardComponent({
+    profile,
+    totalSystemPermissions,
+    totalFieldPermissions,
+}) {
     return (
         <div className="grid grid-cols-2 gap-6">
             <div className="col-span-2">

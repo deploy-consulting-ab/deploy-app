@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from '@/components/ui/card';
 import { AllPermissionsCardComponent } from '@/components/application/setup/users/all-permissions-card';
 import { UserAssignmentsListComponent } from '@/components/application/setup/users/user-assignments-list';

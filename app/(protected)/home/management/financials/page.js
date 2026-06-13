@@ -1,4 +1,3 @@
-
 import { auth } from '@/auth';
 import { getFinancialsAction } from '@/actions/database/financials-actions';
 import { FinancialsListComponent } from '@/components/application/management/financials/financials-list';

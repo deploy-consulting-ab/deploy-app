@@ -1,4 +1,3 @@
-
 import { SystemPermissionsListComponent } from '@/components/application/setup/system-permissions/system-permissions-list';
 import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';
 export default async function PermissionsPage() {

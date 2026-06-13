@@ -91,10 +91,7 @@ export default async function EmployeePage({ params }) {
             detailsTab={
                 <>
                     <div className="mb-6 space-y-6">
-                        <EmployeeRecordCardComponent
-                            employee={employee}
-                            error={errors.employee}
-                        />
+                        <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
                         <EmployeeFinancialCardComponent
                             employee={employee}
                             fyAmounts={fyAmounts}

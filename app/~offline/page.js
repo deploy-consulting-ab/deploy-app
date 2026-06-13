@@ -17,8 +17,8 @@ export default function OfflinePage() {
                         }
                     }}
                     size="lg"
-                className="hover:cursor-pointer"
-            >
+                    className="hover:cursor-pointer"
+                >
                     Retry Connection
                 </Button>
             </div>

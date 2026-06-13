@@ -1,4 +1,3 @@
-
 import { ProfileCardComponent } from '@/components/application/setup/profiles/profile-card';
 import { getProfileByIdAction } from '@/actions/database/profile-actions';
 import { getSystemPermissionsAction } from '@/actions/database/system-permission-actions';

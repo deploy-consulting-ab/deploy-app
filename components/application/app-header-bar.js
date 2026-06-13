@@ -36,18 +36,11 @@ export function AppHeaderBar({ user, location, showSetup }) {
         const iconsWidth = iconsRef.current?.offsetWidth ?? 0;
         const centeredBudget = Math.max(
             0,
-            headerWidth / 2 -
-                SEARCH_WIDTH_PX / 2 -
-                TRIGGER_WIDTH_PX -
-                HEADER_GAP_PX * 3
+            headerWidth / 2 - SEARCH_WIDTH_PX / 2 - TRIGGER_WIDTH_PX - HEADER_GAP_PX * 3
         );
         const expandedBudget = Math.max(
             0,
-            headerWidth -
-                SEARCH_WIDTH_PX -
-                iconsWidth -
-                TRIGGER_WIDTH_PX -
-                HEADER_GAP_PX * 4
+            headerWidth - SEARCH_WIDTH_PX - iconsWidth - TRIGGER_WIDTH_PX - HEADER_GAP_PX * 4
         );
 
         setCenteredBreadcrumbMaxWidth(centeredBudget);
@@ -98,9 +91,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
                 <div className="hidden min-w-0 overflow-hidden md:block">
                     <DynamicBreadcrumbComponent
                         maxContainerWidth={
-                            searchOnRight
-                                ? expandedBreadcrumbMaxWidth
-                                : centeredBreadcrumbMaxWidth
+                            searchOnRight ? expandedBreadcrumbMaxWidth : centeredBreadcrumbMaxWidth
                         }
                         onContentWidthChange={handleBreadcrumbWidthChange}
                     />
@@ -118,9 +109,7 @@ export function AppHeaderBar({ user, location, showSetup }) {
                 <div className="pointer-events-auto w-full">{search}</div>
             </div>
 
-            {searchOnRight && (
-                <div className="hidden min-w-0 flex-1 md:block" aria-hidden="true" />
-            )}
+            {searchOnRight && <div className="hidden min-w-0 flex-1 md:block" aria-hidden="true" />}
 
             <div
                 ref={iconsRef}
