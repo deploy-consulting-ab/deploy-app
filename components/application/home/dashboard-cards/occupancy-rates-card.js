@@ -102,8 +102,8 @@ export function OccupancyRatesCardComponent({ occupancy, error, refreshAction, t
                         Monthly History
                     </p>
                     <div className="space-y-2">
-                        {history.slice(0, 3).map((item, index) => (
-                            <div key={index} className="flex justify-between text-sm">
+                        {history.slice(0, 3).map((item) => (
+                            <div key={item.id} className="flex justify-between text-sm">
                                 <span className="text-muted-foreground">{item.period}</span>
                                 <span className="font-medium">{item.rate}%</span>
                             </div>
