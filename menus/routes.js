@@ -29,7 +29,6 @@ export const API_AUTH_PREFIX = '/api/auth';
 export const API_CRON_PREFIX = '/api/cron';
 export const API_AGENT_PREFIX = '/api/agent';
 
-
 /**
  * Default redirecting path
  */

@@ -1,8 +1,5 @@
-
 import { auth } from '@/auth';
-import {
-    getHomeLayoutForProfile,
-} from '@/components/application/home/home-layout-selector';
+import { getHomeLayoutForProfile } from '@/components/application/home/home-layout-selector';
 
 export default async function HomePage() {
     const session = await auth();

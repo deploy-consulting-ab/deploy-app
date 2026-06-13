@@ -1,6 +1,11 @@
 import { ICON_MAP } from '@/components/application/search/constants';
 
-export function SetupSearchResults({ totalRecords, slicedRecords, handleSelect, openSearchResults }) {
+export function SetupSearchResults({
+    totalRecords,
+    slicedRecords,
+    handleSelect,
+    openSearchResults,
+}) {
     return (
         <div className="space-y-1">
             {slicedRecords.map((record) => {

@@ -9,19 +9,9 @@ export function FinancialsListComponent({ records, error, canManage }) {
 
     if (isMobile) {
         return (
-            <FinancialsListPhoneComponent
-                records={records}
-                error={error}
-                canManage={canManage}
-            />
+            <FinancialsListPhoneComponent records={records} error={error} canManage={canManage} />
         );
     }
 
-    return (
-        <FinancialsListDesktopComponent
-            records={records}
-            error={error}
-            canManage={canManage}
-        />
-    );
+    return <FinancialsListDesktopComponent records={records} error={error} canManage={canManage} />;
 }

@@ -1,4 +1,3 @@
-
 import { FieldPermissionCardComponent } from '@/components/application/setup/field-permissions/field-permission-card';
 import { getFieldPermissionAssignmentsByIdAction } from '@/actions/database/field-permission-actions';
 

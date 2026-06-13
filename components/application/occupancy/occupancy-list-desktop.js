@@ -7,7 +7,13 @@ import { ArrowUpDown, RefreshCw, BarChart2 } from 'lucide-react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
 import { getFlexOccupancyHistory } from '@/actions/flex/flex-actions';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { OccupancyDynamicAverageComponent } from '@/components/application/occupancy/occupancy-dynamic-average';
 import { getCurrentFiscalYear, getFiscalYearStartDate, formatDateToISOString } from '@/lib/utils';
 import Link from 'next/link';
@@ -57,7 +63,11 @@ export function OccupancyListDesktopComponent({
         setIsRefreshing(true);
 
         try {
-            const freshData = await getFlexOccupancyHistory(flexEmployeeId, formattedToday, historyStartDate);
+            const freshData = await getFlexOccupancyHistory(
+                flexEmployeeId,
+                formattedToday,
+                historyStartDate
+            );
             setData(freshData);
             setError(null);
         } catch (err) {
@@ -252,11 +262,7 @@ export function OccupancyListDesktopComponent({
     const statsModal = (
         <Dialog key="stats-modal">
             <DialogTrigger asChild>
-                <Button
-                    variant="default"
-                    size="sm"
-                    className="md:hover:cursor-pointer"
-                >
+                <Button variant="default" size="sm" className="md:hover:cursor-pointer">
                     Calculate Average
                     <BarChart2 className="h-4 w-4" />
                 </Button>

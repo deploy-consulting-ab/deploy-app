@@ -75,11 +75,13 @@ export function HoursGridComponent({
                 projectMap.set(projectId, {
                     projectId: projectId,
                     projectName: rowFromTimeData?.projectName ?? projectFromProps?.name ?? '',
-                    projectCode: rowFromTimeData?.projectCode ?? projectFromProps?.projectCode ?? '',
+                    projectCode:
+                        rowFromTimeData?.projectCode ?? projectFromProps?.projectCode ?? '',
                     roleFlexId: rowFromTimeData?.roleFlexId ?? projectFromProps?.roleFlexId,
                     color: rowFromTimeData?.color ?? projectFromProps?.color ?? 'red',
                     isWorkingTime: rowFromTimeData?.isWorkingTime ?? true,
-                    projectType: rowFromTimeData?.projectType ?? projectFromProps?.projectType ?? '',
+                    projectType:
+                        rowFromTimeData?.projectType ?? projectFromProps?.projectType ?? '',
                 });
             }
         });
@@ -210,7 +212,9 @@ export function HoursGridComponent({
             // Flex can return multiple time rows for the same project on the same day (e.g. 2h + 1h).
             // Replace all of them with a single row with the new total so the cell shows and saves one value.
             const existingRow = timeRows.find((row) => row.projectId === projectId);
-            const timeRowsWithoutThisProject = timeRows.filter((row) => row.projectId !== projectId);
+            const timeRowsWithoutThisProject = timeRows.filter(
+                (row) => row.projectId !== projectId
+            );
             const mergedRows = [...timeRowsWithoutThisProject];
 
             if (clampedValue > 0) {
@@ -308,7 +312,8 @@ export function HoursGridComponent({
                     timeRows[timeRowIndex] = {
                         ...timeRows[timeRowIndex],
                         hours: 8,
-                        projectType: project.projectType ?? timeRows[timeRowIndex].projectType ?? '',
+                        projectType:
+                            project.projectType ?? timeRows[timeRowIndex].projectType ?? '',
                     };
                 } else {
                     timeRows.push({
@@ -386,8 +391,7 @@ export function HoursGridComponent({
                     <div className="flex items-center justify-between mb-6">
                         {/* Add project selector - only visible for current/future weeks, when working time projects exist, and not checkmarked */}
                         <div className="flex-1">
-                            {
-                                onAddProject &&
+                            {onAddProject &&
                                 !isPastWeek &&
                                 hasWorkingTimeProjects &&
                                 !isCheckmarked && (
@@ -520,7 +524,11 @@ export function HoursGridComponent({
                                             />
                                             <span
                                                 className="text-sm font-medium truncate"
-                                                title={project.projectName + ' - ' + project.projectCode}
+                                                title={
+                                                    project.projectName +
+                                                    ' - ' +
+                                                    project.projectCode
+                                                }
                                             >
                                                 {project.projectName} - {project.projectCode}
                                             </span>
@@ -721,7 +729,9 @@ export function HoursGridComponent({
                     </div>
                     <div className="flex items-center gap-2">
                         {!isPastWeek && !isCheckmarked && hasChanges && (
-                            <span className="text-amber-600">Unsaved changes - save before checkmarking.</span>
+                            <span className="text-amber-600">
+                                Unsaved changes - save before checkmarking.
+                            </span>
                         )}
                         {!isPastWeek && onToggleCheckmark && (
                             <Button

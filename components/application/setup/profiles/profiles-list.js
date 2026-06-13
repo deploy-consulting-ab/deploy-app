@@ -194,9 +194,7 @@ export function ProfilesListComponent({ profiles, error: initialError }) {
     const createProfileButton = (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen} size="lg" key="create-profile">
             <DialogTrigger asChild>
-                <Button size="sm"
-                className="hover:cursor-pointer"
-            >
+                <Button size="sm" className="hover:cursor-pointer">
                     <UserCircle className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

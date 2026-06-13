@@ -135,8 +135,7 @@ const financialAmountField = z.coerce
     .number({ invalid_type_error: 'Must be a number' })
     .min(0, { message: 'Must be 0 or greater' });
 
-const profitAmountField = z.coerce
-    .number({ invalid_type_error: 'Must be a number' });
+const profitAmountField = z.coerce.number({ invalid_type_error: 'Must be a number' });
 
 export const CreateFinancialRecordSchema = z.object({
     fiscalYear: z.coerce.number().int().min(2000, { message: 'Fiscal year must be 2000 or later' }),

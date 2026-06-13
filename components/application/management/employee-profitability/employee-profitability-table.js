@@ -1,21 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import {
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import {
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatCurrency } from '@/lib/utils';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { NoDataComponent } from '@/components/errors/no-data';
@@ -48,9 +38,7 @@ const METRIC_TOOLTIPS = {
 const PROJECT_COLUMNS = [
     {
         accessorKey: 'projectName',
-        header: () => (
-            <MetricLabel label="Project" description={METRIC_TOOLTIPS.project} />
-        ),
+        header: () => <MetricLabel label="Project" description={METRIC_TOOLTIPS.project} />,
         size: 300,
         minSize: 120,
         maxSize: 500,
@@ -93,9 +81,7 @@ const PROJECT_COLUMNS = [
         cell: ({ row, getValue }) => (
             <span
                 className={`block text-right tabular-nums ${
-                    row.original.isSubtotal
-                        ? 'text-sm font-semibold'
-                        : 'text-sm text-foreground/80'
+                    row.original.isSubtotal ? 'text-sm font-semibold' : 'text-sm text-foreground/80'
                 }`}
             >
                 {fmt(getValue())}
@@ -117,9 +103,7 @@ const PROJECT_COLUMNS = [
         cell: ({ row, getValue }) => (
             <span
                 className={`block text-right tabular-nums ${
-                    row.original.isSubtotal
-                        ? 'text-sm font-semibold'
-                        : 'text-sm text-foreground/80'
+                    row.original.isSubtotal ? 'text-sm font-semibold' : 'text-sm text-foreground/80'
                 }`}
             >
                 {fmt(getValue())}
@@ -170,7 +154,10 @@ function ProjectBreakdownTable({ assignments, totalProjected, totalInvoiced }) {
                 >
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className="hover:bg-transparent bg-muted/30">
+                            <TableRow
+                                key={headerGroup.id}
+                                className="hover:bg-transparent bg-muted/30"
+                            >
                                 {headerGroup.headers.map((header) => (
                                     <TableHead
                                         key={header.id}
@@ -384,9 +371,7 @@ function SummaryStrip({ employees }) {
                     </p>
                     <p
                         className={`font-bold ${
-                            item.isCount
-                                ? 'text-xl tabular-nums'
-                                : CURRENCY_VALUE_PROMINENT_CLASS
+                            item.isCount ? 'text-xl tabular-nums' : CURRENCY_VALUE_PROMINENT_CLASS
                         } ${
                             item.profit !== undefined
                                 ? item.profit >= 0

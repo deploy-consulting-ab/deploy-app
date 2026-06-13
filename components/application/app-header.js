@@ -1,4 +1,3 @@
-
 import { auth } from '@/auth';
 import { ImpersonationBannerComponent } from '@/components/application/impersonation/impersonation-banner';
 import { AppHeaderBar } from '@/components/application/app-header-bar';
@@ -9,17 +8,12 @@ export async function AppHeaderComponent({ location }) {
     const { user } = session;
 
     const isHomePage = location === 'home';
-    const showSetup =
-        user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && isHomePage;
+    const showSetup = user.systemPermissions.includes(VIEW_SETUP_PERMISSION) && isHomePage;
 
     return (
         <>
             <ImpersonationBannerComponent />
-            <AppHeaderBar
-                user={user}
-                location={location}
-                showSetup={showSetup}
-            />
+            <AppHeaderBar user={user} location={location} showSetup={showSetup} />
         </>
     );
 }

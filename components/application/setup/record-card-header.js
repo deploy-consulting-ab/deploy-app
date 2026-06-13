@@ -1,4 +1,3 @@
-
 import { Card, CardHeader, CardAction, CardTitle, CardDescription } from '@/components/ui/card';
 
 export async function RecordCardHeaderComponent({ title, description, children }) {

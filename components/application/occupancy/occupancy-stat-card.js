@@ -5,7 +5,12 @@ const OCCUPANCY_LEVELS = [
     { min: 85, max: 93, label: 'Target', color: 'var(--occupancy-color-target)' },
     { min: 93, max: 100, label: 'Optimal', color: 'var(--occupancy-color-optimal)' },
     { min: 100, max: 120, label: 'Full', color: 'var(--occupancy-color-full)' },
-    { min: 120, max: Infinity, label: 'Over Capacity', color: 'var(--occupancy-color-critical-high)' },
+    {
+        min: 120,
+        max: Infinity,
+        label: 'Over Capacity',
+        color: 'var(--occupancy-color-critical-high)',
+    },
 ];
 
 function getOccupancyLevel(value) {
@@ -52,7 +57,8 @@ export function OccupancyStatCard({ title, rate, subtitle, monthCount }) {
                 {subtitle && (
                     <p className="text-xs text-muted-foreground">
                         {subtitle}
-                        {monthCount != null && ` · ${monthCount} month${monthCount !== 1 ? 's' : ''}`}
+                        {monthCount != null &&
+                            ` · ${monthCount} month${monthCount !== 1 ? 's' : ''}`}
                     </p>
                 )}
             </div>

@@ -26,8 +26,14 @@ function OccupancyRateBadge({ rate }) {
     );
 }
 
-export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartDate, defaultEndDate }) {
-    const [startDate, setStartDate] = useState(defaultStartDate ? parseISO(defaultStartDate) : undefined);
+export function OccupancyDynamicAverageComponent({
+    flexEmployeeId,
+    defaultStartDate,
+    defaultEndDate,
+}) {
+    const [startDate, setStartDate] = useState(
+        defaultStartDate ? parseISO(defaultStartDate) : undefined
+    );
     const [endDate, setEndDate] = useState(defaultEndDate ? parseISO(defaultEndDate) : undefined);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
@@ -78,7 +84,9 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                                         className="h-8 w-full justify-start text-left text-sm font-normal data-[empty=true]:text-muted-foreground hover:cursor-pointer"
                                     >
                                         <CalendarIcon className="mr-2 h-3.5 w-3.5 shrink-0" />
-                                        {startDate ? format(startDate, 'MMM d, yyyy') : 'Pick a date'}
+                                        {startDate
+                                            ? format(startDate, 'MMM d, yyyy')
+                                            : 'Pick a date'}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0" align="start">
@@ -86,7 +94,7 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                                         mode="single"
                                         selected={startDate}
                                         onSelect={setStartDate}
-                                        disabled={(date) => endDate ? date > endDate : false}
+                                        disabled={(date) => (endDate ? date > endDate : false)}
                                         initialFocus
                                         captionLayout="dropdown"
                                     />
@@ -111,7 +119,7 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                                         mode="single"
                                         selected={endDate}
                                         onSelect={setEndDate}
-                                        disabled={(date) => startDate ? date < startDate : false}
+                                        disabled={(date) => (startDate ? date < startDate : false)}
                                         initialFocus
                                         captionLayout="dropdown"
                                     />
@@ -137,9 +145,7 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                     </Button>
                 </form>
 
-                {error && (
-                    <p className="text-xs text-destructive">{error}</p>
-                )}
+                {error && <p className="text-xs text-destructive">{error}</p>}
 
                 {result != null && !error && (
                     <div className="pt-3 border-t border-border/40">
@@ -159,7 +165,8 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                                     <OccupancyRateBadge rate={result.average} />
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    Average across {result.count} month{result.count !== 1 ? 's' : ''}
+                                    Average across {result.count} month
+                                    {result.count !== 1 ? 's' : ''}
                                 </p>
                                 {result.months?.length > 0 && (
                                     <div className="mt-1 space-y-1 max-h-40 overflow-y-auto">
@@ -168,7 +175,9 @@ export function OccupancyDynamicAverageComponent({ flexEmployeeId, defaultStartD
                                                 key={i}
                                                 className="flex justify-between text-sm text-muted-foreground"
                                             >
-                                                <span>{m.month} {m.year}</span>
+                                                <span>
+                                                    {m.month} {m.year}
+                                                </span>
                                                 <span className="font-mono font-medium text-sm text-foreground">
                                                     {m.rate}%
                                                 </span>

@@ -151,10 +151,7 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
             },
             cell: ({ row }) => {
                 return (
-                    <div
-                        className="truncate text-foreground/70"
-                        title={row.getValue('id')}
-                    >
+                    <div className="truncate text-foreground/70" title={row.getValue('id')}>
                         {row.getValue('id')}
                     </div>
                 );
@@ -203,9 +200,7 @@ export function PermissionSetListComponent({ permissionSets, error: initialError
             key="create-permission-set"
         >
             <DialogTrigger asChild>
-                <Button size="sm"
-                className="hover:cursor-pointer"
-            >
+                <Button size="sm" className="hover:cursor-pointer">
                     <Box className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

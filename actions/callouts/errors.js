@@ -48,7 +48,8 @@ export const handleApiError = async (response) => {
         if (contentType?.includes('application/json')) {
             const data = await response.clone().json();
             if (data?.message) message = data.message;
-            else if (data?.error) message = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+            else if (data?.error)
+                message = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
             else if (data?.Message) message = data.Message;
             else if (typeof data === 'string') message = data;
             else if (Object.keys(data || {}).length > 0) message = JSON.stringify(data);

@@ -1,4 +1,3 @@
-
 import { SetupHomeComponent } from '@/components/application/setup/setup-home';
 import { getUsersAction } from '@/actions/database/user-actions';
 import { getTotalProfilesCountAction } from '@/actions/database/profile-actions';

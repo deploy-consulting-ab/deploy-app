@@ -10,11 +10,7 @@ import {
     getAbsenceStatusText,
     parseToLocalDate,
 } from '@/lib/utils';
-import {
-    ABSENCE_STATUS_CODE,
-    HOLIDAY_TYPE_ID,
-    SICK_LEAVE_TYPE_ID,
-} from '@/actions/flex/constants';
+import { ABSENCE_STATUS_CODE, HOLIDAY_TYPE_ID, SICK_LEAVE_TYPE_ID } from '@/actions/flex/constants';
 import {
     Select,
     SelectContent,

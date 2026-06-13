@@ -86,8 +86,10 @@ export function FieldPermissionCardActionsComponent({ fieldPermission }) {
                     <DialogHeader>
                         <DialogTitle>Delete Field Permission</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete &quot;{fieldPermission.label || fieldPermission.fieldName}&quot;?
-                            This will remove it from all profiles and permission sets. This action cannot be undone.
+                            Are you sure you want to delete &quot;
+                            {fieldPermission.label || fieldPermission.fieldName}&quot;? This will
+                            remove it from all profiles and permission sets. This action cannot be
+                            undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

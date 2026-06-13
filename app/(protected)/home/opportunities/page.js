@@ -1,4 +1,3 @@
-
 import { OpportunitiesListComponent } from '@/components/application/opportunities/opportunities-list';
 import { getOpportunities } from '@/actions/salesforce/salesforce-actions';
 import { auth } from '@/auth';

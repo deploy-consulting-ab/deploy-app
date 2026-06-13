@@ -27,8 +27,10 @@ export async function startImpersonation(userId) {
             return { error: 'User not found' };
         }
 
-        const { systemPermissions: targetSystemPermissions, fieldPermissions: targetFieldPermissions } =
-            await getCombinedPermissionsForUser(userId);
+        const {
+            systemPermissions: targetSystemPermissions,
+            fieldPermissions: targetFieldPermissions,
+        } = await getCombinedPermissionsForUser(userId);
 
         // Store the current session data for later restoration
         const impersonationData = {

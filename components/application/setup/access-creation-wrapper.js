@@ -170,7 +170,11 @@ export function AccessCreationWrapperComponent({
                         >
                             Reset
                         </Button>
-                        <Button type="submit" className="flex-1 hover:cursor-pointer" disabled={isSubmitting}>
+                        <Button
+                            type="submit"
+                            className="flex-1 hover:cursor-pointer"
+                            disabled={isSubmitting}
+                        >
                             {isSubmitting ? 'Creating...' : 'Create'}
                         </Button>
                     </div>

@@ -1,4 +1,3 @@
-
 import { SystemPermissionCardComponent } from '@/components/application/setup/system-permissions/system-permission-card';
 import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
 

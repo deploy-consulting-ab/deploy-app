@@ -150,10 +150,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
             },
             cell: ({ row }) => {
                 return (
-                    <div
-                        className="truncate text-foreground/70"
-                        title={row.getValue('id')}
-                    >
+                    <div className="truncate text-foreground/70" title={row.getValue('id')}>
                         {row.getValue('id')}
                     </div>
                 );
@@ -202,9 +199,7 @@ export function SystemPermissionsListComponent({ permissions, error: initialErro
             key="create-system-permission"
         >
             <DialogTrigger asChild>
-                <Button size="sm"
-                className="hover:cursor-pointer"
-            >
+                <Button size="sm" className="hover:cursor-pointer">
                     <ShieldPlus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>

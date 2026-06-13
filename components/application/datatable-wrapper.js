@@ -80,7 +80,7 @@ export function DatatableWrapperComponent({
             </div>
             <div className="overflow-hidden rounded-xl border border-border/30 bg-card shadow-sm">
                 {!data || data.length === 0 ? (
-                    <NoDataComponent text="No data found" />
+                    <NoDataComponent text={props.noDataText || 'No data found'} />
                 ) : (
                     <div className="overflow-x-auto">
                         <Table>
@@ -125,7 +125,9 @@ export function DatatableWrapperComponent({
                                         <TableRow
                                             key={row.id}
                                             data-state={row.getIsSelected() && 'selected'}
-                                            className={getRowClassName ? getRowClassName(row) : undefined}
+                                            className={
+                                                getRowClassName ? getRowClassName(row) : undefined
+                                            }
                                         >
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id}>

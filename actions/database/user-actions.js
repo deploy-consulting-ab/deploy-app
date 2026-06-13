@@ -174,7 +174,6 @@ export async function searchUsersAction(searchTerm) {
             return [];
         }
         return await searchUsers(searchTerm);
-        
     } catch (error) {
         throw error;
     }

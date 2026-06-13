@@ -75,7 +75,11 @@ export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOve
             const today = getUTCToday();
             const startDate = formatDateToISOString(getFiscalYearStartDate(getCurrentFiscalYear()));
             const endDate = formatDateToISOString(today);
-            const rawTimereports = await getAssignmentTimereportsForOccupancy(flexEmployeeId, startDate, endDate);
+            const rawTimereports = await getAssignmentTimereportsForOccupancy(
+                flexEmployeeId,
+                startDate,
+                endDate
+            );
             data.occupancyRates = transformTimereportsToOccupancy(rawTimereports);
         } catch (error) {
             errors.occupancyRates = error.message || 'Failed to load occupancy';

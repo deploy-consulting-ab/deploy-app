@@ -152,7 +152,11 @@ export function FieldPermissionEditForm({ fieldPermission, onEditingChange, onSu
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isSubmitting} className="hover:cursor-pointer">
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="hover:cursor-pointer"
+                        >
                             {isSubmitting ? 'Saving...' : 'Save'}
                         </Button>
                     </div>

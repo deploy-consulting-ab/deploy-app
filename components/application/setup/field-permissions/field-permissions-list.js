@@ -132,10 +132,7 @@ export function FieldPermissionsListComponent({ fieldPermissions, error: initial
                 </Button>
             ),
             cell: ({ row }) => (
-                <div
-                    className="truncate text-foreground/70"
-                    title={row.getValue('objectName')}
-                >
+                <div className="truncate text-foreground/70" title={row.getValue('objectName')}>
                     {row.getValue('objectName')}
                 </div>
             ),

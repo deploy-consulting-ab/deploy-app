@@ -1,11 +1,11 @@
-function getGreeting () {
+function getGreeting() {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return 'Good morning';
     if (hour >= 12 && hour < 18) return 'Good afternoon';
     return 'Good evening';
 }
 
-export function DashboardHeader ({ name }) {
+export function DashboardHeader({ name }) {
     const now = new Date();
     const formattedDate = now.toLocaleDateString('en-US', {
         weekday: 'long',
@@ -37,7 +37,6 @@ export function DashboardHeader ({ name }) {
 
             <div className="flex flex-col gap-0.5 pb-4">
                 <span className="inline-flex items-center gap-1.5">
-                    
                     <span className="text-sm font-semibold tracking-[0.18em] uppercase font-mono">
                         {greeting}, {firstName}
                     </span>
