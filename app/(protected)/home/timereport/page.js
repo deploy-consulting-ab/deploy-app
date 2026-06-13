@@ -91,8 +91,11 @@ async function refreshTimereportsData(weekStart) {
     const session = await auth();
     const flexEmployeeId = session.user.flexEmployeeId;
     const userId = session.user.sessionId;
-    const timereports = await fetchTimereportsForWeek(flexEmployeeId, weekStart);
-    const isCheckmarked = await fetchCheckmarkStatus(userId, weekStart);
+    const [timereports, isCheckmarked] = await Promise.all([
+        fetchTimereportsForWeek(flexEmployeeId, weekStart),
+        fetchCheckmarkStatus(userId, weekStart),
+    ]);
+
     return { ...timereports, isCheckmarked };
 }
 

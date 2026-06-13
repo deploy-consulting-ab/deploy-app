@@ -1,12 +1,7 @@
 import { OpportunityRecordCardComponent } from '@/components/application/opportunities/opportunity-record-card';
 import { getOpportunityById, getQuoteLines } from '@/actions/salesforce/salesforce-actions';
-import { auth } from '@/auth';
-
 const OpportunityPage = async ({ params }) => {
     const { opportunityId } = await params;
-
-    const session = await auth();
-    const { user } = session;
 
     let opportunity = null;
     let error = null;
