@@ -1024,7 +1024,6 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
 
 /**
  * Compute the average occupancy rate for a custom date range from Flex timereports.
- * Returns the same shape as getOccupancyAverageByDateRange from Salesforce.
  * @param {string} flexEmployeeId
  * @param {string} startDate - YYYY-MM-DD
  * @param {string} endDate - YYYY-MM-DD

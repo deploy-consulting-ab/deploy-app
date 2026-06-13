@@ -80,13 +80,6 @@ const getAssignmentByIdAndEmployeeNumberQuery = (assignmentId, employeeNumber) =
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
 };
 
-const getAssignmentTimecardsQuery = (assignmentId, employeeNumber) => {
-    return `SELECT Id, StartDate__c, EndDate__c,MondayHours__c, TuesdayHours__c, WednesdayHours__c, ThursdayHours__c, FridayHours__c, SaturdayHours__c, SundayHours__c 
-            FROM Timecard__c 
-            WHERE Assignment__c = '${assignmentId}' AND Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}'
-            ORDER BY StartDate__c DESC`;
-};
-
 const getAssignmentsMetricsQuery = (employeeNumber) => {
     return `SELECT Project__r.Status__c, StartDate__c, COUNT(Id) assignmentsMetrics
             FROM Assignment__c
@@ -137,12 +130,6 @@ const getAssignmentByIdAndEmployeeNumberQueryDynamic = (
     const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
-};
-
-const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
-    const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
-    return `SELECT ${select} FROM Assignment__c 
-            WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
 /**
@@ -248,42 +235,6 @@ const getOpportunityByIdQueryDynamic = (opportunityId, permittedFields) => {
     return `SELECT ${select} FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
 };
 
-/* ─── Occupancy rate queries ────────────────────────────────────────────── */
-
-const getRecentOccupancyRateQuery = (employeeNumber, today) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Month__c FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
-            ORDER BY Date__c DESC LIMIT 4`;
-};
-
-const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFiscalYear) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today} AND Date__c >= ${lastFiscalYear}
-            ORDER BY Date__c ASC`;
-};
-
-const getOccupancyHistoryQuery = (employeeNumber, today) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c, 
-            ExternalMonthHours__c, InternalMonthHours__c, TotalMonthlyHours__c, TotalHours__c
-            FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
-            ORDER BY Date__c DESC`;
-};
-
-const getOccupancyHistoryCountQuery = (employeeNumber, today) => {
-    return `SELECT COUNT() FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}`;
-};
-
-const getOccupancyByDateRangeQuery = (employeeNumber, startDate, endDate) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c
-            FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
-            AND Date__c >= ${startDate}
-            AND Date__c <= ${endDate}
-            ORDER BY Date__c ASC`;
-};
-
 /* ─── Holiday queries ───────────────────────────────────────────────────── */
 
 const getSalesforcePublicHolidaysQuery = () => {
@@ -331,18 +282,12 @@ export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
     getAssignmentByIdAndEmployeeNumberQuery,
-    getAssignmentTimecardsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getAssignmentsMetricsQuery,
     getOpportunitiesQuery,
     getOpportunitiesByNameQuery,
     getOpportunityByIdQuery,
-    getRecentOccupancyRateQuery,
-    getOccupancyRateFromLastFiscalYearQuery,
-    getOccupancyHistoryQuery,
-    getOccupancyHistoryCountQuery,
-    getOccupancyByDateRangeQuery,
     getSalesforcePublicHolidaysQuery,
     getEmployeesWithActiveAssignmentsQuery,
     getEmployeesQuery,
@@ -351,7 +296,6 @@ export {
     getQuoteLinesQuery,
     getAssignmentsByEmployeeNumberQueryDynamic,
     getAssignmentByIdAndEmployeeNumberQueryDynamic,
-    getAssignmentByIdQueryDynamic,
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
     getEmployeeFYAmountsQuery,
