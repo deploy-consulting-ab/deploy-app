@@ -9,9 +9,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { OccupancyCardPhoneComponent } from '@/components/application/occupancy/phone/occupancy-card-phone';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import { getOccupancyLevel } from '@/components/application/occupancy/occupancy-chart-shared';
+import { useInfiniteScrollSentinel } from '@/hooks/use-infinite-scroll-sentinel';
 
 const occupancyViews = [
     { value: 'all', label: 'All Records' },
@@ -26,7 +27,10 @@ export function OccupancyListPhoneComponent({ occupancyData, error, statsRoute }
     const [searchQuery, setSearchQuery] = useState('');
     const [view, setView] = useState('all');
     const [displayCount, setDisplayCount] = useState(10);
-    const observerTarget = useRef(null);
+
+    const loadMore = useCallback(() => {
+        setDisplayCount((prev) => prev + 10);
+    }, []);
 
     const handleFilterOccupancy = (value) => {
         setView(value);
@@ -57,29 +61,7 @@ export function OccupancyListPhoneComponent({ occupancyData, error, statsRoute }
     const filtered = filteredOccupancy();
     const displayedOccupancy = filtered.slice(0, displayCount);
     const hasMore = displayCount < filtered.length;
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setDisplayCount((prev) => prev + 10);
-                }
-            },
-            { threshold: 0.1 }
-        );
-
-        const currentTarget = observerTarget.current;
-
-        if (currentTarget) {
-            observer.observe(currentTarget);
-        }
-
-        return () => {
-            if (currentTarget) {
-                observer.unobserve(currentTarget);
-            }
-        };
-    }, [hasMore]);
+    const sentinelRef = useInfiniteScrollSentinel(hasMore, loadMore);
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
@@ -122,7 +104,7 @@ export function OccupancyListPhoneComponent({ occupancyData, error, statsRoute }
                 )}
             </div>
             {hasMore && (
-                <div ref={observerTarget} className="flex justify-center py-4">
+                <div ref={sentinelRef} className="flex justify-center py-4">
                     <div className="text-sm text-muted-foreground">Loading more...</div>
                 </div>
             )}

@@ -11,7 +11,8 @@ import { BadgeCheckIcon } from 'lucide-react';
 import { populateSystemPermissions } from '@/lib/utils';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useEffect, useState, useRef } from 'react';
+import { useScrollableOverflow } from '@/hooks/use-scrollable-overflow';
+import { useSuccessVisibility } from '@/hooks/use-success-visibility';
 
 export function SystemPermissionsEditableCardComponent({
     entityName,
@@ -25,39 +26,8 @@ export function SystemPermissionsEditableCardComponent({
         ? populateSystemPermissions(currentSystemPermissions, totalSystemPermissions)
         : totalSystemPermissions;
 
-    const [isScrollable, setIsScrollable] = useState(false);
-    const contentRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(true);
-
-    useEffect(() => {
-        const checkScrollable = () => {
-            if (contentRef.current) {
-                const { scrollHeight, clientHeight } = contentRef.current;
-                setIsScrollable(scrollHeight > clientHeight);
-            }
-        };
-
-        checkScrollable();
-        window.addEventListener('resize', checkScrollable);
-        return () => window.removeEventListener('resize', checkScrollable);
-    }, [systemPermissions]);
-
-    useEffect(() => {
-        let fadeOutTimer;
-
-        if (success) {
-            setIsVisible(true);
-
-            // Start fade out after 1 second
-            fadeOutTimer = setTimeout(() => {
-                setIsVisible(false);
-            }, 1000);
-        }
-
-        return () => {
-            clearTimeout(fadeOutTimer);
-        };
-    }, [success]);
+    const { contentRef, isScrollable } = useScrollableOverflow();
+    const isVisible = useSuccessVisibility(success);
 
     return (
         <Card className="col-span-1">

@@ -9,9 +9,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { AssignmentCardPhoneComponent } from '@/components/application/assignment/phone/assignment-card-phone';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { useInfiniteScrollSentinel } from '@/hooks/use-infinite-scroll-sentinel';
 
 export function AssignmentsListPhoneComponent({
     assignments,
@@ -24,7 +25,10 @@ export function AssignmentsListPhoneComponent({
     const [searchQuery, setSearchQuery] = useState('');
     const [view, setView] = useState(searchParams.get('view') || 'all');
     const [displayCount, setDisplayCount] = useState(2); // Initial items to show
-    const observerTarget = useRef(null);
+
+    const loadMore = useCallback(() => {
+        setDisplayCount((prev) => prev + 10);
+    }, []);
 
     const handleFilterAssignment = (value) => {
         setView(value);
@@ -61,30 +65,7 @@ export function AssignmentsListPhoneComponent({
     const filtered = filteredAssignments();
     const displayedAssignments = filtered.slice(0, displayCount);
     const hasMore = displayCount < filtered.length;
-
-    // Intersection Observer for infinite scroll
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setDisplayCount((prev) => prev + 10); // Load 10 more items
-                }
-            },
-            { threshold: 0.1 } // Trigger when 10% of the target is visible
-        );
-
-        const currentTarget = observerTarget.current; // Capture the ref value
-
-        if (currentTarget) {
-            observer.observe(currentTarget);
-        }
-
-        return () => {
-            if (currentTarget) {
-                observer.unobserve(currentTarget);
-            }
-        };
-    }, [hasMore]);
+    const sentinelRef = useInfiniteScrollSentinel(hasMore, loadMore);
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
@@ -126,7 +107,7 @@ export function AssignmentsListPhoneComponent({
             </div>
             {/* Sentinel element for intersection observer */}
             {hasMore && (
-                <div ref={observerTarget} className="flex justify-center py-4">
+                <div ref={sentinelRef} className="flex justify-center py-4">
                     <div className="text-sm text-gray-500">Loading more...</div>
                 </div>
             )}

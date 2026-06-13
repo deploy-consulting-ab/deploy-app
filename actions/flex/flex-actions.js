@@ -688,7 +688,10 @@ async function createSickAbsenceApplication(employmentNumber, absenceApplication
     );
 }
 
-async function createParentalLeave10DaysAbsenceApplication(employmentNumber, absenceApplicationData) {
+async function createParentalLeave10DaysAbsenceApplication(
+    employmentNumber,
+    absenceApplicationData
+) {
     return createAbsenceApplicationByType(
         employmentNumber,
         PARENTAL_LEAVE_10_DAYS_TYPE_ID,

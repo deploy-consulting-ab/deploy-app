@@ -21,6 +21,15 @@ export function GlobalSearch({ user, location }) {
     const containerRef = useRef(null);
     const router = useRouter();
     const pathname = usePathname();
+    const [prevPathname, setPrevPathname] = useState(pathname);
+
+    if (pathname !== prevPathname) {
+        setPrevPathname(pathname);
+        setSearchValue('');
+        setResults(null);
+        setOpen(false);
+        setLoading(false);
+    }
 
     // Handle clicks outside of search component
     useEffect(() => {
@@ -73,14 +82,10 @@ export function GlobalSearch({ user, location }) {
         [debouncedSearch]
     );
 
-    // Clear search when route changes
+    // Cancel any pending searches when route changes
     useEffect(() => {
-        clearSearch();
-        // Cancel any pending searches when route changes
-        return () => {
-            debouncedSearchWithDelay.cancel();
-        };
-    }, [pathname, clearSearch, debouncedSearchWithDelay]);
+        debouncedSearchWithDelay.cancel();
+    }, [pathname, debouncedSearchWithDelay]);
 
     const handleSearch = (e) => {
         const query = e.target.value;
