@@ -47,18 +47,14 @@ export function AssignmentsListPhoneComponent({
     // Filter assignments based on search and view
     const filteredAssignments = () => {
         return (
-            assignments
-                ?.filter(
-                    (assignment) =>
-                        view === 'all' ||
-                        assignment.projectStatus.toLowerCase() === view.toLowerCase()
-                )
-                ?.filter(
-                    (assignment) =>
-                        searchQuery === '' ||
+            assignments?.filter(
+                (assignment) =>
+                    (view === 'all' ||
+                        assignment.projectStatus.toLowerCase() === view.toLowerCase()) &&
+                    (searchQuery === '' ||
                         assignment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase())
-                ) || []
+                        assignment.projectName.toLowerCase().includes(searchQuery.toLowerCase()))
+            ) || []
         );
     };
 
