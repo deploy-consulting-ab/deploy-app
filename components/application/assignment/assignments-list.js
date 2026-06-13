@@ -5,6 +5,13 @@ import { AssignmentsListPhoneComponent } from '@/components/application/assignme
 import { AssignmentsListDesktopComponent } from '@/components/application/assignment/assignments-list-desktop';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
+const PROJECT_VIEWS = [
+    { value: 'all', label: 'All Assignments' },
+    { value: 'not started', label: 'Not Started' },
+    { value: 'ongoing', label: 'Ongoing' },
+    { value: 'completed', label: 'Completed' },
+];
+
 export function AssignmentsListComponent({
     assignments,
     employeeNumber,
@@ -14,20 +21,13 @@ export function AssignmentsListComponent({
 }) {
     const isMobile = useIsMobile();
 
-    const projectViews = [
-        { value: 'all', label: 'All Assignments' },
-        { value: 'not started', label: 'Not Started' },
-        { value: 'ongoing', label: 'Ongoing' },
-        { value: 'completed', label: 'Completed' },
-    ];
-
     if (isMobile) {
         return (
             <AssignmentsListPhoneComponent
                 assignments={assignments}
                 employeeNumber={employeeNumber}
                 error={error}
-                projectViews={projectViews}
+                projectViews={PROJECT_VIEWS}
                 assignmentRoute={assignmentRoute}
             />
         );
@@ -38,7 +38,7 @@ export function AssignmentsListComponent({
             assignments={assignments}
             employeeNumber={employeeNumber}
             error={error}
-            projectViews={projectViews}
+            projectViews={PROJECT_VIEWS}
             assignmentsMetrics={assignmentsMetrics}
             assignmentRoute={assignmentRoute}
         />
