@@ -23,6 +23,7 @@ export const ABSENCE_STATUS_TYPE_TEXT = {
 
 export const ABSENCE_TYPE_NAME = {
     [HOLIDAY_TYPE_ID]: 'Holiday Absence Request',
+    [SICK_LEAVE_TYPE_ID]: 'Sick Leave Request',
 };
 
 /**

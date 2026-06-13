@@ -556,7 +556,22 @@ export async function getSickLeaveRequests(employeeNumber, currentDate) {
     await requireAuth();
     try {
         const flexApiClient = await getFlexApiService();
-        return await flexApiClient.getAbsenceApplications(employeeNumber, SICK_LEAVE_TYPE_ID);
+
+        const response = await flexApiClient.getAbsenceApplications(
+            employeeNumber,
+            SICK_LEAVE_TYPE_ID
+        );
+
+        const currentDateISO = formatDateToISOString(currentDate);
+
+        const filteredResponse = response.Result.filter(
+            (request) => formatDateToISOString(request.FromDate) >= currentDateISO
+        ).map((request) => ({
+            ...request,
+            status: ABSENCE_STATUS_CODE[request.CurrentStatus.Status],
+        }));
+
+        return filteredResponse || [];
     } catch (error) {
         throw error;
     }
@@ -579,6 +594,8 @@ export async function createAbsenceApplication(
         switch (absenceApplicationType) {
             case HOLIDAY_TYPE_ID:
                 return createHolidayAbsenceApplication(employmentNumber, absenceApplicationData);
+            case SICK_LEAVE_TYPE_ID:
+                return createSickAbsenceApplication(employmentNumber, absenceApplicationData);
             default:
                 throw new Error('Invalid absence application type');
         }
@@ -594,9 +611,29 @@ export async function createAbsenceApplication(
  * @returns {Promise<Object>} The absence application
  */
 async function createHolidayAbsenceApplication(employmentNumber, absenceApplicationData) {
+    return createAbsenceApplicationByType(
+        employmentNumber,
+        HOLIDAY_TYPE_ID,
+        absenceApplicationData
+    );
+}
+
+async function createSickAbsenceApplication(employmentNumber, absenceApplicationData) {
+    return createAbsenceApplicationByType(
+        employmentNumber,
+        SICK_LEAVE_TYPE_ID,
+        absenceApplicationData
+    );
+}
+
+async function createAbsenceApplicationByType(
+    employmentNumber,
+    absenceTypeId,
+    absenceApplicationData
+) {
     try {
         const absenceApplicationPayload = {
-            absenceTypeId: HOLIDAY_TYPE_ID,
+            absenceTypeId,
             companyId: COMPANY_ID,
             employmentNumber: employmentNumber,
             fromDate: absenceApplicationData.startDate,
@@ -639,6 +676,12 @@ export async function updateAbsenceRequest(
                     employmentNumber,
                     absenceApplicationData
                 );
+            case SICK_LEAVE_TYPE_ID:
+                return updateSickAbsenceApplication(
+                    absenceRequestId,
+                    employmentNumber,
+                    absenceApplicationData
+                );
             default:
                 throw new Error('Invalid absence application type');
         }
@@ -668,6 +711,26 @@ async function updateHolidayAbsenceApplication(
             companyId: COMPANY_ID,
         };
 
+        const flexApiClient = await getFlexApiService();
+        return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function updateSickAbsenceApplication(
+    absenceRequestId,
+    employmentNumber,
+    absenceApplicationData
+) {
+    try {
+        const payload = {
+            fromDate: absenceApplicationData.FromDate,
+            toDate: absenceApplicationData.ToDate,
+            employmentNumber: employmentNumber,
+            absenceTypeId: SICK_LEAVE_TYPE_ID,
+            companyId: COMPANY_ID,
+        };
         const flexApiClient = await getFlexApiService();
         return await flexApiClient.updateAbsenceApplication(absenceRequestId, payload);
     } catch (error) {

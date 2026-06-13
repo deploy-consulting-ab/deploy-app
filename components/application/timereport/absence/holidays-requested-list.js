@@ -1,7 +1,7 @@
 'use client';
 
 import { getHolidayRequests } from '@/actions/flex/flex-actions';
-import { AbsenceRequestedListComponent } from './absence-requested-list';
+import { AbsenceRequestedListComponent } from '@/components/application/timereport/absence/absence-requested-list';
 import { HOLIDAY_TYPE_ID } from '@/actions/flex/constants';
 
 /**
