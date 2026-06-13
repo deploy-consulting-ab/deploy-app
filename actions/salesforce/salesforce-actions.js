@@ -664,7 +664,7 @@ export async function getEmployeeProfitabilityData() {
         });
     }
 
-    const employees = employeeMap.values().toSorted((a, b) =>
+    const employees = [...employeeMap.values()].toSorted((a, b) =>
         a.employeeName.localeCompare(b.employeeName)
     );
 
