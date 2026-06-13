@@ -1,23 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 export function useScrollableOverflow() {
-    const contentRef = useRef(null);
     const [isScrollable, setIsScrollable] = useState(false);
+    const observerRef = useRef(null);
 
-    useEffect(() => {
-        const element = contentRef.current;
-        if (!element) return;
+    const contentRef = useCallback((node) => {
+        observerRef.current?.disconnect();
+        observerRef.current = null;
 
-        const checkScrollable = () => {
-            setIsScrollable(element.scrollHeight > element.clientHeight);
+        if (!node) {
+            setIsScrollable(false);
+            return;
+        }
+
+        const updateScrollable = () => {
+            setIsScrollable(node.scrollHeight > node.clientHeight);
         };
 
-        checkScrollable();
+        updateScrollable();
 
-        const resizeObserver = new ResizeObserver(checkScrollable);
-        resizeObserver.observe(element);
-
-        return () => resizeObserver.disconnect();
+        const observer = new ResizeObserver(updateScrollable);
+        observer.observe(node);
+        observerRef.current = observer;
     }, []);
 
     return { contentRef, isScrollable };

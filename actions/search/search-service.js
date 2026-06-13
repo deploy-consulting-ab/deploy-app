@@ -218,8 +218,6 @@ async function searchSystemPermissions(query) {
             return [];
         }
 
-        console.log('systemPermissions', systemPermissions);
-
         return systemPermissions.map((systemPermission) => ({
             ...systemPermission,
             type: 'SystemPermission',
@@ -238,8 +236,6 @@ async function searchFieldPermissions(query) {
         if (fieldPermissions?.length === 0) {
             return [];
         }
-
-        console.log('fieldPermissions', fieldPermissions);
 
         return fieldPermissions.map((fieldPermission) => ({
             ...fieldPermission,

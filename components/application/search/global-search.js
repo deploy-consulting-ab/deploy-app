@@ -21,10 +21,10 @@ export function GlobalSearch({ user, location }) {
     const containerRef = useRef(null);
     const router = useRouter();
     const pathname = usePathname();
-    const [prevPathname, setPrevPathname] = useState(pathname);
+    const prevPathnameRef = useRef(pathname);
 
-    if (pathname !== prevPathname) {
-        setPrevPathname(pathname);
+    if (pathname !== prevPathnameRef.current) {
+        prevPathnameRef.current = pathname;
         setSearchValue('');
         setResults(null);
         setOpen(false);
