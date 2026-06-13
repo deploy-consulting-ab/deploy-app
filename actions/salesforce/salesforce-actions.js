@@ -4,16 +4,11 @@ import { requireAuth } from '@/lib/require-auth';
 
 import { queryData, queryCachedData } from './salesforce-service';
 import {
-    getAssignmentTimecardsQuery,
-    getRecentOccupancyRateQuery,
-    getOccupancyRateFromLastFiscalYearQuery,
-    getOccupancyHistoryQuery,
     getOpportunitiesByNameQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getAssignmentsMetricsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
     getSalesforcePublicHolidaysQuery,
-    getOccupancyByDateRangeQuery,
     getEmployeesWithActiveAssignmentsQuery,
     getEmployeesQuery,
     getEmployeeByIdQuery,
@@ -21,7 +16,6 @@ import {
     getQuoteLinesQuery,
     getAssignmentsByEmployeeNumberQueryDynamic,
     getAssignmentByIdAndEmployeeNumberQueryDynamic,
-    getAssignmentByIdQueryDynamic,
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
     getEmployeeFYAmountsQuery,
@@ -36,7 +30,7 @@ import {
     formatDateToISOString,
     getPermittedFieldsFromSession,
 } from '@/lib/utils';
-import { PROJECT_TYPE_INTERNAL } from './constants';
+import { PROJECT_TYPE_MAP } from './constants';
 import { auth } from '@/auth';
 import {
     SALESFORCE_SYSTEM,
@@ -146,73 +140,6 @@ export async function getAssignmentByIdAndEmployeeNumber(assignmentId, employeeN
     }
 }
 
-export async function getAssignmentById(assignmentId) {
-    await requireAuth();
-    try {
-        const session = await auth();
-        const permittedFields = getPermittedFieldsFromSession(
-            session?.user?.fieldPermissions,
-            SALESFORCE_SYSTEM,
-            SF_OBJECT_ASSIGNMENT
-        );
-        const results = await queryData(
-            getAssignmentByIdQueryDynamic(assignmentId, permittedFields)
-        );
-
-        if (results?.length === 0) {
-            return null;
-        }
-
-        const result = results[0];
-
-        return {
-            id: result.Id,
-            name: result.Name,
-            flexId: result.Project__r?.FlexID__c,
-            startDate: result.StartDate__c,
-            endDate: result.EndDate__c,
-            projectStatus: result.ProjectStatus__c,
-            projectName: result.Project__r?.Name,
-            projectedHours: result.ProjectedHours__c,
-            actualHours: result.ActualHours__c,
-            currencyIsoCode: result.CurrencyIsoCode,
-            ...(result.ActualAmount__c !== undefined && { actualAmount: result.ActualAmount__c }),
-            ...(result.ActualCost__c !== undefined && { actualCost: result.ActualCost__c }),
-            ...(result.ActualProfitability__c !== undefined && {
-                actualProfitability: result.ActualProfitability__c,
-            }),
-            ...(result.ActualProfitabilityPercentage__c !== undefined && {
-                actualProfitabilityPercentage: result.ActualProfitabilityPercentage__c,
-            }),
-        };
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getAssignmentTimecards(assignmentId, employeeNumber) {
-    await requireAuth();
-    try {
-        const result = await queryData(getAssignmentTimecardsQuery(assignmentId, employeeNumber));
-        return result.map((timecard) => ({
-            id: timecard.Id,
-            weekStartDate: timecard.StartDate__c,
-            weekEndDate: timecard.EndDate__c,
-            hours: [
-                timecard.MondayHours__c,
-                timecard.TuesdayHours__c,
-                timecard.WednesdayHours__c,
-                timecard.ThursdayHours__c,
-                timecard.FridayHours__c,
-                timecard.SaturdayHours__c,
-                timecard.SundayHours__c,
-            ],
-        }));
-    } catch (error) {
-        throw error;
-    }
-}
-
 export async function getCurrentAssignmentsByEmployeeNumber(
     employeeNumber,
     weekStartDate,
@@ -234,7 +161,7 @@ export async function getCurrentAssignmentsByEmployeeNumber(
             roleFlexId: assignment?.Role__r?.FlexID__c,
             projectStatus: assignment.ProjectStatus__c,
             projectCode: assignment.Project__r.ProjectCode__c,
-            color: assignment.ProjectType__c === PROJECT_TYPE_INTERNAL ? '#6b7280' : '#3b82f6',
+            color: assignment.ProjectType__c === PROJECT_TYPE_MAP.INTERNAL ? '#6b7280' : '#3b82f6',
         }));
     } catch (error) {
         throw error;
@@ -331,75 +258,6 @@ export async function getQuoteLines(opportunityId) {
     }
 }
 
-export async function getRecentOccupancyRate(employeeNumber, dates) {
-    await requireAuth();
-    try {
-        const result = await queryData(getRecentOccupancyRateQuery(employeeNumber, dates));
-
-        if (result?.length === 0) {
-            return null;
-        }
-
-        return {
-            current: result[0].OccupancyRate__c,
-            history: result.slice(1).map((occupancyRate) => ({
-                month: occupancyRate.Month__c,
-                rate: occupancyRate.OccupancyRate__c,
-            })),
-        };
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getOccupancyRateFromLastFiscalYear(employeeNumber, today, lastFiscalYear) {
-    await requireAuth();
-    try {
-        const result = await queryData(
-            getOccupancyRateFromLastFiscalYearQuery(employeeNumber, today, lastFiscalYear)
-        );
-
-        if (result?.length === 0) {
-            return null;
-        }
-
-        return result.map((occupancyRate) => ({
-            month: occupancyRate.Month__c + ' ' + occupancyRate.Year__c,
-            date: occupancyRate.Date__c,
-            rate: occupancyRate.OccupancyRate__c,
-        }));
-    } catch (error) {
-        throw error;
-    }
-}
-
-export async function getOccupancyHistory(employeeNumber, today) {
-    await requireAuth();
-    try {
-        const result = await queryData(getOccupancyHistoryQuery(employeeNumber, today));
-
-        if (result?.length === 0) {
-            return [];
-        }
-
-        return result.map((occupancyRate) => ({
-            id: occupancyRate.Id,
-            month: occupancyRate.Month__c,
-            year: occupancyRate.Year__c,
-            period: `${occupancyRate.Month__c} ${occupancyRate.Year__c}`,
-            date: occupancyRate.Date__c,
-            rate: occupancyRate.OccupancyRate__c,
-            status: occupancyRate.OccupancyRate__c,
-            externalHours: occupancyRate.ExternalMonthHours__c || 0,
-            internalHours: occupancyRate.InternalMonthHours__c || 0,
-            totalMonthlyHours: occupancyRate.TotalMonthlyHours__c,
-            totalHours: occupancyRate.TotalHours__c,
-        }));
-    } catch (error) {
-        throw error;
-    }
-}
-
 export async function getAssignmentsMetrics(employeeNumber) {
     await requireAuth();
     try {
@@ -434,76 +292,6 @@ export async function getAssignmentsMetrics(employeeNumber) {
     } catch (error) {
         throw error;
     }
-}
-
-/**
- * Compute a set of occupancy rate statistics for the stats page.
- * Returns current month rate, current FY average, current FYTD average, and last FY average.
- * @param {string} employeeNumber - The employee number
- * @param {string} today - Today's date (YYYY-MM-DD)
- * @returns {Promise<Object>} Stats object
- */
-export async function getOccupancyStats(employeeNumber, today) {
-    await requireAuth();
-    const currentFY = getCurrentFiscalYear();
-    const previousFY = getPreviousFiscalYear();
-
-    const currentFYStart = formatDateToISOString(getFiscalYearStartDate(currentFY));
-    const lastFYStart = formatDateToISOString(getFiscalYearStartDate(previousFY));
-    const lastFYEnd = formatDateToISOString(getFiscalYearEndDate(previousFY));
-
-    const [currentFYRecords, lastFYRecords] = await Promise.all([
-        queryData(getOccupancyByDateRangeQuery(employeeNumber, currentFYStart, today)),
-        queryData(getOccupancyByDateRangeQuery(employeeNumber, lastFYStart, lastFYEnd)),
-    ]);
-
-    const computeAverage = (records) => {
-        const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
-        if (rates.length === 0) return null;
-        const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
-        return Math.round(avg * 100) / 100;
-    };
-
-    const currentRecord = currentFYRecords[currentFYRecords.length - 1];
-
-    return {
-        current: currentRecord?.OccupancyRate__c ?? null,
-        currentMonth: currentRecord?.Month__c ?? null,
-        currentFYTD: computeAverage(currentFYRecords),
-        lastFY: computeAverage(lastFYRecords),
-        currentFYYear: currentFY,
-        previousFYYear: previousFY,
-        currentFYMonthCount: currentFYRecords.length,
-        lastFYMonthCount: lastFYRecords.length,
-    };
-}
-
-/**
- * Compute the average occupancy rate for a custom date range.
- * @param {string} employeeNumber - The employee number
- * @param {string} startDate - Start date (YYYY-MM-DD)
- * @param {string} endDate - End date (YYYY-MM-DD)
- * @returns {Promise<Object>} Average and record count
- */
-export async function getOccupancyAverageByDateRange(employeeNumber, startDate, endDate) {
-    await requireAuth();
-    const records = await queryData(
-        getOccupancyByDateRangeQuery(employeeNumber, startDate, endDate)
-    );
-
-    const rates = records.map((r) => r.OccupancyRate__c).filter((r) => r != null);
-    if (rates.length === 0) return { average: null, count: 0 };
-
-    const avg = rates.reduce((a, b) => a + b, 0) / rates.length;
-    return {
-        average: Math.round(avg * 100) / 100,
-        count: rates.length,
-        months: records.map((r) => ({
-            month: r.Month__c,
-            year: r.Year__c,
-            rate: r.OccupancyRate__c,
-        })),
-    };
 }
 
 export async function getSalesforcePublicHolidays() {

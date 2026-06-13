@@ -1,4 +1,5 @@
 import { AlertCircle, WifiOff, Search, AlertTriangle } from 'lucide-react';
+import { STATUS_CODES } from '@/actions/callouts/config';
 
 export function ErrorDisplayComponent({ error }) {
     // Default error state
@@ -32,9 +33,12 @@ export function ErrorDisplayComponent({ error }) {
             case 'ApiError':
                 title = 'Service Error';
                 message = error.message || 'There was a problem with the service.';
-                if (error.status === 401 || error.status === 403) {
+                if (
+                    error.status === STATUS_CODES.UNAUTHORIZED ||
+                    error.status === STATUS_CODES.FORBIDDEN
+                ) {
                     message = "You don't have permission to access this resource.";
-                } else if (error.status === 404) {
+                } else if (error.status === STATUS_CODES.NOT_FOUND) {
                     message = 'The requested resource was not found.';
                 }
                 break;

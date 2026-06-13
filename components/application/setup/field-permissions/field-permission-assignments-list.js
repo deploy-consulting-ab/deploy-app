@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { getFieldPermissionAssignmentsByIdAction } from '@/actions/database/field-permission-actions';
+import { getFieldPermissionByIdAction } from '@/actions/database/field-permission-actions';
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 import {
     Select,
@@ -30,7 +30,7 @@ export function FieldPermissionAssignmentsListComponent({
         if (isRefreshing) return;
         setIsRefreshing(true);
         try {
-            const result = await getFieldPermissionAssignmentsByIdAction(fieldPermissionId);
+            const result = await getFieldPermissionByIdAction(fieldPermissionId);
             setAssignmentsData(result.allAssignments);
             setError(null);
         } catch (err) {

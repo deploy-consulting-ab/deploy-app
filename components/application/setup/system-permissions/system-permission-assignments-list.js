@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowUpDown, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
+import { getSystemPermissionByIdAction } from '@/actions/database/system-permission-actions';
 import { PERMISSION_SETS_ROUTE, PROFILES_ROUTE } from '@/menus/routes';
 import {
     Select,
@@ -36,7 +36,7 @@ export function SystemPermissionAssignmentsListComponent({
         let freshData = null;
         try {
             const systemPermissionAssignments =
-                await getSystemPermissionAssignmentsByIdAction(systemPermissionId);
+                await getSystemPermissionByIdAction(systemPermissionId);
             freshData = systemPermissionAssignments.allSystemPermissionAssignments;
             setSystemPermissionAssignmentsData(freshData);
             setError(null);

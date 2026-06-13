@@ -6,9 +6,7 @@ import { auth } from '@/auth';
 import { ASSIGNMENTS_ROUTE } from '@/menus/routes';
 
 export default async function AssignmentPage({ params }) {
-    const { assignmentId } = await params;
-
-    const session = await auth();
+    const [{ assignmentId }, session] = await Promise.all([params, auth()]);
     const { user } = session;
 
     let assignment = null;

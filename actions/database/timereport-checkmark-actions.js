@@ -26,21 +26,6 @@ export async function getTimereportCheckmarkAction(userId, weekStartDate) {
 }
 
 /**
- * Get all timereport checkmarks for a user
- * @param {string} userId
- * @returns {Promise<TimereportCheckmark[]>} All checkmarks for the user
- * @throws {Error} If the query fails
- */
-export async function getTimereportCheckmarksByUserAction(userId) {
-    await requireAuth();
-    try {
-        return await getTimereportCheckmarksByUser(userId);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Create a timereport checkmark
  * @param {string} userId
  * @param {Date} weekStartDate - The Monday of the week

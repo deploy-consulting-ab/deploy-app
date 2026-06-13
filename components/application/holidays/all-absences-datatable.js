@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useReducer } from 'react';
 import { DatatableWrapperComponent } from '@/components/application/datatable-wrapper';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -107,35 +107,60 @@ function applyAbsenceFilter(data, filterValue) {
     return data.filter((absence) => absence.AbsenceTypeId === filterValue);
 }
 
+function absencesListReducer(state, action) {
+    switch (action.type) {
+        case 'setView':
+            return { ...state, selectedView: action.view };
+        case 'refreshStart':
+            return { ...state, isRefreshing: true };
+        case 'refreshSuccess':
+            return {
+                ...state,
+                isRefreshing: false,
+                absencesOverride: action.data,
+                refreshError: null,
+            };
+        case 'refreshError':
+            return { ...state, isRefreshing: false, refreshError: action.error };
+        default:
+            return state;
+    }
+}
+
 export function AllAbsencesDatatableComponent({ absences, employeeNumber }) {
-    const [allAbsences, setAllAbsences] = useState(absences);
-    const [absencesData, setAbsencesData] = useState(absences);
-    const [view, setView] = useState('all');
-    const [error, setError] = useState(null);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [state, dispatch] = useReducer(absencesListReducer, {
+        selectedView: null,
+        absencesOverride: null,
+        refreshError: null,
+        isRefreshing: false,
+    });
+
+    const view = state.selectedView ?? 'all';
+    const error = state.refreshError;
+    const sourceAbsences = state.absencesOverride ?? absences;
+
+    const absencesData = useMemo(
+        () => applyAbsenceFilter(sourceAbsences, view),
+        [sourceAbsences, view]
+    );
 
     const handleRefresh = async () => {
-        if (isRefreshing) {
+        if (state.isRefreshing) {
             return;
         }
-        setIsRefreshing(true);
+
+        dispatch({ type: 'refreshStart' });
 
         try {
             const response = await getAllAbsence(employeeNumber);
-            const freshData = response.Result;
-            setAllAbsences(freshData);
-            setAbsencesData(applyAbsenceFilter(freshData, view));
-            setError(null);
+            dispatch({ type: 'refreshSuccess', data: response.Result });
         } catch (err) {
-            setError(err);
-        } finally {
-            setIsRefreshing(false);
+            dispatch({ type: 'refreshError', error: err });
         }
     };
 
     const handleFilterAbsences = (value) => {
-        setAbsencesData(applyAbsenceFilter(allAbsences, value));
-        setView(value);
+        dispatch({ type: 'setView', view: value });
     };
 
     const viewByAbsenceType = (
@@ -159,8 +184,8 @@ export function AllAbsencesDatatableComponent({ absences, employeeNumber }) {
             variant="ghost"
             size="icon"
             onClick={handleRefresh}
-            disabled={isRefreshing}
-            className={`md:hover:cursor-pointer ${isRefreshing ? 'animate-spin' : ''}`}
+            disabled={state.isRefreshing}
+            className={`md:hover:cursor-pointer ${state.isRefreshing ? 'animate-spin' : ''}`}
         >
             <RefreshCw className="h-4 w-4 text-muted-foreground" />
             <span className="sr-only">Refresh data</span>

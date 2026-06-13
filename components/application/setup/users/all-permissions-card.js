@@ -3,25 +3,10 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BadgeCheckIcon } from 'lucide-react';
-import { useRef, useEffect, useState } from 'react';
+import { useScrollableOverflow } from '@/hooks/use-scrollable-overflow';
 
 export function AllPermissionsCardComponent({ user }) {
-    const [isScrollable, setIsScrollable] = useState(false);
-    const contentRef = useRef(null);
-
-    useEffect(() => {
-        const checkScrollable = () => {
-            if (contentRef.current) {
-                const { scrollHeight, clientHeight } = contentRef.current;
-                setIsScrollable(scrollHeight > clientHeight);
-            }
-        };
-
-        checkScrollable();
-        // Re-check when permissions change or window resizes
-        window.addEventListener('resize', checkScrollable);
-        return () => window.removeEventListener('resize', checkScrollable);
-    }, [user.allPermissions]);
+    const { contentRef, isScrollable } = useScrollableOverflow();
 
     return (
         <Card className="col-span-1 py-6">

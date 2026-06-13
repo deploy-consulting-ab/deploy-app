@@ -10,7 +10,9 @@ import { Badge } from '@/components/ui/badge';
 import { BadgeCheckIcon } from 'lucide-react';
 import { FormError } from '@/components/auth/form/form-error';
 import { FormSuccess } from '@/components/auth/form/form-success';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useScrollableOverflow } from '@/hooks/use-scrollable-overflow';
+import { useSuccessVisibility } from '@/hooks/use-success-visibility';
 
 /**
  * Editable card for toggling field permissions on a profile or permission set.
@@ -30,9 +32,8 @@ export function FieldPermissionsEditableCardComponent({
     error,
     success,
 }) {
-    const [isScrollable, setIsScrollable] = useState(false);
-    const contentRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(true);
+    const { contentRef, isScrollable } = useScrollableOverflow();
+    const isVisible = useSuccessVisibility(success);
 
     // Group by "system / objectName"
     const groups = useMemo(() => {
@@ -49,27 +50,6 @@ export function FieldPermissionsEditableCardComponent({
             items: items.toSorted((a, b) => (b.assigned ? 1 : -1)),
         }));
     }, [totalFieldPermissions]);
-
-    useEffect(() => {
-        const checkScrollable = () => {
-            if (contentRef.current) {
-                const { scrollHeight, clientHeight } = contentRef.current;
-                setIsScrollable(scrollHeight > clientHeight);
-            }
-        };
-        checkScrollable();
-        window.addEventListener('resize', checkScrollable);
-        return () => window.removeEventListener('resize', checkScrollable);
-    }, [totalFieldPermissions]);
-
-    useEffect(() => {
-        let fadeOutTimer;
-        if (success) {
-            setIsVisible(true);
-            fadeOutTimer = setTimeout(() => setIsVisible(false), 1000);
-        }
-        return () => clearTimeout(fadeOutTimer);
-    }, [success]);
 
     return (
         <Card className="col-span-1">

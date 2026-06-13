@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useLayoutEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -39,7 +39,6 @@ export function DynamicBreadcrumbComponent({ maxContainerWidth = null, onContent
     const containerRef = useRef(null);
     const listRef = useRef(null);
     const lastLabelRef = useRef(null);
-    const [lastSegmentLimit, setLastSegmentLimit] = useState(null);
 
     const segments = pathname.split('/').filter(Boolean);
     const lastIndex = segments.length - 1;
@@ -73,41 +72,19 @@ export function DynamicBreadcrumbComponent({ maxContainerWidth = null, onContent
 
     useLayoutEffect(() => {
         const container = containerRef.current;
-        const list = listRef.current;
         const lastLabel = lastLabelRef.current;
 
-        if (!container || !list || !lastLabel) {
+        if (!container || !lastLabel) {
             return undefined;
         }
 
         const fitBreadcrumb = () => {
             if (!fullLastLabel) {
-                setLastSegmentLimit(null);
                 container.scrollLeft = 0;
                 return;
             }
 
-            let limit = null;
             lastLabel.textContent = fullLastLabel;
-
-            container.scrollLeft = container.scrollWidth;
-
-            if (list.scrollWidth > container.clientWidth) {
-                for (let chars = fullLastLabel.length - 1; chars >= 1; chars -= 1) {
-                    lastLabel.textContent = fullLastLabel;
-                    if (list.scrollWidth <= container.clientWidth) {
-                        limit = chars;
-                        break;
-                    }
-                }
-                if (limit === null) {
-                    limit = 1;
-                }
-            }
-
-            const displayLabel = fullLastLabel;
-            setLastSegmentLimit(limit);
-            lastLabel.textContent = displayLabel;
             container.scrollLeft = container.scrollWidth;
         };
 

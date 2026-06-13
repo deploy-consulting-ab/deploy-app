@@ -1,0 +1,4 @@
+{
+    "$schema": "https://www.react.doctor/schema/doctor.config.json",
+    "serverAuthFunctionNames": ["signIn", "signOut"]
+}

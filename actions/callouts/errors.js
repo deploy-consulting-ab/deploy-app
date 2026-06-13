@@ -29,14 +29,6 @@ export class NoResultsError extends Error {
     }
 }
 
-export class ValidationError extends Error {
-    constructor(message, validationErrors = {}) {
-        super(message);
-        this.name = 'ValidationError';
-        this.validationErrors = validationErrors;
-    }
-}
-
 /**
  * Handles API response errors and throws appropriate custom errors.
  * Parses the response body when available to surface the API's validation message.
@@ -61,20 +53,4 @@ export const handleApiError = async (response) => {
         // Keep default message if parsing fails
     }
     throw new ApiError(message, response.status, response.code || 'UNKNOWN_ERROR', response);
-};
-
-/**
- * Validates response data against expected schema/type
- * This is a simple implementation - you might want to use a validation library
- */
-export const validateResponse = (data, expectedShape) => {
-    // Add your validation logic here
-    // This is just a basic example
-    if (!data || typeof data !== expectedShape) {
-        throw new ValidationError('Invalid response data', {
-            expected: expectedShape,
-            received: typeof data,
-        });
-    }
-    return data;
 };
