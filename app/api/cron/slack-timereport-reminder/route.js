@@ -7,6 +7,7 @@ import {
     getSwedishDateTime,
 } from '@/lib/utils';
 import { getEmployeesWithActiveAssignments } from '@/actions/salesforce/salesforce-actions';
+import { STATUS_CODES } from '@/actions/callouts/config';
 
 /**
  * GET /api/cron/slack-timereport-reminder
@@ -56,7 +57,7 @@ export async function GET(request) {
         // Reject requests that do not carry the expected Vercel cron secret.
         const authHeader = request.headers.get('authorization');
         if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+            return Response.json({ error: 'Unauthorized' }, { status: STATUS_CODES.UNAUTHORIZED });
         }
 
         // Determine the current Stockholm wall-clock time.
@@ -72,7 +73,7 @@ export async function GET(request) {
         if (!isRightHour) {
             return Response.json(
                 { message: 'Outside reminder time window', weekday, hour },
-                { status: 200 }
+                { status: STATUS_CODES.OK }
             );
         }
 
@@ -132,7 +133,7 @@ export async function GET(request) {
         if (usersWithoutCheckmarkAndActiveAssignments.length === 0) {
             return Response.json(
                 { message: 'All users have reported hours', weekStartDate: weekStartStr },
-                { status: 200 }
+                { status: STATUS_CODES.OK }
             );
         }
 
@@ -165,10 +166,13 @@ export async function GET(request) {
                 remindersSent: usersWithoutCheckmarkAndActiveAssignments.length,
                 results,
             },
-            { status: 200 }
+            { status: STATUS_CODES.OK }
         );
     } catch (error) {
         console.error('Slack timereport reminder cron error:', error);
-        return Response.json({ error: 'Internal server error' }, { status: 500 });
+        return Response.json(
+            { error: 'Internal server error' },
+            { status: STATUS_CODES.INTERNAL_SERVER_ERROR }
+        );
     }
 }

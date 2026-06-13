@@ -553,7 +553,6 @@ export async function getHolidayRequests(employeeNumber, currentDate) {
     }
 }
 
-// @TODO: IMPLEMENT THIS: IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> IMPLEMENT THIS
 export async function getSickLeaveRequests(employeeNumber, currentDate) {
     await requireAuth();
     try {
