@@ -8,7 +8,7 @@ const SEK = 'SEK';
 const fmt = (v) => formatCurrency(v, SEK);
 
 /** Keeps currency values readable while allowing wrap instead of overflow. */
-export const CURRENCY_VALUE_CLASS =
+const CURRENCY_VALUE_CLASS =
     'text-sm tabular-nums leading-tight min-w-0 max-w-full wrap-anywhere';
 
 /** Larger currency display for summary / headline figures. */
