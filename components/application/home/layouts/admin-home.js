@@ -1,7 +1,7 @@
 import { getHolidays, getAssignmentTimereportsForOccupancy } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
-import { revalidatePath } from 'next/cache';
+import { refreshHome } from '@/components/application/home/refresh-home';
 import {
     formatDateToISOString,
     getCurrentFiscalYear,
@@ -32,21 +32,6 @@ export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHoli
     };
 
     const { flexEmployeeId, profileId, employeeNumber, name } = user;
-
-    async function refreshHolidays() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshOccupancy() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshStatistics() {
-        'use server';
-        revalidatePath('/home');
-    }
 
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
     const links = getHomePageLinks(profileId);
@@ -107,14 +92,14 @@ export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHoli
                     <OccupancyRatesCardComponent
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
-                        refreshAction={refreshOccupancy}
+                        refreshAction={refreshHome}
                         target={85}
                     />
                     <StatisticsCardComponent
                         title="Assignments"
                         stats={data.assignmentsMetrics}
                         error={errors.assignmentsMetrics}
-                        refreshAction={refreshStatistics}
+                        refreshAction={refreshHome}
                     />
                 </div>
 
@@ -122,7 +107,7 @@ export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHoli
                     <HolidaysCardComponent
                         holidays={data.holidays}
                         error={errors.holidays}
-                        refreshAction={refreshHolidays}
+                        refreshAction={refreshHome}
                     />
                     <QuickLinksCardComponent
                         title="Quick Access"
