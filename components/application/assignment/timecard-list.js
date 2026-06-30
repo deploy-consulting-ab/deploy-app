@@ -7,9 +7,8 @@ import { useSearchParams } from 'next/navigation';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     formatLocalDateKey,
-    getLocalWeekMonday,
-    getLocalWeekSunday,
     parseToLocalDate,
+    weekOverlapsLocalDateRange,
 } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
@@ -17,20 +16,12 @@ const ITEMS_PER_PAGE = 10;
 function filterTimecardsByDateRange(timecards, startDate, endDate) {
     if (!startDate && !endDate) return timecards;
 
-    const startBound = startDate
-        ? formatLocalDateKey(getLocalWeekMonday(startDate))
-        : null;
-    const endBound = endDate
-        ? formatLocalDateKey(getLocalWeekSunday(endDate))
-        : null;
+    const startBound = startDate ? formatLocalDateKey(startDate) : null;
+    const endBound = endDate ? formatLocalDateKey(endDate) : null;
 
-    return timecards.filter((timecard) => {
-        const weekStart = timecard.weekStartDate;
-
-        if (startBound && weekStart < startBound) return false;
-        if (endBound && weekStart > endBound) return false;
-        return true;
-    });
+    return timecards.filter((timecard) =>
+        weekOverlapsLocalDateRange(timecard.weekStartDate, startBound, endBound)
+    );
 }
 
 export function TimecardListComponent({ timecards = [], error }) {
@@ -88,7 +79,12 @@ export function TimecardListComponent({ timecards = [], error }) {
 
             <div className="space-y-4">
                 {paginatedTimecards.map((weekData) => (
-                    <WeeklyTimecardComponent key={weekData.weekStartDate} weekData={weekData} />
+                    <WeeklyTimecardComponent
+                        key={weekData.weekStartDate}
+                        weekData={weekData}
+                        filterStartDate={startDate}
+                        filterEndDate={endDate}
+                    />
                 ))}
                 {paginatedTimecards.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
