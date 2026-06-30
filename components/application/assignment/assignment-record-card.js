@@ -162,7 +162,11 @@ export function AssignmentRecordCardComponent({
 
             {/* Timecards Datatable */}
             <div className="mt-4">
-                <AssignmentTimecardsDatatable timecardHours={timecardHours} />
+                <AssignmentTimecardsDatatable
+                    timecardHours={timecardHours}
+                    timecardsRoute={timecardsRoute}
+                    assignmentId={assignment.id}
+                />
             </div>
         </>
     );

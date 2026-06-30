@@ -2,9 +2,15 @@
 
 import { WeeklyTimecardComponent } from './weekly-timecard';
 import { TimecardFilters } from './timecard-filters';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
-import { formatLocalDateKey, getLocalWeekMonday, getLocalWeekSunday } from '@/lib/utils';
+import {
+    formatLocalDateKey,
+    getLocalWeekMonday,
+    getLocalWeekSunday,
+    parseToLocalDate,
+} from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -28,9 +34,16 @@ function filterTimecardsByDateRange(timecards, startDate, endDate) {
 }
 
 export function TimecardListComponent({ timecards = [], error }) {
+    const searchParams = useSearchParams();
     const [currentPage, setCurrentPage] = useState(1);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+
+    useEffect(() => {
+        setStartDate(parseToLocalDate(searchParams.get('startDate')));
+        setEndDate(parseToLocalDate(searchParams.get('endDate')));
+        setCurrentPage(1);
+    }, [searchParams]);
 
     const filteredTimecards = useMemo(
         () => filterTimecardsByDateRange(timecards, startDate, endDate),
