@@ -4,43 +4,44 @@ import { WeeklyTimecardComponent } from './weekly-timecard';
 import { TimecardFilters } from './timecard-filters';
 import { useState, useMemo } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { formatLocalDateKey, getLocalWeekMonday, getLocalWeekSunday } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
 
+function filterTimecardsByDateRange(timecards, startDate, endDate) {
+    if (!startDate && !endDate) return timecards;
+
+    const startBound = startDate
+        ? formatLocalDateKey(getLocalWeekMonday(startDate))
+        : null;
+    const endBound = endDate
+        ? formatLocalDateKey(getLocalWeekSunday(endDate))
+        : null;
+
+    return timecards.filter((timecard) => {
+        const weekStart = timecard.weekStartDate;
+
+        if (startBound && weekStart < startBound) return false;
+        if (endBound && weekStart > endBound) return false;
+        return true;
+    });
+}
+
 export function TimecardListComponent({ timecards = [], error }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
-    // Filter timecards by date
-    const filteredTimecards = useMemo(() => {
-        if (!selectedDate) return timecards;
-
-        // Helper function to normalize dates to midnight UTC
-        const normalizeDate = (date) => {
-            const normalized = new Date(date);
-            normalized.setHours(0, 0, 0, 0);
-            return normalized;
-        };
-
-        const normalizedSelectedDate = normalizeDate(selectedDate);
-
-        return timecards.filter((timecard) => {
-            // Check if the week contains the selected date
-            const weekStart = normalizeDate(timecard.weekStartDate);
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            weekEnd.setHours(23, 59, 59, 999); // End of day
-
-            return normalizedSelectedDate >= weekStart && normalizedSelectedDate <= weekEnd;
-        });
-    }, [timecards, selectedDate]);
+    const filteredTimecards = useMemo(
+        () => filterTimecardsByDateRange(timecards, startDate, endDate),
+        [timecards, startDate, endDate]
+    );
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
     }
 
-    // Calculate pagination
-    const totalPages = Math.ceil(filteredTimecards.length / ITEMS_PER_PAGE);
+    const totalPages = Math.max(1, Math.ceil(filteredTimecards.length / ITEMS_PER_PAGE));
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedTimecards = filteredTimecards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
@@ -48,15 +49,25 @@ export function TimecardListComponent({ timecards = [], error }) {
         setCurrentPage(newPage);
     };
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        setCurrentPage(1); // Reset to first page when filter changes
+    const handleStartDateChange = (date) => {
+        setStartDate(date);
+        setCurrentPage(1);
     };
+
+    const handleEndDateChange = (date) => {
+        setEndDate(date);
+        setCurrentPage(1);
+    };
+
+    const hasDateFilter = startDate || endDate;
 
     return (
         <div>
             <TimecardFilters
-                onDateChange={handleDateChange}
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={handleStartDateChange}
+                onEndDateChange={handleEndDateChange}
                 onPageChange={handlePageChange}
                 totalPages={totalPages}
                 currentPage={currentPage}
@@ -68,8 +79,8 @@ export function TimecardListComponent({ timecards = [], error }) {
                 ))}
                 {paginatedTimecards.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                        {selectedDate
-                            ? 'No time reports found for the selected date.'
+                        {hasDateFilter
+                            ? 'No time reports found for the selected date range.'
                             : 'No time reports available for this assignment.'}
                     </p>
                 )}
