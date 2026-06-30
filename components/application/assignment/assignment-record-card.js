@@ -41,6 +41,16 @@ export function AssignmentRecordCardComponent({
         currencyIsoCode,
     } = assignment;
 
+    console.log('actualProfitabilityPercentage!!::', actualProfitabilityPercentage);
+    console.log('actualProfitability!!::', actualProfitability);
+    console.log('actualCost!!::', actualCost);
+    console.log('actualAmount!!::', actualAmount);
+    console.log('currencyIsoCode!!::', currencyIsoCode);
+    console.log('projectedHours!!::', projectedHours);
+    console.log('actualHours!!::', actualHours);
+    console.log('timecardsRoute!!::', timecardsRoute);
+    console.log('assignment!!::', assignment);
+
     return (
         <>
             <Card className="w-full transition-all hover:shadow-md border-l-4 border-l-deploy-blue">
@@ -86,7 +96,7 @@ export function AssignmentRecordCardComponent({
                             </p>
                             <p className="font-medium">{actualHours} hours</p>
                         </div>
-                        {actualAmount && (
+                        {actualAmount != null && (
                             <div className="space-y-1">
                                 <p className="text-muted-foreground font-semibold text-xs uppercase">
                                     Actual Amount
@@ -96,7 +106,7 @@ export function AssignmentRecordCardComponent({
                                 </p>
                             </div>
                         )}
-                        {actualCost && (
+                        {actualCost != null && (
                             <div className="space-y-1">
                                 <p className="text-muted-foreground font-semibold text-xs uppercase">
                                     Actual Cost
@@ -106,7 +116,7 @@ export function AssignmentRecordCardComponent({
                                 </p>
                             </div>
                         )}
-                        {actualProfitability && (
+                        {actualProfitability != null && (
                             <div className="space-y-1">
                                 <p className="text-muted-foreground font-semibold text-xs uppercase">
                                     Actual Profitability
