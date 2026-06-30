@@ -2,7 +2,7 @@
 
 import { WeeklyTimecardComponent } from './weekly-timecard';
 import { TimecardFilters } from './timecard-filters';
-import { useState, useMemo, useEffect, useCallback, startTransition } from 'react';
+import { useReducer, useMemo, useEffect, useCallback, startTransition } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
@@ -12,6 +12,25 @@ import {
 } from '@/lib/utils';
 
 const ITEMS_PER_PAGE = 10;
+
+function timecardListReducer(state, action) {
+    switch (action.type) {
+        case 'SYNC_FROM_URL':
+            return {
+                startDate: action.startDate,
+                endDate: action.endDate,
+                currentPage: 1,
+            };
+        case 'SET_START_DATE':
+            return { ...state, startDate: action.date, currentPage: 1 };
+        case 'SET_END_DATE':
+            return { ...state, endDate: action.date, currentPage: 1 };
+        case 'SET_PAGE':
+            return { ...state, currentPage: action.page };
+        default:
+            return state;
+    }
+}
 
 function filterTimecardsByDateRange(timecards, startDate, endDate) {
     if (!startDate && !endDate) return timecards;
@@ -28,14 +47,22 @@ export function TimecardListComponent({ timecards = [], error }) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [currentPage, setCurrentPage] = useState(1);
-    const [startDate, setStartDate] = useState(() => parseToLocalDate(searchParams.get('startDate')));
-    const [endDate, setEndDate] = useState(() => parseToLocalDate(searchParams.get('endDate')));
+    const [{ startDate, endDate, currentPage }, dispatch] = useReducer(
+        timecardListReducer,
+        searchParams,
+        (params) => ({
+            startDate: parseToLocalDate(params.get('startDate')),
+            endDate: parseToLocalDate(params.get('endDate')),
+            currentPage: 1,
+        })
+    );
 
     useEffect(() => {
-        setStartDate(parseToLocalDate(searchParams.get('startDate')));
-        setEndDate(parseToLocalDate(searchParams.get('endDate')));
-        setCurrentPage(1);
+        dispatch({
+            type: 'SYNC_FROM_URL',
+            startDate: parseToLocalDate(searchParams.get('startDate')),
+            endDate: parseToLocalDate(searchParams.get('endDate')),
+        });
     }, [searchParams]);
 
     const updateDateParams = useCallback(
@@ -76,18 +103,16 @@ export function TimecardListComponent({ timecards = [], error }) {
     const paginatedTimecards = filteredTimecards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
     const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
+        dispatch({ type: 'SET_PAGE', page: newPage });
     };
 
     const handleStartDateChange = (date) => {
-        setStartDate(date);
-        setCurrentPage(1);
+        dispatch({ type: 'SET_START_DATE', date });
         updateDateParams(date, endDate);
     };
 
     const handleEndDateChange = (date) => {
-        setEndDate(date);
-        setCurrentPage(1);
+        dispatch({ type: 'SET_END_DATE', date });
         updateDateParams(startDate, date);
     };
 

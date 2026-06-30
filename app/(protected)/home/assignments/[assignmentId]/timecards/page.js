@@ -4,8 +4,7 @@ import { getAssignmentByIdAndEmployeeNumber } from '@/actions/salesforce/salesfo
 import { auth } from '@/auth';
 
 export default async function TimecardsPage({ params }) {
-    const { assignmentId } = await params;
-    const session = await auth();
+    const [{ assignmentId }, session] = await Promise.all([params, auth()]);
     const { user } = session;
 
     let timecards = null;
