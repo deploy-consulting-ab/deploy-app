@@ -2,8 +2,8 @@
 
 import { WeeklyTimecardComponent } from './weekly-timecard';
 import { TimecardFilters } from './timecard-filters';
-import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useMemo, useEffect, useCallback, startTransition } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     formatLocalDateKey,
@@ -25,16 +25,42 @@ function filterTimecardsByDateRange(timecards, startDate, endDate) {
 }
 
 export function TimecardListComponent({ timecards = [], error }) {
+    const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const [currentPage, setCurrentPage] = useState(1);
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState(() => parseToLocalDate(searchParams.get('startDate')));
+    const [endDate, setEndDate] = useState(() => parseToLocalDate(searchParams.get('endDate')));
 
     useEffect(() => {
         setStartDate(parseToLocalDate(searchParams.get('startDate')));
         setEndDate(parseToLocalDate(searchParams.get('endDate')));
         setCurrentPage(1);
     }, [searchParams]);
+
+    const updateDateParams = useCallback(
+        (nextStartDate, nextEndDate) => {
+            const params = new URLSearchParams(searchParams.toString());
+
+            if (nextStartDate) {
+                params.set('startDate', formatLocalDateKey(nextStartDate));
+            } else {
+                params.delete('startDate');
+            }
+
+            if (nextEndDate) {
+                params.set('endDate', formatLocalDateKey(nextEndDate));
+            } else {
+                params.delete('endDate');
+            }
+
+            const query = params.toString();
+            startTransition(() => {
+                router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+            });
+        },
+        [pathname, router, searchParams]
+    );
 
     const filteredTimecards = useMemo(
         () => filterTimecardsByDateRange(timecards, startDate, endDate),
@@ -56,11 +82,13 @@ export function TimecardListComponent({ timecards = [], error }) {
     const handleStartDateChange = (date) => {
         setStartDate(date);
         setCurrentPage(1);
+        updateDateParams(date, endDate);
     };
 
     const handleEndDateChange = (date) => {
         setEndDate(date);
         setCurrentPage(1);
+        updateDateParams(startDate, date);
     };
 
     const hasDateFilter = startDate || endDate;
