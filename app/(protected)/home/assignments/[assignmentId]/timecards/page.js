@@ -1,9 +1,12 @@
 import { TimecardListComponent } from '@/components/application/assignment/timecard-list';
 import { getAssignmentTimereportsByProjectId } from '@/actions/flex/flex-actions';
 import { getAssignmentByIdAndEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
+import { auth } from '@/auth';
 
 export default async function TimecardsPage({ params }) {
     const { assignmentId } = await params;
+    const session = await auth();
+    const { user } = session;
 
     let timecards = null;
     let error = null;
@@ -20,6 +23,7 @@ export default async function TimecardsPage({ params }) {
             assignment?.endDate
         );
     } catch (err) {
+        console.log('err!!::', err);
         error = err;
     }
 
