@@ -23,7 +23,6 @@ export default async function TimecardsPage({ params }) {
             assignment?.endDate
         );
     } catch (err) {
-        console.log('err!!::', err);
         error = err;
     }
 
