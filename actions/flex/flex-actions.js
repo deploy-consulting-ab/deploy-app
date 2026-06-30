@@ -553,7 +553,6 @@ export async function getHolidayRequests(employeeNumber, currentDate) {
     }
 }
 
-// @TODO: IMPLEMENT THIS: IF THERE ARE NOT SICK LEAVES, THE API RETURNS 404 -> IMPLEMENT THIS
 export async function getSickLeaveRequests(employeeNumber, currentDate) {
     await requireAuth();
     try {
@@ -688,7 +687,10 @@ async function createSickAbsenceApplication(employmentNumber, absenceApplication
     );
 }
 
-async function createParentalLeave10DaysAbsenceApplication(employmentNumber, absenceApplicationData) {
+async function createParentalLeave10DaysAbsenceApplication(
+    employmentNumber,
+    absenceApplicationData
+) {
     return createAbsenceApplicationByType(
         employmentNumber,
         PARENTAL_LEAVE_10_DAYS_TYPE_ID,
@@ -1022,7 +1024,6 @@ export async function getFlexOccupancyHistory(flexEmployeeId, endDate, startDate
 
 /**
  * Compute the average occupancy rate for a custom date range from Flex timereports.
- * Returns the same shape as getOccupancyAverageByDateRange from Salesforce.
  * @param {string} flexEmployeeId
  * @param {string} startDate - YYYY-MM-DD
  * @param {string} endDate - YYYY-MM-DD

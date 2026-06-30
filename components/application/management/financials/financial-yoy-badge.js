@@ -1,7 +1,7 @@
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { formatSEK, formatPercentChange } from '@/lib/utils';
 
-export function FinancialYoYBadge({ value, invertColors = false }) {
+function FinancialYoYBadge({ value, invertColors = false }) {
     const label = formatPercentChange(value);
     if (!label) return null;
 

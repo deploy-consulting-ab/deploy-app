@@ -1,9 +1,23 @@
-export const PROJECT_TYPE_INTERNAL = 'Internal Project';
-export const PROJECT_TYPE_EXTERNAL = 'External Project';
-export const PROJECT_STATUS_ACTIVE = 'Active';
-export const PROJECT_STATUS_DRAFT = 'Draft';
-export const PROJECT_STATUS_CANCELLED = 'Canceled';
-export const PROJECT_STATUS_COMPLETED = 'Completed';
-export const OPPORTUNITY_STATUS_CLOSED_WON = 'Closed Won';
-export const OPPORTUNITY_STATUS_CLOSED_LOST = 'Closed Lost';
-export const OPPORTUNITY_STATUS_CLOSED_DECLINED = 'Closed Declined';
+export const PROJECT_STATUS_MAP = {
+    DRAFT: 'Draft',
+    NOT_STARTED: 'Not Started',
+    ONGOING: 'Ongoing',
+    CANCELED: 'Canceled',
+    COMPLETED: 'Completed',
+};
+
+export const PROJECT_TYPE_MAP = {
+    INTERNAL: 'Internal Project',
+    EXTERNAL: 'External Project',
+};
+
+export const EMPLOYMENT_TYPE_MAP = {
+    FULL_TIME: 'Full-Time',
+    PART_TIME: 'Part-Time',
+};
+
+export const OPPORTUNITY_STATUS_MAP = {
+    CLOSED_WON: 'Closed Won',
+    CLOSED_LOST: 'Closed Lost',
+    CLOSED_DECLINED: 'Closed Declined',
+};

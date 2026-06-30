@@ -8,13 +8,16 @@ export default async function SetupPage() {
     let metrics = null;
     let error = null;
     try {
-        const users = await getUsersAction();
+        const [users, totalProfilesCount, totalPermissionsCount, totalPermissionSetsCount] =
+            await Promise.all([
+                getUsersAction(),
+                getTotalProfilesCountAction(),
+                getTotalSystemPermissionsCountAction(),
+                getTotalPermissionSetsCountAction(),
+            ]);
 
         const activeUsersCount = users.filter((user) => user.isActive).length;
         const totalUsersCount = users.length;
-        const totalProfilesCount = await getTotalProfilesCountAction();
-        const totalPermissionsCount = await getTotalSystemPermissionsCountAction();
-        const totalPermissionSetsCount = await getTotalPermissionSetsCountAction();
 
         metrics = {
             activeUsers: activeUsersCount,

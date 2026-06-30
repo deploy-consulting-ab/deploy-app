@@ -103,6 +103,8 @@ export function DatatableWrapperComponent({
                                                                 header.getContext()
                                                             )}
                                                             <div
+                                                                role="separator"
+                                                                aria-orientation="vertical"
                                                                 onMouseDown={header.getResizeHandler()}
                                                                 onTouchStart={header.getResizeHandler()}
                                                                 className={`absolute right-0 top-0 h-full w-0.5 cursor-col-resize select-none touch-none bg-border/50 opacity-0 hover:opacity-100 transition-opacity ${

@@ -9,17 +9,21 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { OpportunityCardPhoneComponent } from '@/components/application/opportunities/phone/opportunity-card-phone';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { OPPORTUNITIES_ROUTE } from '@/menus/routes';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
+import { useInfiniteScrollSentinel } from '@/hooks/use-infinite-scroll-sentinel';
 
 export function OpportunitiesListPhoneComponent({ opportunities, error, opportunityViews }) {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [view, setView] = useState('all');
     const [displayCount, setDisplayCount] = useState(2);
-    const observerTarget = useRef(null);
+
+    const loadMore = useCallback(() => {
+        setDisplayCount((prev) => prev + 10);
+    }, []);
 
     const handleFilterOpportunities = (value) => {
         setView(value);
@@ -51,29 +55,7 @@ export function OpportunitiesListPhoneComponent({ opportunities, error, opportun
     const filtered = filteredOpportunities();
     const displayedOpportunities = filtered.slice(0, displayCount);
     const hasMore = displayCount < filtered.length;
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setDisplayCount((prev) => prev + 10);
-                }
-            },
-            { threshold: 0.1 }
-        );
-
-        const currentTarget = observerTarget.current;
-
-        if (currentTarget) {
-            observer.observe(currentTarget);
-        }
-
-        return () => {
-            if (currentTarget) {
-                observer.unobserve(currentTarget);
-            }
-        };
-    }, [hasMore]);
+    const sentinelRef = useInfiniteScrollSentinel(hasMore, loadMore);
 
     if (error) {
         return <ErrorDisplayComponent error={error} />;
@@ -118,7 +100,7 @@ export function OpportunitiesListPhoneComponent({ opportunities, error, opportun
                 )}
             </div>
             {hasMore && (
-                <div ref={observerTarget} className="flex justify-center py-4">
+                <div ref={sentinelRef} className="flex justify-center py-4">
                     <div className="text-sm text-gray-500">Loading more...</div>
                 </div>
             )}

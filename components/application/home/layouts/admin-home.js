@@ -1,8 +1,7 @@
 import { getHolidays, getAssignmentTimereportsForOccupancy } from '@/actions/flex/flex-actions';
 import { getHomePageLinks } from '@/lib/external-links';
-import { Spinner } from '@/components/ui/spinner';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
-import { revalidatePath } from 'next/cache';
+import { refreshHome } from '@/components/application/home/refresh-home';
 import {
     formatDateToISOString,
     getCurrentFiscalYear,
@@ -19,12 +18,7 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
-export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
-    const { flexEmployeeId, profileId, employeeNumber, name } = user;
-
-    // Initialize data and errors
-    let loading = true;
-
+export async function AdminHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
     const data = {
         holidays: null,
         occupancyRates: null,
@@ -37,26 +31,11 @@ export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOve
         assignmentsMetrics: null,
     };
 
-    async function refreshHolidays() {
-        'use server';
-        revalidatePath('/home');
-    }
+    const { flexEmployeeId, profileId, employeeNumber, name } = user;
 
-    async function refreshOccupancy() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshStatistics() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    // Determine what data this profile needs
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
     const links = getHomePageLinks(profileId);
 
-    // Fetch required data based on profile
     if (dataRequirements.holidays) {
         try {
             const rawHolidays = await getHolidays({
@@ -95,7 +74,6 @@ export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOve
         }
     }
 
-    // Transform quick links to match QuickLinksCard format
     const quickLinks = links.map((link) => ({
         title: link.title,
         description: link.description,
@@ -104,49 +82,33 @@ export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOve
         external: link.target === '_blank',
     }));
 
-    loading = false;
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <Spinner size="lg" label="Loading dashboard..." />
-            </div>
-        );
-    }
-
     return (
-        <div className="min-h-screen space-y-6">
+        <div className="min-h-screen pb-10">
             <DashboardHeader name={name} />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Main Content - Left Side */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Occupancy Rate Card - Team Capacity */}
+
+            {/* Main grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 items-start">
+                <div className="flex flex-col gap-6">
                     <OccupancyRatesCardComponent
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
-                        refreshAction={refreshOccupancy}
+                        refreshAction={refreshHome}
                         target={85}
                     />
-
-                    {/* Assignments Card */}
                     <StatisticsCardComponent
                         title="Assignments"
                         stats={data.assignmentsMetrics}
                         error={errors.assignmentsMetrics}
-                        refreshAction={refreshStatistics}
+                        refreshAction={refreshHome}
                     />
                 </div>
 
-                {/* Right Sidebar */}
-                <div className="space-y-6">
-                    {/* Holidays Card */}
+                <div className="flex flex-col gap-6">
                     <HolidaysCardComponent
                         holidays={data.holidays}
                         error={errors.holidays}
-                        refreshAction={refreshHolidays}
+                        refreshAction={refreshHome}
                     />
-
-                    {/* Quick Links */}
                     <QuickLinksCardComponent
                         title="Quick Access"
                         description="Access resources and support anytime"

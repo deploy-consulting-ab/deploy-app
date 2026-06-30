@@ -1,11 +1,8 @@
 import {
-    PROJECT_TYPE_INTERNAL,
-    PROJECT_TYPE_EXTERNAL,
-    PROJECT_STATUS_DRAFT,
-    PROJECT_STATUS_CANCELLED,
-    OPPORTUNITY_STATUS_CLOSED_WON,
-    OPPORTUNITY_STATUS_CLOSED_LOST,
-    OPPORTUNITY_STATUS_CLOSED_DECLINED,
+    PROJECT_STATUS_MAP,
+    PROJECT_TYPE_MAP,
+    EMPLOYMENT_TYPE_MAP,
+    OPPORTUNITY_STATUS_MAP,
 } from '@/actions/salesforce/constants';
 
 /* ─── Shared query utilities ────────────────────────────────────────────── */
@@ -55,9 +52,9 @@ const buildSelectClause = (baseFields, permittedFields) => {
 const getAssignmentsByEmployeeNumberQuery = (employeeNumber) => {
     return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
-            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
-            AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
+            AND ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
             ORDER BY StartDate__c DESC`;
 };
 
@@ -65,9 +62,9 @@ const getAssignmentsByEmployeeNumberAndProjectNameQuery = (employeeNumber, proje
     return `SELECT Id, Name, StartDate__c, EndDate__c, ProjectStatus__c, Project__r.Name, Project__r.Account__r.Name FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
             AND Project__r.Name LIKE '%${projectName}%'
-            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
-            AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
+            AND ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
             ORDER BY StartDate__c DESC`;
 };
 
@@ -83,20 +80,13 @@ const getAssignmentByIdAndEmployeeNumberQuery = (assignmentId, employeeNumber) =
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
 };
 
-const getAssignmentTimecardsQuery = (assignmentId, employeeNumber) => {
-    return `SELECT Id, StartDate__c, EndDate__c,MondayHours__c, TuesdayHours__c, WednesdayHours__c, ThursdayHours__c, FridayHours__c, SaturdayHours__c, SundayHours__c 
-            FROM Timecard__c 
-            WHERE Assignment__c = '${assignmentId}' AND Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}'
-            ORDER BY StartDate__c DESC`;
-};
-
 const getAssignmentsMetricsQuery = (employeeNumber) => {
     return `SELECT Project__r.Status__c, StartDate__c, COUNT(Id) assignmentsMetrics
             FROM Assignment__c
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
-            AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
+            AND ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
             GROUP BY Project__r.Status__c, StartDate__c
             ORDER BY StartDate__c DESC`;
 };
@@ -106,12 +96,12 @@ const getCurrentAssignmentsByEmployeeNumberQuery = (employeeNumber, startDate, e
             FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
             AND Project__r.FlexID__c != NULL
-            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
             AND (
                 (StartDate__c <= ${startDate} AND EndDate__c >= ${endDate})
                 OR
-                ProjectType__c = '${PROJECT_TYPE_INTERNAL}'
+                ProjectType__c = '${PROJECT_TYPE_MAP.INTERNAL}'
             )
             ORDER BY ProjectType__c, EndDate__c DESC`;
 };
@@ -126,9 +116,9 @@ const getAssignmentsByEmployeeNumberQueryDynamic = (employeeNumber, permittedFie
     const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Resource__r.EmployeeId__c = '${employeeNumber}' 
-            AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-            AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
-            AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+            AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
+            AND ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
             ORDER BY StartDate__c DESC`;
 };
 
@@ -140,12 +130,6 @@ const getAssignmentByIdAndEmployeeNumberQueryDynamic = (
     const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Assignment__c 
             WHERE Id = '${assignmentId}' AND Resource__r.EmployeeId__c = '${employeeNumber}' LIMIT 1`;
-};
-
-const getAssignmentByIdQueryDynamic = (assignmentId, permittedFields) => {
-    const select = buildSelectClause(ASSIGNMENT_BASE_FIELDS, permittedFields);
-    return `SELECT ${select} FROM Assignment__c 
-            WHERE Id = '${assignmentId}' LIMIT 1`;
 };
 
 /**
@@ -160,9 +144,9 @@ const getEmployeeFYAmountsQuery = (employeeNumber, fyStart, fyEnd) => {
                    MAX(Assignment__r.ProjectedAmount__c) projectedPerAssignment
             FROM Timecard__c
             WHERE Assignment__r.Resource__r.EmployeeId__c = '${employeeNumber}'
-            AND Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
-            AND Assignment__r.ProjectStatus__c IN ('Ongoing', 'Completed', 'Not Started')
-            AND Assignment__r.Resource__r.EmploymentType__c IN ('Full-Time', 'Part-Time')
+            AND Assignment__r.ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
+            AND Assignment__r.ProjectStatus__c IN ('${PROJECT_STATUS_MAP.ONGOING}', '${PROJECT_STATUS_MAP.COMPLETED}', '${PROJECT_STATUS_MAP.NOT_STARTED}')
+            AND Assignment__r.Resource__r.EmploymentType__c IN ('${EMPLOYMENT_TYPE_MAP.FULL_TIME}', '${EMPLOYMENT_TYPE_MAP.PART_TIME}')
             AND StartDate__c >= ${fyStart} AND StartDate__c <= ${fyEnd}
             AND EndDate__c >= ${fyStart} AND EndDate__c <= ${fyEnd}
             GROUP BY Assignment__c`;
@@ -183,9 +167,9 @@ const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
                    SUM(TimecardAmount__c) timecardAmount,
                    MAX(Assignment__r.ProjectedAmount__c) projectedAmountFY
             FROM Timecard__c
-            WHERE Assignment__r.ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
-            AND Assignment__r.ProjectStatus__c IN ('Ongoing', 'Completed', 'Not Started')
-            AND Assignment__r.Resource__r.EmploymentType__c IN ('Full-Time', 'Part-Time')
+            WHERE Assignment__r.ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
+            AND Assignment__r.ProjectStatus__c IN ('${PROJECT_STATUS_MAP.ONGOING}', '${PROJECT_STATUS_MAP.COMPLETED}', '${PROJECT_STATUS_MAP.NOT_STARTED}')
+            AND Assignment__r.Resource__r.EmploymentType__c IN ('${EMPLOYMENT_TYPE_MAP.FULL_TIME}', '${EMPLOYMENT_TYPE_MAP.PART_TIME}')
             AND StartDate__c >= ${fyStart} AND StartDate__c <= ${fyEnd}
             AND EndDate__c >= ${fyStart} AND EndDate__c <= ${fyEnd}
             GROUP BY Assignment__c`;
@@ -197,7 +181,7 @@ const getAllEmployeesFYAmountsQuery = (fyStart, fyEnd) => {
 const getEmployeesCostsQuery = () => {
     return `SELECT Id, EmployeeId__c, Name, AdjustedCostFY__c, AdjustedCostFYTD__c
             FROM Employee__c
-            WHERE EmploymentType__c IN ('Full-Time', 'Part-Time')
+            WHERE EmploymentType__c IN ('${EMPLOYMENT_TYPE_MAP.FULL_TIME}', '${EMPLOYMENT_TYPE_MAP.PART_TIME}')
             AND IsActive__c = true`;
 };
 
@@ -206,18 +190,18 @@ const getEmployeesCostsQuery = () => {
 const getOpportunitiesQuery = () => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
             FROM Opportunity 
-            WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            WHERE StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_WON}'
             ORDER BY CloseDate DESC`;
 };
 
 const getOpportunitiesByNameQuery = (name) => {
     return `SELECT Id, Name, StageName, CloseDate, Amount, Account.Name, CurrencyIsoCode, ProductType__c 
             FROM Opportunity WHERE Name LIKE '%${name}%' 
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_WON}'
             ORDER BY CloseDate DESC`;
 };
 
@@ -240,51 +224,15 @@ const getQuoteLinesQuery = (opportunityId) => {
 const getOpportunitiesQueryDynamic = (permittedFields) => {
     const select = buildSelectClause(OPPORTUNITY_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Opportunity 
-            WHERE StageName != '${OPPORTUNITY_STATUS_CLOSED_LOST}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_DECLINED}'
-            AND StageName != '${OPPORTUNITY_STATUS_CLOSED_WON}'
+            WHERE StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_LOST}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_DECLINED}'
+            AND StageName != '${OPPORTUNITY_STATUS_MAP.CLOSED_WON}'
             ORDER BY CloseDate DESC`;
 };
 
 const getOpportunityByIdQueryDynamic = (opportunityId, permittedFields) => {
     const select = buildSelectClause(OPPORTUNITY_BASE_FIELDS, permittedFields);
     return `SELECT ${select} FROM Opportunity WHERE Id = '${opportunityId}' LIMIT 1`;
-};
-
-/* ─── Occupancy rate queries ────────────────────────────────────────────── */
-
-const getRecentOccupancyRateQuery = (employeeNumber, today) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Month__c FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
-            ORDER BY Date__c DESC LIMIT 4`;
-};
-
-const getOccupancyRateFromLastFiscalYearQuery = (employeeNumber, today, lastFiscalYear) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today} AND Date__c >= ${lastFiscalYear}
-            ORDER BY Date__c ASC`;
-};
-
-const getOccupancyHistoryQuery = (employeeNumber, today) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c, 
-            ExternalMonthHours__c, InternalMonthHours__c, TotalMonthlyHours__c, TotalHours__c
-            FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}
-            ORDER BY Date__c DESC`;
-};
-
-const getOccupancyHistoryCountQuery = (employeeNumber, today) => {
-    return `SELECT COUNT() FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}' AND Date__c <= ${today}`;
-};
-
-const getOccupancyByDateRangeQuery = (employeeNumber, startDate, endDate) => {
-    return `SELECT Id, OccupancyRate__c, Date__c, Year__c, Month__c
-            FROM HistoricalHour__c 
-            WHERE Resource__r.EmployeeId__c = '${employeeNumber}'
-            AND Date__c >= ${startDate}
-            AND Date__c <= ${endDate}
-            ORDER BY Date__c ASC`;
 };
 
 /* ─── Holiday queries ───────────────────────────────────────────────────── */
@@ -304,9 +252,9 @@ const getEmployeesWithActiveAssignmentsQuery = (employeeNumbers, date) => {
                 WHERE StartDate__c <= ${date} 
                 AND Resource__r.EmployeeId__c IN (${employeeNumbers})
                 AND (EndDate__c >= ${date} OR EndDate__c = NULL)
-                AND ProjectType__c = '${PROJECT_TYPE_EXTERNAL}'
-                AND ProjectStatus__c != '${PROJECT_STATUS_DRAFT}'
-                AND ProjectStatus__c != '${PROJECT_STATUS_CANCELLED}'
+                AND ProjectType__c = '${PROJECT_TYPE_MAP.EXTERNAL}'
+                AND ProjectStatus__c != '${PROJECT_STATUS_MAP.DRAFT}'
+                AND ProjectStatus__c != '${PROJECT_STATUS_MAP.CANCELED}'
             )
 
             ORDER BY Name ASC`;
@@ -334,18 +282,12 @@ export {
     getAssignmentsByEmployeeNumberQuery,
     getAssignmentByIdQuery,
     getAssignmentByIdAndEmployeeNumberQuery,
-    getAssignmentTimecardsQuery,
     getCurrentAssignmentsByEmployeeNumberQuery,
     getAssignmentsByEmployeeNumberAndProjectNameQuery,
     getAssignmentsMetricsQuery,
     getOpportunitiesQuery,
     getOpportunitiesByNameQuery,
     getOpportunityByIdQuery,
-    getRecentOccupancyRateQuery,
-    getOccupancyRateFromLastFiscalYearQuery,
-    getOccupancyHistoryQuery,
-    getOccupancyHistoryCountQuery,
-    getOccupancyByDateRangeQuery,
     getSalesforcePublicHolidaysQuery,
     getEmployeesWithActiveAssignmentsQuery,
     getEmployeesQuery,
@@ -354,7 +296,6 @@ export {
     getQuoteLinesQuery,
     getAssignmentsByEmployeeNumberQueryDynamic,
     getAssignmentByIdAndEmployeeNumberQueryDynamic,
-    getAssignmentByIdQueryDynamic,
     getOpportunitiesQueryDynamic,
     getOpportunityByIdQueryDynamic,
     getEmployeeFYAmountsQuery,

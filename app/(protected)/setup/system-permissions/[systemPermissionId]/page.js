@@ -1,5 +1,5 @@
 import { SystemPermissionCardComponent } from '@/components/application/setup/system-permissions/system-permission-card';
-import { getSystemPermissionAssignmentsByIdAction } from '@/actions/database/system-permission-actions';
+import { getSystemPermissionByIdAction } from '@/actions/database/system-permission-actions';
 
 export default async function SystemPermissionPage({ params }) {
     const { systemPermissionId } = await params;
@@ -8,7 +8,7 @@ export default async function SystemPermissionPage({ params }) {
     let error = null;
 
     try {
-        systemPermission = await getSystemPermissionAssignmentsByIdAction(systemPermissionId);
+        systemPermission = await getSystemPermissionByIdAction(systemPermissionId);
     } catch (error) {
         error = error;
     }

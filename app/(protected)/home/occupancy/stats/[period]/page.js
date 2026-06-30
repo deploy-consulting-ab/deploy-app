@@ -5,8 +5,7 @@ import { OccupancyCalendarComponent } from '@/components/application/occupancy/o
 import { OCCUPANCY_STATS_ROUTE } from '@/menus/routes';
 
 export default async function OccupancyPeriodPage({ params }) {
-    const { period } = await params;
-    const session = await auth();
+    const [{ period }, session] = await Promise.all([params, auth()]);
     const flexEmployeeId = session.user.flexEmployeeId;
 
     const startDate = period;

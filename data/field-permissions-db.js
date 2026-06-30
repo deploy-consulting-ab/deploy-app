@@ -21,29 +21,12 @@ export async function getFieldPermissions() {
 }
 
 /**
- * Get a field permission by id
- * @param {string} id
- * @returns {Promise<FieldPermission>} The field permission
- * @throws {Error} If the field permission is not found
- */
-export async function getFieldPermissionById(id) {
-    try {
-        const fieldPermission = await db.fieldPermission.findUnique({
-            where: { id },
-        });
-        return fieldPermission;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Get a field permission by id including profile and permission set assignments
  * @param {string} id
  * @returns {Promise<FieldPermission>} The field permission with assignments
  * @throws {Error} If the field permission is not found
  */
-export async function getFieldPermissionAssignmentsById(id) {
+export async function getFieldPermissionById(id) {
     try {
         const fieldPermission = await db.fieldPermission.findUnique({
             where: { id },
@@ -57,19 +40,6 @@ export async function getFieldPermissionAssignmentsById(id) {
             },
         });
         return fieldPermission;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Get the total number of field permissions
- * @returns {Promise<number>} The total number of field permissions
- * @throws {Error} If the count is not found
- */
-export async function getTotalFieldPermissionsCount() {
-    try {
-        return await db.fieldPermission.count();
     } catch (error) {
         throw error;
     }

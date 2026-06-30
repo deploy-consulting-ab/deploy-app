@@ -164,60 +164,6 @@ export async function removePermissionFromPermissionSet(permissionSetId, permiss
 }
 
 /**
- * Add a user to a permission set
- * @param {string} permissionSetId
- * @param {string} userId
- * @returns {Promise<PermissionSet>} The updated permission set
- * @throws {Error} If the user is not added
- */
-export async function addUserToPermissionSet(permissionSetId, userId) {
-    try {
-        const permissionSet = await db.permissionSet.update({
-            where: { id: permissionSetId },
-            data: {
-                users: {
-                    connect: { id: userId },
-                },
-            },
-            include: {
-                systemPermissions: true,
-                users: true,
-            },
-        });
-        return permissionSet;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
- * Remove a user from a permission set
- * @param {string} permissionSetId
- * @param {string} userId
- * @returns {Promise<PermissionSet>} The updated permission set
- * @throws {Error} If the user is not removed
- */
-export async function removeUserFromPermissionSet(permissionSetId, userId) {
-    try {
-        const permissionSet = await db.permissionSet.update({
-            where: { id: permissionSetId },
-            data: {
-                users: {
-                    disconnect: { id: userId },
-                },
-            },
-            include: {
-                systemPermissions: true,
-                users: true,
-            },
-        });
-        return permissionSet;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Search permission sets by name or description
  * @param {string} searchTerm
  * @returns {Promise<PermissionSet[]>} Permission sets matching the search term

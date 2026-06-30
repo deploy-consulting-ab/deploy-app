@@ -19,23 +19,6 @@ export async function getSystemPermissions() {
 }
 
 /**
- * Get a permission by id
- * @param {string} id
- * @returns {Promise<SystemPermission>} The permission
- * @throws {Error} If the permission is not found
- */
-export async function getSystemPermissionById(id) {
-    try {
-        const permission = await db.systemPermission.findUnique({
-            where: { id },
-        });
-        return permission;
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Create a permission
  * @param {Object} data
  * @returns {Promise<SystemPermission>} The created permission
@@ -110,7 +93,7 @@ export async function deleteSystemPermission(id) {
  * @returns {Promise<{profiles: Profile[], permissionSets: PermissionSet[]}>} The profiles and permission sets that use this permission
  * @throws {Error} If the permission assignments are not found
  */
-export async function getSystemPermissionAssignmentsById(permissionId) {
+export async function getSystemPermissionById(permissionId) {
     try {
         const permission = await db.systemPermission.findUnique({
             where: { id: permissionId },

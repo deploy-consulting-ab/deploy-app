@@ -45,10 +45,7 @@ export default async function RootLayout({ children }) {
     return (
         <html lang="en" suppressHydrationWarning className="h-full">
             <head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1, maximum-scale=1"
-                />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
                 {process.env.NODE_ENV === 'development' && (
                     <Script
                         src="//unpkg.com/react-grab/dist/index.global.js"

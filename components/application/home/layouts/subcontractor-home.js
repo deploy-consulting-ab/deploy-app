@@ -1,5 +1,5 @@
 import { getAssignmentTimereportsForOccupancy } from '@/actions/flex/flex-actions';
-import { revalidatePath } from 'next/cache';
+import { refreshHome } from '@/components/application/home/refresh-home';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
 import {
     formatDateToISOString,
@@ -25,16 +25,6 @@ export async function SubcontractorHomeComponent({ user }) {
         occupancyRates: null,
         assignmentsMetrics: null,
     };
-
-    async function refreshOccupancy() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshStatistics() {
-        'use server';
-        revalidatePath('/home');
-    }
 
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
 
@@ -71,7 +61,7 @@ export async function SubcontractorHomeComponent({ user }) {
                 <OccupancyRatesCardComponent
                     occupancy={data.occupancyRates}
                     error={errors.occupancyRates}
-                    refreshAction={refreshOccupancy}
+                    refreshAction={refreshHome}
                     target={85}
                 />
 
@@ -80,7 +70,7 @@ export async function SubcontractorHomeComponent({ user }) {
                     title="Assignments"
                     stats={data.assignmentsMetrics}
                     error={errors.assignmentsMetrics}
-                    refreshAction={refreshStatistics}
+                    refreshAction={refreshHome}
                 />
             </div>
         </div>

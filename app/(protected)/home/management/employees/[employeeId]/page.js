@@ -4,8 +4,6 @@ import {
     getAssignmentsMetrics,
     getEmployeeFYAmounts,
 } from '@/actions/salesforce/salesforce-actions';
-import { OccupancyStatsComponent } from '@/components/application/occupancy/occupancy-stats';
-import { OccupancyListComponent } from '@/components/application/occupancy/occupancy-list';
 import {
     getFlexOccupancyStatsAnchored,
     getFlexOccupancyHistory,
@@ -17,11 +15,7 @@ import {
     getFiscalYearStartDate,
     getFiscalYearEndDate,
 } from '@/lib/utils';
-import { EmployeeRecordCardComponent } from '@/components/application/management/employees/employee-record-card';
-import { EmployeeFinancialCardComponent } from '@/components/application/management/employees/employee-financial-card';
-import { AssignmentsListComponent } from '@/components/application/assignment/assignments-list';
 import { EmployeePageComponent } from '@/components/application/management/employees/employee-page';
-import { EMPLOYEES_LIST_ROUTE } from '@/menus/routes';
 import { NoDataComponent } from '@/components/errors/no-data';
 
 export default async function EmployeePage({ params }) {
@@ -88,40 +82,17 @@ export default async function EmployeePage({ params }) {
 
     return (
         <EmployeePageComponent
-            detailsTab={
-                <>
-                    <div className="mb-6 space-y-6">
-                        <EmployeeRecordCardComponent employee={employee} error={errors.employee} />
-                        <EmployeeFinancialCardComponent
-                            employee={employee}
-                            fyAmounts={fyAmounts}
-                            error={errors.employee}
-                        />
-                    </div>
-                    <OccupancyStatsComponent stats={stats} error={errors.stats} />
-                </>
-            }
-            occupancyTab={
-                <>
-                    <OccupancyListComponent
-                        occupancyData={occupancyData}
-                        flexEmployeeId={flexEmployeeId}
-                        formattedToday={formattedToday}
-                        historyStartDate={historyStartDate}
-                        error={errors.history}
-                        statsRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}/stats`}
-                    />
-                </>
-            }
-            assignmentsTab={
-                <AssignmentsListComponent
-                    error={errors.assignments}
-                    assignments={assignments}
-                    employeeNumber={employee?.employeeId}
-                    assignmentsMetrics={assignmentsMetrics}
-                    assignmentRoute={`${EMPLOYEES_LIST_ROUTE}/${employeeId}`}
-                />
-            }
+            employeeId={employeeId}
+            employee={employee}
+            assignments={assignments}
+            assignmentsMetrics={assignmentsMetrics}
+            flexEmployeeId={flexEmployeeId}
+            occupancyData={occupancyData}
+            stats={stats}
+            fyAmounts={fyAmounts}
+            formattedToday={formattedToday}
+            historyStartDate={historyStartDate}
+            errors={errors}
         />
     );
 }

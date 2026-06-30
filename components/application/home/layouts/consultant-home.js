@@ -2,7 +2,7 @@ import { getHolidays, getAssignmentTimereportsForOccupancy } from '@/actions/fle
 import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getAssignmentsMetrics } from '@/actions/salesforce/salesforce-actions';
-import { revalidatePath } from 'next/cache';
+import { refreshHome } from '@/components/application/home/refresh-home';
 import {
     formatDateToISOString,
     getCurrentFiscalYear,
@@ -19,7 +19,7 @@ import { OccupancyRatesCardComponent } from '@/components/application/home/dashb
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
 import { StatisticsCardComponent } from '@/components/application/home/dashboard-cards/statistics-card';
 
-export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
+export async function ConsultantHomeComponent({ user, yearlyHolidays, carriedOverHolidays }) {
     const { flexEmployeeId, profileId, employeeNumber, name } = user;
 
     // Initialize data and errors
@@ -36,21 +36,6 @@ export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOve
         occupancyRates: null,
         assignmentsMetrics: null,
     };
-
-    async function refreshHolidays() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshOccupancy() {
-        'use server';
-        revalidatePath('/home');
-    }
-
-    async function refreshStatistics() {
-        'use server';
-        revalidatePath('/home');
-    }
 
     // Determine what data this profile needs
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
@@ -94,6 +79,7 @@ export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOve
             errors.assignmentsMetrics = error.message || 'Failed to load statistics';
         }
     }
+
     // Transform quick links to match QuickLinksCard format
     const quickLinks = links.map((link) => ({
         title: link.title,
@@ -123,7 +109,7 @@ export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOve
                     <OccupancyRatesCardComponent
                         occupancy={data.occupancyRates}
                         error={errors.occupancyRates}
-                        refreshAction={refreshOccupancy}
+                        refreshAction={refreshHome}
                         target={85}
                     />
 
@@ -132,7 +118,7 @@ export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOve
                         title="Assignments"
                         stats={data.assignmentsMetrics}
                         error={errors.assignmentsMetrics}
-                        refreshAction={refreshStatistics}
+                        refreshAction={refreshHome}
                     />
                 </div>
 
@@ -142,7 +128,7 @@ export async function ManagementHomeComponent({ user, yearlyHolidays, carriedOve
                     <HolidaysCardComponent
                         holidays={data.holidays}
                         error={errors.holidays}
-                        refreshAction={refreshHolidays}
+                        refreshAction={refreshHome}
                     />
 
                     {/* Quick Links */}

@@ -1,8 +1,8 @@
-import { SubcontractorHomeComponent } from '@/components/application/home/layouts.js/subcontractor-home';
-import { ConsultantHomeComponent } from '@/components/application/home/layouts.js/consultant-home';
-import { SalesHomeComponent } from '@/components/application/home/layouts.js/sales-home';
-import { ManagementHomeComponent } from '@/components/application/home/layouts.js/management-home';
-import { AdminHomeComponent } from '@/components/application/home/layouts.js/admin-home';
+import { SubcontractorHomeComponent } from '@/components/application/home/layouts/subcontractor-home';
+import { ConsultantHomeComponent } from '@/components/application/home/layouts/consultant-home';
+import { SalesHomeComponent } from '@/components/application/home/layouts/sales-home';
+import { ManagementHomeComponent } from '@/components/application/home/layouts/management-home';
+import { AdminHomeComponent } from '@/components/application/home/layouts/admin-home';
 
 export async function ConsultantHomeLayout({ user, yearlyHolidays, carriedOverHolidays }) {
     return (

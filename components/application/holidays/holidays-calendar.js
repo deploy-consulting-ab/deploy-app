@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import { MONTHS, WEEK_DAYS } from '@/actions/flex/constants';
 
 export function HolidaysCalendarComponent({ holidays, error }) {
     const today = useMemo(() => new Date(), []);
@@ -37,22 +38,6 @@ export function HolidaysCalendarComponent({ holidays, error }) {
     }, [currentYear, currentMonth]);
 
     const { daysInMonth, startDay } = calendarData;
-
-    const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ];
-    const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
     const goToPreviousMonth = useCallback(() => {
         setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
@@ -136,7 +121,7 @@ export function HolidaysCalendarComponent({ holidays, error }) {
                             <ChevronLeft className="h-4 w-4" />
                         </button>
                         <span className="text-sm text-foreground min-w-[110px] text-center">
-                            {monthNames[currentMonth]} {currentYear}
+                            {MONTHS[currentMonth]} {currentYear}
                         </span>
                         <button
                             type="button"
@@ -150,9 +135,9 @@ export function HolidaysCalendarComponent({ holidays, error }) {
 
                 {/* Week Days Header */}
                 <div className="grid grid-cols-7 gap-2">
-                    {weekDays.map((day, i) => (
+                    {WEEK_DAYS.map((day) => (
                         <div
-                            key={i}
+                            key={day}
                             className="text-center text-xs font-medium text-muted-foreground py-1"
                         >
                             {day}

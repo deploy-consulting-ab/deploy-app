@@ -7,7 +7,7 @@ import { formatDateToSwedish, getAssignmentStageColor } from '@/lib/utils';
 import { useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { getAssignmentsByEmployeeNumber } from '@/actions/salesforce/salesforce-actions';
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo, useReducer } from 'react';
 import { ErrorDisplayComponent } from '@/components/errors/error-display';
 import {
     Select,
@@ -18,6 +18,38 @@ import {
 } from '@/components/ui/select';
 import Link from 'next/link';
 
+function filterAssignmentsByView(assignments, view) {
+    if (view === 'all') {
+        return assignments;
+    }
+
+    return assignments.filter(
+        (item) => item.projectStatus.toLowerCase() === view.toLowerCase()
+    );
+}
+
+function assignmentsListReducer(state, action) {
+    switch (action.type) {
+        case 'setView':
+            return { ...state, selectedView: action.view };
+        case 'syncViewParam':
+            return { ...state, selectedView: null, prevViewParam: action.viewParam };
+        case 'refreshStart':
+            return { ...state, isRefreshing: true };
+        case 'refreshSuccess':
+            return {
+                ...state,
+                isRefreshing: false,
+                assignmentsOverride: action.data,
+                refreshError: null,
+            };
+        case 'refreshError':
+            return { ...state, isRefreshing: false, refreshError: action.error };
+        default:
+            return state;
+    }
+}
+
 export function AssignmentsListDesktopComponent({
     assignments,
     employeeNumber,
@@ -26,65 +58,46 @@ export function AssignmentsListDesktopComponent({
     assignmentRoute,
 }) {
     const searchParams = useSearchParams();
-
     const viewParam = searchParams.get('view') || 'all';
 
-    const [assignmentData, setAssignmentData] = useState(assignments);
-    const [error, setError] = useState(initialError);
+    const [state, dispatch] = useReducer(assignmentsListReducer, {
+        selectedView: null,
+        prevViewParam: viewParam,
+        assignmentsOverride: null,
+        refreshError: null,
+        isRefreshing: false,
+    });
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [view, setView] = useState(viewParam);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    if (viewParam !== state.prevViewParam) {
+        dispatch({ type: 'syncViewParam', viewParam });
+    }
 
-    // Reset to first page when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, view]);
+    const view = state.selectedView ?? viewParam;
+    const error = state.refreshError ?? initialError;
+    const sourceAssignments = state.assignmentsOverride ?? assignments;
 
-    const setFilterAssignments = useCallback(
-        (value) => {
-            let filteredData = null;
-
-            if (value === 'all') {
-                filteredData = assignments;
-            } else {
-                filteredData = assignments.filter(
-                    (item) => item['projectStatus'].toLowerCase() === value.toLowerCase()
-                );
-            }
-
-            setAssignmentData(filteredData);
-            setView(value);
-        },
-        [assignments]
+    const assignmentData = useMemo(
+        () => filterAssignmentsByView(sourceAssignments, view),
+        [sourceAssignments, view]
     );
 
-    // Apply initial filter based on URL view parameter
-    useEffect(() => {
-        setFilterAssignments(viewParam);
-    }, [viewParam, setFilterAssignments]);
-
     const handleRefresh = async () => {
-        if (isRefreshing) {
+        if (state.isRefreshing) {
             return;
         }
-        setIsRefreshing(true);
 
-        let freshData = null;
+        dispatch({ type: 'refreshStart' });
+
         try {
-            freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
-            setAssignmentData(freshData);
-            setError(null);
+            const freshData = await getAssignmentsByEmployeeNumber(employeeNumber);
+            dispatch({ type: 'refreshSuccess', data: freshData });
         } catch (err) {
-            setError(err);
-        } finally {
-            setIsRefreshing(false);
+            dispatch({ type: 'refreshError', error: err });
         }
     };
 
     const handleFilterAssignment = (value) => {
-        setFilterAssignments(value);
+        dispatch({ type: 'setView', view: value });
     };
 
     const columns = [
@@ -226,7 +239,7 @@ export function AssignmentsListDesktopComponent({
             variant="ghost"
             size="icon"
             onClick={handleRefresh}
-            disabled={isRefreshing}
+            disabled={state.isRefreshing}
             className="hover:cursor-pointer"
         >
             <RefreshCw className="h-4 w-4 text-muted-foreground" />

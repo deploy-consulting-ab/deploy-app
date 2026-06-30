@@ -7,7 +7,6 @@ import {
     updateSystemPermission,
     deleteSystemPermission,
     getSystemPermissionById,
-    getSystemPermissionAssignmentsById,
     getTotalSystemPermissionsCount,
     searchSystemPermissions,
 } from '@/data/system-permissions-db';
@@ -27,30 +26,15 @@ export async function getSystemPermissionsAction() {
 }
 
 /**
- * Get a system permission by id
- * @param {string} id
- * @returns {Promise<SystemPermission>} The system permission
- * @throws {Error} If the system permission is not found
- */
-export async function getSystemPermissionByIdAction(id) {
-    await requireAuth();
-    try {
-        return await getSystemPermissionById(id);
-    } catch (error) {
-        throw error;
-    }
-}
-
-/**
  * Get the assignments for a system permission
  * @param {string} systemPermissionId
  * @returns {Promise<SystemPermissionAssignments>} The system permission assignments
  * @throws {Error} If the system permission assignments are not found
  */
-export async function getSystemPermissionAssignmentsByIdAction(systemPermissionId) {
+export async function getSystemPermissionByIdAction(systemPermissionId) {
     await requireAuth();
     try {
-        const permissionAssignments = await getSystemPermissionAssignmentsById(systemPermissionId);
+        const permissionAssignments = await getSystemPermissionById(systemPermissionId);
 
         const allSystemPermissionAssignments = [
             ...(permissionAssignments?.profiles || []).map((profile) => {

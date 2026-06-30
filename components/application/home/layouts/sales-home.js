@@ -3,7 +3,7 @@ import { getHomePageLinks } from '@/lib/external-links';
 import { Spinner } from '@/components/ui/spinner';
 import { getHomeRequiredDataForProfile } from '@/components/application/home/home-layout-selector';
 import { DashboardHeader } from '@/components/application/home/dashboard-header';
-import { revalidatePath } from 'next/cache';
+import { refreshHome } from '@/components/application/home/refresh-home';
 import { transformHolidaysData } from '@/lib/utils';
 import { HolidaysCardComponent } from '@/components/application/home/dashboard-cards/holidays-card';
 import { QuickLinksCardComponent } from '@/components/application/home/dashboard-cards/quick-links-card';
@@ -20,11 +20,6 @@ export async function SalesHomeComponent({ user, yearlyHolidays, carriedOverHoli
     const errors = {
         holidays: null,
     };
-
-    async function refreshHolidays() {
-        'use server';
-        revalidatePath('/home');
-    }
 
     const dataRequirements = getHomeRequiredDataForProfile(profileId);
     const links = getHomePageLinks(profileId);
@@ -69,7 +64,7 @@ export async function SalesHomeComponent({ user, yearlyHolidays, carriedOverHoli
                 holidays={data.holidays}
                 error={errors.holidays}
                 isNavigationDisabled={false}
-                refreshAction={refreshHolidays}
+                refreshAction={refreshHome}
             />
 
             {/* Quick Links */}
